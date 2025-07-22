@@ -322,7 +322,10 @@ const ParentDashboard = () => {
         return (
           <div className="p-4 bg-white rounded m-3">
 
-           <AdmissionForm selectedSubForm={selectedSubForm}></AdmissionForm>
+           <AdmissionForm 
+             selectedSubForm={selectedSubForm}
+             initialFormData={childFormData}
+           />
             {/* <h3 className="text-lg font-semibold text-[#0F2D52] mb-4">Admission Forms</h3>
             <p className="text-gray-600">Admission forms will be loaded here by another team...</p> */}
           </div>

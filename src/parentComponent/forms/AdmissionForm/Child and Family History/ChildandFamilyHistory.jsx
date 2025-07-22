@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import Child_history from './Child_history';
 import ParentAgreement from './Parent_argeement_history';
@@ -9,67 +9,67 @@ import EnvironmentalFactors from './EnvironmentalFactors';
 import Parent_Agreement from './Parent_Agreement'
 
 
-const ChildandFamilyHistory = () => {
+const ChildandFamilyHistory = ({ initialFormData = null }) => {
 
     const [formData, setFormData] = useState({
         // General Info
-        DateOfLastPhysicalExam: '2023-12-10',
-        DateOfLastDentalExam: '2024-03-15',
-        HowManyTimesHaveYouMovedInTheLastFiveYears: '2',
-        EducationalToysGamesBooksUsedAtHome: 'Storybooks, puzzles, building blocks',
-        HowManyHoursOfTelevisionDaily: '1-2',
-        LanguageUsedInTheHome: 'Tamil, English',
-        HaveThereBeenAnyChangesInTheHomeSituationRecently: 'Yes, recently moved house',
-        WhatAreYourEducationalExpectationsOfYourChild: 'Complete higher education and become independent',
+        DateOfLastPhysicalExam: '',
+        DateOfLastDentalExam: '',
+        HowManyTimesHaveYouMovedInTheLastFiveYears: '',
+        EducationalToysGamesBooksUsedAtHome: '',
+        HowManyHoursOfTelevisionDaily: '',
+        LanguageUsedInTheHome: '',
+        HaveThereBeenAnyChangesInTheHomeSituationRecently: '',
+        WhatAreYourEducationalExpectationsOfYourChild: '',
 
         // Parent Agreement / Medical History
-        AllergiesFoodDrug: 'Peanuts, Penicillin',
-        Asthma: 'Mild, under control',
-        BleedingProblems: 'No',
-        Diabetes: 'No family history',
-        Epilepsy: 'None',
-        FrequentEarInfections: 'Occasionally during winters',
-        FrequentIllnesses: 'Cold and cough every season change',
-        HearingProblems: 'Normal',
-        HighFevers: 'Rare',
-        Hospitialization: 'Admitted once for dehydration',
-        RheumaticFever: 'No',
-        SeizuresConvulsions: 'No',
-        SeriousInjuriesAccidents: 'Minor fracture at age 3',
-        Surgeries: 'Tonsil removal at age 5',
-        VisionProblems: 'Wears glasses for reading',
-        Other: 'None',
+        AllergiesFoodDrug: '',
+        Asthma: '',
+        BleedingProblems: '',
+        Diabetes: '',
+        Epilepsy: '',
+        FrequentEarInfections: '',
+        FrequentIllnesses: '',
+        HearingProblems: '',
+        HighFevers: '',
+        Hospitialization: '',
+        RheumaticFever: '',
+        SeizuresConvulsions: '',
+        SeriousInjuriesAccidents: '',
+        Surgeries: '',
+        VisionProblems: '',
+        Other: '',
 
         // Additional legacy fields (if used elsewhere)
-        allergies: 'Dust allergy',
-        HeartProblems: 'No known issues',
-        Tuberculosis: 'No',
-        Hyperactivity: 'Sometimes overly active',
-        NoIllnesses: 'No major illnesses',
+        allergies: '',
+        HeartProblems: '',
+        Tuberculosis: '',
+        Hyperactivity: '',
+        NoIllnesses: '',
 
         // Pregnancy And Infant History
-        IllnessDuringPregnancy: 'Gestational diabetes',
-        ConditionOfNewborn: 'Healthy, cried immediately',
-        DurationOfPregnancy: '38 weeks',
-        BirthWeight: '3.2 kg',
-        Complications: 'Mild labor complications',
-        BottleFed: 'yes',
-        BreastFed: 'yes',
+        IllnessDuringPregnancy: '',
+        ConditionOfNewborn: '',
+        DurationOfPregnancy: '',
+        BirthWeight: '',
+        Complications: '',
+        BottleFed: '',
+        BreastFed: '',
 
         // Other Siblings
-        Name: 'Sanjay',
-        Age: '10',
+        Name: '',
+        Age: '',
 
         // Social Behavior fields
-        AgeGroupOfFriends: 'Same age group',
-        NeighborhoodFriends: 'Plays with nearby kids every evening',
-        RelationshipWithMother: 'Very close',
-        RelationshipWithFather: 'Good, respectful',
-        RelationshipWithSiblings: 'Friendly, sometimes fights',
-        RelationshipWithExtendedFamily: 'Visits grandparents regularly',
-        FearsAndConflicts: 'Scared of dark and loud noises',
-        ChildsResponseToFrustration: 'Cries or withdraws silently',
-        FavoriteActivities: 'Drawing, playing football, watching cartoons',
+        AgeGroupOfFriends: '',
+        NeighborhoodFriends: '',
+        RelationshipWithMother: '',
+        RelationshipWithFather: '',
+        RelationshipWithSiblings: '',
+        RelationshipWithExtendedFamily: '',
+        FearsAndConflicts: '',
+        ChildsResponseToFrustration: '',
+        FavoriteActivities: '',
     });
 
 
@@ -79,6 +79,76 @@ const ChildandFamilyHistory = () => {
     const handleInputChange = (field, value) => {
         setFormData(prev => ({ ...prev, [field]: value }));
     };
+
+    useEffect(() => {
+        if (initialFormData) {
+            // Map API data to form fields
+            const mappedData = {
+                // General Info
+                DateOfLastPhysicalExam: initialFormData.physical_exam_last_date || '',
+                DateOfLastDentalExam: initialFormData.dental_exam_last_date || '',
+                HowManyTimesHaveYouMovedInTheLastFiveYears: initialFormData.last_five_years_moved || '',
+                EducationalToysGamesBooksUsedAtHome: initialFormData.things_used_at_home || '',
+                HowManyHoursOfTelevisionDaily: initialFormData.hours_of_television_daily || '',
+                LanguageUsedInTheHome: initialFormData.language_used_at_home || '',
+                HaveThereBeenAnyChangesInTheHomeSituationRecently: initialFormData.changes_at_home_situation || '',
+                WhatAreYourEducationalExpectationsOfYourChild: initialFormData.educational_expectations_of_child || '',
+
+                // Medical History
+                AllergiesFoodDrug: initialFormData.allergies || '',
+                Asthma: initialFormData.asthma || '',
+                BleedingProblems: initialFormData.bleeding_problems || '',
+                Diabetes: initialFormData.diabetes || '',
+                Epilepsy: initialFormData.epilepsy || '',
+                FrequentEarInfections: initialFormData.frequent_ear_infections || '',
+                FrequentIllnesses: initialFormData.frequent_illnesses || '',
+                HearingProblems: initialFormData.hearing_problems || '',
+                HighFevers: initialFormData.high_fevers || '',
+                Hospitialization: initialFormData.hospitalization || '',
+                RheumaticFever: initialFormData.rheumatic_fever || '',
+                SeizuresConvulsions: initialFormData.seizures_convulsions || '',
+                SeriousInjuriesAccidents: initialFormData.serious_injuries_accidents || '',
+                Surgeries: initialFormData.surgeries || '',
+                VisionProblems: initialFormData.vision_problems || '',
+                Other: initialFormData.medical_other || '',
+
+                // Family History
+                HeartProblems: initialFormData.family_history_heart_problems || '',
+                Tuberculosis: initialFormData.family_history_tuberculosis || '',
+                Hyperactivity: initialFormData.family_history_hyperactivity || '',
+                NoIllnesses: initialFormData.no_illnesses_for_this_child || '',
+
+                // Pregnancy And Infant History
+                IllnessDuringPregnancy: initialFormData.illness_during_pregnancy || '',
+                ConditionOfNewborn: initialFormData.condition_of_newborn || '',
+                DurationOfPregnancy: initialFormData.duration_of_pregnancy || '',
+                BirthWeight: `${initialFormData.birth_weight_lbs || ''} lbs ${initialFormData.birth_weight_oz || ''} oz`,
+                Complications: initialFormData.complications || '',
+                BottleFed: initialFormData.bottle_fed === 1 ? 'yes' : (initialFormData.bottle_fed === 2 ? 'no' : ''),
+                BreastFed: initialFormData.breast_fed === 1 ? 'yes' : (initialFormData.breast_fed === 2 ? 'no' : ''),
+
+                // Siblings
+                Name: initialFormData.other_siblings_name || '',
+                Age: initialFormData.other_siblings_age || '',
+
+                // Social Behavior
+                AgeGroupOfFriends: initialFormData.age_group_friends || '',
+                NeighborhoodFriends: initialFormData.neighborhood_friends || '',
+                RelationshipWithMother: initialFormData.relationship_with_mother || '',
+                RelationshipWithFather: initialFormData.relationship_with_father || '',
+                RelationshipWithSiblings: initialFormData.relationship_with_siblings || '',
+                RelationshipWithExtendedFamily: initialFormData.relationship_with_extended_family || '',
+                FearsAndConflicts: initialFormData.fears_conflicts || '',
+                ChildsResponseToFrustration: initialFormData.child_response_frustration || '',
+                FavoriteActivities: initialFormData.favorite_activities || '',
+            };
+
+            setFormData(prevState => ({
+                ...prevState,
+                ...mappedData
+            }));
+        }
+    }, [initialFormData]);
 
 
 

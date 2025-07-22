@@ -13,7 +13,7 @@ import ChildProfileForm from './ChildProfile/ChildProfile';
 import AdminSign from './AdminSign';
 import ParentSign from './ParentSign';
 
-function AdmissionForm({selectedSubForm}) {
+function AdmissionForm({selectedSubForm, initialFormData = null}) {
   // console.log("Selected SubForm:", selectedSubForm);
   return (
     <div>
@@ -22,31 +22,31 @@ function AdmissionForm({selectedSubForm}) {
         {(() => {
     switch (selectedSubForm) {
         case 'Child Information':
-            return <ChildInfo></ChildInfo>
+            return <ChildInfo initialFormData={initialFormData} />
       case 'Child and Family History':
-        return <ChildandFamilyHistory />;
+        return <ChildandFamilyHistory initialFormData={initialFormData} />;
       case 'Immunization':
-        return <ImmunizationInstructions />;
+        return <ImmunizationInstructions initialFormData={initialFormData} />;
       case 'Child Profile':
-        return <ChildProfileForm />;
+        return <ChildProfileForm initialFormData={initialFormData} />;
    case 'Photo/Video Permission':
-    return <VideoPermission></VideoPermission>
+    return <VideoPermission initialFormData={initialFormData} />
       case 'Pick-up Password':
-        return <PickUpPassword></PickUpPassword> ;
+        return <PickUpPassword initialFormData={initialFormData} /> ;
        case 'Security & Policy':
-        return <SecurityPolicy></SecurityPolicy>
+        return <SecurityPolicy initialFormData={initialFormData} />
         case 'Medical Transportation':
-            return <MedicalTransportationWaiver></MedicalTransportationWaiver>
+            return <MedicalTransportationWaiver initialFormData={initialFormData} />
         case 'Health Policies':
-          return <HealthPolicies></HealthPolicies>
+          return <HealthPolicies initialFormData={initialFormData} />
         case 'Outside Engagements':
-          return <OutsideEngagements></OutsideEngagements>
+          return <OutsideEngagements initialFormData={initialFormData} />
         case 'Social Media Approval':
-          return <SocialMediaReleaseForm></SocialMediaReleaseForm>
+          return <SocialMediaReleaseForm initialFormData={initialFormData} />
         case 'Admin Signature':
-          return <AdminSign></AdminSign>
+          return <AdminSign initialFormData={initialFormData} />
         case 'Parent Signature':
-          return <ParentSign></ParentSign>
+          return <ParentSign initialFormData={initialFormData} />
       default:
         return null;
     }

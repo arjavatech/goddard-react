@@ -1,9 +1,25 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import CheckboxWithLabel from './CheckboxWithLabel';
 
-export default function VideoPermission() {
+export default function VideoPermission({ initialFormData = null }) {
   const [agreePhotos, setAgreePhotos] = useState(false);
   const [agreeGroup, setAgreeGroup] = useState(false);
+  const [photoUsageType, setPhotoUsageType] = useState('');
+
+  useEffect(() => {
+    if (initialFormData) {
+      // Map API data to form fields
+      const mappedData = {
+        photoUsageType: initialFormData.photo_usage_photo_video_permission_form || '',
+        agreePhotos: initialFormData.photo_permission_agree_group_photos_electronic === 1,
+        agreeGroup: initialFormData.photo_permission_agree_not_post_photos === 1
+      };
+
+      setPhotoUsageType(mappedData.photoUsageType);
+      setAgreePhotos(mappedData.agreePhotos);
+      setAgreeGroup(mappedData.agreeGroup);
+    }
+  }, [initialFormData]);
 
   return (
     <>
@@ -29,8 +45,12 @@ export default function VideoPermission() {
                 <div className="w-full max-w-[280px]">
                   <label className="font-semibold block mb-2">Select One</label>
                   <div className="relative">
-                    <select className="w-full border border-red-500 rounded px-4 py-2 appearance-none pr-10">
-                      <option value="" disabled selected hidden></option>
+                    <select 
+                      className="w-full border border-red-500 rounded px-4 py-2 appearance-none pr-10"
+                      value={photoUsageType}
+                      onChange={(e) => setPhotoUsageType(e.target.value)}
+                    >
+                      <option value="" disabled hidden></option>
                       <option value="Full Use">Full Use</option>
                       <option value="In-House Only">In-House Only*</option>
                     </select>

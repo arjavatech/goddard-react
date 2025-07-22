@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ChevronUp, ChevronDown, Check, Clock } from 'lucide-react';
 import ChildProfileDetails from './ChildProfileDetails';
 import Nutrition from './Nutrition';
@@ -6,19 +6,19 @@ import ToiletLearning from './ToiletLearning';
 import MedicalGeneral from './MedicalGeneral';
 import Parent_Argeement from './Parent_Argeement';
 
-export default function ChildProfileForm() {
+export default function ChildProfileForm({ initialFormData = null }) {
     const [formData, setFormData] = useState({
-        familyMembers: 'sscfg',
-        traditions: 'esdrfty',
-        hasChildcareExperience: 'Yes',
-        interests: 'wserqty',
-        dropOffTime: '06:17 PM',
-        pickUpTime: '06:19 PM',
-        hasSpecialDiet: 'Yes',
-        specialDietExplanation: 'fgdfj',
-        eatsOnOwn: 'No',
-        eatsOnOwnExplanation: 'NA',
-        favoriteFoods: 'sdfddf'
+        familyMembers: '',
+        traditions: '',
+        hasChildcareExperience: '',
+        interests: '',
+        dropOffTime: '',
+        pickUpTime: '',
+        hasSpecialDiet: '',
+        specialDietExplanation: '',
+        eatsOnOwn: '',
+        eatsOnOwnExplanation: '',
+        favoriteFoods: ''
     });
 
     const [expandedSections, setExpandedSections] = useState({
@@ -56,6 +56,30 @@ export default function ChildProfileForm() {
             [field]: value
         }));
     };
+
+    useEffect(() => {
+        if (initialFormData) {
+            // Map API data to form fields
+            const mappedData = {
+                familyMembers: initialFormData.important_fam_members || '',
+                traditions: initialFormData.about_family_celebrations || '',
+                hasChildcareExperience: initialFormData.childcare_before === 1 ? 'Yes' : (initialFormData.childcare_before === 2 ? 'No' : ''),
+                interests: initialFormData.what_child_interests || '',
+                dropOffTime: initialFormData.drop_off_time || '',
+                pickUpTime: initialFormData.pick_up_time || '',
+                hasSpecialDiet: initialFormData.restricted_diet === 1 ? 'Yes' : (initialFormData.restricted_diet === 2 ? 'No' : ''),
+                specialDietExplanation: initialFormData.restricted_diet_reason || '',
+                eatsOnOwn: initialFormData.eat_own === 1 ? 'Yes' : (initialFormData.eat_own === 2 ? 'No' : ''),
+                eatsOnOwnExplanation: initialFormData.eat_own_reason || '',
+                favoriteFoods: initialFormData.favorite_foods || ''
+            };
+
+            setFormData(prevState => ({
+                ...prevState,
+                ...mappedData
+            }));
+        }
+    }, [initialFormData]);
 
     return (
         <>

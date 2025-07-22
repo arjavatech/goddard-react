@@ -2,7 +2,7 @@ import React from 'react';
 
 const FormInput = ({ label, type = "text", value, onChange, placeholder, name }) => {
     const getInputBorderClass = (value) => {
-        if (value && value.trim() !== '') {
+        if (value && typeof value === 'string' && value.trim() !== '') {
             return 'border-green-500 focus:ring-green-500';
         } else {
             return 'border-red-500 focus:ring-red-500';
