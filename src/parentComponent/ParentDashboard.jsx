@@ -5,9 +5,9 @@ import { useAuth } from '../hooks/useAuth';
 // import FormSidebar from './FormSidebar';
 import FormSidebar from '../parent/utilComponents/FormSidebar/FormSidebar';
 import { formSections } from '../parent/utilComponents/FormSidebar/formSections';
-import AuthorizationForm from '../components/AuthorizationForm';
+import AuthorizationForm from './forms/AuthorizationForm';
 import ParentHandbbok from './forms/ParentHanbook/policies/All';
-import EnrollmentForm from '../components/EnrollmentForm';
+import EnrollmentForm from './forms/EnrollmentForm';
 import AdmissionForm from './forms/AdmissionForm/AdmissionForm';
 
 
@@ -23,6 +23,7 @@ const ParentDashboard = () => {
   const [currentSection, setCurrentSection] = useState(null); // Track which section is currently active
   const [formStatus, setFormStatus] = useState({}); // Track form completion status
   const [selectedSubForm, setSelectedSubForm] = useState(null); // Track selected sub-form
+  const [childFormData, setChildFormData] = useState(null); // Store child form data from API
 
   const urlParams = new URLSearchParams(window.location.search);
   const editID = urlParams.get('id') || '';
@@ -50,10 +51,12 @@ const ParentDashboard = () => {
       setShowCompletedForms(true); // Show completed forms by default
       setSelectedSubForm(null);
       setCompletedForms([]); // Clear old child's completed forms immediately
+      setChildFormData(null); // Clear old child's form data immediately
       
       // Load data for the new child
       loadIncompletedForms();
       loadCompletedForms();
+      loadChildFormDetails();
     }
   }, [activeChildId]);
 
@@ -176,6 +179,28 @@ const ParentDashboard = () => {
     }
   };
 
+  const loadChildFormDetails = async () => {
+    if (!activeChildId) return;
+    
+    try {
+      const response = await fetch(
+        `https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/child_all_form_details/fetch/${activeChildId}`
+      );
+      
+      if (!response.ok) {
+        throw new Error('Failed to fetch child form details');
+      }
+
+      const formData = await response.json();
+      console.log('Child Form Details API Response:', formData);
+      setChildFormData(formData);
+      
+    } catch (error) {
+      console.error('Error loading child form details:', error);
+      setChildFormData(null);
+    }
+  };
+
   const getWelcomeMessage = () => {
     const loggedInEmail = localStorage.getItem('logged_in_email');
     if (loggedInEmail === 'goddard01arjava@gmail.com') {
@@ -207,7 +232,20 @@ const ParentDashboard = () => {
       case 'authorization':
         return (
           <div className="m-3">
-            <AuthorizationForm selectedSubForm={selectedSubForm} />
+            <AuthorizationForm 
+              selectedSubForm={selectedSubForm}
+              initialFormData={childFormData ? {
+                bank_routing: childFormData.bank_routing || '',
+                bank_account: childFormData.bank_account || '',
+                driver_license: childFormData.driver_license || '',
+                state: childFormData.state || '',
+                i: childFormData.i || '',
+                parent_sign_ach: childFormData.parent_sign_ach || '',
+                parent_sign_date_ach: childFormData.parent_sign_date_ach || '',
+                admin_sign_ach: childFormData.admin_sign_ach || '',
+                admin_sign_date_ach: childFormData.admin_sign_date_ach || ''
+              } : null}
+            />
           </div>
         );
       case 'parentHandbook':
@@ -219,7 +257,38 @@ const ParentDashboard = () => {
       case 'enrollment':
         return (
           <div className="m-3">
-            <EnrollmentForm selectedSubForm={selectedSubForm} />
+            <EnrollmentForm 
+              selectedSubForm={selectedSubForm}
+              initialFormData={childFormData ? {
+                point_one_field_three: childFormData.point_one_field_three || '',
+                point_two_initial_here: childFormData.point_two_initial_here || '',
+                point_three_initial_here: childFormData.point_three_initial_here || '',
+                point_four_initial_here: childFormData.point_four_initial_here || '',
+                point_five_initial_here: childFormData.point_five_initial_here || '',
+                point_six_initial_here: childFormData.point_six_initial_here || '',
+                point_seven_initial_here: childFormData.point_seven_initial_here || '',
+                point_eight_initial_here: childFormData.point_eight_initial_here || '',
+                point_nine_initial_here: childFormData.point_nine_initial_here || '',
+                point_ten_initial_here: childFormData.point_ten_initial_here || '',
+                point_eleven_initial_here: childFormData.point_eleven_initial_here || '',
+                point_twelve_initial_here: childFormData.point_twelve_initial_here || '',
+                point_thirteen_initial_here: childFormData.point_thirteen_initial_here || '',
+                point_fourteen_initial_here: childFormData.point_fourteen_initial_here || '',
+                point_fifteen_initial_here: childFormData.point_fifteen_initial_here || '',
+                point_sixteen_initial_here: childFormData.point_sixteen_initial_here || '',
+                point_seventeen_initial_here: childFormData.point_seventeen_initial_here || '',
+                point_eighteen_initial_here: childFormData.point_eighteen_initial_here || '',
+                point_ninteen_initial_here: childFormData.point_ninteen_initial_here || '',
+                preferred_start_date: childFormData.preferred_start_date || '',
+                preferred_schedule: childFormData.preferred_schedule || '',
+                full_day: childFormData.full_day || false,
+                half_day: childFormData.half_day || false,
+                parent_sign_enroll: childFormData.parent_sign_enroll || '',
+                parent_sign_date_enroll: childFormData.parent_sign_date_enroll || '',
+                admin_sign_enroll: childFormData.admin_sign_enroll || '',
+                admin_sign_date_enroll: childFormData.admin_sign_date_enroll || ''
+              } : null}
+            />
           </div>
         );
       case 'admission':
