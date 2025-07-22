@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import CheckboxWithLabel from './CheckboxWithLabel';
 
-const PickUpPassword = () => {
-  const [password, setPassword] = useState('');
-  const [agree, setAgree] = useState(false);
+const PickUpPassword = ({initialFormData = null}) => {
+  const [password, setPassword] = useState(initialFormData.child_password_pick_up_password_form ?? '');
+  const [agree, setAgree] = useState(initialFormData.do_you_agree_this_pick_up_password_form == 'on');
 
   const handleSave = () => {
     if (!password || !agree) {

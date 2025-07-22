@@ -8,18 +8,22 @@ export default function VideoPermission({ initialFormData = null }) {
 
   useEffect(() => {
     if (initialFormData) {
-      // Map API data to form fields
-      const mappedData = {
-        photoUsageType: initialFormData.photo_usage_photo_video_permission_form || '',
-        agreePhotos: initialFormData.photo_permission_agree_group_photos_electronic === 1,
-        agreeGroup: initialFormData.photo_permission_agree_not_post_photos === 1
-      };
-
-      setPhotoUsageType(mappedData.photoUsageType);
-      setAgreePhotos(mappedData.agreePhotos);
-      setAgreeGroup(mappedData.agreeGroup);
+      // Map API data to form fields using 'on'/'off' pattern
+      setPhotoUsageType(initialFormData.photo_usage_photo_video_permission_form || '');
+      setAgreePhotos(initialFormData.photo_permission_agree_group_photos_electronic == 'on');
+      setAgreeGroup(initialFormData.do_you_agree_this_photo_video_permission_form == 'on');
     }
   }, [initialFormData]);
+
+  const handleAgreePhotosChange = (checked) => {
+    setAgreePhotos(checked);
+    console.log('Agree Photos updated:', checked ? 'on' : 'off');
+  };
+
+  const handleAgreeGroupChange = (checked) => {
+    setAgreeGroup(checked);
+    console.log('Agree Group updated:', checked ? 'on' : 'off');
+  };
 
   return (
     <>
@@ -82,8 +86,8 @@ export default function VideoPermission({ initialFormData = null }) {
               <CheckboxWithLabel
                 id="agreePhotos"
                 checked={agreePhotos}
-                onChange={setAgreePhotos}
-                label="I agree to have individual photos of my child and photos of group activities that include my child shared through the School’s electronic daily activity reports."
+                onChange={handleAgreePhotosChange}
+                label="I agree to have individual photos of my child and photos of group activities that include my child shared through the School's electronic daily activity reports."
               />
             </div>
 
@@ -93,7 +97,7 @@ export default function VideoPermission({ initialFormData = null }) {
               <CheckboxWithLabel
                 id="agreeGroup"
                 checked={agreeGroup}
-                onChange={setAgreeGroup}
+                onChange={handleAgreeGroupChange}
                 label="I agree that I will not post or use any photographs or videos that I receive from or take at The Goddard School that include children other than my own child in print, electronic or social media or any other form. This includes group photos that I receive as part of an electronic daily activity report. My agreement extends to photos or videos taken by any member of my family or any visitors that I bring to The Goddard School."
               />
             </div>

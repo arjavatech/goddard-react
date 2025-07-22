@@ -40,9 +40,13 @@ const Parent_Argeement = ({ expandedSections, toggleSection, formData, handleInp
             <input
               type="checkbox"
               id="agreementCheck"
-              className="mt-1 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-              checked={formData.agreementConfirmed}
-              onChange={(e) => handleInputChange('agreementConfirmed', e.target.checked)}
+              checked={formData.do_you_agree_this}
+              onChange={(e) => {
+                const value = e.target.checked ? 'on' : 'off';
+                handleInputChange('agreementConfirmed', e.target.checked);
+                console.log('Agreement updated:', value);
+              }}
+              className="form-checkbox h-4 w-4 text-blue-600 border-gray-300 rounded"
             />
             <label htmlFor="agreementCheck" className="text-lg text-gray-700">
               I agree all the above information is correct.

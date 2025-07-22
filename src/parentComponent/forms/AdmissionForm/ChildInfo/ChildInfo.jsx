@@ -206,7 +206,7 @@ const ChildInfo = ({ initialFormData = null }) => {
                 // Parent Agreement
                 emergencyMedicalCare: initialFormData.obtaining_emergency_medical_care || '',
                 firstAidProcedures: initialFormData.administration_first_aid_procedures || '',
-                agreementConfirmed: initialFormData.agree_all_above_information_is_correct || false,
+                agreementConfirmed: initialFormData.agree_all_above_information_is_correct == 'on',
             };
 
             setFormData(prevState => ({

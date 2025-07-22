@@ -45,7 +45,7 @@ const yesNoFields = [
   },
 ];
 
-const MedicalGeneral = ({ expandedSections, toggleSection, formData, handleInputChange }) => {
+const MedicalGeneral = ({ initialFormData = null, expandedSections, toggleSection, formData, handleInputChange }) => {
   const isOpen = expandedSections.MedicalGeneral;
 
   return (

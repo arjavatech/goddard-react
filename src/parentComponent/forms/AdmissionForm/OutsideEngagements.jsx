@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import CheckboxWithLabel from "./CheckboxWithLabel";
 
-export default function OutsideEngagements() {
-    const [agreePhotos, setAgreePhotos] = useState(false);
+export default function OutsideEngagements({initialFormData = null }) {
+    const [agreePhotos, setAgreePhotos] = useState(initialFormData.parent_sign_outside_waiver == 'on');
     const [submitted, setSubmitted] = useState(false);
 
     const handleSave = () => {

@@ -1,8 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import CheckboxWithLabel from "./CheckboxWithLabel";
 
-const SecurityPolicy = () => {
+const SecurityPolicy = ({ initialFormData = null }) => {
   const [agreed, setAgreed] = useState(false);
+
+  useEffect(() => {
+    if (initialFormData) {
+      setAgreed(initialFormData.security_release_policy_form == 'on');
+    }
+  }, [initialFormData]);
+
+  const handleAgreedChange = (checked) => {
+    setAgreed(checked);
+    console.log('Security Policy Agreement updated:', checked ? 'on' : 'off');
+  };
 
   return (
     <div className="flex justify-center px-4 py-6 sm:py-8 md:py-10 lg:py-12 bg-gray-100 min-h-screen">
@@ -41,7 +52,7 @@ const SecurityPolicy = () => {
           <CheckboxWithLabel
             id="agreeCheckbox"
             checked={agreed}
-            onChange={setAgreed}
+            onChange={handleAgreedChange}
             label="I agree to the Security Release & Policy Acknowledgement."
           />
         </div>

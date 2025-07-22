@@ -1,7 +1,19 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import './ImmunizationInstructions.css'; // assuming you have this CSS
 
-const ImmunizationInstructions = () => {
+const ImmunizationInstructions = ({ initialFormData = null }) => {
+  const [isChecked, setIsChecked] = useState(false);
+
+  useEffect(() => {
+    if (initialFormData) {
+      setIsChecked(initialFormData.do_you_agree_this_immunization_instructions == 'on');
+    }
+  }, [initialFormData]);
+
+  const handleChange = (e) => {
+    setIsChecked(e.target.checked);
+    console.log('Updated value:', e.target.checked ? 'on' : 'off');
+  };
   return (
     <div className="card bg-[#D8E9FF]">
         <div className="custom-header text-center">
@@ -62,7 +74,9 @@ const ImmunizationInstructions = () => {
           <div className="form-check mt-3 mb-4">
             <input
               type="checkbox"
-              className="form-check-input"
+              checked={isChecked}
+              onChange={handleChange}
+              className="form-checkbox h-4 w-4 text-blue-600 border-gray-300 rounded"
               id="do_you_agree_this_immunization_instructions"
             />
             <label

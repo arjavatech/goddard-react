@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import CheckboxWithLabel from "./CheckboxWithLabel";
 
-export default function MedicalTransportationWaiver() {
-  const [studentName, setStudentName] = useState("");
-  const [agreed, setAgreed] = useState(false);
+export default function MedicalTransportationWaiver({initialFormData = null}) {
+  const [studentName, setStudentName] = useState(initialFormData.med_technicians_med_transportation_waiver ?? '');
+  const [agreed, setAgreed] = useState(initialFormData.medical_transportation_waiver == 'on');
   const [submitted, setSubmitted] = useState(false);
 
   const handleSave = () => {

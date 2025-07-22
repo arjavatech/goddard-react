@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react';
 import FormInput from '../../../components/FormInput';
 import FormLabel from '../../../components/FormLabel';
 
-const ParentSign = ({ formData, childId, editID, onAlert }) => {
+const ParentSign = ({ initialFormData = null, formData, childId, editID, onAlert }) => {
   const [formState, setFormState] = useState({
-    parent_sign_admission: '',
-    parent_sign_date_admission: '',
+    parent_sign_admission: initialFormData.parent_sign_admission ?? '',
+    parent_sign_date_admission: initialFormData.parent_sign_date_admission ?? '',
   });
 
   useEffect(() => {

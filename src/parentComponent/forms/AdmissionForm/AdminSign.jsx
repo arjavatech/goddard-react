@@ -2,11 +2,11 @@ import React, { useState, useEffect } from 'react';
 import FormInput from '../../../components/FormInput';
 import FormLabel from '../../../components/FormLabel';
 
-const adminSign = ({ formData, childId, editID, onAlert }) => {
+const adminSign = ({ initialFormData = null, formData, childId, editID, onAlert }) => {
     // console.log("hello from adminSign");
   const [formState, setFormState] = useState({
-    admin_sign_admission: '',
-    admin_sign_date_admission: '',
+    admin_sign_admission: initialFormData.admin_sign_admission ?? '',
+    admin_sign_date_admission: initialFormData.admin_sign_date_admission ?? '',
   });
 
   useEffect(() => {

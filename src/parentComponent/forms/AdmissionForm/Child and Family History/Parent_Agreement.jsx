@@ -55,7 +55,7 @@ const Parent_Agreement = ({ openSection, setOpenSection, formData, handleInputCh
                                     { label: 'I agree all the above information is correct.', value: 'I agree all the above information is correct.' },
 
                                 ]}
-                                selectedValues={formData.hobbies}
+                                selectedValues={formData.fam_his_instructions}
                                 onChange={(updatedValues) => handleInputChange('hobbies', updatedValues)}
                             />
 

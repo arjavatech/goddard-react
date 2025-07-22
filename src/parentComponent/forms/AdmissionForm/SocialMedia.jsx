@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import CheckboxWithLabel from "./CheckboxWithLabel";
 
-export default function SocialMediaReleaseForm() {
-  const [approval, setApproval] = useState('');
-  const [printedName, setPrintedName] = useState('');
-  const [agreed, setAgreed] = useState(false);
+export default function SocialMediaReleaseForm({initialFormData = null}) {
+  const [approval, setApproval] = useState(initialFormData.approve_social_media_post);
+  const [printedName, setPrintedName] = useState(initialFormData.printed_name_social_media_post);
+  const [agreed, setAgreed] = useState(initialFormData.do_you_agree_this_social_media_post == 'on');
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -48,8 +48,8 @@ export default function SocialMediaReleaseForm() {
                   type="radio"
                   name="approval"
                   value="approve"
-                  checked={approval === 'approve'}
-                  onChange={() => setApproval('approve')}
+                  checked={approval}
+                  onChange={() => setApproval(!approval)}
                   className="w-5 h-5 accent-[#0F2D52]  focus:ring-[#0F2D52] border-gray-300"
 
 

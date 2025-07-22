@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import CheckboxWithLabel from "./CheckboxWithLabel";
 
-export default function HealthPolicies() {
-    const [agreePhotos, setAgreePhotos] = useState(false);
+export default function HealthPolicies({initialFormData = null}) {
+    const [agreePhotos, setAgreePhotos] = useState(initialFormData.do_you_agree_this_health_policies == 'on');
     const [submitted, setSubmitted] = useState(false);
 
     const handleSave = () => {
-        setSubmitted(true);
-        if (agreePhotos) {
+        setSubmitted(agreePhotos);
+        if (do_you_agree_this_health_policies) {
             alert("Form saved successfully!");
         }
     };
