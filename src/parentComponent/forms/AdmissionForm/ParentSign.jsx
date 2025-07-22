@@ -66,7 +66,7 @@ const ParentSign = ({ formData, childId, editID, onAlert }) => {
         
         {/* Signature Section */}
         <div className="rounded">
-          <h2 className="headerstyle text-center bg-[#0F2D52] text-white p-3 rounded-t mb-6">Parent Signature</h2>
+          <h1 className="headerstyle text-center bg-[#0F2D52] text-white p-3 text-3xl rounded-t mb-6">Parent Signature</h1>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>

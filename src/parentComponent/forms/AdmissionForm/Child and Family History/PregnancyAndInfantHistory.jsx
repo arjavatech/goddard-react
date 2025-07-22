@@ -1,28 +1,49 @@
 import React from 'react';
 import { FormInput, RadioGroup } from './InputComponent';
+import { UpIcon, DownIcon } from './Arrows';
 
 const PregnancyAndInfantHistory = ({ openSection, setOpenSection, formData, handleInputChange }) => {
     return (
         <>
             <div
-                className={`bg-blue-50 px-6 border-b py-4 flex items-center justify-between cursor-pointer hover:bg-slate-700 hover:text-white ${openSection === 'PregnancyAndInfantHistory' ? 'bg-slate-700 text-white' : 'text-slate-700'}`}
-                onClick={() => setOpenSection(openSection === 'PregnancyAndInfantHistory' ? '' : 'PregnancyAndInfantHistory')}
+                className={`px-6 border-b py-4 flex items-center justify-between cursor-pointer transition-colors ${openSection === 'PregnancyAndInfantHistory' ? 'text-white' : 'text-slate-700'
+                    }`}
+                style={
+                    openSection === 'PregnancyAndInfantHistory'
+                        ? { backgroundColor: '#0F2D52', color: 'white' }
+                        : { backgroundColor: '#DBEAFE' }
+                }
+                onClick={() =>
+                    setOpenSection(
+                        openSection === 'PregnancyAndInfantHistory' ? '' : 'PregnancyAndInfantHistory'
+                    )
+                }
+                onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = '#0F2D52';
+                     e.currentTarget.style.color = 'white';
+                }}
+                onMouseLeave={(e) => {
+                    if (openSection !== 'PregnancyAndInfantHistory') {
+                        e.currentTarget.style.backgroundColor = '#DBEAFE';
+                        e.currentTarget.style.color = '#374151'; // Tailwind text-slate-700
+                    }
+                }}
             >
                 <div className="flex items-center gap-3">
                     <h1 className="text-lg font-medium">Pregnancy And Infant History</h1>
-
                 </div>
                 <div className="text-xl transform transition-transform duration-200">
-                    {openSection === 'parentArgeement' ? (
-                       <h1>''</h1>
+                    {openSection === 'PregnancyAndInfantHistory' ? (
+                        <UpIcon className="h-5 w-5 text-white" />
                     ) : (
-                       <h2>""</h2>
+                        <DownIcon className="h-5 w-5 text-gray-500" />
                     )}
                 </div>
             </div>
 
+
             {openSection === 'PregnancyAndInfantHistory' && (
-                <div className="p-6 space-y-6 bg-gray-50" style={{ border: '2px solid #314158' }} onClick={(e) => e.stopPropagation()}>
+                <div className="p-6 space-y-6 bg-gray-50" style={{ border: '1px solid #314158' }} onClick={(e) => e.stopPropagation()}>
 
 
                     {/* Home Address Section */}
@@ -97,7 +118,7 @@ const PregnancyAndInfantHistory = ({ openSection, setOpenSection, formData, hand
                         </div>
                     </div>
 
-                     <div className="space-y-4">
+                    <div className="space-y-4">
 
                         <h1 className="text-center text-[25px] font-medium">Other Siblings</h1>
 

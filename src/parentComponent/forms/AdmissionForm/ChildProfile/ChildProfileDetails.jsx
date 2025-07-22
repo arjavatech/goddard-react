@@ -4,7 +4,7 @@ import { Check, ChevronUp, ChevronDown, Clock } from 'lucide-react';
 const ChildProfileDetails = ({ expandedSections, toggleSection, formData, handleInputChange }) => {
     const isOpen = expandedSections.profile;
   return (
-    <div className="border border-gray-300">
+    <div className="border border-gray-300 border mt-px">
       <div
         className={`p-3 flex items-center justify-between cursor-pointer transition-colors ${
           expandedSections.profile ? 'text-white' : 'text-gray-700'
@@ -34,7 +34,7 @@ const ChildProfileDetails = ({ expandedSections, toggleSection, formData, handle
       </div>
 
       {expandedSections.profile && (
-        <div className="p-6 bg-gray-50">
+        <div className="p-6 bg-gray-50" style={{ border: '1px solid #314158' }}>
           <div className="space-y-6">
             {/* Family Members */}
             <div>

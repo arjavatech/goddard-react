@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 
-
 import Child_history from './Child_history';
 import ParentAgreement from './Parent_argeement_history';
 import PregnancyAndInfantHistory from './PregnancyAndInfantHistory';
 import FamilyHistory from './FamilyHistory';
 import SocialBehavior from './SocialBehavior';
 import EnvironmentalFactors from './EnvironmentalFactors';
+import Parent_Agreement from './Parent_Agreement'
 
 
 const ChildandFamilyHistory = () => {
@@ -83,64 +83,75 @@ const ChildandFamilyHistory = () => {
 
 
     return (
-        <div className="max-w-4xl mx-auto p-4 bg-white ">
+        <>
+        <h1 className='text-center my-5 py-3 text-3xl text-white headerstyle' style={{ backgroundColor: '#0F2D52' }}>Child and Family History</h1>
 
-            <h1 className='text-center bg-slate-700 my-10 py-3 text-3xl text-white'>Child and Family History</h1>
+            <div className="mx-auto p-4 bg-white ">
 
-            <div className="bg-white rounded-lg shadow-sm border overflow-hidden">
 
-                {/* Child Details Section */}
-                <div className='border-b'>
-                    <Child_history
-                        openSection={openSection}
-                        setOpenSection={setOpenSection}
-                        formData={formData}
-                        handleInputChange={handleInputChange}
-                    />
-                </div>
+                <div className="bg-white shadow-sm border overflow-hidden">
 
-                <div className='border-b'>
-                    <ParentAgreement
-                        openSection={openSection}
-                        setOpenSection={setOpenSection}
-                        formData={formData}
-                        handleInputChange={handleInputChange}
-                    />
-                </div>
+                    {/* Child Details Section */}
+                    <div className='border'>
+                        <Child_history
+                            openSection={openSection}
+                            setOpenSection={setOpenSection}
+                            formData={formData}
+                            handleInputChange={handleInputChange}
+                        />
+                    </div>
 
-                <div className='border-b'>
-                    <PregnancyAndInfantHistory
-                        openSection={openSection}
-                        setOpenSection={setOpenSection}
-                        formData={formData}
-                        handleInputChange={handleInputChange} />
-                </div>
+                    <div className='border mt-px'>
+                        <ParentAgreement
+                            openSection={openSection}
+                            setOpenSection={setOpenSection}
+                            formData={formData}
+                            handleInputChange={handleInputChange}
+                        />
+                    </div>
 
-                <div className='border-b'>
-                    <FamilyHistory
-                        openSection={openSection}
-                        setOpenSection={setOpenSection}
-                        formData={formData}
-                        handleInputChange={handleInputChange} />
-                </div>
+                    <div className='border mt-px'>
+                        <PregnancyAndInfantHistory
+                            openSection={openSection}
+                            setOpenSection={setOpenSection}
+                            formData={formData}
+                            handleInputChange={handleInputChange} />
+                    </div>
 
-                <div className='border-b'>
-                    <SocialBehavior
-                        openSection={openSection}
-                        setOpenSection={setOpenSection}
-                        formData={formData}
-                        handleInputChange={handleInputChange} />
-                </div>
+                    <div className='border mt-px'>
+                        <FamilyHistory
+                            openSection={openSection}
+                            setOpenSection={setOpenSection}
+                            formData={formData}
+                            handleInputChange={handleInputChange} />
+                    </div>
 
-                <div>
-                    <EnvironmentalFactors
-                        openSection={openSection}
-                        setOpenSection={setOpenSection}
-                        formData={formData}
-                        handleInputChange={handleInputChange} />
+                    <div className='border mt-px'>
+                        <SocialBehavior
+                            openSection={openSection}
+                            setOpenSection={setOpenSection}
+                            formData={formData}
+                            handleInputChange={handleInputChange} />
+                    </div>
+
+                    <div className='border mt-px'>
+                        <EnvironmentalFactors
+                            openSection={openSection}
+                            setOpenSection={setOpenSection}
+                            formData={formData}
+                            handleInputChange={handleInputChange} />
+                    </div>
+
+                    <div className='border mt-px'>
+                        <Parent_Agreement
+                            openSection={openSection}
+                            setOpenSection={setOpenSection}
+                            formData={formData}
+                            handleInputChange={handleInputChange} />
+                    </div>
                 </div>
             </div>
-        </div>
+        </>
     );
 };
 

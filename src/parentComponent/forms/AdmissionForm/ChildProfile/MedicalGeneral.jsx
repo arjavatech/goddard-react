@@ -72,7 +72,7 @@ const MedicalGeneral = ({ expandedSections, toggleSection, formData, handleInput
 
       {/* Accordion Content */}
       {isOpen && (
-        <div className="p-6 bg-gray-50 space-y-6">
+        <div className="p-6 bg-gray-50 space-y-6" style={{ border: '1px solid #314158' }}>
           {yesNoFields.map(({ label, name, explanation }) => (
             <React.Fragment key={name}>
               <RadioGroup

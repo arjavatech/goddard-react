@@ -115,72 +115,75 @@ const ChildInfo = () => {
 
 
     return (
-        <div className="max-w-4xl mx-auto p-4 bg-white shadow-4xl">
-            <h1 className='text-center bg-slate-700 mt-4 mb-4 py-3 text-3xl text-white'>Child Information</h1>
+        <>
+        <h1 className='text-center bg-[#0F2D52]  mb-4 py-3 text-3xl text-white headerstyle'>Child Information</h1>
+            <div className="mx-auto  bg-white shadow-4xl">
+                
 
-            <div className="bg-white rounded-lg border overflow-hidden">
+                <div className="bg-white rounded-lg  overflow-hidden">
 
-                {/* Child Details Section */}
-                <div className="border-b">
-                    <Child_details
-                        openSection={openSection}
-                        setOpenSection={setOpenSection}
-                        formData={formData}
-                        handleInputChange={handleInputChange}
-                    />
+                    {/* Child Details Section */}
+                    <div className='border mt-px'>
+                        <Child_details
+                            openSection={openSection}
+                            setOpenSection={setOpenSection}
+                            formData={formData}
+                            handleInputChange={handleInputChange}
+                        />
+                    </div>
+
+                    {/* Parent Details Section */}
+                    <div className='border mt-px'>
+                        <Parent_details
+                            openSection={openSection}
+                            setOpenSection={setOpenSection}
+                            formData={formData}
+                            handleInputChange={handleInputChange}
+                        />
+                    </div>
+
+                    <div className='border mt-px'>
+                        <AdditionalParentDetails
+                            openSection={openSection}
+                            setOpenSection={setOpenSection}
+                            formData={formData}
+                            handleInputChange={handleInputChange}
+                        />
+                    </div>
+
+                    <div className='border mt-px'>
+                        <EmergencyContact
+                            openSection={openSection}
+                            setOpenSection={setOpenSection}
+                            formData={formData}
+                            handleInputChange={handleInputChange}
+                        />
+                    </div>
+                    <div className='border mt-px'>
+                        <MedicalCareProvider
+                            openSection={openSection}
+                            setOpenSection={setOpenSection}
+                            formData={formData}
+                            handleInputChange={handleInputChange}
+                        />
+                    </div>
+
+
+
+                    <div>
+                        <ParentAgreement
+                            openSection={openSection}
+                            setOpenSection={setOpenSection}
+                            formData={formData}
+                            handleInputChange={handleInputChange}
+                        />
+                    </div>
+
+
+
                 </div>
-
-                {/* Parent Details Section */}
-                <div className="border-b">
-                    <Parent_details
-                        openSection={openSection}
-                        setOpenSection={setOpenSection}
-                        formData={formData}
-                        handleInputChange={handleInputChange}
-                    />
-                </div>
-
-                <div className="border-b">
-                    <AdditionalParentDetails
-                        openSection={openSection}
-                        setOpenSection={setOpenSection}
-                        formData={formData}
-                        handleInputChange={handleInputChange}
-                    />
-                </div>
-
-                <div className="border-b">
-                    <EmergencyContact
-                        openSection={openSection}
-                        setOpenSection={setOpenSection}
-                        formData={formData}
-                        handleInputChange={handleInputChange}
-                    />
-                </div>
-                <div className="border-b">
-                    <MedicalCareProvider
-                        openSection={openSection}
-                        setOpenSection={setOpenSection}
-                        formData={formData}
-                        handleInputChange={handleInputChange}
-                    />
-                </div>
-
-
-
-                <div>
-                    <ParentAgreement
-                        openSection={openSection}
-                        setOpenSection={setOpenSection}
-                        formData={formData}
-                        handleInputChange={handleInputChange}
-                    />
-                </div>
-
-
-
             </div>
-        </div>
+        </>
     );
 };
 

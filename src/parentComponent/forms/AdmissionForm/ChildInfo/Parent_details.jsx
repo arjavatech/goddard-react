@@ -5,8 +5,26 @@ const Parent_details = ({ openSection, setOpenSection, formData, handleInputChan
     return (
         <>
             <div
-                className={`bg-blue-50 px-6 py-4 flex items-center justify-between cursor-pointer hover:bg-slate-700 hover:text-white ${openSection === 'parentDetails' ? 'bg-slate-700 text-white' : 'text-slate-700'}`}
-                onClick={() => setOpenSection(openSection === 'parentDetails' ? '' : 'parentDetails')}
+                className={`px-6 py-4 flex items-center justify-between cursor-pointer transition-colors ${openSection === 'parentDetails' ? 'text-white' : 'text-slate-700'
+                    }`}
+                style={
+                    openSection === 'parentDetails'
+                        ? { backgroundColor: '#0F2D52', color: 'white' }
+                        : { backgroundColor: '#DBEAFE' }
+                }
+                onClick={() =>
+                    setOpenSection(openSection === 'parentDetails' ? '' : 'parentDetails')
+                }
+                onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = '#0F2D52';
+                     e.currentTarget.style.color = 'white';
+                }}
+                onMouseLeave={(e) => {
+                    if (openSection !== 'parentDetails') {
+                        e.currentTarget.style.backgroundColor = '#DBEAFE';
+                        e.currentTarget.style.color = '#374151'; // Tailwind text-slate-700
+                    }
+                }}
             >
                 <div className="flex items-center space-x-3">
                     <h2 className="text-lg font-semibold">Parent Details</h2>
@@ -16,8 +34,9 @@ const Parent_details = ({ openSection, setOpenSection, formData, handleInputChan
                 </div>
             </div>
 
+
             {openSection === 'parentDetails' && (
-                <div className="p-6 space-y-6 bg-gray-50" style={{ border: '2px solid #314158' }} onClick={(e) => e.stopPropagation()}>
+                <div className="p-6 space-y-6 bg-gray-50" style={{ border: '1px solid #314158' }} onClick={(e) => e.stopPropagation()}>
                     {/* Parent/Legal Guardian Name */}
                     <div>
                         <FormInput

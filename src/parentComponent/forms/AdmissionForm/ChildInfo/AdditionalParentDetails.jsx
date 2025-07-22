@@ -1,12 +1,32 @@
 import React from 'react';
-import {FormInput} from './InputComponent';
+import { FormInput } from './InputComponent';
 
 const AdditionalParentDetails = ({ openSection, setOpenSection, formData, handleInputChange }) => {
     return (
         <>
             <div
-                className={`bg-blue-50 px-6 py-4 flex items-center justify-between cursor-pointer hover:bg-slate-700 hover:text-white ${openSection === 'additionalParentDetails' ? 'bg-slate-700 text-white' : 'text-slate-700'}`}
-                onClick={() => setOpenSection(openSection === 'additionalParentDetails' ? '' : 'additionalParentDetails')}
+                className={`px-6 py-4 flex items-center justify-between cursor-pointer transition-colors ${openSection === 'additionalParentDetails' ? 'text-white' : 'text-slate-700'
+                    }`}
+                style={
+                    openSection === 'additionalParentDetails'
+                        ? { backgroundColor: '#0F2D52', color: 'white' }
+                        : { backgroundColor: '#DBEAFE' }
+                }
+                onClick={() =>
+                    setOpenSection(
+                        openSection === 'additionalParentDetails' ? '' : 'additionalParentDetails'
+                    )
+                }
+                onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = '#0F2D52';
+                     e.currentTarget.style.color = 'white';
+                }}
+                onMouseLeave={(e) => {
+                    if (openSection !== 'additionalParentDetails') {
+                        e.currentTarget.style.backgroundColor = '#DBEAFE';
+                        e.currentTarget.style.color = '#374151'; // Tailwind text-slate-700
+                    }
+                }}
             >
                 <div className="flex items-center space-x-3">
                     <h2 className="text-lg font-semibold">Additional Parent Details</h2>

@@ -26,7 +26,7 @@ const ToiletLearning = ({ expandedSections, toggleSection, formData, handleInput
       </div>
 
       {isOpen && (
-        <div className="p-6 bg-gray-50 space-y-6">
+        <div className="p-6 bg-gray-50 space-y-6" style={{ border: '1px solid #314158' }}>
           <RadioGroup
             label="Does your child rest in the middle of the day?"
             name="restsInMiddleOfDay"

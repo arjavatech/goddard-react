@@ -1,6 +1,6 @@
 import React from 'react';
 import { FormInput } from './InputComponent';
-import { UpIcon,DownIcon } from './Arrows';
+import { UpIcon, DownIcon } from './Arrows';
 
 
 
@@ -8,14 +8,35 @@ const Child_history = ({ openSection, setOpenSection, formData, handleInputChang
     return (
         <>
             <div
-                className={`bg-blue-50 px-6 py-4 flex items-center justify-between cursor-pointer hover:bg-slate-700 hover:text-white ${openSection === 'childHistory' ? 'bg-slate-700 text-white' : 'text-slate-700'}`}
-                onClick={() => setOpenSection(openSection === 'childHistory' ? '' : 'childHistory')}
+                className={`px-6 py-4 flex items-center justify-between cursor-pointer transition-colors ${openSection === 'childHistory' ? 'text-white' : 'text-slate-700'
+                    }`}
+                style={
+                    openSection === 'childHistory'
+                        ? { backgroundColor: '#0F2D52', color: 'white' }
+                        : { backgroundColor: '#DBEAFE' }
+                }
+                onClick={() =>
+                    setOpenSection(openSection === 'childHistory' ? '' : 'childHistory')
+                }
+                onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = '#0F2D52';
+                     e.currentTarget.style.color = 'white';
+                }}
+                onMouseLeave={(e) => {
+                    if (openSection !== 'childHistory') {
+                        e.currentTarget.style.backgroundColor = '#DBEAFE';
+                        e.currentTarget.style.color = '#374151'; // Tailwind's text-slate-700
+                    }
+                }}
             >
-                <div className="flex items-center space-x-3"><h2 className="text-lg font-semibold">Additional Parent Details Child Details</h2>
+                <div className="flex items-center space-x-3">
+                    <h2 className="text-lg font-semibold">
+                        Child History 
+                    </h2>
                 </div>
                 <div className="text-xl transform transition-transform duration-200">
                     {openSection === 'childHistory' ? (
-                      <UpIcon className="h-5 w-5 text-white" />
+                        <UpIcon className="h-5 w-5 text-white" />
                     ) : (
                         <DownIcon className="h-5 w-5 text-gray-500" />
                     )}
@@ -23,8 +44,9 @@ const Child_history = ({ openSection, setOpenSection, formData, handleInputChang
             </div>
 
 
+
             {openSection === 'childHistory' && (
-                <div className="p-6 space-y-6" style={{ border: '2px solid #314158' }} onClick={(e) => e.stopPropagation()}>
+                <div className="p-6 space-y-6" style={{ border: '1px solid #314158' }} onClick={(e) => e.stopPropagation()}>
                     <div className="space-y-4">
                         <div className="grid md:grid-cols-2 gap-4">
 
@@ -52,7 +74,7 @@ const Child_history = ({ openSection, setOpenSection, formData, handleInputChang
                         </button>
                     </div>
 
-                    
+
                 </div>
             )}
         </>

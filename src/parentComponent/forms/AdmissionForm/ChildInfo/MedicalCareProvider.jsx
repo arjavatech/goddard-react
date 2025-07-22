@@ -1,12 +1,30 @@
 import React from 'react';
-import {FormInput} from './InputComponent';
+import { FormInput } from './InputComponent';
 
 const MedicalCareProvider = ({ openSection, setOpenSection, formData, handleInputChange }) => {
     return (
         <>
             <div
-                className={`bg-blue-50 px-6 py-4 flex items-center justify-between cursor-pointer hover:bg-slate-700 hover:text-white ${openSection === 'medicalCareProvider' ? 'bg-slate-700 text-white' : 'text-slate-700'}`}
-                onClick={() => setOpenSection(openSection === 'medicalCareProvider' ? '' : 'medicalCareProvider')}
+                className={`px-6 py-4 flex items-center justify-between cursor-pointer transition-colors ${openSection === 'medicalCareProvider' ? 'text-white' : 'text-slate-700'
+                    }`}
+                style={
+                    openSection === 'medicalCareProvider'
+                        ? { backgroundColor: '#0F2D52', color: 'white' }
+                        : { backgroundColor: '#DBEAFE' }
+                }
+                onClick={() =>
+                    setOpenSection(openSection === 'medicalCareProvider' ? '' : 'medicalCareProvider')
+                }
+                onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = '#0F2D52';
+                     e.currentTarget.style.color = 'white';
+                }}
+                onMouseLeave={(e) => {
+                    if (openSection !== 'medicalCareProvider') {
+                        e.currentTarget.style.backgroundColor = '#DBEAFE';
+                        e.currentTarget.style.color = '#374151'; // Tailwind's text-slate-700
+                    }
+                }}
             >
                 <div className="flex items-center space-x-3">
                     <h2 className="text-lg font-semibold">Medical Care Provider Details</h2>
@@ -17,7 +35,7 @@ const MedicalCareProvider = ({ openSection, setOpenSection, formData, handleInpu
             </div>
 
             {openSection === 'medicalCareProvider' && (
-                <div className="p-6 space-y-6 bg-gray-50" style={{ border: '2px solid #314158' }} onClick={(e) => e.stopPropagation()}>
+                <div className="p-6 space-y-6 bg-gray-50" style={{ border: '1px solid #314158' }} onClick={(e) => e.stopPropagation()}>
                     {/* Physician/Medical Care Provider Details Section */}
                     <div className="space-y-4">
                         <h3 className="text-lg font-semibold text-center text-gray-800">PHYSICIAN /MEDICAL CARE PROVIDER DETAILS</h3>
