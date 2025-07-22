@@ -1,0 +1,17 @@
+
+
+.custom-header {
+  background-color: #1a3353;
+  margin-left: -17px;
+  margin-right: -17px;
+  margin-top: -17px;
+  padding: 20px;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+}
+
+.headerstyle{
+   margin-left: -17px;
+  margin-right: -17px;
+  margin-top: -17px; 
+}

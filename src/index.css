@@ -1,0 +1,7 @@
+    /* src/index.css or src/App.css */
+    @import "tailwindcss";
+  
+    .text-goddard-blue{
+        color:#002e4d;
+      }
+
