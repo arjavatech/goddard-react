@@ -1,6 +1,19 @@
-import React from 'react';
 
-const AddressingIndividualChildConcern = ({ openSection, setOpenSection }) => {
+import React, { useState, useEffect } from 'react';
+
+const AddressingIndividualChildConcern = ({fieldValue,  openSection, setOpenSection }) => {
+  console.log("Addressing field value was"+fieldValue)
+  // Initialize the checkbox state based on fieldValue
+  const [isChecked, setIsChecked] = useState(fieldValue == 'on');
+
+  console.log("isChecked"+isChecked)
+
+  // Optional: convert back to "on"/"off" or boolean
+  const handleChange = (e) => {
+    setIsChecked(e.target.checked);
+    console.log('Updated value:', e.target.checked ? 'on' : 'off');
+  };
+
     const isOpen = openSection === 'AddressingIndividualChildConcern';
 
     const headerClasses = `border bg-blue-50 px-6 py-4 flex items-center justify-between cursor-pointer 
@@ -174,6 +187,8 @@ const AddressingIndividualChildConcern = ({ openSection, setOpenSection }) => {
                         <label className="flex items-center space-x-2 text-lg font-medium mt-6">
                             <input
                                 type="checkbox"
+                                checked={isChecked}
+                                onChange={handleChange}
                                 className="form-checkbox h-4 w-4 text-blue-600 border-gray-300 rounded"
                             />
                             <span>

@@ -251,7 +251,34 @@ const ParentDashboard = () => {
       case 'parentHandbook':
         return (
           <div className="m-3">
-            <ParentHandbbok selectedSubForm={selectedSubForm} />
+            <ParentHandbbok 
+              selectedSubForm={selectedSubForm}
+              initialFormData={childFormData ? {
+                welcome_goddard_agreement: childFormData.welcome_goddard_agreement || '',
+                mission_statement_agreement: childFormData.mission_statement_agreement || '',
+                general_information_agreement: childFormData.general_information_agreement || '',
+                medical_care_provider_agreement: childFormData.medical_care_provider_agreement || '',
+                parent_access_agreement: childFormData.parent_access_agreement || '',
+                release_of_children_agreement: childFormData.release_of_children_agreement || '',
+                registration_fees_agreement: childFormData.registration_fees_agreement || '',
+                outside_engagements_agreement: childFormData.outside_engagements_agreement || '',
+                health_policies_agreement: childFormData.health_policies_agreement || '',
+                medication_procedures_agreement: childFormData.medication_procedures_agreement || '',
+                bring_to_school_agreement: childFormData.bring_to_school_agreement || '',
+                rest_time_agreement: childFormData.rest_time_agreement || '',
+                training_philosophy_agreement: childFormData.training_philosophy_agreement || '',
+                affiliation_policy_agreement: childFormData.affiliation_policy_agreement || '',
+                security_issue_agreement: childFormData.security_issue_agreement || '',
+                expulsion_policy_agreement: childFormData.expulsion_policy_agreement || '',
+                addressing_individual_child_agreement: childFormData.addressing_individual_child_agreement || '',
+                finalword_agreement: childFormData.finalword_agreement || '',
+                parent_sign_handbook: childFormData.parent_sign_handbook || '',
+                parent_sign_date_handbook: childFormData.parent_sign_date_handbook || '',
+                admin_sign_handbook: childFormData.admin_sign_handbook || '',
+                admin_sign_date_handbook: childFormData.admin_sign_date_handbook || '',
+                handbook_pointer: childFormData.handbook_pointer || ''
+              } : null}
+            />
           </div>
         );
       case 'enrollment':

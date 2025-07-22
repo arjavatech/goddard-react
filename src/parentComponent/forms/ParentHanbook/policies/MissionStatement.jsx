@@ -1,7 +1,17 @@
-import React from 'react';
+
+import React, { useState, useEffect } from 'react';
 
 
-const MissionStatement = ({ openSection, setOpenSection }) => {
+const MissionStatement = ({fieldValue,  openSection, setOpenSection }) => {
+    // Initialize the checkbox state based on fieldValue
+  const [isChecked, setIsChecked] = useState(fieldValue == 'on');
+
+  // Optional: convert back to "on"/"off" or boolean
+  const handleChange = (e) => {
+    setIsChecked(e.target.checked);
+    console.log('Updated value:', e.target.checked ? 'on' : 'off');
+  };
+  
     const isOpen = openSection === 'MissionStatementMissionStatement';
 
     const headerClasses = `border bg-blue-50 px-6 py-4 flex items-center justify-between cursor-pointer 
@@ -99,6 +109,8 @@ const MissionStatement = ({ openSection, setOpenSection }) => {
                             <label className="flex items-center space-x-2 text-lg font-medium mt-5">
                                 <input
                                     type="checkbox"
+                                checked={isChecked}
+                                onChange={handleChange}
                                     className="form-checkbox h-4 w-4 text-blue-600 border-gray-300 rounded"
                                 />
                                 <span>

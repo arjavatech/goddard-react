@@ -19,13 +19,32 @@ import ExpulsionPolicy from './ExpulsionPolicy';
 import AddressingIndividualChildConcern from './AddressingIndividualChildConcern';
 import FinalWord from './FinalWord';
 
-const ParentHandbook = ({ selectedSubForm = null }) => {
+const ParentHandbook = ({ selectedSubForm = null, initialFormData = null }) => {
     const [openSection, setOpenSection] = useState('childDetails');
     const [formData, setFormData] = useState({
-        parent_sign_ach: '',
-        parent_sign_date_ach: '',
-        admin_sign_ach: '',
-        admin_sign_date_ach: ''
+        welcome_goddard_agreement: '',
+        mission_statement_agreement: '',
+        general_information_agreement: '',
+        medical_care_provider_agreement: '',
+        parent_access_agreement: '',
+        release_of_children_agreement: '',
+        registration_fees_agreement: '',
+        outside_engagements_agreement: '',
+        health_policies_agreement: '',
+        medication_procedures_agreement: '',
+        bring_to_school_agreement: '',
+        rest_time_agreement: '',
+        training_philosophy_agreement: '',
+        affiliation_policy_agreement: '',
+        security_issue_agreement: '',
+        expulsion_policy_agreement: '',
+        addressing_individual_child_agreement: '',
+        finalword_agreement: '',
+        parent_sign_handbook: '',
+        parent_sign_date_handbook: '',
+        admin_sign_handbook: '',
+        admin_sign_date_handbook: '',
+        handbook_pointer: ''
     });
 
     const handleChange = (e) => {
@@ -43,9 +62,18 @@ const ParentHandbook = ({ selectedSubForm = null }) => {
     useEffect(() => {
         setFormData(prevState => ({
             ...prevState,
-            parent_sign_date_ach: new Date().toISOString().split('T')[0]
+            parent_sign_date_handbook: new Date().toISOString().split('T')[0]
         }));
     }, []);
+
+    useEffect(() => {
+        if (initialFormData) {
+            setFormData(prevState => ({
+                ...prevState,
+                ...initialFormData
+            }));
+        }
+    }, [initialFormData]);
 
     // Function to determine which sub-form to show
     const getSubFormToShow = () => {
@@ -71,27 +99,27 @@ const ParentHandbook = ({ selectedSubForm = null }) => {
     const renderPolicyForm = () => (
         <div className="rounded-lg shadow-sm overflow-hidden">
             <div>
-                <TheGoddardSchool openSection={openSection} setOpenSection={setOpenSection} />
-                <MissionStatement openSection={openSection} setOpenSection={setOpenSection} />
-                <GeneralEnrollmentProcedure openSection={openSection} setOpenSection={setOpenSection} />
-                <StatementOfConfidentiality openSection={openSection} setOpenSection={setOpenSection} />
-                <ParentAccess openSection={openSection} setOpenSection={setOpenSection} />
-                <ReleaseOfChildren openSection={openSection} setOpenSection={setOpenSection} />
-                <RegisterationTutionFees openSection={openSection} setOpenSection={setOpenSection} />
-                <OutsideEngagement openSection={openSection} setOpenSection={setOpenSection} />
-                <HealthPolicies openSection={openSection} setOpenSection={setOpenSection} />
-                <MedicationProcedures openSection={openSection} setOpenSection={setOpenSection} />
-                <ToysFromHome openSection={openSection} setOpenSection={setOpenSection} />
-                <RestTimeMealsSnacks openSection={openSection} setOpenSection={setOpenSection} />
-                <TransitionToiletTraining openSection={openSection} setOpenSection={setOpenSection} />
-                <EmergencyClosings openSection={openSection} setOpenSection={setOpenSection} />
-                <WebsiteAndBlog openSection={openSection} setOpenSection={setOpenSection} />
-                <ExpulsionPolicy openSection={openSection} setOpenSection={setOpenSection} />
-                <AddressingIndividualChildConcern openSection={openSection} setOpenSection={setOpenSection} />
-                <FinalWord openSection={openSection} setOpenSection={setOpenSection} />
+                <TheGoddardSchool fieldValue={formData.welcome_goddard_agreement} openSection={openSection} setOpenSection={setOpenSection} />
+                <MissionStatement fieldValue={formData.mission_statement_agreement} openSection={openSection} setOpenSection={setOpenSection} />
+                <GeneralEnrollmentProcedure fieldValue={formData.general_information_agreement} openSection={openSection} setOpenSection={setOpenSection} />
+                <StatementOfConfidentiality fieldValue={formData.medical_care_provider_agreement} openSection={openSection} setOpenSection={setOpenSection} />
+                <ParentAccess fieldValue={formData.parent_access_agreement} openSection={openSection} setOpenSection={setOpenSection} />
+                <ReleaseOfChildren fieldValue={formData.release_of_children_agreement} openSection={openSection} setOpenSection={setOpenSection} />
+                <RegisterationTutionFees fieldValue={formData.registration_fees_agreement} openSection={openSection} setOpenSection={setOpenSection} />
+                <OutsideEngagement fieldValue={formData.outside_engagements_agreement} openSection={openSection} setOpenSection={setOpenSection} />
+                <HealthPolicies fieldValue={formData.health_policies_agreement} openSection={openSection} setOpenSection={setOpenSection} />
+                <MedicationProcedures fieldValue={formData.medication_procedures_agreement} openSection={openSection} setOpenSection={setOpenSection} />
+                <ToysFromHome fieldValue={formData.bring_to_school_agreement} openSection={openSection} setOpenSection={setOpenSection} />
+                <RestTimeMealsSnacks fieldValue={formData.rest_time_agreement} openSection={openSection} setOpenSection={setOpenSection} />
+                <TransitionToiletTraining fieldValue={formData.training_philosophy_agreement} openSection={openSection} setOpenSection={setOpenSection} />
+                <EmergencyClosings fieldValue={formData.affiliation_policy_agreement} openSection={openSection} setOpenSection={setOpenSection} />
+                <WebsiteAndBlog fieldValue={formData.security_issue_agreement} openSection={openSection} setOpenSection={setOpenSection} />
+                <ExpulsionPolicy fieldValue={formData.expulsion_policy_agreement} openSection={openSection} setOpenSection={setOpenSection} />
+                <AddressingIndividualChildConcern fieldValue={formData.addressing_individual_child_agreement} openSection={openSection} setOpenSection={setOpenSection} />
+                <FinalWord fieldValue={formData.finalword_agreement} openSection={openSection} setOpenSection={setOpenSection} />
             </div>
         </div>
-    );
+    ); 
 
     // Original Parent Signature Form Component
     const renderParentSignatureForm = () => (
@@ -101,26 +129,26 @@ const ParentHandbook = ({ selectedSubForm = null }) => {
                 <div className="flex flex-wrap -mx-3 p-4">
                     <div className="w-full md:w-1/2 px-3 mb-4">
                         <div className="form-group">
-                            <label htmlFor="parent_sign_ach" className="block font-bold mb-2">Parent Signature</label>
+                            <label htmlFor="parent_sign_handbook" className="block font-bold mb-2">Parent Signature</label>
                             <input 
                                 type="text" 
                                 className="form-control border border-gray-300 rounded px-3 py-2 w-full" 
-                                id="parent_sign_ach"
-                                name="parent_sign_ach"
-                                value={formData.parent_sign_ach}
+                                id="parent_sign_handbook"
+                                name="parent_sign_handbook"
+                                value={formData.parent_sign_handbook}
                                 onChange={handleChange}
                             />
                         </div>
                     </div>
                     <div className="w-full md:w-1/2 px-3 mb-4">
                         <div className="form-group">
-                            <label htmlFor="parent_sign_date_ach" className="block font-bold mb-2">Date</label>
+                            <label htmlFor="parent_sign_date_handbook" className="block font-bold mb-2">Date</label>
                             <input 
                                 type="date" 
                                 className="form-control border border-gray-300 rounded px-3 py-2 w-full" 
-                                id="parent_sign_date_ach"
-                                name="parent_sign_date_ach"
-                                value={formData.parent_sign_date_ach}
+                                id="parent_sign_date_handbook"
+                                name="parent_sign_date_handbook"
+                                value={formData.parent_sign_date_handbook}
                                 onChange={handleChange}
                                 readOnly
                             />
@@ -147,26 +175,26 @@ const ParentHandbook = ({ selectedSubForm = null }) => {
                 <div className="flex flex-wrap -mx-3 p-4">
                     <div className="w-full md:w-1/2 px-3 mb-4">
                         <div className="form-group">
-                            <label htmlFor="admin_sign_ach" className="block font-bold mb-2">Admin Signature</label>
+                            <label htmlFor="admin_sign_handbook" className="block font-bold mb-2">Admin Signature</label>
                             <input 
                                 type="text" 
                                 className="form-control border border-gray-300 rounded px-3 py-2 w-full" 
-                                id="admin_sign_ach"
-                                name="admin_sign_ach"
-                                value={formData.admin_sign_ach}
+                                id="admin_sign_handbook"
+                                name="admin_sign_handbook"
+                                value={formData.admin_sign_handbook}
                                 onChange={handleChange}
                             />
                         </div>
                     </div>
                     <div className="w-full md:w-1/2 px-3 mb-4">
                         <div className="form-group">
-                            <label htmlFor="admin_sign_date_ach" className="block font-bold mb-2">Date</label>
+                            <label htmlFor="admin_sign_date_handbook" className="block font-bold mb-2">Date</label>
                             <input 
                                 type="datetime-local" 
                                 className="form-control border border-gray-300 rounded px-3 py-2 w-full" 
-                                id="admin_sign_date_ach"
-                                name="admin_sign_date_ach"
-                                value={formData.admin_sign_date_ach}
+                                id="admin_sign_date_handbook"
+                                name="admin_sign_date_handbook"
+                                value={formData.admin_sign_date_handbook}
                                 onChange={handleChange}
                             />
                         </div>
