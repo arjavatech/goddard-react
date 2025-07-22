@@ -3,7 +3,6 @@ import FormInput from '../../../components/FormInput';
 import FormLabel from '../../../components/FormLabel';
 
 const adminSign = ({ initialFormData = null, formData, childId, editID, onAlert }) => {
-    // console.log("hello from adminSign");
   const [formState, setFormState] = useState({
     admin_sign_admission: initialFormData.admin_sign_admission ?? '',
     admin_sign_date_admission: initialFormData.admin_sign_date_admission ?? '',
@@ -57,7 +56,6 @@ const adminSign = ({ initialFormData = null, formData, childId, editID, onAlert 
         onAlert('error', 'Failed to save authorization form!');
       }
     } catch (error) {
-      // console.error('Error submitting authorization form:', error);
       onAlert('error', 'Failed to save authorization form!');
     }
   };

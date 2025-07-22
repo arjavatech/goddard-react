@@ -12,7 +12,6 @@ const SecurityPolicy = ({ initialFormData = null }) => {
 
   const handleAgreedChange = (checked) => {
     setAgreed(checked);
-    console.log('Security Policy Agreement updated:', checked ? 'on' : 'off');
   };
 
   return (

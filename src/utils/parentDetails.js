@@ -49,7 +49,6 @@ export const loadParentDetails = async (statusFilter = '') => {
       return [];
     }
   } catch (error) {
-    // console.error('Error loading parent details:', error);
     return [];
   }
 };
@@ -60,7 +59,6 @@ export const loadParentInfo = async () => {
     const result = await response.json();
     return result || [];
   } catch (error) {
-    // console.error('Error loading parent info:', error);
     return [];
   }
 };

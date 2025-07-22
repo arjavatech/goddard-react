@@ -59,7 +59,6 @@ const navigate = useNavigate();
         setSelectedClassroom(classID);
       }
     } catch (error) {
-      // console.error('Error loading classrooms:', error);
     }
   };
 
@@ -76,9 +75,7 @@ const navigate = useNavigate();
           }))
       ];
       setForms(formOptions);
-      // console.log('Forms loaded:', formOptions);
     } catch (error) {
-      // console.error('Error loading forms:', error);
     }
   };
 
@@ -87,17 +84,14 @@ const navigate = useNavigate();
     try {
       let apiUrl = url;
      
-      // console.log(classID)
       if (!apiUrl) {
         apiUrl = classID 
        
           ? `https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/class_based_all_child_details/${classID}`
           : 'https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/admission_child_personal/all_child_status';
       }
-      // console.log(apiUrl)
       const response = await fetch(apiUrl);
       let responseData = await response.json();
-      // console.log(responseData)
 
       // Apply filters
       if (!apiUrl.includes('class_based_all_child_details')) {
@@ -112,7 +106,6 @@ const navigate = useNavigate();
 
       setData(responseData);
     } catch (error) {
-      // console.error('Error loading data:', error);
       setData([]);
     } finally {
       setLoading(false);

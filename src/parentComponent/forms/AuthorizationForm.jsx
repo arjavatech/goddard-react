@@ -22,11 +22,9 @@ const AuthorizationForm = ({ selectedSubForm = null, initialFormData = null }) =
   };
 
   const handleSave = () => {
-    // console.log('Saving form data:', formData);
   };
 
   const handleSubmit = (type) => {
-    // console.log(`Submitting ${type} form data:`, formData);
   };
 
   useEffect(() => {

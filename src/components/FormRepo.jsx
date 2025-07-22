@@ -30,7 +30,6 @@ const FormRepo = ({ onAlert }) => {
         setActiveForms(activeFormsArray);
       }
     } catch (error) {
-      // console.error('Error loading active forms:', error);
     }
   };
 
@@ -40,7 +39,6 @@ const FormRepo = ({ onAlert }) => {
       const data = await response.json();
       setClassrooms(data);
     } catch (error) {
-      // console.error('Error loading classroom names:', error);
     }
   };
 
@@ -73,7 +71,6 @@ const FormRepo = ({ onAlert }) => {
       
       setFormNames(filteredForms);
     } catch (error) {
-      // console.error('Error loading forms by type:', error);
     }
   };
 
@@ -103,7 +100,6 @@ const FormRepo = ({ onAlert }) => {
       
       setChildNames(filteredChildren);
     } catch (error) {
-      // console.error('Error loading children:', error);
     }
   };
 
@@ -135,7 +131,6 @@ const FormRepo = ({ onAlert }) => {
   setAllocateTo('0');
       }
     } catch (error) {
-      // console.error('Error allocating forms:', error);
       onAlert('error', 'Failed to update forms!');
     }
   };
@@ -182,7 +177,6 @@ const FormRepo = ({ onAlert }) => {
   setSelectedChildren([]);
       }
     } catch (error) {
-      // console.error('Error updating forms:', error);
       onAlert('error', 'Failed to update forms!');
     }
   };

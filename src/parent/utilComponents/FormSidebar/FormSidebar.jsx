@@ -5,7 +5,6 @@ import { formSections, formNameMapping } from './formSections';
 
 const FormSidebar = ({ activeChildId, onSectionChange, selectedSubForm, onHideCompleted, onToggleCompleted, onSubFormChange, incompleteForms }) => {
   const { formStatus, handleToggle, openSection, toggleCompleted, loading } = useFormStatus(activeChildId);
-console.log("incompleteForms prop:", incompleteForms);
   
   // Filter formSections based on incompleteForms from API
   const availableFormSections = formSections.filter(section => {
@@ -22,7 +21,6 @@ console.log("incompleteForms prop:", incompleteForms);
 
   // Handle section click
   const handleSectionClick = (sectionKey) => {
-    // console.log('Section clicked:', sectionKey);
     handleToggle(sectionKey);
     
     // Hide completed forms section when clicking on incomplete forms
@@ -32,7 +30,6 @@ console.log("incompleteForms prop:", incompleteForms);
     
     if (onSectionChange) {
       onSectionChange(sectionKey);
-      // console.log('Section change called with:', sectionKey);
     }
 
     // Reset sub-form selection when clicking main section
@@ -43,7 +40,6 @@ console.log("incompleteForms prop:", incompleteForms);
 
   // Handle sub-form item click
   const handleItemClick = (sectionKey, itemName) => {
-    // console.log('Item clicked:', sectionKey, itemName);
     
     // Hide completed forms section
     if (onHideCompleted) {

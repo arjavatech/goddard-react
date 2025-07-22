@@ -23,7 +23,6 @@ const useFormStatus = (activeChildId) => {
       setLoading(true);
       
       try {
-        // // console.log('Fetching form status for child:', activeChildId);
         
         // Fetch incomplete form status (like HTML version)
         const incompleteResponse = await fetch(
@@ -43,10 +42,6 @@ const useFormStatus = (activeChildId) => {
         const incompleteResult = await incompleteResponse.json();
         const result = await completedResponse.json();
         const formDetails = await formData.json();
-        
-        // // console.log('Incomplete Forms API:', incompleteResult);
-        // // console.log('Completed Forms API:', result);
-        // // console.log('Form Details:', formDetails);
 
         // Get incomplete forms from API (like HTML version)
         const incompleteFormsList = [];
@@ -55,8 +50,6 @@ const useFormStatus = (activeChildId) => {
             incompleteFormsList.push(value.replace(/\s+/g, "_").toLowerCase());
           }
         }
-        
-        // // console.log('Incomplete Forms List:', incompleteFormsList);
         // Determine form completion status based on API data AND detailed validation
         const updatedStatus = {
           // Main form sections - use detailed validation for accuracy
@@ -371,10 +364,8 @@ const useFormStatus = (activeChildId) => {
           }
         });
 
-        // // console.log('Final Form Status:', updatedStatus);
         setFormStatus(updatedStatus);
       } catch (error) {
-        // // console.error("Error fetching form status:", error);
         setFormStatus({});
       } finally {
         setLoading(false);

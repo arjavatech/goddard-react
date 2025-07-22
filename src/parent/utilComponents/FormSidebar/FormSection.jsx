@@ -2,7 +2,6 @@ import React from 'react';
 import FormItem from './FormItem';
 
 const FormSection = ({ section, formStatus, isOpen, onToggle, onItemClick, selectedSubForm}) => {
-  // console.log("fsec",selectedSubForm);
   
   return (
     <div className="rounded">

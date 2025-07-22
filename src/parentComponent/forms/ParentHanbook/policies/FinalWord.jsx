@@ -7,7 +7,6 @@ const FinalWord = ({fieldValue,  openSection, setOpenSection }) => {
   // Optional: convert back to "on"/"off" or boolean
   const handleChange = (e) => {
     setIsChecked(e.target.checked);
-    console.log('Updated value:', e.target.checked ? 'on' : 'off');
   };
   
     const [isAgreed, setIsAgreed] = useState(false);

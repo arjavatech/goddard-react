@@ -33,8 +33,6 @@ const ParentDetails = () => {
     try {
       const response = await fetch('https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/parent_invite_status/getall');
       const result = await response.json();
-
-      // console.log('API Response:', result);
       
       let responseData = [];
 
@@ -50,7 +48,6 @@ const ParentDetails = () => {
       
       setData(responseData);
     } catch (error) {
-      // console.error('Error loading data:', error);
       setData([]);
     } finally {
       setLoading(false);

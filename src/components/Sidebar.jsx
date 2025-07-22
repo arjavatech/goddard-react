@@ -47,7 +47,6 @@ function Sidebar({ activeItem }) {
   ];
 
   const handleMenuClick = (itemId) => {
-    // console.log(`${itemId} clicked`);
     setIsOpen(false);
     // Navigate to the corresponding page
     window.location.href = menuItems.find(item => item.id === itemId).href;

@@ -91,7 +91,6 @@ const ParentAgreement = ({ openSection, setOpenSection, formData, handleInputCha
                                 onChange={(e) => {
                                     const value = e.target.checked ? 'on' : 'off';
                                     handleInputChange('agreementConfirmed', e.target.checked);
-                                    console.log('Agreement updated:', value);
                                 }}
                                 className="form-checkbox h-4 w-4 text-blue-600 border-gray-300 rounded"
                             />

@@ -2,16 +2,12 @@
 import React, { useState, useEffect } from 'react';
 
 const AddressingIndividualChildConcern = ({fieldValue,  openSection, setOpenSection }) => {
-  console.log("Addressing field value was"+fieldValue)
   // Initialize the checkbox state based on fieldValue
   const [isChecked, setIsChecked] = useState(fieldValue == 'on');
-
-  console.log("isChecked"+isChecked)
 
   // Optional: convert back to "on"/"off" or boolean
   const handleChange = (e) => {
     setIsChecked(e.target.checked);
-    console.log('Updated value:', e.target.checked ? 'on' : 'off');
   };
 
     const isOpen = openSection === 'AddressingIndividualChildConcern';

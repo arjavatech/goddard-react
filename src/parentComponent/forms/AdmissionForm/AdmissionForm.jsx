@@ -14,7 +14,6 @@ import AdminSign from './AdminSign';
 import ParentSign from './ParentSign';
 
 function AdmissionForm({selectedSubForm, initialFormData = null}) {
-  // console.log("Selected SubForm:", selectedSubForm);
   return (
     <div>
 

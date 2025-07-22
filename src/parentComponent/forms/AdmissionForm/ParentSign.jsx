@@ -56,7 +56,6 @@ const ParentSign = ({ initialFormData = null, formData, childId, editID, onAlert
         onAlert('error', 'Failed to save authorization form!');
       }
     } catch (error) {
-      // console.error('Error submitting authorization form:', error);
       onAlert('error', 'Failed to save authorization form!');
     }
   };

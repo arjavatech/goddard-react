@@ -19,7 +19,6 @@ export const loginFunction = async (email, password) => {
     });
 
     const result = await response.json();
-    // console.log('Login result:', result);
 
     if (result.isAdmin === true) {
       localStorage.setItem('is_admin', result.admin);

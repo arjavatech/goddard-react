@@ -36,7 +36,6 @@ const ParentDashboard = () => {
 
   // Debug current section changes
   useEffect(() => {
-    // console.log('Current section changed to:', currentSection);
     // Hide completed forms when switching to a form section
     if (currentSection) {
       setShowCompletedForms(false);
@@ -62,7 +61,6 @@ const ParentDashboard = () => {
 
   const checkParentAuthentication = async () => {
     const loggedInEmail = localStorage.getItem('logged_in_email');
-    // console.log('Logged In Email:', loggedInEmail);
     if (editID === loggedInEmail || loggedInEmail === 'goddard01arjava@gmail.com' || editID === '') {
       try {
         const url = editID ? 
@@ -71,7 +69,6 @@ const ParentDashboard = () => {
         
         const response = await fetch(url);
         const data = await response.json();
-        // console.log('Parent Data:', data);
         
         if (data.parent_name) {
           localStorage.setItem('parent_name', data.parent_name);
@@ -83,7 +80,6 @@ const ParentDashboard = () => {
           localStorage.setItem('number_of_children', data.children.length.toString());
           
           const putcallId = sessionStorage.getItem('putcallId');
-          // console.log('putcallId:', putcallId);
           if (putcallId) {
             setActiveChildId(putcallId);
           } else if (data.children.length > 0) {
@@ -93,7 +89,6 @@ const ParentDashboard = () => {
           }
         }
       } catch (error) {
-        // console.error('Error loading parent data:', error);
       }
     } else {
       window.location.href = '/login';
@@ -125,14 +120,12 @@ const ParentDashboard = () => {
 
   const loadCompletedForms = async () => {
     if (!activeChildId) return;
-    // console.log('Loading Completed Forms for Child ID:', activeChildId);
     
     try {
       const response = await fetch(
         `https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/admission_child_personal/completed_form_status_year/${activeChildId}/${selectedYear}`
       );
       const data = await response.json();
-      // console.log('Completed Forms Data:', data);
       
       // Always set completedForms - either with data or empty array
       if (data.CompletedFormStatus) {
@@ -141,7 +134,6 @@ const ParentDashboard = () => {
         setCompletedForms([]); // Clear old data and set empty array
       }
     } catch (error) {
-      // console.error('Error loading completed forms:', error);
       setCompletedForms([]); // Clear old data on error
     }
   };
@@ -160,7 +152,6 @@ const ParentDashboard = () => {
       }
 
       const incompleteResult = await incompleteResponse.json();
-      console.log('Incomplete Forms API Response:', incompleteResult);
       
       // Extract incomplete forms list from API response (same logic as FormStatusLogic)
       const incompleteFormsList = [];
@@ -170,11 +161,9 @@ const ParentDashboard = () => {
         }
       }
       
-      console.log('Processed Incomplete Forms List:', incompleteFormsList);
       setIncompleteForms(incompleteFormsList);
       
     } catch (error) {
-      console.error('Error loading incomplete forms:', error);
       setIncompleteForms([]);
     }
   };
@@ -192,11 +181,9 @@ const ParentDashboard = () => {
       }
 
       const formData = await response.json();
-      console.log('Child Form Details API Response:', formData);
       setChildFormData(formData);
       
     } catch (error) {
-      console.error('Error loading child form details:', error);
       setChildFormData(null);
     }
   };
@@ -224,7 +211,6 @@ const ParentDashboard = () => {
         </div>
       );
     }
-    // console.log(currentSection);
     
     switch (currentSection) {
     

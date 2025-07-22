@@ -12,7 +12,6 @@ const ImmunizationInstructions = ({ initialFormData = null }) => {
 
   const handleChange = (e) => {
     setIsChecked(e.target.checked);
-    console.log('Updated value:', e.target.checked ? 'on' : 'off');
   };
   return (
     <div className="card bg-[#D8E9FF]">

@@ -43,12 +43,10 @@ const EnrollmentForm = ({ selectedSubForm = null, initialFormData = null }) => {
   
     const handleSave = () => {
       // Handle save functionality
-      // console.log('Saving form data:', formData);
     };
   
     const handleSubmit = (type) => {
       // Handle submit functionality
-      // console.log(`Submitting ${type} form data:`, formData);
     };
 
     useEffect(() => {

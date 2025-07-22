@@ -10,7 +10,6 @@ const PickUpPassword = ({initialFormData = null}) => {
       alert('Please enter the password and agree to the instructions.');
       return;
     }
-    // console.log('Saved:', { password, agree });
   };
 
   return (

@@ -56,7 +56,6 @@ const ParentHandbook = ({ selectedSubForm = null, initialFormData = null }) => {
     };
 
     const handleSubmit = (type) => {
-        // console.log(`Submitting ${type} form data:`, formData);
     };
 
     useEffect(() => {

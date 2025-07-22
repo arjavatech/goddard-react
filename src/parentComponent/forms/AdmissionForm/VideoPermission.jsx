@@ -17,12 +17,10 @@ export default function VideoPermission({ initialFormData = null }) {
 
   const handleAgreePhotosChange = (checked) => {
     setAgreePhotos(checked);
-    console.log('Agree Photos updated:', checked ? 'on' : 'off');
   };
 
   const handleAgreeGroupChange = (checked) => {
     setAgreeGroup(checked);
-    console.log('Agree Group updated:', checked ? 'on' : 'off');
   };
 
   return (

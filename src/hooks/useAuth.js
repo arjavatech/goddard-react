@@ -24,7 +24,6 @@ export const useAuth = () => {
     
     if (sessionStorage.length > 0) {
       sessionStorage.clear();
-      // console.log('Session cleared.');
     }
     
     // Clear cookies
