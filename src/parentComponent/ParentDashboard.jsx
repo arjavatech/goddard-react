@@ -335,169 +335,154 @@ const ParentDashboard = () => {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Navigation Bar */}
+    {/* Navigation Bar */}
     <Header onSignOut={signOut}></Header>
 
-      {/* Welcome Section */}
-      <div className="p-3">
-        <h2 className="text-[#0F2D52] text-2xl font-bold text-center pt-4">
-          Parent Dashboard
-        </h2>
-        <h4 className="text-xl text-center pt-2" id="welcomeText">
-          {getWelcomeMessage()}
-        </h4>
+    {/* Welcome Section */}
+    <div className="p-3">
+      <h2 className="text-[#0F2D52] text-xl sm:text-2xl font-bold text-center pt-4">
+        Parent Dashboard
+      </h2>
+      <h4 className="text-lg sm:text-xl text-center pt-2" id="welcomeText">
+        {getWelcomeMessage()}
+      </h4>
+    </div>
+
+    {/* Success/Error Messages - Responsive positioning */}
+    <div className="success-msg fixed top-16 sm:top-4 left-1/2 transform -translate-x-1/2 w-[95%] sm:w-auto sm:left-4 z-20 p-4 bg-green-100 border border-green-500 text-green-700 rounded hidden">
+      <strong>Success!</strong> Data saved successfully!
+    </div>
+    <div className="error-msg fixed top-16 sm:top-4 left-1/2 transform -translate-x-1/2 w-[95%] sm:w-auto sm:left-4 z-20 p-4 bg-red-100 border border-red-500 text-red-700 rounded hidden">
+      <strong>Oops!</strong> Failed to save admission form!
+    </div>
+
+    {/* Main Content */}
+    <div className="bg-[#0F2D52] mx-0 sm:mx-2 mt-1 min-h-screen">
+      {/* Child Tabs - Responsive */}
+      <div className="bg-[#0F2D52] text-white rounded overflow-x-auto">
+        <ul className="flex p-1 items-start list-none min-w-max" role="tablist" id="dynamicChildCards">
+          {children.map((child) => (
+            <li key={child.child_id} className="flex-none min-w-[100px]">
+              <button
+                className={`w-full py-2 px-3 sm:px-6 text-center font-semibold transition-colors text-sm sm:text-base ${
+                  activeChildId === child.child_id
+                    ? 'bg-[#0F2D52] text-white border-2 border-[#D8E9FF]'
+                    : 'bg-[#D8E9FF] text-[#0F2D52] hover:border-[#D8E9FF] border-2 border-[#0F2D52]'
+                }`}
+                onClick={() => handleChildSelect(child.child_id)}
+              >
+                <div className="h-10 flex items-center justify-center">
+                  <h6 className="text-center font-semibold truncate">
+                    {child.child_first_name}
+                  </h6>
+                </div>
+              </button>
+            </li>
+          ))}
+        </ul>
       </div>
 
-      {/* Success/Error Messages */}
-      <div className="success-msg fixed top-1 left-2 w-[96%] z-20 p-4 bg-green-100 border border-green-500 text-green-700 rounded hidden">
-        <strong>Success!</strong> Data saved successfully!
-      </div>
-      <div className="error-msg fixed top-1 left-2 w-[96%] z-20 p-4 bg-red-100 border border-red-500 text-red-700 rounded hidden">
-        <strong>Oops!</strong> Failed to save admission form!
-      </div>
+      {/* Main Content Area - Responsive Layout */}
+      <div className="flex flex-col lg:flex-row m-0 sm:m-1 bg-[#D8E9FF] h-full min-h-screen">
+        {/* Sidebar - Your existing responsive sidebar */}
+        <FormSidebar 
+          activeChildId={activeChildId}
+          onSectionChange={setCurrentSection}
+          currentSection={currentSection}
+          onHideCompleted={() => setShowCompletedForms(false)}
+          onToggleCompleted={toggleCompletedForms}
+          onSubFormChange={setSelectedSubForm}
+          selectedSubForm={selectedSubForm}
+          incompleteForms={incompleteForms}
+        />
 
-      {/* Main Content */}
-      <div className="bg-[#0F2D52] m-2 mt-1 min-h-screen">
-        {/* Child Tabs */}
-        <div className="bg-[#0F2D52] text-white  rounded  "> 
-          <ul className="flex p-1 items-start list-none" role="tablist" id="dynamicChildCards">
-            {children.map((child) => (
-              <li key={child.child_id} className="">
-                <button
-                  className={`w-full py-2 px-6 text-center font-semibold transition-colors ${
-                    activeChildId === child.child_id
-                      ? 'bg-[#0F2D52] text-white border-2 border-[#D8E9FF]'
-                      : 'bg-[#D8E9FF] text-[#0F2D52] hover:border-[#D8E9FF] border-2 border-[#0F2D52]'
-                  }`}
-                  onClick={() => handleChildSelect(child.child_id)}
-                >
-                  <div className="h-10 flex items-center justify-center">
-                    <h6 className="text-center font-semibold">
-                      {child.child_first_name}
-                    </h6>
-                  </div>
-                </button>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        <div className="flex m-1 bg-[#D8E9FF] h-full min-h-screen" id="formdiv">
-          {/* Sidebar */}
-          <FormSidebar 
-            activeChildId={activeChildId}
-            onSectionChange={setCurrentSection}
-            currentSection={currentSection}
-            onHideCompleted={() => setShowCompletedForms(false)}
-            onToggleCompleted={toggleCompletedForms}
-            onSubFormChange={setSelectedSubForm}
-            selectedSubForm={selectedSubForm}
-            incompleteForms={incompleteForms}
-          />
-
-          {/* Main Content Area */}
-          <div className="w-3/4">
-            {/* Form Content - Only show the selected section */}
-            <div className="tab-content">
-              <form id="childInfoAdmission">
-                <div className="tab-content admission_form" id="admissionforms"></div>
-              </form>
-              <form id="childInfoAuthorization">
-                <div className="tab-content authorization" id="authorization"></div>
-              </form>
-              <form id="childInfoEnrollment">
-                <div className="tab-content enrollment_agreement" id="enrollmentagreement"></div>
-              </form>
-              <form id="childInfoHandbook">
-                <div className="tab-content parent_handbook" id="parenthandbook"></div>
-              </form>
-            </div>
-
-            {/* Conditionally render forms based on current section */}
-            {renderCurrentFormSection()}
-            
-            {/* Completed Forms Table */}
-            <div 
-              id="completedFormDetails" 
-              className={`container m-3 ${showCompletedForms ? 'block' : 'hidden'}`}
-            >
-              <div className="bg-white shadow-lg rounded">
-                <h3 className="text-center bg-[#0F2D52] text-white p-3 rounded-t">Completed Forms</h3>
-                <div className="flex">
-                  <div className="flex-1 p-4">
-                    <h4 className="text-lg font-semibold">
-                      Child Name: <span id="childName">{localStorage.getItem('child_name')}</span>
-                    </h4>
-                  </div>
-                  <div className="w-1/3 p-4">
-                    <div className="float-right">
-                      <div className="form-group">
-                        <label htmlFor="year" className="block font-bold mb-2">Year</label>
-                        <select
-                          name="year"
-                          id="year"
-                          className="form-control border border-gray-300 rounded px-3 py-2"
-                          value={selectedYear}
-                          onChange={(e) => setSelectedYear(parseInt(e.target.value))}
-                          required
-                        >
-                          {[...Array(11)].map((_, i) => {
-                            const year = new Date().getFullYear() - 10 + i;
-                            return (
-                              <option key={year} value={year}>
-                                {year}
-                              </option>
-                            );
-                          })}
-                        </select>
-                      </div>
-                    </div>
+        {/* Main Content - Full width on mobile, 3/4 on desktop */}
+        <div className="w-full lg:w-3/4 p-1 sm:p-2 overflow-x-hidden">
+          {/* Form Content */}
+          {renderCurrentFormSection()}
+          
+          {/* Completed Forms Table - Responsive */}
+          <div 
+            id="completedFormDetails" 
+            className={`container mx-auto m-1 sm:m-3 ${showCompletedForms ? 'block' : 'hidden'}`}
+          >
+            <div className="bg-white shadow-lg rounded overflow-hidden">
+              <h3 className="text-center bg-[#0F2D52] text-white p-2 sm:p-3 text-sm sm:text-base rounded-t">
+                Completed Forms
+              </h3>
+              
+              <div className="flex flex-col sm:flex-row p-2 sm:p-4">
+                <div className="flex-1 mb-2 sm:mb-0">
+                  <h4 className="text-sm sm:text-lg font-semibold">
+                    Child: <span className="font-normal">{localStorage.getItem('child_name')}</span>
+                  </h4>
+                </div>
+                <div className="w-full sm:w-1/3">
+                  <div className="sm:float-right">
+                    <label htmlFor="year" className="block font-bold mb-1 sm:mb-2 text-sm sm:text-base">Year</label>
+                    <select
+                      name="year"
+                      id="year"
+                      className="form-control border border-gray-300 rounded px-2 py-1 sm:px-3 sm:py-2 w-full text-sm sm:text-base"
+                      value={selectedYear}
+                      onChange={(e) => setSelectedYear(parseInt(e.target.value))}
+                      required
+                    >
+                      {[...Array(11)].map((_, i) => {
+                        const year = new Date().getFullYear() - 10 + i;
+                        return (
+                          <option key={year} value={year}>
+                            {year}
+                          </option>
+                        );
+                      })}
+                    </select>
                   </div>
                 </div>
-                
-                <div className="flex justify-center m-4">
-                  <div className="container mt-5">
-                    <div className="table-wrapper" id="tableview">
-                      <DataTable
-                        data={completedForms}
-                        columns={[
-                          {
-                            key: 'formname',
-                            title: 'Form Name'
-                          },
-                          {
-                            key: 'completedTimestamp',
-                            title: 'Time Stamp',
-                            render: (value) => new Date(value).toLocaleString()
-                          },
-                          {
-                            key: 'action',
-                            title: 'Action',
-                            render: (value, row) => (
-                              <div className="flex gap-2">
-                                <button className="text-[#0F2D52] hover:opacity-60">
-                                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="18" height="18">
-                                    <path fill="#0F2D52" d="M256 0a256 256 0 1 0 0 512A256 256 0 1 0 256 0zM376.9 294.6L269.8 394.5c-3.8 3.5-8.7 5.5-13.8 5.5s-10.1-2-13.8-5.5L135.1 294.6c-4.5-4.2-7.1-10.1-7.1-16.3c0-12.3 10-22.3 22.3-22.3l57.7 0 0-96c0-17.7 14.3-32 32-32l32 0c17.7 0 32 14.3 32 32l0 96 57.7 0c12.3 0 22.3 10 22.3 22.3c0 6.2-2.6 12.1-7.1 16.3z"/>
-                                  </svg>
-                                </button>
-                                <button className="text-[#0F2D52] hover:opacity-60 ml-2">
-                                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="18" height="18">
-                                    <path fill="#0F2D52" d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zM432 248a24 24 0 1 1 0 48 24 24 0 1 1 0-48z"/>
-                                  </svg>
-                                </button>
-                              </div>
-                            ),
-                            sortable: false
-                          }
-                        ]}
-                        tableId="example"
-                        className="w-full border-collapse border border-gray-300"
-                        headerClassName="bg-[#0F2D52] text-white"
-                        cellClassName="border border-gray-300 p-3"
-                      />
-                    </div>
-                  
-                  </div>
+              </div>
+              
+              <div className="flex justify-center m-1 sm:m-4">
+                <div className="w-full overflow-x-auto">
+                  <DataTable
+                    data={completedForms}
+                    columns={[
+                      {
+                        key: 'formname',
+                        title: 'Form Name',
+                        className: 'min-w-[120px]'
+                      },
+                      {
+                        key: 'completedTimestamp',
+                        title: 'Time Stamp',
+                        render: (value) => new Date(value).toLocaleString(),
+                        className: 'min-w-[150px]'
+                      },
+                      {
+                        key: 'action',
+                        title: 'Action',
+                        render: (value, row) => (
+                          <div className="flex gap-1 sm:gap-2">
+                            <button className="text-[#0F2D52] hover:opacity-60 p-1">
+                              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="16" height="16">
+                                <path fill="#0F2D52" d="M256 0a256 256 0 1 0 0 512A256 256 0 1 0 256 0zM376.9 294.6L269.8 394.5c-3.8 3.5-8.7 5.5-13.8 5.5s-10.1-2-13.8-5.5L135.1 294.6c-4.5-4.2-7.1-10.1-7.1-16.3c0-12.3 10-22.3 22.3-22.3l57.7 0 0-96c0-17.7 14.3-32 32-32l32 0c17.7 0 32 14.3 32 32l0 96 57.7 0c12.3 0 22.3 10 22.3 22.3c0 6.2-2.6 12.1-7.1 16.3z"/>
+                              </svg>
+                            </button>
+                            <button className="text-[#0F2D52] hover:opacity-60 p-1">
+                              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="16" height="16">
+                                <path fill="#0F2D52" d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zM432 248a24 24 0 1 1 0 48 24 24 0 1 1 0-48z"/>
+                              </svg>
+                            </button>
+                          </div>
+                        ),
+                        sortable: false,
+                        className: 'min-w-[80px]'
+                      }
+                    ]}
+                    tableId="example"
+                    className="w-full border-collapse border border-gray-300 text-sm sm:text-base"
+                    headerClassName="bg-[#0F2D52] text-white p-2 sm:p-3"
+                    cellClassName="border border-gray-300 p-1 sm:p-2 sm:p-3"
+                  />
                 </div>
               </div>
             </div>
@@ -505,6 +490,7 @@ const ParentDashboard = () => {
         </div>
       </div>
     </div>
+  </div>
   );
 };
 

@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-
+import { DownIcon,UpIcon } from '../../../../components/common/Arrows';
 
 const GeneralEnrollmentProcedure = ({fieldValue,  openSection, setOpenSection }) => {
     // Initialize the checkbox state based on fieldValue
@@ -26,7 +26,7 @@ const GeneralEnrollmentProcedure = ({fieldValue,  openSection, setOpenSection })
                     <h2 className="text-lg font-semibold">General & Enrollment Procedure</h2>
                 </div>
                 <div className="text-xl transform transition-transform duration-200">
-                    {isOpen ? '⌄' : '⌃'}
+                    {isOpen ? <DownIcon className="h-5 w-5 text-gray-500" /> : <UpIcon className="h-5 w-5 text-black" />}
                 </div>
             </div>
 

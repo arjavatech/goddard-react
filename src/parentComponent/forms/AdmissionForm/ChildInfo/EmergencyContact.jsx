@@ -1,6 +1,6 @@
 import React from 'react';
 import { FormInput } from './InputComponent';
-
+import { DownIcon,UpIcon } from '../../../../components/common/Arrows';
 const EmergencyContact = ({ openSection, setOpenSection, formData, handleInputChange }) => {
     return (
         <>
@@ -30,7 +30,7 @@ const EmergencyContact = ({ openSection, setOpenSection, formData, handleInputCh
                     <h2 className="text-lg font-semibold">Emergency Contact</h2>
                 </div>
                 <div className="text-xl transform transition-transform duration-200">
-                    {openSection === 'emergencyContact' ? '⌄' : '⌃'}
+                    {openSection === 'emergencyContact' ? <DownIcon className="h-5 w-5 text-gray-500" /> : <UpIcon className="h-5 w-5 text-black" />}
                 </div>
             </div>
 

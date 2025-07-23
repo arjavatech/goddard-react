@@ -1,7 +1,7 @@
 import React from 'react';
 import { FormInput } from './InputComponent';
 
-
+import { DownIcon,UpIcon } from '../../../../components/common/Arrows';
 
 
 const ParentAgreement = ({ openSection, setOpenSection, formData, handleInputChange }) => {
@@ -41,7 +41,7 @@ const ParentAgreement = ({ openSection, setOpenSection, formData, handleInputCha
                     <h2 className="text-lg font-semibold">Parent Agreement</h2>
                 </div>
                 <div className="text-xl transform transition-transform duration-200">
-                    {openSection === 'parentAgreement' ? '⌄' : '⌃'}
+                    {openSection === 'parentAgreement' ? <DownIcon className="h-5 w-5 text-gray-500" /> : <UpIcon className="h-5 w-5 text-black" />}
                 </div>
             </div>
 
