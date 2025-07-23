@@ -2,13 +2,29 @@
 import React, { useState, useEffect } from 'react';
 
 import { DownIcon,UpIcon } from '../../../../components/common/Arrows';
-const ReleaseOfChildren = ({fieldValue,  openSection, setOpenSection }) => {
+const ReleaseOfChildren = ({fieldValue, openSection, setOpenSection, handleChange: parentHandleChange }) => {
   // Initialize the checkbox state based on fieldValue
   const [isChecked, setIsChecked] = useState(fieldValue == 'on');
 
-  // Optional: convert back to "on"/"off" or boolean
+  // Update checkbox state when fieldValue changes from parent
+  useEffect(() => {
+    setIsChecked(fieldValue == 'on');
+  }, [fieldValue]);
+
+  // Handle change and update parent state
   const handleChange = (e) => {
-    setIsChecked(e.target.checked);
+    const checked = e.target.checked;
+    setIsChecked(checked);
+    
+    // Update parent form data
+    if (parentHandleChange) {
+      parentHandleChange({
+        target: {
+          name: 'release_of_children_agreement',
+          value: checked ? 'on' : 'off'
+        }
+      });
+    }
   };
   
     const isOpen = openSection === 'ReleaseOfChildren';

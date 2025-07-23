@@ -122,7 +122,7 @@ const EnrollmentForm = ({ selectedSubForm = null, initialFormData = null, childI
       }
     };
   
-      const handleSubmit = async (type) => {
+const handleSubmit = async (type) => {
     // Handle submit functionality
     if (type === 'parent') {
       handleSave();
@@ -145,13 +145,13 @@ const EnrollmentForm = ({ selectedSubForm = null, initialFormData = null, childI
       };
 
       // Call the API to save all form data
-      await updateAuthorizationData(saveData);
+      await updateEnrollmentData(saveData);
       
       // Show success alert
-      alert('Authorization form data saved successfully!');
+      alert('Enrollment form data saved successfully!');
     } catch (error) {
-      console.error('Failed to save authorization form:', error);
-      alert('Error saving authorization form data. Please try again.');
+      console.error('Failed to save enrollment form:', error);
+      alert('Error saving enrollment form data. Please try again.');
     }
     } else if (type === 'admin') {
       handleSave();
@@ -175,13 +175,13 @@ const EnrollmentForm = ({ selectedSubForm = null, initialFormData = null, childI
       };
 
       // Call the API to save all form data
-      await updateAuthorizationData(saveData);
+      await updateEnrollmentData(saveData);
       
       // Show success alert
-      alert('Authorization form data saved successfully!');
+      alert('Enrollment form data saved successfully!');
     } catch (error) {
-      console.error('Failed to save authorization form:', error);
-      alert('Error saving authorization form data. Please try again.');
+      console.error('Failed to save Enrollment form:', error);
+      alert('Error saving Enrollment form data. Please try again.');
     }
   }
    

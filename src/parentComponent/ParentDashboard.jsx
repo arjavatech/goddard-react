@@ -240,6 +240,7 @@ const ParentDashboard = () => {
           <div className="m-3">
             <ParentHandbbok 
               selectedSubForm={selectedSubForm}
+              childId={activeChildId}
               initialFormData={childFormData ? {
                 welcome_goddard_agreement: childFormData.welcome_goddard_agreement || '',
                 mission_statement_agreement: childFormData.mission_statement_agreement || '',

@@ -1,24 +1,36 @@
 import React from 'react';
 import { useState } from 'react';
 import { DownIcon,UpIcon } from '../../../../components/common/Arrows';
-const FinalWord = ({fieldValue,  openSection, setOpenSection }) => {
+const FinalWord = ({fieldValue, openSection, setOpenSection, handleSave: parentHandleSave, handleChange: parentHandleChange }) => {
   // Initialize the checkbox state based on fieldValue
   const [isChecked, setIsChecked] = useState(fieldValue == 'on');
 
   // Optional: convert back to "on"/"off" or boolean
   const handleChange = (e) => {
     setIsChecked(e.target.checked);
+    // Update parent form data
+    if (parentHandleChange) {
+      parentHandleChange({
+        target: {
+          name: 'finalword_agreement',
+          value: e.target.checked ? 'on' : 'off'
+        }
+      });
+    }
   };
-  
-    const [isAgreed, setIsAgreed] = useState(false);
 
-    const handleSave = () => {
-      if (isAgreed) {
-        alert('Information saved successfully!');
-      } else {
-        alert('Please agree to the information before saving.');
-      }
-    };
+  const handleSave = async () => {
+    if (!isChecked) {
+      alert('Please agree to the information before saving.');
+      return;
+    }
+    
+    if (parentHandleSave) {
+      await parentHandleSave();
+    } else {
+      alert('Information saved successfully!');
+    }
+  };
     const isOpen = openSection === 'FinalWord';
 
     const headerClasses = `rounded-b-lg  border bg-blue-50 px-6 py-4 flex items-center justify-between cursor-pointer 
