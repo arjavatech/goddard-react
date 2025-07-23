@@ -1,7 +1,36 @@
 import React from 'react';
 import{ useState, useEffect } from 'react';
 
-const EnrollmentForm = ({ selectedSubForm = null, initialFormData = null }) => {
+const EnrollmentForm = ({ selectedSubForm = null, initialFormData = null, childId = null }) => {
+  
+  // API function to update enrollment form data
+  const updateEnrollmentData = async (fieldData) => {
+    if (!childId) {
+      console.error('Child ID is required for API update');
+      return;
+    }
+
+    try {
+      const response = await fetch(`https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/enrollment_form/update/${childId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(fieldData)
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to update enrollment data: ${response.status}`);
+      }
+
+      const result = await response.json();
+      console.log('Enrollment data updated successfully:', result);
+      return result;
+    } catch (error) {
+      console.error('Error updating enrollment data:', error);
+      throw error;
+    }
+  };
     const [formData, setFormData] = useState({
       point_one_field_one : new Date().toISOString().split('T')[0],
       point_one_field_three: '',
@@ -41,13 +70,122 @@ const EnrollmentForm = ({ selectedSubForm = null, initialFormData = null }) => {
       }));
     };
   
-    const handleSave = () => {
-      // Handle save functionality
+    const handleSave = async () => {
+      if (!childId) {
+        alert('Error: Child ID is missing');
+        return;
+      }
+
+      try {
+        // Prepare the complete form data for API call including child_id
+        const saveData = {
+          child_id: childId,
+          point_one_field_one: formData.point_one_field_one,
+          point_one_field_three: formData.point_one_field_three,
+          point_two_initial_here: formData.point_two_initial_here,
+          point_three_initial_here: formData.point_three_initial_here,
+          point_four_initial_here: formData.point_four_initial_here,
+          point_five_initial_here: formData.point_five_initial_here,
+          point_six_initial_here: formData.point_six_initial_here,
+          point_seven_initial_here: formData.point_seven_initial_here,
+          point_eight_initial_here: formData.point_eight_initial_here,
+          point_nine_initial_here: formData.point_nine_initial_here,
+          point_ten_initial_here: formData.point_ten_initial_here,
+          point_eleven_initial_here: formData.point_eleven_initial_here,
+          point_twelve_initial_here: formData.point_twelve_initial_here,
+          point_thirteen_initial_here: formData.point_thirteen_initial_here,
+          point_fourteen_initial_here: formData.point_fourteen_initial_here,
+          point_fifteen_initial_here: formData.point_fifteen_initial_here,
+          point_sixteen_initial_here: formData.point_sixteen_initial_here,
+          point_seventeen_initial_here: formData.point_seventeen_initial_here,
+          point_eighteen_initial_here: formData.point_eighteen_initial_here,
+          point_ninteen_initial_here: formData.point_ninteen_initial_here,
+          preferred_start_date: formData.preferred_start_date,
+          preferred_schedule: formData.preferred_schedule,
+          full_day: formData.full_day.toString(),
+          half_day: formData.half_day.toString()
+
+          // parent_sign_enroll: formData.parent_sign_enroll,
+          // parent_sign_date_enroll: formData.parent_sign_date_enroll,
+          // admin_sign_enroll: formData.admin_sign_enroll,
+          // admin_sign_date_enroll: formData.admin_sign_date_enroll
+        };
+
+        // Call the API to save all form data
+        await updateEnrollmentData(saveData);
+        
+        // Show success alert
+        alert('Enrollment form data saved successfully!');
+      } catch (error) {
+        console.error('Failed to save enrollment form:', error);
+        alert('Error saving enrollment form data. Please try again.');
+      }
     };
   
-    const handleSubmit = (type) => {
-      // Handle submit functionality
-    };
+      const handleSubmit = async (type) => {
+    // Handle submit functionality
+    if (type === 'parent') {
+      handleSave();
+      if (!childId) {
+      alert('Error: Child ID is missing');
+      return;
+    }
+
+    try {
+      if(formData.parent_sign_enroll == null || formData.parent_sign_enroll == '')
+      {
+        alert('Error: Parent Sign is missing');
+        return;
+      }
+      // Prepare the complete form data for API call including child_id
+      const saveData = {
+        child_id: childId,
+        parent_sign_enroll: formData.parent_sign_enroll,
+        parent_sign_date_enroll: new Date().toLocaleDateString('en-CA')
+      };
+
+      // Call the API to save all form data
+      await updateAuthorizationData(saveData);
+      
+      // Show success alert
+      alert('Authorization form data saved successfully!');
+    } catch (error) {
+      console.error('Failed to save authorization form:', error);
+      alert('Error saving authorization form data. Please try again.');
+    }
+    } else if (type === 'admin') {
+      handleSave();
+      if (!childId) {
+      alert('Error: Child ID is missing');
+      return;
+    }
+
+    try {
+      if(formData.admin_sign_enroll == null || formData.admin_sign_enroll == '')
+      {
+        alert('Error: Parent Sign is missing');
+        return;
+      }
+      const epochValue = new Date(formData.admin_sign_date_enroll).getTime();
+      // Prepare the complete form data for API call including child_id
+      const saveData = {
+        child_id: childId,
+        admin_sign_enroll: formData.admin_sign_enroll,
+        admin_sign_date_enroll: epochValue
+      };
+
+      // Call the API to save all form data
+      await updateAuthorizationData(saveData);
+      
+      // Show success alert
+      alert('Authorization form data saved successfully!');
+    } catch (error) {
+      console.error('Failed to save authorization form:', error);
+      alert('Error saving authorization form data. Please try again.');
+    }
+  }
+   
+  };
 
     useEffect(() => {
       if (initialFormData) {

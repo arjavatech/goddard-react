@@ -220,6 +220,7 @@ const ParentDashboard = () => {
           <div className="m-3">
             <AuthorizationForm 
               selectedSubForm={selectedSubForm}
+              childId={activeChildId}
               initialFormData={childFormData ? {
                 bank_routing: childFormData.bank_routing || '',
                 bank_account: childFormData.bank_account || '',
@@ -272,6 +273,7 @@ const ParentDashboard = () => {
           <div className="m-3">
             <EnrollmentForm 
               selectedSubForm={selectedSubForm}
+              childId={activeChildId}
               initialFormData={childFormData ? {
                 point_one_field_three: childFormData.point_one_field_three || '',
                 point_two_initial_here: childFormData.point_two_initial_here || '',

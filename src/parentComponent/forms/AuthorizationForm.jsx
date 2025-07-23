@@ -1,7 +1,37 @@
 import React, { useState, useEffect } from 'react';
 
-const AuthorizationForm = ({ selectedSubForm = null, initialFormData = null }) => {
+const AuthorizationForm = ({ selectedSubForm = null, initialFormData = null, childId = null }) => {
+  
+  // API function to update authorization form data
+  const updateAuthorizationData = async (fieldData) => {
+    if (!childId) {
+      console.error('Child ID is required for API update');
+      return;
+    }
+
+    try {
+      const response = await fetch(`https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/authorization_form/update/${childId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(fieldData)
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to update authorization data: ${response.status}`);
+      }
+
+      const result = await response.json();
+      console.log('Authorization data updated successfully:', result);
+      return result;
+    } catch (error) {
+      console.error('Error updating authorization data:', error);
+      throw error;
+    }
+  };
   const [formData, setFormData] = useState({
+    child_id: '',
     bank_routing: '',
     bank_account: '',
     driver_license: '',
@@ -15,16 +45,112 @@ const AuthorizationForm = ({ selectedSubForm = null, initialFormData = null }) =
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+
+     if (name === 'admin_sign_date_ach') {
+      const epochValue = new Date(value).getTime();
+      formData.admin_sign_date_ach = epochValue;
+      console.log('Epoch time in ms:', epochValue); // You can store or send this to backend
+    }
+
+    
+    // Update local state only - no API call
     setFormData(prevState => ({
       ...prevState,
       [name]: value
     }));
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
+    if (!childId) {
+      alert('Error: Child ID is missing');
+      return;
+    }
+
+    try {
+      // Prepare the complete form data for API call including child_id
+      const saveData = {
+        child_id: childId,
+        bank_routing: formData.bank_routing,
+        bank_account: formData.bank_account.toString(),
+        driver_license: formData.driver_license,
+        state: formData.state,
+        i: formData.i
+      };
+
+      // Call the API to save all form data
+      await updateAuthorizationData(saveData);
+      
+      // Show success alert
+      alert('Authorization form data saved successfully!');
+    } catch (error) {
+      console.error('Failed to save authorization form:', error);
+      alert('Error saving authorization form data. Please try again.');
+    }
   };
 
-  const handleSubmit = (type) => {
+  const handleSubmit = async (type) => {
+    // Handle submit functionality
+    if (type === 'parent') {
+      handleSave();
+      if (!childId) {
+      alert('Error: Child ID is missing');
+      return;
+    }
+
+    try {
+      if(formData.parent_sign_ach == null || formData.parent_sign_ach == '')
+      {
+        alert('Error: Parent Sign is missing');
+        return;
+      }
+      // Prepare the complete form data for API call including child_id
+      const saveData = {
+        child_id: childId,
+        parent_sign_ach: formData.parent_sign_ach,
+        parent_sign_date_ach: new Date().toLocaleDateString('en-CA')
+      };
+
+      // Call the API to save all form data
+      await updateAuthorizationData(saveData);
+      
+      // Show success alert
+      alert('Authorization form data saved successfully!');
+    } catch (error) {
+      console.error('Failed to save authorization form:', error);
+      alert('Error saving authorization form data. Please try again.');
+    }
+    } else if (type === 'admin') {
+      handleSave();
+      if (!childId) {
+      alert('Error: Child ID is missing');
+      return;
+    }
+
+    try {
+      if(formData.admin_sign_ach == null || formData.admin_sign_ach == '')
+      {
+        alert('Error: Parent Sign is missing');
+        return;
+      }
+      const epochValue = new Date(formData.admin_sign_date_ach).getTime();
+      // Prepare the complete form data for API call including child_id
+      const saveData = {
+        child_id: childId,
+        admin_sign_ach: formData.admin_sign_ach,
+        admin_sign_date_ach: epochValue
+      };
+
+      // Call the API to save all form data
+      await updateAuthorizationData(saveData);
+      
+      // Show success alert
+      alert('Authorization form data saved successfully!');
+    } catch (error) {
+      console.error('Failed to save authorization form:', error);
+      alert('Error saving authorization form data. Please try again.');
+    }
+  }
+   
   };
 
   useEffect(() => {
