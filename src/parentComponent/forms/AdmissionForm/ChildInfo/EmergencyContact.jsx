@@ -27,8 +27,9 @@ const EmergencyContact = ({ openSection, setOpenSection, initialFormData, handle
             }, []);
           
             useEffect(() => {
-              if (initialFormData && initialFormData.emergency_contact_info) {
-                const emergencyContacts = initialFormData.emergency_contact_info;
+              if (initialFormData) {
+                const emergencyContacts = initialFormData;
+                console.log("emergencyContacts", emergencyContacts); 
                 setFormData(prevState => ({
                   child_id: childId,
                   emergencyContact1Name: emergencyContacts[0]?.child_emergency_contact_name || '',
@@ -181,21 +182,21 @@ const EmergencyContact = ({ openSection, setOpenSection, initialFormData, handle
                         <div className="grid md:grid-cols-3 gap-4">
                             <FormInput
                                 label="NAME"
-                                value={initialFormData.emergencyContact1Name || ''}
-                                onChange={(e) => handleInputChange('emergencyContact1Name', e.target.value)}
+                                value={formData.emergencyContact1Name || ''}
+                                onChange={handleChange}
                                 name="emergencyContact1Name"
                             />
                             <FormInput
                                 label="RELATIONSHIP"
-                                value={initialFormData.emergencyContact1Relationship || ''}
-                                onChange={(e) => handleInputChange('emergencyContact1Relationship', e.target.value)}
+                                value={formData.emergencyContact1Relationship || ''}
+                                onChange={handleChange}
                                 name="emergencyContact1Relationship"
                             />
                             <FormInput
                                 label="TELEPHONE NUMBER"
                                 type="tel"
-                                value={initialFormData.emergencyContact1Phone || ''}
-                                onChange={(e) => handleInputChange('emergencyContact1Phone', e.target.value)}
+                                value={formData.emergencyContact1Phone || ''}
+                                onChange={handleChange}
                                 placeholder="e.g.+1(555) 555-1234"
                                 name="emergencyContact1Phone"
                             />
@@ -204,26 +205,26 @@ const EmergencyContact = ({ openSection, setOpenSection, initialFormData, handle
                         <div className="grid md:grid-cols-4 gap-4">
                             <FormInput
                                 label="STREET"
-                                value={initialFormData.emergencyContact1Street || ''}
-                                onChange={(e) => handleInputChange('emergencyContact1Street', e.target.value)}
+                                value={formData.emergencyContact1Street || ''}
+                                onChange={handleChange}
                                 name="emergencyContact1Street"
                             />
                             <FormInput
                                 label="CITY"
-                                value={initialFormData.emergencyContact1City || ''}
-                                onChange={(e) => handleInputChange('emergencyContact1City', e.target.value)}
+                                value={formData.emergencyContact1City || ''}
+                                onChange={handleChange}
                                 name="emergencyContact1City"
                             />
                             <FormInput
                                 label="STATE"
-                                value={initialFormData.emergencyContact1State || ''}
-                                onChange={(e) => handleInputChange('emergencyContact1State', e.target.value)}
+                                value={formData.emergencyContact1State || ''}
+                                onChange={handleChange}
                                 name="emergencyContact1State"
                             />
                             <FormInput
                                 label="ZIP"
-                                value={initialFormData.emergencyContact1Zip || ''}
-                                onChange={(e) => handleInputChange('emergencyContact1Zip', e.target.value)}
+                                value={formData.emergencyContact1Zip || ''}
+                                onChange={handleChange}
                                 name="emergencyContact1Zip"
                             />
                         </div>
@@ -236,21 +237,21 @@ const EmergencyContact = ({ openSection, setOpenSection, initialFormData, handle
                         <div className="grid md:grid-cols-3 gap-4">
                             <FormInput
                                 label="NAME"
-                                value={initialFormData.emergencyContact2Name || ''}
-                                onChange={(e) => handleInputChange('emergencyContact2Name', e.target.value)}
+                                value={formData.emergencyContact2Name || ''}
+                                onChange={handleChange}
                                 name="emergencyContact2Name"
                             />
                             <FormInput
                                 label="RELATIONSHIP"
-                                value={initialFormData.emergencyContact2Relationship || ''}
-                                onChange={(e) => handleInputChange('emergencyContact2Relationship', e.target.value)}
+                                value={formData.emergencyContact2Relationship || ''}
+                                onChange={handleChange}
                                 name="emergencyContact2Relationship"
                             />
                             <FormInput
                                 label="TELEPHONE NUMBER"
                                 type="tel"
-                                value={initialFormData.emergencyContact2Phone || ''}
-                                onChange={(e) => handleInputChange('emergencyContact2Phone', e.target.value)}
+                                value={formData.emergencyContact2Phone || ''}
+                                onChange={handleChange}
                                 placeholder="+1(555) 555-1234"
                                 name="emergencyContact2Phone"
                             />
@@ -259,26 +260,26 @@ const EmergencyContact = ({ openSection, setOpenSection, initialFormData, handle
                         <div className="grid md:grid-cols-4 gap-4">
                             <FormInput
                                 label="STREET"
-                                value={initialFormData.emergencyContact2Street || ''}
-                                onChange={(e) => handleInputChange('emergencyContact2Street', e.target.value)}
+                                value={formData.emergencyContact2Street || ''}
+                                onChange={handleChange}
                                 name="emergencyContact2Street"
                             />
                             <FormInput
                                 label="CITY"
-                                value={initialFormData.emergencyContact2City || ''}
-                                onChange={(e) => handleInputChange('emergencyContact2City', e.target.value)}
+                                value={formData.emergencyContact2City || ''}
+                                onChange={handleChange}
                                 name="emergencyContact2City"
                             />
                             <FormInput
                                 label="STATE"
-                                value={initialFormData.emergencyContact2State || ''}
-                                onChange={(e) => handleInputChange('emergencyContact2State', e.target.value)}
+                                value={formData.emergencyContact2State || ''}
+                                onChange={handleChange}
                                 name="emergencyContact2State"
                             />
                             <FormInput
                                 label="ZIP"
-                                value={initialFormData.emergencyContact2Zip || ''}
-                                onChange={(e) => handleInputChange('emergencyContact2Zip', e.target.value)}
+                                value={formData.emergencyContact2Zip || ''}
+                                onChange={handleChange}
                                 name="emergencyContact2Zip"
                             />
                         </div>
@@ -291,21 +292,21 @@ const EmergencyContact = ({ openSection, setOpenSection, initialFormData, handle
                         <div className="grid md:grid-cols-3 gap-4">
                             <FormInput
                                 label="NAME"
-                                value={initialFormData.emergencyContact3Name || ''}
-                                onChange={(e) => handleInputChange('emergencyContact3Name', e.target.value)}
+                                value={formData.emergencyContact3Name || ''}
+                                onChange={handleChange}
                                 name="emergencyContact3Name"
                             />
                             <FormInput
                                 label="RELATIONSHIP"
-                                value={initialFormData.emergencyContact3Relationship || ''}
-                                onChange={(e) => handleInputChange('emergencyContact3Relationship', e.target.value)}
+                                value={formData.emergencyContact3Relationship || ''}
+                                onChange={handleChange}
                                 name="emergencyContact3Relationship"
                             />
                             <FormInput
                                 label="TELEPHONE NUMBER"
                                 type="tel"
-                                value={initialFormData.emergencyContact3Phone || ''}
-                                onChange={(e) => handleInputChange('emergencyContact3Phone', e.target.value)}
+                                value={formData.emergencyContact3Phone || ''}
+                                onChange={handleChange}
                                 placeholder="+1(555) 555-1234"
                                 name="emergencyContact3Phone"
                             />
@@ -314,33 +315,36 @@ const EmergencyContact = ({ openSection, setOpenSection, initialFormData, handle
                         <div className="grid md:grid-cols-4 gap-4">
                             <FormInput
                                 label="STREET"
-                                value={initialFormData.emergencyContact3Street || ''}
-                                onChange={(e) => handleInputChange('emergencyContact3Street', e.target.value)}
+                                value={formData.emergencyContact3Street || ''}
+                                onChange={handleChange}
                                 name="emergencyContact3Street"
                             />
                             <FormInput
                                 label="CITY"
-                                value={initialFormData.emergencyContact3City || ''}
-                                onChange={(e) => handleInputChange('emergencyContact3City', e.target.value)}
+                                value={formData.emergencyContact3City || ''}
+                                onChange={handleChange}
                                 name="emergencyContact3City"
                             />
                             <FormInput
                                 label="STATE"
-                                value={initialFormData.emergencyContact3State || ''}
-                                onChange={(e) => handleInputChange('emergencyContact3State', e.target.value)}
+                                value={formData.emergencyContact3State || ''}
+                                onChange={handleChange}
                                 name="emergencyContact3State"
                             />
                             <FormInput
                                 label="ZIP"
-                                value={initialFormData.emergencyContact3Zip || ''}
-                                onChange={(e) => handleInputChange('emergencyContact3Zip', e.target.value)}
+                                value={formData.emergencyContact3Zip || ''}
+                                onChange={handleChange}
                                 name="emergencyContact3Zip"
                             />
                         </div>
                     </div>
 
                     <div className="flex justify-center pt-4">
-                        <button className="bg-slate-700 text-white px-8 py-3 rounded-md hover:bg-slate-800 transition-colors">
+                        <button 
+                            onClick={handleSave}
+                            className="bg-slate-700 text-white px-8 py-3 rounded-md hover:bg-slate-800 transition-colors"
+                        >
                             Save
                         </button>
                     </div>
