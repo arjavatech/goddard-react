@@ -50,7 +50,7 @@ const FormSidebar = ({
       )}
 
       <div className="bg-[#0F2D52] text-white text-center py-2 mt-3 font-medium rounded">
-        Incomplete {!loading && `(${availableFormSections.length})`}
+        Incomplete {!loading && (`${availableFormSections.length}`)}
       </div>
 
       <div className="mt-2 space-y-2">
@@ -86,7 +86,7 @@ const FormSidebar = ({
 
   return (
     <>
-      {/* Fixed Sidebar for desktop (≥lg) */}
+      {/* Desktop View */}
       <div className="hidden lg:block bg-white rounded-md shadow-md text-sm font-sans m-3 w-full max-w-xs">
         <h2 className="bg-[#0F2D52] text-white font-bold text-center rounded-t-md py-2">
           Forms Status
@@ -94,9 +94,9 @@ const FormSidebar = ({
         {sidebarContent}
       </div>
 
-      {/* Mobile/Tablet View */}
-      <div className="block lg:hidden">
-        {/* Top Header Bar */}
+      {/* Mobile + Tablet View */}
+      <div className="lg:hidden">
+        {/* Top Navbar */}
         <div className="bg-[#0F2D52] text-white font-bold text-base flex items-center justify-between px-4 py-2">
           <span>Forms Status</span>
           <button onClick={() => setIsMobileOpen(true)}>
@@ -106,32 +106,29 @@ const FormSidebar = ({
           </button>
         </div>
 
-        {/* Slide-In Drawer and Overlay - Always Rendered */}
-        <div className="fixed inset-0 z-40 pointer-events-none">
-          {/* Overlay with fade transition */}
-          <div
-            className={`absolute inset-0 bg-black backdrop-blur-sm transition-opacity duration-300 ${
-              isMobileOpen ? 'opacity-30 pointer-events-auto' : 'opacity-0'
-            }`}
-            onClick={() => setIsMobileOpen(false)}
-          ></div>
+        {/* Overlay */}
+        <div
+          className={`fixed inset-0  bg-opacity-50 backdrop-blur-sm z-40 transition-opacity duration-300 ${
+            isMobileOpen ? 'opacity-100 visible' : 'opacity-0 invisible'
+          }`}
+          onClick={() => setIsMobileOpen(false)}
+        ></div>
 
-          {/* Sidebar with slide animation */}
-          <div
-            className={`absolute left-0 top-0 h-full w-72 sm:w-80 bg-white z-50 shadow-md transform transition-transform duration-300 ease-in-out ${
-              isMobileOpen ? 'translate-x-0' : '-translate-x-full'
-            }`}
-          >
-            <div className="flex items-center justify-between p-3 border-b">
-              <h2 className="text-[#0F2D52] font-bold text-base">Forms Status</h2>
-              <button onClick={() => setIsMobileOpen(false)} className="text-gray-700 hover:text-black">
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            </div>
-            {sidebarContent}
+        {/* Slide-In Sidebar */}
+        <div
+          className={`fixed top-0 left-0 z-50 h-full w-72 sm:w-80 bg-white shadow-md transform transition-transform duration-300 ease-in-out ${
+            isMobileOpen ? 'translate-x-0' : '-translate-x-full'
+          }`}
+        >
+          <div className="flex items-center justify-between p-3 border-b">
+            <h2 className="text-[#0F2D52] font-bold text-base">Forms Status</h2>
+            <button onClick={() => setIsMobileOpen(false)} className="text-gray-700 hover:text-black">
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
           </div>
+          {sidebarContent}
         </div>
       </div>
     </>
