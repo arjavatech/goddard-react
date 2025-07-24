@@ -6,19 +6,43 @@ import ToiletLearning from './ToiletLearning';
 import MedicalGeneral from './MedicalGeneral';
 import Parent_Argeement from './Parent_Argeement';
 
-export default function ChildProfileForm({ initialFormData = null }) {
+export default function ChildProfileForm({ initialFormData = null, childId }) {
     const [formData, setFormData] = useState({
-        familyMembers: '',
-        traditions: '',
-        hasChildcareExperience: '',
-        interests: '',
-        dropOffTime: '',
-        pickUpTime: '',
-        hasSpecialDiet: '',
-        specialDietExplanation: '',
-        eatsOnOwn: '',
-        eatsOnOwnExplanation: '',
-        favoriteFoods: ''
+        important_fam_members: '',
+        about_family_celebrations: '',
+        childcare_before: '',
+        reason_for_childcare_before: '',
+        what_child_interests: '',
+        drop_off_time: '',
+        pick_up_time: '',
+        restricted_diet: '',
+        restricted_diet_reason: '',
+        eat_own: '',
+        eat_own_reason: '',
+        favorite_foods: '',
+        rest_in_the_middle_day: '',
+        reason_for_rest_in_the_middle_day: '',
+        rest_routine: '',
+        toilet_trained: '',
+        reason_for_toilet_trained: '',
+        explain_for_existing_illness_allergy: '',
+        existing_illness_allergy: '',
+        functioning_at_age: '',
+        explain_for_functioning_at_age: '',
+        explain_for_able_to_walk: '',
+        able_to_walk: '',
+        explain_for_communicate_their_needs: '',
+        communicate_their_needs: '',
+        any_medication: '',
+        explain_for_any_medication: '',
+        utilize_special_equipment: '',
+        explain_for_utilize_special_equipment: '',
+        significant_periods: '',
+        explain_for_significant_periods: '',
+        desire_any_accommodations: '',
+        explain_for_desire_any_accommodations: '',
+        additional_information: '',
+        do_you_agree_this: '',
     });
 
     const [expandedSections, setExpandedSections] = useState({
@@ -89,26 +113,29 @@ export default function ChildProfileForm({ initialFormData = null }) {
 
             {/* Child Profile Details Section */}
             <ChildProfileDetails 
-                formData={formData}
+                initialFormData={initialFormData}
                 handleInputChange={handleInputChange}
                 expandedSections={expandedSections}
                 toggleSection={toggleSection}
+                childId={childId}
             />
 
             {/* Nutrition Section */}
             <Nutrition className='border mt-px'
-                formData={formData}
+                initialFormData={initialFormData}
                 handleInputChange={handleInputChange}
                 expandedSections={expandedSections}
                 toggleSection={toggleSection}
+                childId={childId}
             />
 
             {/* Rest and Diapering/Toilet Learning Section */}
             <ToiletLearning className='border mt-px'
-                formData={formData}
+                initialFormData={initialFormData}
                 handleInputChange={handleInputChange}
                 expandedSections={expandedSections}
                 toggleSection={toggleSection}
+                childId={childId}
             />
 
 
@@ -118,20 +145,22 @@ export default function ChildProfileForm({ initialFormData = null }) {
 
 
             <MedicalGeneral className='border mt-px'
-                formData={formData}
+                initialFormData={initialFormData}
                 handleInputChange={handleInputChange}
                 expandedSections={expandedSections}
                 toggleSection={toggleSection}
+                childId={childId}
             />
 
 
             {/* {/* Medical/General Section */}
 
             <Parent_Argeement className='border mt-px'
-                formData={formData}
+                initialFormData={initialFormData}
                 handleInputChange={handleInputChange}
                 expandedSections={expandedSections}
                 toggleSection={toggleSection}
+                childId={childId}
             />
 
 

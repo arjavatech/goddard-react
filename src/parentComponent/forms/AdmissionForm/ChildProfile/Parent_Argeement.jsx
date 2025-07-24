@@ -1,8 +1,82 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { ChevronUp, ChevronDown } from 'lucide-react';
 
 
-const Parent_Argeement = ({ expandedSections, toggleSection, formData, handleInputChange }) => {
+const Parent_Argeement = ({ expandedSections, toggleSection, formData, handleInputChange, initialFormData, childId }) => {
+  const [localFormData, setLocalFormData] = useState({
+    agreementConfirmed: false
+  });
+
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setLocalFormData(prevState => ({
+      ...prevState,
+      [name]: type === 'checkbox' ? checked : value
+    }));
+  };
+
+  useEffect(() => {
+    setLocalFormData(prevState => ({
+      ...prevState
+    }));
+  }, []);
+
+  useEffect(() => {
+    if (initialFormData) {
+      setLocalFormData(prevState => ({
+        child_id: childId,
+        agreementConfirmed: initialFormData.do_you_agree_this === 'on' ? true : false
+      }));
+    }
+  }, [initialFormData, childId]);
+
+  const updateAdmissionData = async (fieldData) => {
+    if (!childId) {
+      console.error('Child ID is required for API update');
+      return;
+    }
+
+    try {
+      const response = await fetch(`https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/admission_segment/${childId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(fieldData)
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to update admission data: ${response.status}`);
+      }
+
+      const result = await response.json();
+      console.log('Admission data updated successfully:', result);
+      return result;
+    } catch (error) {
+      console.error('Error updating admission data:', error);
+      throw error;
+    }
+  };
+
+  const handleSave = async () => {
+    if (!childId) {
+      alert('Error: Child ID is missing');
+      return;
+    }
+
+    try {
+      const saveData = {
+        child_id: childId,
+        do_you_agree_this: localFormData.agreementConfirmed ? 'on' : 'off'
+      };
+      console.log(saveData);
+      await updateAdmissionData(saveData);
+      alert('Parent Agreement data saved successfully!');
+    } catch (error) {
+      console.error('Failed to save Parent Agreement data:', error);
+      alert('Error saving Parent Agreement data. Please try again.');
+    }
+  };
   const isOpen = expandedSections.parent;
 
   return (
@@ -40,11 +114,9 @@ const Parent_Argeement = ({ expandedSections, toggleSection, formData, handleInp
             <input
               type="checkbox"
               id="agreementCheck"
-              checked={formData.do_you_agree_this}
-              onChange={(e) => {
-                const value = e.target.checked ? 'on' : 'off';
-                handleInputChange('agreementConfirmed', e.target.checked);
-              }}
+              name="agreementConfirmed"
+              checked={localFormData.agreementConfirmed}
+              onChange={handleChange}
               className="form-checkbox h-4 w-4 text-blue-600 border-gray-300 rounded"
             />
             <label htmlFor="agreementCheck" className="text-lg text-gray-700">
@@ -54,6 +126,7 @@ const Parent_Argeement = ({ expandedSections, toggleSection, formData, handleInp
 
           <div className="flex justify-center pt-4">
             <button
+              onClick={handleSave}
               className="text-white px-8 py-3 rounded-md transition-colors"
               style={{ backgroundColor: '#0F2D52' }}
               onMouseEnter={(e) => (e.currentTarget.style.opacity = '0.9')}
