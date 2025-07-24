@@ -1,9 +1,128 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { FormInput } from './InputComponent';
 import { UpIcon, DownIcon } from './Arrows';
 
 
-const Parent_argeement = ({ openSection, setOpenSection, formData, handleInputChange }) => {
+const Parent_argeement = ({ openSection, setOpenSection, formData, handleInputChange, initialFormData, childId }) => {
+    const [localFormData, setLocalFormData] = useState({
+        AllergiesFoodDrug: '',
+        Asthma: '',
+        BleedingProblems: '',
+        Diabetes: '',
+        Epilepsy: '',
+        FrequentEarInfections: '',
+        FrequentIllnesses: '',
+        HearingProblems: '',
+        HighFevers: '',
+        Hospitialization: '',
+        RheumaticFever: '',
+        SeizuresConvulsions: '',
+        SeriousInjuriesAccidents: '',
+        Surgeries: '',
+        VisionProblems: '',
+        Other: ''
+    });
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setLocalFormData(prevState => ({
+            ...prevState,
+            [name]: value
+        }));
+    };
+
+    useEffect(() => {
+        setLocalFormData(prevState => ({
+            ...prevState
+        }));
+    }, []);
+
+    useEffect(() => {
+        if (initialFormData) {
+            setLocalFormData(prevState => ({
+                child_id: childId,
+                AllergiesFoodDrug: initialFormData.allergies || '',
+                Asthma: initialFormData.asthma || '',
+                BleedingProblems: initialFormData.bleeding_problems || '',
+                Diabetes: initialFormData.diabetes || '',
+                Epilepsy: initialFormData.epilepsy || '',
+                FrequentEarInfections: initialFormData.frequent_ear_infections || '',
+                FrequentIllnesses: initialFormData.frequent_illnesses || '',
+                HearingProblems: initialFormData.hearing_problems || '',
+                HighFevers: initialFormData.high_fevers || '',
+                Hospitialization: initialFormData.hospitalization || '',
+                RheumaticFever: initialFormData.rheumatic_fever || '',
+                SeizuresConvulsions: initialFormData.seizures_convulsions || '',
+                SeriousInjuriesAccidents: initialFormData.serious_injuries_accidents || '',
+                Surgeries: initialFormData.surgeries || '',
+                VisionProblems: initialFormData.vision_problems || '',
+                Other: initialFormData.medical_other || ''
+            }));
+        }
+    }, [initialFormData, childId]);
+
+    const updateAdmissionData = async (fieldData) => {
+        if (!childId) {
+            console.error('Child ID is required for API update');
+            return;
+        }
+
+        try {
+            const response = await fetch(`https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/admission_form/update/${childId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(fieldData)
+            });
+
+            if (!response.ok) {
+                throw new Error(`Failed to update admission data: ${response.status}`);
+            }
+
+            const result = await response.json();
+            console.log('Admission data updated successfully:', result);
+            return result;
+        } catch (error) {
+            console.error('Error updating admission data:', error);
+            throw error;
+        }
+    };
+
+    const handleSave = async () => {
+        if (!childId) {
+            alert('Error: Child ID is missing');
+            return;
+        }
+
+        try {
+            const saveData = {
+                child_id: childId,
+                allergies: localFormData.AllergiesFoodDrug,
+                asthma: localFormData.Asthma,
+                bleeding_problems: localFormData.BleedingProblems,
+                diabetes: localFormData.Diabetes,
+                epilepsy: localFormData.Epilepsy,
+                frequent_ear_infections: localFormData.FrequentEarInfections,
+                frequent_illnesses: localFormData.FrequentIllnesses,
+                hearing_problems: localFormData.HearingProblems,
+                high_fevers: localFormData.HighFevers,
+                hospitalization: localFormData.Hospitialization,
+                rheumatic_fever: localFormData.RheumaticFever,
+                seizures_convulsions: localFormData.SeizuresConvulsions,
+                serious_injuries_accidents: localFormData.SeriousInjuriesAccidents,
+                surgeries: localFormData.Surgeries,
+                vision_problems: localFormData.VisionProblems,
+                medical_other: localFormData.Other
+            };
+            console.log(saveData);
+            await updateAdmissionData(saveData);
+            alert('Medical history data saved successfully!');
+        } catch (error) {
+            console.error('Failed to save Medical history data:', error);
+            alert('Error saving Medical history data. Please try again.');
+        }
+    };
     return (
         <>
             <div
@@ -50,110 +169,110 @@ const Parent_argeement = ({ openSection, setOpenSection, formData, handleInputCh
 
                             <FormInput
                                 label="Allergies (food/drug)"
-                                value={formData.AllergiesFoodDrug}
-                                onChange={(e) => handleInputChange('DateOfLastPhysicalExam', e.target.value)}
+                                value={localFormData.AllergiesFoodDrug}
+                                onChange={handleChange}
                                 name="AllergiesFoodDrug"
                             />
                             <FormInput
                                 label="Asthma"
-                                value={formData.Asthma}
-                                onChange={(e) => handleInputChange('DateOfLastDentalExam', e.target.value)}
+                                value={localFormData.Asthma}
+                                onChange={handleChange}
                                 name="Asthma"
                             />
 
                             <FormInput
                                 label="Bleeding Problems"
-                                value={formData.BleedingProblems}
-                                onChange={(e) => handleInputChange('DateOfLastPhysicalExam', e.target.value)}
+                                value={localFormData.BleedingProblems}
+                                onChange={handleChange}
                                 name="BleedingProblems"
                             />
                             <FormInput
                                 label="Diabetes"
-                                value={formData.Diabetes}
-                                onChange={(e) => handleInputChange('DateOfLastDentalExam', e.target.value)}
+                                value={localFormData.Diabetes}
+                                onChange={handleChange}
                                 name="Diabetes"
                             />
 
                             <FormInput
                                 label="Epilepsy"
-                                value={formData.Epilepsy}
-                                onChange={(e) => handleInputChange('DateOfLastDentalExam', e.target.value)}
+                                value={localFormData.Epilepsy}
+                                onChange={handleChange}
                                 name="Epilepsy"
                             />
 
                             <FormInput
                                 label="Frequent Ear Infections"
-                                value={formData.FrequentEarInfections}
-                                onChange={(e) => handleInputChange('DateOfLastDentalExam', e.target.value)}
+                                value={localFormData.FrequentEarInfections}
+                                onChange={handleChange}
                                 name="FrequentEarInfections"
                             />
 
                             <FormInput
                                 label="Frequent Illnesses"
-                                value={formData.FrequentIllnesses}
-                                onChange={(e) => handleInputChange('DateOfLastDentalExam', e.target.value)}
+                                value={localFormData.FrequentIllnesses}
+                                onChange={handleChange}
                                 name="FrequentIllnesses"
                             />
 
 
                             <FormInput
                                 label="Hearing Problems"
-                                value={formData.HearingProblems}
-                                onChange={(e) => handleInputChange('DateOfLastDentalExam', e.target.value)}
+                                value={localFormData.HearingProblems}
+                                onChange={handleChange}
                                 name="HearingProblems"
                             />
 
                             <FormInput
                                 label="High Fevers"
-                                value={formData.HighFevers}
-                                onChange={(e) => handleInputChange('DateOfLastDentalExam', e.target.value)}
+                                value={localFormData.HighFevers}
+                                onChange={handleChange}
                                 name="HighFevers"
                             />
 
                             <FormInput
                                 label="Hospitialization"
-                                value={formData.Hospitialization}
-                                onChange={(e) => handleInputChange('DateOfLastDentalExam', e.target.value)}
+                                value={localFormData.Hospitialization}
+                                onChange={handleChange}
                                 name="Hospitialization"
                             />
 
                             <FormInput
                                 label="Rheumatic Fever"
-                                value={formData.RheumaticFever}
-                                onChange={(e) => handleInputChange('DateOfLastDentalExam', e.target.value)}
+                                value={localFormData.RheumaticFever}
+                                onChange={handleChange}
                                 name="RheumaticFever"
                             />
 
                             <FormInput
                                 label="Seizures/Convulsions"
-                                value={formData.SeizuresConvulsions}
-                                onChange={(e) => handleInputChange('DateOfLastDentalExam', e.target.value)}
-                                name="Seizures/Convulsions"
+                                value={localFormData.SeizuresConvulsions}
+                                onChange={handleChange}
+                                name="SeizuresConvulsions"
                             />
                             <FormInput
                                 label="Serious Injuries/Accidents"
-                                value={formData.SeriousInjuriesAccidents}
-                                onChange={(e) => handleInputChange('DateOfLastDentalExam', e.target.value)}
-                                name="Serious Injuries/Accidents"
+                                value={localFormData.SeriousInjuriesAccidents}
+                                onChange={handleChange}
+                                name="SeriousInjuriesAccidents"
                             />
 
                             <FormInput
                                 label="Surgeries"
-                                value={formData.Surgeries}
-                                onChange={(e) => handleInputChange('DateOfLastDentalExam', e.target.value)}
+                                value={localFormData.Surgeries}
+                                onChange={handleChange}
                                 name="Surgeries"
                             />
                             <FormInput
                                 label="Vision Problems"
-                                value={formData.VisionProblems}
-                                onChange={(e) => handleInputChange('DateOfLastDentalExam', e.target.value)}
+                                value={localFormData.VisionProblems}
+                                onChange={handleChange}
                                 name="VisionProblems"
                             />
 
                             <FormInput
                                 label="Other"
-                                value={formData.Other}
-                                onChange={(e) => handleInputChange('DateOfLastDentalExam', e.target.value)}
+                                value={localFormData.Other}
+                                onChange={handleChange}
                                 name="Other"
                             />
 
@@ -162,7 +281,10 @@ const Parent_argeement = ({ openSection, setOpenSection, formData, handleInputCh
                     </div>
 
                     <div className="flex justify-center pt-4">
-                        <button className="hover:bg-slate-700 text-white px-8 py-3 rounded-md bg-slate-800 transition-colors">
+                        <button 
+                            onClick={handleSave}
+                            className="hover:bg-slate-700 text-white px-8 py-3 rounded-md bg-slate-800 transition-colors"
+                        >
                             Save
                         </button>
                     </div>

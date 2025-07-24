@@ -1,10 +1,108 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { FormInput } from './InputComponent';
 import { UpIcon, DownIcon } from './Arrows';
 
 
 
-const SocialBehavior = ({ openSection, setOpenSection, formData, handleInputChange }) => {
+const SocialBehavior = ({ openSection, setOpenSection, formData, handleInputChange, initialFormData, childId }) => {
+    const [localFormData, setLocalFormData] = useState({
+        AgeGroupOfFriends: '',
+        NeighborhoodFriends: '',
+        RelationshipWithMother: '',
+        RelationshipWithFather: '',
+        RelationshipWithSiblings: '',
+        RelationshipWithExtendedFamily: '',
+        FearsAndConflicts: '',
+        ChildsResponseToFrustration: '',
+        FavoriteActivities: ''
+    });
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setLocalFormData(prevState => ({
+            ...prevState,
+            [name]: value
+        }));
+    };
+
+    useEffect(() => {
+        setLocalFormData(prevState => ({
+            ...prevState
+        }));
+    }, []);
+
+    useEffect(() => {
+        if (initialFormData) {
+            setLocalFormData(prevState => ({
+                child_id: childId,
+                AgeGroupOfFriends: initialFormData.age_group_friends || '',
+                NeighborhoodFriends: initialFormData.neighborhood_friends || '',
+                RelationshipWithMother: initialFormData.relationship_with_mother || '',
+                RelationshipWithFather: initialFormData.relationship_with_father || '',
+                RelationshipWithSiblings: initialFormData.relationship_with_siblings || '',
+                RelationshipWithExtendedFamily: initialFormData.relationship_with_extended_family || '',
+                FearsAndConflicts: initialFormData.fears_conflicts || '',
+                ChildsResponseToFrustration: initialFormData.child_response_frustration || '',
+                FavoriteActivities: initialFormData.favorite_activities || ''
+            }));
+        }
+    }, [initialFormData, childId]);
+
+    const updateAdmissionData = async (fieldData) => {
+        if (!childId) {
+            console.error('Child ID is required for API update');
+            return;
+        }
+
+        try {
+            const response = await fetch(`https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/admission_form/update/${childId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(fieldData)
+            });
+
+            if (!response.ok) {
+                throw new Error(`Failed to update admission data: ${response.status}`);
+            }
+
+            const result = await response.json();
+            console.log('Admission data updated successfully:', result);
+            return result;
+        } catch (error) {
+            console.error('Error updating admission data:', error);
+            throw error;
+        }
+    };
+
+    const handleSave = async () => {
+        if (!childId) {
+            alert('Error: Child ID is missing');
+            return;
+        }
+
+        try {
+            const saveData = {
+                child_id: childId,
+                age_group_friends: localFormData.AgeGroupOfFriends,
+                neighborhood_friends: localFormData.NeighborhoodFriends,
+                relationship_with_mother: localFormData.RelationshipWithMother,
+                relationship_with_father: localFormData.RelationshipWithFather,
+                relationship_with_siblings: localFormData.RelationshipWithSiblings,
+                relationship_with_extended_family: localFormData.RelationshipWithExtendedFamily,
+                fears_conflicts: localFormData.FearsAndConflicts,
+                child_response_frustration: localFormData.ChildsResponseToFrustration,
+                favorite_activities: localFormData.FavoriteActivities
+            };
+            console.log(saveData);
+            await updateAdmissionData(saveData);
+            alert('Social behavior data saved successfully!');
+        } catch (error) {
+            console.error('Failed to save Social behavior data:', error);
+            alert('Error saving Social behavior data. Please try again.');
+        }
+    };
     return (
         <>
             <div
@@ -49,56 +147,56 @@ const SocialBehavior = ({ openSection, setOpenSection, formData, handleInputChan
 
                             <FormInput
                                 label="Age group of friends"
-                                value={formData.AgeGroupOfFriends}
-                                onChange={(e) => handleInputChange('AgeGroupOfFriends', e.target.value)}
+                                value={localFormData.AgeGroupOfFriends}
+                                onChange={handleChange}
                                 name="AgeGroupOfFriends"
                             />
                             <FormInput
                                 label="Neighborhood friends"
-                                value={formData.NeighborhoodFriends}
-                                onChange={(e) => handleInputChange('NeighborhoodFriends', e.target.value)}
+                                value={localFormData.NeighborhoodFriends}
+                                onChange={handleChange}
                                 name="NeighborhoodFriends"
                             />
 
 
                             <FormInput
                                 label="Relationship with mother"
-                                value={formData.RelationshipWithMother}
-                                onChange={(e) => handleInputChange('RelationshipWithMother', e.target.value)}
+                                value={localFormData.RelationshipWithMother}
+                                onChange={handleChange}
                                 name="RelationshipWithMother"
                             />
 
                             <FormInput
                                 label="Relationship with father"
-                                value={formData.RelationshipWithFather}
-                                onChange={(e) => handleInputChange('RelationshipWithFather', e.target.value)}
+                                value={localFormData.RelationshipWithFather}
+                                onChange={handleChange}
                                 name="RelationshipWithFather"
                             />
                             <FormInput
                                 label="Relationship with siblings"
-                                value={formData.RelationshipWithSiblings}
-                                onChange={(e) => handleInputChange('RelationshipWithSiblings', e.target.value)}
+                                value={localFormData.RelationshipWithSiblings}
+                                onChange={handleChange}
                                 name="RelationshipWithSiblings"
                             />
 
                             <FormInput
                                 label="Relationship with extended family"
-                                value={formData.RelationshipWithExtendedFamily}
-                                onChange={(e) => handleInputChange('RelationshipWithExtendedFamily', e.target.value)}
+                                value={localFormData.RelationshipWithExtendedFamily}
+                                onChange={handleChange}
                                 name="RelationshipWithExtendedFamily"
                             />
                             <FormInput
                                 label="Fears and Conflicts"
-                                value={formData.FearsAndConflicts}
-                                onChange={(e) => handleInputChange('FearsAndConflicts', e.target.value)}
+                                value={localFormData.FearsAndConflicts}
+                                onChange={handleChange}
                                 name="FearsAndConflicts"
                             />
 
 
                             <FormInput
                                 label="Child’s response to frustration"
-                                value={formData.ChildsResponseToFrustration}
-                                onChange={(e) => handleInputChange('ChildsResponseToFrustration', e.target.value)}
+                                value={localFormData.ChildsResponseToFrustration}
+                                onChange={handleChange}
                                 name="ChildsResponseToFrustration"
                             />
 
@@ -107,14 +205,17 @@ const SocialBehavior = ({ openSection, setOpenSection, formData, handleInputChan
 
                         <FormInput
                             label="Favorite activities"
-                            value={formData.FavoriteActivities}
-                            onChange={(e) => handleInputChange('FavoriteActivities', e.target.value)}
+                            value={localFormData.FavoriteActivities}
+                            onChange={handleChange}
                             name="FavoriteActivities"
                         />
                     </div>
 
                     <div className="flex justify-center pt-4">
-                        <button className="hover:bg-slate-700 text-white px-8 py-3 rounded-md bg-slate-800 transition-colors">
+                        <button 
+                            onClick={handleSave}
+                            className="hover:bg-slate-700 text-white px-8 py-3 rounded-md bg-slate-800 transition-colors"
+                        >
                             Save
                         </button>
                     </div>

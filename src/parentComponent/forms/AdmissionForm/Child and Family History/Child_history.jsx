@@ -1,10 +1,87 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { FormInput } from './InputComponent';
 import { UpIcon, DownIcon } from './Arrows';
 
 
 
-const Child_history = ({ openSection, setOpenSection, formData, handleInputChange }) => {
+const Child_history = ({ openSection, setOpenSection, formData, handleInputChange, initialFormData, childId }) => {
+    const [localFormData, setLocalFormData] = useState({
+        DateOfLastPhysicalExam: '',
+        DateOfLastDentalExam: ''
+    });
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setLocalFormData(prevState => ({
+            ...prevState,
+            [name]: value
+        }));
+    };
+
+    useEffect(() => {
+        setLocalFormData(prevState => ({
+            ...prevState
+        }));
+    }, []);
+
+    useEffect(() => {
+        if (initialFormData) {
+            setLocalFormData(prevState => ({
+                child_id: childId,
+                DateOfLastPhysicalExam: initialFormData.physical_exam_last_date || '',
+                DateOfLastDentalExam: initialFormData.dental_exam_last_date || ''
+            }));
+        }
+    }, [initialFormData, childId]);
+
+    const updateAdmissionData = async (fieldData) => {
+        if (!childId) {
+            console.error('Child ID is required for API update');
+            return;
+        }
+
+        try {
+            const response = await fetch(`https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/admission_form/update/${childId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(fieldData)
+            });
+
+            if (!response.ok) {
+                throw new Error(`Failed to update admission data: ${response.status}`);
+            }
+
+            const result = await response.json();
+            console.log('Admission data updated successfully:', result);
+            return result;
+        } catch (error) {
+            console.error('Error updating admission data:', error);
+            throw error;
+        }
+    };
+
+    const handleSave = async () => {
+        if (!childId) {
+            alert('Error: Child ID is missing');
+            return;
+        }
+
+        try {
+            const saveData = {
+                child_id: childId,
+                physical_exam_last_date: localFormData.DateOfLastPhysicalExam,
+                dental_exam_last_date: localFormData.DateOfLastDentalExam
+            };
+            console.log(saveData);
+            await updateAdmissionData(saveData);
+            alert('Child history data saved successfully!');
+        } catch (error) {
+            console.error('Failed to save Child history data:', error);
+            alert('Error saving Child history data. Please try again.');
+        }
+    };
     return (
         <>
             <div
@@ -53,15 +130,15 @@ const Child_history = ({ openSection, setOpenSection, formData, handleInputChang
                             <FormInput
                                 label="Date of Last Physical Exam"
                                 type="date"
-                                value={formData.DateOfLastPhysicalExam}
-                                onChange={(e) => handleInputChange('DateOfLastPhysicalExam', e.target.value)}
+                                value={localFormData.DateOfLastPhysicalExam}
+                                onChange={handleChange}
                                 name="DateOfLastPhysicalExam"
                             />
                             <FormInput
                                 label="Date of Last Dental Exam"
                                 type="date"
-                                value={formData.DateOfLastDentalExam}
-                                onChange={(e) => handleInputChange('DateOfLastDentalExam', e.target.value)}
+                                value={localFormData.DateOfLastDentalExam}
+                                onChange={handleChange}
                                 name="DateOfLastDentalExam"
                             />
 
@@ -69,7 +146,10 @@ const Child_history = ({ openSection, setOpenSection, formData, handleInputChang
                     </div>
 
                     <div className="flex justify-center pt-4">
-                        <button className="hover:bg-slate-700 text-white px-8 py-3 rounded-md bg-slate-800 transition-colors">
+                        <button 
+                            onClick={handleSave}
+                            className="hover:bg-slate-700 text-white px-8 py-3 rounded-md bg-slate-800 transition-colors"
+                        >
                             Save
                         </button>
                     </div>

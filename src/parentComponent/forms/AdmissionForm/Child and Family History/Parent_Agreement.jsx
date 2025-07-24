@@ -1,10 +1,83 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { CheckboxGroup } from './InputComponent';
 import { UpIcon, DownIcon } from './Arrows';
 
 
 
-const Parent_Agreement = ({ openSection, setOpenSection, formData, handleInputChange }) => {
+const Parent_Agreement = ({ openSection, setOpenSection, formData, handleInputChange, initialFormData, childId }) => {
+    const [localFormData, setLocalFormData] = useState({
+        agree_all_above_info_is_correct: []
+    });
+
+    const handleCheckboxChange = (name, updatedValues) => {
+        setLocalFormData(prevState => ({
+            ...prevState,
+            [name]: updatedValues
+        }));
+    };
+
+    useEffect(() => {
+        setLocalFormData(prevState => ({
+            ...prevState
+        }));
+    }, []);
+
+    useEffect(() => {
+        if (initialFormData) {
+            setLocalFormData(prevState => ({
+                child_id: childId,
+                agree_all_above_info_is_correct: initialFormData.agree_all_above_info_is_correct === 'on' ? ['I agree all the above information is correct.'] : []
+            }));
+        }
+    }, [initialFormData, childId]);
+
+    const updateAdmissionData = async (fieldData) => {
+        if (!childId) {
+            console.error('Child ID is required for API update');
+            return;
+        }
+
+        try {
+            const response = await fetch(`https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/admission_form/update/${childId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(fieldData)
+            });
+
+            if (!response.ok) {
+                throw new Error(`Failed to update admission data: ${response.status}`);
+            }
+
+            const result = await response.json();
+            console.log('Admission data updated successfully:', result);
+            return result;
+        } catch (error) {
+            console.error('Error updating admission data:', error);
+            throw error;
+        }
+    };
+
+    const handleSave = async () => {
+        if (!childId) {
+            alert('Error: Child ID is missing');
+            return;
+        }
+
+        try {
+            const saveData = {
+                child_id: childId,
+                agree_all_above_info_is_correct: localFormData.agree_all_above_info_is_correct.includes('I agree all the above information is correct.') ? 'on' : ''
+            };
+            console.log(saveData);
+            await updateAdmissionData(saveData);
+            alert('Parent agreement data saved successfully!');
+        } catch (error) {
+            console.error('Failed to save Parent agreement data:', error);
+            alert('Error saving Parent agreement data. Please try again.');
+        }
+    };
     return (
         <>
             <div
@@ -55,8 +128,8 @@ const Parent_Agreement = ({ openSection, setOpenSection, formData, handleInputCh
                                     { label: 'I agree all the above information is correct.', value: 'I agree all the above information is correct.' },
 
                                 ]}
-                                selectedValues={formData.fam_his_instructions}
-                                onChange={(updatedValues) => handleInputChange('hobbies', updatedValues)}
+                                selectedValues={localFormData.agree_all_above_info_is_correct}
+                                onChange={(updatedValues) => handleCheckboxChange('agree_all_above_info_is_correct', updatedValues)}
                             />
 
 
@@ -64,7 +137,10 @@ const Parent_Agreement = ({ openSection, setOpenSection, formData, handleInputCh
                     </div>
 
                     <div className="flex justify-center pt-4">
-                        <button className="hover:bg-slate-700 text-white px-8 py-3 rounded-md bg-slate-800 transition-colors">
+                        <button 
+                            onClick={handleSave}
+                            className="hover:bg-slate-700 text-white px-8 py-3 rounded-md bg-slate-800 transition-colors"
+                        >
                             Save
                         </button>
                     </div>

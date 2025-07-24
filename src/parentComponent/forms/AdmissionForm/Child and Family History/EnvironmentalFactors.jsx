@@ -1,8 +1,97 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { FormInput } from './InputComponent';
 import { UpIcon, DownIcon } from './Arrows';
 
-const EnvironmentalFactors = ({ openSection, setOpenSection, formData, handleInputChange }) => {
+const EnvironmentalFactors = ({ openSection, setOpenSection, formData, handleInputChange, initialFormData, childId }) => {
+    const [localFormData, setLocalFormData] = useState({
+        HowManyTimesHaveYouMovedInTheLastFiveYears: '',
+        EducationalToysGamesBooksUsedAtHome: '',
+        HowManyHoursOfTelevisionDaily: '',
+        LanguageUsedInTheHome: '',
+        HaveThereBeenAnyChangesInTheHomeSituationRecently: '',
+        WhatAreYourEducationalExpectationsOfYourChild: ''
+    });
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setLocalFormData(prevState => ({
+            ...prevState,
+            [name]: value
+        }));
+    };
+
+    useEffect(() => {
+        setLocalFormData(prevState => ({
+            ...prevState
+        }));
+    }, []);
+
+    useEffect(() => {
+        if (initialFormData) {
+            setLocalFormData(prevState => ({
+                child_id: childId,
+                HowManyTimesHaveYouMovedInTheLastFiveYears: initialFormData.last_five_years_moved || '',
+                EducationalToysGamesBooksUsedAtHome: initialFormData.things_used_at_home || '',
+                HowManyHoursOfTelevisionDaily: initialFormData.hours_of_television_daily || '',
+                LanguageUsedInTheHome: initialFormData.language_used_at_home || '',
+                HaveThereBeenAnyChangesInTheHomeSituationRecently: initialFormData.changes_at_home_situation || '',
+                WhatAreYourEducationalExpectationsOfYourChild: initialFormData.educational_expectations_of_child || ''
+            }));
+        }
+    }, [initialFormData, childId]);
+
+    const updateAdmissionData = async (fieldData) => {
+        if (!childId) {
+            console.error('Child ID is required for API update');
+            return;
+        }
+
+        try {
+            const response = await fetch(`https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/admission_form/update/${childId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(fieldData)
+            });
+
+            if (!response.ok) {
+                throw new Error(`Failed to update admission data: ${response.status}`);
+            }
+
+            const result = await response.json();
+            console.log('Admission data updated successfully:', result);
+            return result;
+        } catch (error) {
+            console.error('Error updating admission data:', error);
+            throw error;
+        }
+    };
+
+    const handleSave = async () => {
+        if (!childId) {
+            alert('Error: Child ID is missing');
+            return;
+        }
+
+        try {
+            const saveData = {
+                child_id: childId,
+                last_five_years_moved: localFormData.HowManyTimesHaveYouMovedInTheLastFiveYears,
+                things_used_at_home: localFormData.EducationalToysGamesBooksUsedAtHome,
+                hours_of_television_daily: localFormData.HowManyHoursOfTelevisionDaily,
+                language_used_at_home: localFormData.LanguageUsedInTheHome,
+                changes_at_home_situation: localFormData.HaveThereBeenAnyChangesInTheHomeSituationRecently,
+                educational_expectations_of_child: localFormData.WhatAreYourEducationalExpectationsOfYourChild
+            };
+            console.log(saveData);
+            await updateAdmissionData(saveData);
+            alert('Environmental factors data saved successfully!');
+        } catch (error) {
+            console.error('Failed to save Environmental factors data:', error);
+            alert('Error saving Environmental factors data. Please try again.');
+        }
+    };
     return (
         <>
             <div
@@ -50,48 +139,51 @@ const EnvironmentalFactors = ({ openSection, setOpenSection, formData, handleInp
 
                             <FormInput
                                 label="How many times have you moved in the last five years?"
-                                value={formData.HowManyTimesHaveYouMovedInTheLastFiveYears}
-                                onChange={(e) => handleInputChange('HowManyTimesHaveYouMovedInTheLastFiveYears', e.target.value)}
+                                value={localFormData.HowManyTimesHaveYouMovedInTheLastFiveYears}
+                                onChange={handleChange}
                                 name="HowManyTimesHaveYouMovedInTheLastFiveYears"
                             />
                             <FormInput
                                 label="Educational toys, games, books used at home?"
-                                value={formData.EducationalToysGamesBooksUsedAtHome}
-                                onChange={(e) => handleInputChange('EducationalToysGamesBooksUsedAtHome', e.target.value)}
+                                value={localFormData.EducationalToysGamesBooksUsedAtHome}
+                                onChange={handleChange}
                                 name="EducationalToysGamesBooksUsedAtHome"
                             />
 
                             <FormInput
                                 label="How many hours of television daily?"
-                                value={formData.HowManyHoursOfTelevisionDaily}
-                                onChange={(e) => handleInputChange('HowManyHoursOfTelevisionDaily', e.target.value)}
+                                value={localFormData.HowManyHoursOfTelevisionDaily}
+                                onChange={handleChange}
                                 name="HowManyHoursOfTelevisionDaily"
                             />
                             <FormInput
                                 label="Language used in the home?"
-                                value={formData.LanguageUsedInTheHome}
-                                onChange={(e) => handleInputChange('LanguageUsedInTheHome', e.target.value)}
+                                value={localFormData.LanguageUsedInTheHome}
+                                onChange={handleChange}
                                 name="LanguageUsedInTheHome"
                             />
 
                             <FormInput
                                 label="Have there been any changes in the home situation recently, i.e. addition/loss/death/divorce."
-                                value={formData.HaveThereBeenAnyChangesInTheHomeSituationRecently}
-                                onChange={(e) => handleInputChange('HaveThereBeenAnyChangesInTheHomeSituationRecently', e.target.value)}
+                                value={localFormData.HaveThereBeenAnyChangesInTheHomeSituationRecently}
+                                onChange={handleChange}
                                 name="HaveThereBeenAnyChangesInTheHomeSituationRecently"
                             />
 
                             <FormInput
                                 label="What are your educational expectations of your child?"
-                                value={formData.WhatAreYourEducationalExpectationsOfYourChild}
-                                onChange={(e) => handleInputChange('WhatAreYourEducationalExpectationsOfYourChild', e.target.value)}
+                                value={localFormData.WhatAreYourEducationalExpectationsOfYourChild}
+                                onChange={handleChange}
                                 name="WhatAreYourEducationalExpectationsOfYourChild"
                             />
                         </div>
                     </div>
 
                     <div className="flex justify-center pt-4">
-                        <button className="hover:bg-slate-700 text-white px-8 py-3 rounded-md bg-slate-800 transition-colors">
+                        <button 
+                            onClick={handleSave}
+                            className="hover:bg-slate-700 text-white px-8 py-3 rounded-md bg-slate-800 transition-colors"
+                        >
                             Save
                         </button>
                     </div>

@@ -1,8 +1,108 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { CheckboxGroup } from './InputComponent';
 import { UpIcon, DownIcon } from './Arrows';
 
-const FamilyHistory = ({ openSection, setOpenSection, formData, handleInputChange }) => {
+const FamilyHistory = ({ openSection, setOpenSection, formData, handleInputChange, initialFormData, childId }) => {
+    const [localFormData, setLocalFormData] = useState({
+        hobbies: [],
+        HeartProblems: [], 
+        Tuberculosis: [],
+        Asthma: [],
+        HighBloodPressure: [],
+        VisionProblems: [],
+        Diabetes: [],
+        Hyperactivity: [],
+        Epilepsy: [],
+        NoIllnesses: []
+    });
+
+    const handleCheckboxChange = (name, updatedValues) => {
+        setLocalFormData(prevState => ({
+            ...prevState,
+            [name]: updatedValues
+        }));
+    };
+
+    useEffect(() => {
+        setLocalFormData(prevState => ({
+            ...prevState
+        }));
+    }, []);
+
+    useEffect(() => {
+        if (initialFormData) {
+            setLocalFormData(prevState => ({
+                child_id: childId,
+                hobbies: initialFormData.family_history_allergies === 'on' ? ['allergies'] : [],
+                HeartProblems: initialFormData.family_history_heart_problems === 'on' ? ['HeartProblems'] : [],
+                Tuberculosis: initialFormData.family_history_tuberculosis === 'on' ? ['Tuberculosis'] : [],
+                Asthma: initialFormData.family_history_asthma === 'on' ? ['Asthma'] : [],
+                HighBloodPressure: initialFormData.family_history_high_blood_pressure === 'on' ? ['HighBloodPressure'] : [],
+                VisionProblems: initialFormData.family_history_vision_problems === 'on' ? ['VisionProblems'] : [],
+                Diabetes: initialFormData.family_history_diabetes === 'on' ? ['Diabetes'] : [],
+                Hyperactivity: initialFormData.family_history_hyperactivity === 'on' ? ['Hyperactivity'] : [],
+                Epilepsy: initialFormData.family_history_epilepsy === 'on' ? ['Epilepsy'] : [],
+                NoIllnesses: initialFormData.no_illnesses_for_this_child === 'on' ? ['NoIllnesses'] : []
+            }));
+        }
+    }, [initialFormData, childId]);
+
+    const updateAdmissionData = async (fieldData) => {
+        if (!childId) {
+            console.error('Child ID is required for API update');
+            return;
+        }
+
+        try {
+            const response = await fetch(`https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/admission_form/update/${childId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(fieldData)
+            });
+
+            if (!response.ok) {
+                throw new Error(`Failed to update admission data: ${response.status}`);
+            }
+
+            const result = await response.json();
+            console.log('Admission data updated successfully:', result);
+            return result;
+        } catch (error) {
+            console.error('Error updating admission data:', error);
+            throw error;
+        }
+    };
+
+    const handleSave = async () => {
+        if (!childId) {
+            alert('Error: Child ID is missing');
+            return;
+        }
+
+        try {
+            const saveData = {
+                child_id: childId,
+                family_history_allergies: localFormData.hobbies.includes('allergies') ? 'on' : '',
+                family_history_heart_problems: localFormData.HeartProblems.includes('HeartProblems') ? 'on' : '',
+                family_history_tuberculosis: localFormData.Tuberculosis.includes('Tuberculosis') ? 'on' : '',
+                family_history_asthma: localFormData.Asthma.includes('Asthma') ? 'on' : '',
+                family_history_high_blood_pressure: localFormData.HighBloodPressure.includes('HighBloodPressure') ? 'on' : '',
+                family_history_vision_problems: localFormData.VisionProblems.includes('VisionProblems') ? 'on' : '',
+                family_history_diabetes: localFormData.Diabetes.includes('Diabetes') ? 'on' : '',
+                family_history_hyperactivity: localFormData.Hyperactivity.includes('Hyperactivity') ? 'on' : '',
+                family_history_epilepsy: localFormData.Epilepsy.includes('Epilepsy') ? 'on' : '',
+                no_illnesses_for_this_child: localFormData.NoIllnesses.includes('NoIllnesses') ? 'on' : ''
+            };
+            console.log(saveData);
+            await updateAdmissionData(saveData);
+            alert('Family history data saved successfully!');
+        } catch (error) {
+            console.error('Failed to save Family history data:', error);
+            alert('Error saving Family history data. Please try again.');
+        }
+    };
     return (
         <>
             <div
@@ -55,8 +155,8 @@ const FamilyHistory = ({ openSection, setOpenSection, formData, handleInputChang
                                     { label: 'Allergies', value: 'allergies' },
 
                                 ]}
-                                selectedValues={formData.hobbies}
-                                onChange={(updatedValues) => handleInputChange('hobbies', updatedValues)}
+                                selectedValues={localFormData.hobbies}
+                                onChange={(updatedValues) => handleCheckboxChange('hobbies', updatedValues)}
                             />
 
 
@@ -67,8 +167,8 @@ const FamilyHistory = ({ openSection, setOpenSection, formData, handleInputChang
                                     { label: 'Heart Problems', value: 'HeartProblems' },
 
                                 ]}
-                                selectedValues={formData.HeartProblems}
-                                onChange={(updatedValues) => handleInputChange('HeartProblems', updatedValues)}
+                                selectedValues={localFormData.HeartProblems}
+                                onChange={(updatedValues) => handleCheckboxChange('HeartProblems', updatedValues)}
                             />
 
                             <CheckboxGroup
@@ -78,8 +178,8 @@ const FamilyHistory = ({ openSection, setOpenSection, formData, handleInputChang
                                     { label: 'Tuberculosis', value: 'Tuberculosis' },
 
                                 ]}
-                                selectedValues={formData.Tuberculosis}
-                                onChange={(updatedValues) => handleInputChange('Tuberculosis', updatedValues)}
+                                selectedValues={localFormData.Tuberculosis}
+                                onChange={(updatedValues) => handleCheckboxChange('Tuberculosis', updatedValues)}
                             />
 
                             <CheckboxGroup
@@ -89,8 +189,8 @@ const FamilyHistory = ({ openSection, setOpenSection, formData, handleInputChang
                                     { label: 'Asthma', value: 'Asthma' },
 
                                 ]}
-                                selectedValues={formData.Asthma}
-                                onChange={(updatedValues) => handleInputChange('Asthma', updatedValues)}
+                                selectedValues={localFormData.Asthma}
+                                onChange={(updatedValues) => handleCheckboxChange('Asthma', updatedValues)}
                             />
 
                             <CheckboxGroup
@@ -100,8 +200,8 @@ const FamilyHistory = ({ openSection, setOpenSection, formData, handleInputChang
                                     { label: 'High Blood Pressure', value: 'HighBloodPressure' },
 
                                 ]}
-                                selectedValues={formData.HighBloodPressure}
-                                onChange={(updatedValues) => handleInputChange('HighBloodPressure', updatedValues)}
+                                selectedValues={localFormData.HighBloodPressure}
+                                onChange={(updatedValues) => handleCheckboxChange('HighBloodPressure', updatedValues)}
                             />
                             <CheckboxGroup
                                 label=""
@@ -110,8 +210,8 @@ const FamilyHistory = ({ openSection, setOpenSection, formData, handleInputChang
                                     { label: 'Vision Problems', value: 'VisionProblems' },
 
                                 ]}
-                                selectedValues={formData.VisionProblems}
-                                onChange={(updatedValues) => handleInputChange('VisionProblems', updatedValues)}
+                                selectedValues={localFormData.VisionProblems}
+                                onChange={(updatedValues) => handleCheckboxChange('VisionProblems', updatedValues)}
                             />
 
                             <CheckboxGroup
@@ -121,8 +221,8 @@ const FamilyHistory = ({ openSection, setOpenSection, formData, handleInputChang
                                     { label: 'Diabetes', value: 'Diabetes' },
 
                                 ]}
-                                selectedValues={formData.Diabetes}
-                                onChange={(updatedValues) => handleInputChange('Diabetes', updatedValues)}
+                                selectedValues={localFormData.Diabetes}
+                                onChange={(updatedValues) => handleCheckboxChange('Diabetes', updatedValues)}
                             />
 
                             <CheckboxGroup
@@ -132,8 +232,8 @@ const FamilyHistory = ({ openSection, setOpenSection, formData, handleInputChang
                                     { label: 'Hyperactivity', value: 'Hyperactivity' },
 
                                 ]}
-                                selectedValues={formData.Hyperactivity}
-                                onChange={(updatedValues) => handleInputChange('Hyperactivity', updatedValues)}
+                                selectedValues={localFormData.Hyperactivity}
+                                onChange={(updatedValues) => handleCheckboxChange('Hyperactivity', updatedValues)}
                             />
 
                             <CheckboxGroup
@@ -143,8 +243,8 @@ const FamilyHistory = ({ openSection, setOpenSection, formData, handleInputChang
                                     { label: 'Epilepsy', value: 'Epilepsy' },
 
                                 ]}
-                                selectedValues={formData.Epilepsy}
-                                onChange={(updatedValues) => handleInputChange('Epilepsy', updatedValues)}
+                                selectedValues={localFormData.Epilepsy}
+                                onChange={(updatedValues) => handleCheckboxChange('Epilepsy', updatedValues)}
                             />
                             <CheckboxGroup
                                 label=""
@@ -153,14 +253,17 @@ const FamilyHistory = ({ openSection, setOpenSection, formData, handleInputChang
                                     { label: 'No Illnesses', value: 'NoIllnesses' },
 
                                 ]}
-                                selectedValues={formData.NoIllnesses}
-                                onChange={(updatedValues) => handleInputChange('NoIllnesses', updatedValues)}
+                                selectedValues={localFormData.NoIllnesses}
+                                onChange={(updatedValues) => handleCheckboxChange('NoIllnesses', updatedValues)}
                             />
                         </div>
                     </div>
 
                     <div className="flex justify-center pt-4">
-                        <button className="hover:bg-slate-700 text-white px-8 py-3 rounded-md bg-slate-800 transition-colors">
+                        <button 
+                            onClick={handleSave}
+                            className="hover:bg-slate-700 text-white px-8 py-3 rounded-md bg-slate-800 transition-colors"
+                        >
                             Save
                         </button>
                     </div>

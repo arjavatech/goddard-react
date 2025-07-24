@@ -19,7 +19,8 @@ const ToiletLearning = ({ expandedSections, toggleSection, formData, handleInput
     }));
   };
 
-  const handleRadioChange = (name, value) => {
+  const handleRadioChange = (e) => {
+    const { name, value } = e.target;
     setLocalFormData(prevState => ({
       ...prevState,
       [name]: value

@@ -1,8 +1,120 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { FormInput, RadioGroup } from './InputComponent';
 import { UpIcon, DownIcon } from './Arrows';
 
-const PregnancyAndInfantHistory = ({ openSection, setOpenSection, formData, handleInputChange }) => {
+const PregnancyAndInfantHistory = ({ openSection, setOpenSection, formData, handleInputChange, initialFormData, childId }) => {
+    const [localFormData, setLocalFormData] = useState({
+        IllnessDuringPregnancy: '',
+        ConditionOfNewborn: '',
+        DurationOfPregnancy: '',
+        BirthWeight: '',
+        Complications: '',
+        BottleFed: '',
+        BreastFed: '',
+        Name: '',
+        Age: ''
+    });
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setLocalFormData(prevState => ({
+            ...prevState,
+            [name]: value
+        }));
+    };
+
+    const handleRadioChange = (e) => {
+        const { name, value } = e.target;
+        setLocalFormData(prevState => ({
+            ...prevState,
+            [name]: value
+        }));
+    };
+
+    useEffect(() => {
+        setLocalFormData(prevState => ({
+            ...prevState
+        }));
+    }, []);
+
+    useEffect(() => {
+        if (initialFormData) {
+            setLocalFormData(prevState => ({
+                child_id: childId,
+                IllnessDuringPregnancy: initialFormData.illness_during_pregnancy || '',
+                ConditionOfNewborn: initialFormData.condition_of_newborn || '',
+                DurationOfPregnancy: initialFormData.duration_of_pregnancy || '',
+                BirthWeight: `${initialFormData.birth_weight_lbs || ''} lbs ${initialFormData.birth_weight_oz || ''} oz`,
+                Complications: initialFormData.complications || '',
+                BottleFed: initialFormData.bottle_fed === 1 ? 'yes' : (initialFormData.bottle_fed === 2 ? 'no' : ''),
+                BreastFed: initialFormData.breast_fed === 1 ? 'yes' : (initialFormData.breast_fed === 2 ? 'no' : ''),
+                Name: initialFormData.other_siblings_name || '',
+                Age: initialFormData.other_siblings_age || ''
+            }));
+        }
+    }, [initialFormData, childId]);
+
+    const updateAdmissionData = async (fieldData) => {
+        if (!childId) {
+            console.error('Child ID is required for API update');
+            return;
+        }
+
+        try {
+            const response = await fetch(`https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/admission_form/update/${childId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(fieldData)
+            });
+
+            if (!response.ok) {
+                throw new Error(`Failed to update admission data: ${response.status}`);
+            }
+
+            const result = await response.json();
+            console.log('Admission data updated successfully:', result);
+            return result;
+        } catch (error) {
+            console.error('Error updating admission data:', error);
+            throw error;
+        }
+    };
+
+    const handleSave = async () => {
+        if (!childId) {
+            alert('Error: Child ID is missing');
+            return;
+        }
+
+        try {
+            // Parse birth weight
+            const birthWeightMatch = localFormData.BirthWeight.match(/(\d+)?\s*lbs?\s*(\d+)?\s*oz?/i);
+            const lbs = birthWeightMatch?.[1] || '';
+            const oz = birthWeightMatch?.[2] || '';
+
+            const saveData = {
+                child_id: childId,
+                illness_during_pregnancy: localFormData.IllnessDuringPregnancy,
+                condition_of_newborn: localFormData.ConditionOfNewborn,
+                duration_of_pregnancy: localFormData.DurationOfPregnancy,
+                birth_weight_lbs: lbs,
+                birth_weight_oz: oz,
+                complications: localFormData.Complications,
+                bottle_fed: localFormData.BottleFed === 'yes' ? 1 : (localFormData.BottleFed === 'no' ? 2 : 2),
+                breast_fed: localFormData.BreastFed === 'yes' ? 1 : (localFormData.BreastFed === 'no' ? 2 : 2),
+                other_siblings_name: localFormData.Name,
+                other_siblings_age: localFormData.Age
+            };
+            console.log(saveData);
+            await updateAdmissionData(saveData);
+            alert('Pregnancy and infant history data saved successfully!');
+        } catch (error) {
+            console.error('Failed to save Pregnancy and infant history data:', error);
+            alert('Error saving Pregnancy and infant history data. Please try again.');
+        }
+    };
     return (
         <>
             <div
@@ -52,14 +164,14 @@ const PregnancyAndInfantHistory = ({ openSection, setOpenSection, formData, hand
 
                             <FormInput
                                 label="Illness during pregnancy"
-                                value={formData.IllnessDuringPregnancy}
-                                onChange={(e) => handleInputChange('IllnessDuringPregnancy', e.target.value)}
+                                value={localFormData.IllnessDuringPregnancy}
+                                onChange={handleChange}
                                 name="IllnessDuringPregnancy"
                             />
                             <FormInput
                                 label="Condition of Newborn"
-                                value={formData.ConditionOfNewborn}
-                                onChange={(e) => handleInputChange('ConditionOfNewborn', e.target.value)}
+                                value={localFormData.ConditionOfNewborn}
+                                onChange={handleChange}
                                 name="ConditionOfNewborn"
                             />
 
@@ -68,35 +180,29 @@ const PregnancyAndInfantHistory = ({ openSection, setOpenSection, formData, hand
                         <div className="grid md:grid-cols-3 gap-4">
                             <FormInput
                                 label="Duration of pregnancy"
-                                value={formData.DurationOfPregnancy}
-                                onChange={(e) => handleInputChange('DurationOfPregnancy', e.target.value)}
+                                value={localFormData.DurationOfPregnancy}
+                                onChange={handleChange}
                                 name="DurationOfPregnancy"
                             />
                             <FormInput
                                 label="Birth Weight"
-                                value={formData.BirthWeight}
-                                onChange={(e) => handleInputChange('BirthWeight', e.target.value)}
-                                name="Birth Weight"
+                                value={localFormData.BirthWeight}
+                                onChange={handleChange}
+                                name="BirthWeight"
                             />
 
                             <FormInput
-                                label="Birth Weight"
-                                value={formData.BirthWeight}
-                                onChange={(e) => handleInputChange('BirthWeight', e.target.value)}
-                                name="BirthWeight"
-                            />
-                            <FormInput
                                 label="Complications"
-                                value={formData.Complications}
-                                onChange={(e) => handleInputChange('Complications', e.target.value)}
+                                value={localFormData.Complications}
+                                onChange={handleChange}
                                 name="Complications"
                             />
 
                             <RadioGroup
                                 label="Bottle Fed?"
                                 name="BottleFed"
-                                selectedValue={formData.BottleFed}
-                                onChange={(e) => handleInputChange('BottleFed', e.target.value)}
+                                selectedValue={localFormData.BottleFed}
+                                onChange={handleRadioChange}
                                 options={[
                                     { label: 'Yes', value: 'yes' },
                                     { label: 'No', value: 'no' },
@@ -106,8 +212,8 @@ const PregnancyAndInfantHistory = ({ openSection, setOpenSection, formData, hand
                             <RadioGroup
                                 label="Breast Fed?"
                                 name="BreastFed"
-                                selectedValue={formData.BreastFed}
-                                onChange={(e) => handleInputChange('BreastFed', e.target.value)}
+                                selectedValue={localFormData.BreastFed}
+                                onChange={handleRadioChange}
                                 options={[
                                     { label: 'Yes', value: 'yes' },
                                     { label: 'No', value: 'no' },
@@ -126,14 +232,14 @@ const PregnancyAndInfantHistory = ({ openSection, setOpenSection, formData, hand
 
                             <FormInput
                                 label="Name"
-                                value={formData.Name}
-                                onChange={(e) => handleInputChange('Name', e.target.value)}
+                                value={localFormData.Name}
+                                onChange={handleChange}
                                 name="Name"
                             />
                             <FormInput
                                 label="Age"
-                                value={formData.Age}
-                                onChange={(e) => handleInputChange('Age', e.target.value)}
+                                value={localFormData.Age}
+                                onChange={handleChange}
                                 name="Age"
                             />
 
@@ -142,7 +248,10 @@ const PregnancyAndInfantHistory = ({ openSection, setOpenSection, formData, hand
                     </div>
 
                     <div className="flex justify-center pt-4">
-                        <button className="hover:bg-slate-700 text-white px-8 py-3 rounded-md bg-slate-800 transition-colors">
+                        <button 
+                            onClick={handleSave}
+                            className="hover:bg-slate-700 text-white px-8 py-3 rounded-md bg-slate-800 transition-colors"
+                        >
                             Save
                         </button>
                     </div>

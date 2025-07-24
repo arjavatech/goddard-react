@@ -41,64 +41,61 @@ const ChildandFamilyHistory = ({ initialFormData = null, childId = null }) => {
     };
 
     const [formData, setFormData] = useState({
-        // General Info
-        DateOfLastPhysicalExam: '',
-        DateOfLastDentalExam: '',
-        HowManyTimesHaveYouMovedInTheLastFiveYears: '',
-        EducationalToysGamesBooksUsedAtHome: '',
-        HowManyHoursOfTelevisionDaily: '',
-        LanguageUsedInTheHome: '',
-        HaveThereBeenAnyChangesInTheHomeSituationRecently: '',
-        WhatAreYourEducationalExpectationsOfYourChild: '',
-
-        // Parent Agreement / Medical History
-        AllergiesFoodDrug: '',
-        Asthma: '',
-        BleedingProblems: '',
-        Diabetes: '',
-        Epilepsy: '',
-        FrequentEarInfections: '',
-        FrequentIllnesses: '',
-        HearingProblems: '',
-        HighFevers: '',
-        Hospitialization: '',
-        RheumaticFever: '',
-        SeizuresConvulsions: '',
-        SeriousInjuriesAccidents: '',
-        Surgeries: '',
-        VisionProblems: '',
-        Other: '',
-
-        // Additional legacy fields (if used elsewhere)
+        physical_exam_last_date: '',
+        dental_exam_last_date: '',
         allergies: '',
-        HeartProblems: '',
-        Tuberculosis: '',
-        Hyperactivity: '',
-        NoIllnesses: '',
-
-        // Pregnancy And Infant History
-        IllnessDuringPregnancy: '',
-        ConditionOfNewborn: '',
-        DurationOfPregnancy: '',
-        BirthWeight: '',
-        Complications: '',
-        BottleFed: '',
-        BreastFed: '',
-
-        // Other Siblings
-        Name: '',
-        Age: '',
-
-        // Social Behavior fields
-        AgeGroupOfFriends: '',
-        NeighborhoodFriends: '',
-        RelationshipWithMother: '',
-        RelationshipWithFather: '',
-        RelationshipWithSiblings: '',
-        RelationshipWithExtendedFamily: '',
-        FearsAndConflicts: '',
-        ChildsResponseToFrustration: '',
-        FavoriteActivities: '',
+        asthma: '',
+        bleeding_problems: '',
+        diabetes: '',
+        epilepsy: '',
+        frequent_ear_infections: '',
+        frequent_illnesses: '',
+        hearing_problems: '',
+        high_fevers: '',
+        hospitalization: '',
+        rheumatic_fever: '',
+        seizures_convulsions: '',
+        serious_injuries_accidents: '',
+        surgeries: '',
+        vision_problems: '',
+        medical_other: '',
+        illness_during_pregnancy: '',
+        condition_of_newborn: '',
+        duration_of_pregnancy: '',
+        birth_weight_lbs: '',
+        birth_weight_oz: '',
+        complications: '',
+        bottle_fed: '',
+        breast_fed: '',
+        other_siblings_name: '',
+        other_siblings_age: '',
+        family_history_allergies: '',
+        family_history_heart_problems: '',
+        family_history_tuberculosis: '',
+        family_history_asthma: '',
+        family_history_high_blood_pressure: '',
+        family_history_vision_problems: '',
+        family_history_diabetes: '',
+        family_history_hyperactivity: '',
+        family_history_epilepsy: '',
+        no_illnesses_for_this_child: '',
+        age_group_friends: '',
+        neighborhood_friends: '',
+        relationship_with_mother: '',
+        relationship_with_father: '',
+        relationship_with_siblings: '',
+        relationship_with_extended_family: '',
+        fears_conflicts: '',
+        child_response_frustration: '',
+        favorite_activities: '',
+        last_five_years_moved: '',
+        things_used_at_home: '',
+        hours_of_television_daily: '',
+        language_used_at_home: '',
+        changes_at_home_situation: '',
+        educational_expectations_of_child: '',
+        fam_his_instructions: '',
+        agree_all_above_info_is_correct: ""
     });
 
 
@@ -270,6 +267,8 @@ const ChildandFamilyHistory = ({ initialFormData = null, childId = null }) => {
                             setOpenSection={setOpenSection}
                             formData={formData}
                             handleInputChange={handleInputChange}
+                            initialFormData={initialFormData}
+                            childId={childId}
                         />
                     </div>
 
@@ -279,6 +278,8 @@ const ChildandFamilyHistory = ({ initialFormData = null, childId = null }) => {
                             setOpenSection={setOpenSection}
                             formData={formData}
                             handleInputChange={handleInputChange}
+                            initialFormData={initialFormData}
+                            childId={childId}
                         />
                     </div>
 
@@ -287,7 +288,9 @@ const ChildandFamilyHistory = ({ initialFormData = null, childId = null }) => {
                             openSection={openSection}
                             setOpenSection={setOpenSection}
                             formData={formData}
-                            handleInputChange={handleInputChange} />
+                            handleInputChange={handleInputChange}
+                            initialFormData={initialFormData}
+                            childId={childId} />
                     </div>
 
                     <div className='border mt-px'>
@@ -295,7 +298,9 @@ const ChildandFamilyHistory = ({ initialFormData = null, childId = null }) => {
                             openSection={openSection}
                             setOpenSection={setOpenSection}
                             formData={formData}
-                            handleInputChange={handleInputChange} />
+                            handleInputChange={handleInputChange}
+                            initialFormData={initialFormData}
+                            childId={childId} />
                     </div>
 
                     <div className='border mt-px'>
@@ -303,7 +308,9 @@ const ChildandFamilyHistory = ({ initialFormData = null, childId = null }) => {
                             openSection={openSection}
                             setOpenSection={setOpenSection}
                             formData={formData}
-                            handleInputChange={handleInputChange} />
+                            handleInputChange={handleInputChange}
+                            initialFormData={initialFormData}
+                            childId={childId} />
                     </div>
 
                     <div className='border mt-px'>
@@ -311,7 +318,9 @@ const ChildandFamilyHistory = ({ initialFormData = null, childId = null }) => {
                             openSection={openSection}
                             setOpenSection={setOpenSection}
                             formData={formData}
-                            handleInputChange={handleInputChange} />
+                            handleInputChange={handleInputChange}
+                            initialFormData={initialFormData}
+                            childId={childId} />
                     </div>
 
                     <div className='border mt-px'>
@@ -319,7 +328,9 @@ const ChildandFamilyHistory = ({ initialFormData = null, childId = null }) => {
                             openSection={openSection}
                             setOpenSection={setOpenSection}
                             formData={formData}
-                            handleInputChange={handleInputChange} />
+                            handleInputChange={handleInputChange}
+                            initialFormData={initialFormData}
+                            childId={childId} />
                     </div>
                 </div>
 

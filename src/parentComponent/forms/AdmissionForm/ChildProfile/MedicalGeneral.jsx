@@ -74,7 +74,8 @@ const MedicalGeneral = ({ initialFormData = null, expandedSections, toggleSectio
     }));
   };
 
-  const handleRadioChange = (name, value) => {
+  const handleRadioChange = (e) => {
+    const { name, value } = e.target;
     setLocalFormData(prevState => ({
       ...prevState,
       [name]: value
