@@ -125,7 +125,6 @@ const EnrollmentForm = ({ selectedSubForm = null, initialFormData = null, childI
 const handleSubmit = async (type) => {
     // Handle submit functionality
     if (type === 'parent') {
-      handleSave();
       if (!childId) {
       alert('Error: Child ID is missing');
       return;
@@ -154,7 +153,6 @@ const handleSubmit = async (type) => {
       alert('Error saving enrollment form data. Please try again.');
     }
     } else if (type === 'admin') {
-      handleSave();
       if (!childId) {
       alert('Error: Child ID is missing');
       return;

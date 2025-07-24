@@ -9,7 +9,36 @@ import EnvironmentalFactors from './EnvironmentalFactors';
 import Parent_Agreement from './Parent_Agreement'
 
 
-const ChildandFamilyHistory = ({ initialFormData = null }) => {
+const ChildandFamilyHistory = ({ initialFormData = null, childId = null }) => {
+
+    // API function to update admission form data
+    const updateAdmissionData = async (fieldData) => {
+        if (!childId) {
+            console.error('Child ID is required for API update');
+            return;
+        }
+
+        try {
+            const response = await fetch(`https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/admission_form/update/${childId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(fieldData)
+            });
+
+            if (!response.ok) {
+                throw new Error(`Failed to update admission data: ${response.status}`);
+            }
+
+            const result = await response.json();
+            console.log('Admission data updated successfully:', result);
+            return result;
+        } catch (error) {
+            console.error('Error updating admission data:', error);
+            throw error;
+        }
+    };
 
     const [formData, setFormData] = useState({
         // General Info
@@ -78,6 +107,79 @@ const ChildandFamilyHistory = ({ initialFormData = null }) => {
 
     const handleInputChange = (field, value) => {
         setFormData(prev => ({ ...prev, [field]: value }));
+    };
+
+    const handleSave = async () => {
+        if (!childId) {
+            alert('Error: Child ID is missing');
+            return;
+        }
+
+        try {
+            // Map form data back to API field names
+            const saveData = {
+                child_id: childId,
+                // General Info
+                physical_exam_last_date: formData.DateOfLastPhysicalExam,
+                dental_exam_last_date: formData.DateOfLastDentalExam,
+                last_five_years_moved: formData.HowManyTimesHaveYouMovedInTheLastFiveYears,
+                things_used_at_home: formData.EducationalToysGamesBooksUsedAtHome,
+                hours_of_television_daily: formData.HowManyHoursOfTelevisionDaily,
+                language_used_at_home: formData.LanguageUsedInTheHome,
+                changes_at_home_situation: formData.HaveThereBeenAnyChangesInTheHomeSituationRecently,
+                educational_expectations_of_child: formData.WhatAreYourEducationalExpectationsOfYourChild,
+
+                // Medical History
+                allergies: formData.AllergiesFoodDrug,
+                asthma: formData.Asthma,
+                bleeding_problems: formData.BleedingProblems,
+                diabetes: formData.Diabetes,
+                epilepsy: formData.Epilepsy,
+                frequent_ear_infections: formData.FrequentEarInfections,
+                frequent_illnesses: formData.FrequentIllnesses,
+                hearing_problems: formData.HearingProblems,
+                high_fevers: formData.HighFevers,
+                hospitalization: formData.Hospitialization,
+                rheumatic_fever: formData.RheumaticFever,
+                seizures_convulsions: formData.SeizuresConvulsions,
+                serious_injuries_accidents: formData.SeriousInjuriesAccidents,
+                surgeries: formData.Surgeries,
+                vision_problems: formData.VisionProblems,
+                medical_other: formData.Other,
+
+                // Family History
+                family_history_heart_problems: formData.HeartProblems,
+                family_history_tuberculosis: formData.Tuberculosis,
+                family_history_hyperactivity: formData.Hyperactivity,
+                no_illnesses_for_this_child: formData.NoIllnesses,
+
+                // Pregnancy And Infant History
+                illness_during_pregnancy: formData.IllnessDuringPregnancy,
+                condition_of_newborn: formData.ConditionOfNewborn,
+                duration_of_pregnancy: formData.DurationOfPregnancy,
+                birth_weight: formData.BirthWeight,
+                complications: formData.Complications,
+                bottle_fed: formData.BottleFed,
+                breast_fed: formData.BreastFed,
+
+                // Social Behavior
+                age_group_of_friends: formData.AgeGroupOfFriends,
+                neighborhood_friends: formData.NeighborhoodFriends,
+                relationship_with_mother: formData.RelationshipWithMother,
+                relationship_with_father: formData.RelationshipWithFather,
+                relationship_with_siblings: formData.RelationshipWithSiblings,
+                relationship_with_extended_family: formData.RelationshipWithExtendedFamily,
+                fears_and_conflicts: formData.FearsAndConflicts,
+                childs_response_to_frustration: formData.ChildsResponseToFrustration,
+                favorite_activities: formData.FavoriteActivities
+            };
+
+            await updateAdmissionData(saveData);
+            alert('Child and Family History saved successfully!');
+        } catch (error) {
+            console.error('Failed to save child and family history:', error);
+            alert('Error saving child and family history. Please try again.');
+        }
     };
 
     useEffect(() => {
@@ -219,6 +321,16 @@ const ChildandFamilyHistory = ({ initialFormData = null }) => {
                             formData={formData}
                             handleInputChange={handleInputChange} />
                     </div>
+                </div>
+
+                {/* Save Button */}
+                <div className="text-center mt-6 mb-4">
+                    <button 
+                        className="bg-[#0F2D52] hover:bg-[#093567] text-white font-semibold px-8 py-2 rounded"
+                        onClick={handleSave}
+                    >
+                        Save Child and Family History
+                    </button>
                 </div>
             </div>
         </>

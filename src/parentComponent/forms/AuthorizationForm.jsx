@@ -91,7 +91,7 @@ const AuthorizationForm = ({ selectedSubForm = null, initialFormData = null, chi
   const handleSubmit = async (type) => {
     // Handle submit functionality
     if (type === 'parent') {
-      handleSave();
+
       if (!childId) {
       alert('Error: Child ID is missing');
       return;
@@ -120,7 +120,7 @@ const AuthorizationForm = ({ selectedSubForm = null, initialFormData = null, chi
       alert('Error saving authorization form data. Please try again.');
     }
     } else if (type === 'admin') {
-      handleSave();
+
       if (!childId) {
       alert('Error: Child ID is missing');
       return;

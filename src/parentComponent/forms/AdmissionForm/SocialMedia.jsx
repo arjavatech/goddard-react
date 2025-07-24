@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import CheckboxWithLabel from "./CheckboxWithLabel";
 
-export default function SocialMediaReleaseForm({initialFormData = null}) {
+export default function SocialMediaReleaseForm({initialFormData = null, childId}) {
   const [approval, setApproval] = useState(initialFormData.approve_social_media_post);
   const [printedName, setPrintedName] = useState(initialFormData.printed_name_social_media_post);
   const [agreed, setAgreed] = useState(initialFormData.do_you_agree_this_social_media_post == 'on');
@@ -12,6 +12,61 @@ export default function SocialMediaReleaseForm({initialFormData = null}) {
       alert('Form submitted successfully!');
     } else {
       alert('Please complete all fields.');
+    }
+  };
+
+  const updateAdmissionData = async (fieldData) => {
+    if (!childId) {
+      console.error('Child ID is required for API update');
+      return;
+    }
+
+    try {
+      const response = await fetch(`https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/admission_segment/${childId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(fieldData)
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to update Admission data: ${response.status}`);
+      }
+
+      const result = await response.json();
+      console.log('Admission data updated successfully:', result);
+      return result;
+    } catch (error) {
+      console.error('Error updating Admission data:', error);
+      throw error;
+    }
+  };
+
+
+    const handleSave = async () => {
+    if (!childId) {
+      alert('Error: Child ID is missing');
+      return;
+    }
+
+    try {
+      // Prepare the complete form data for API call including child_id
+      const saveData = {
+        child_id: childId,
+        approve_social_media_post: approval,
+        printed_name_social_media_post: printedName,
+        do_you_agree_this_social_media_post: agreed ? 'on' : 'off'
+      };
+
+      // Call the API to save all form data
+      await updateAdmissionData(saveData);
+      
+      // Show success alert
+      alert('Admission form data saved successfully!');
+    } catch (error) {
+      console.error('Failed to save Admission form:', error);
+      alert('Error saving Admission form data. Please try again.');
     }
   };
 
@@ -106,6 +161,7 @@ export default function SocialMediaReleaseForm({initialFormData = null}) {
             <button
               type="submit"
               className="bg-[#0F2D52] hover:bg-[#093567] text-white font-semibold px-8 py-2 "
+                onClick={handleSave}
             >
               Save
             </button>

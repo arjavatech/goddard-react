@@ -1,14 +1,70 @@
 import React, { useState } from 'react';
 import CheckboxWithLabel from './CheckboxWithLabel';
 
-const PickUpPassword = ({initialFormData = null}) => {
-  const [password, setPassword] = useState(initialFormData.child_password_pick_up_password_form ?? '');
-  const [agree, setAgree] = useState(initialFormData.do_you_agree_this_pick_up_password_form == 'on');
+const PickUpPassword = ({initialFormData = null, childId = null}) => {
+  const [password, setPassword] = useState('');
+  const [agree, setAgree] = useState(false);
 
-  const handleSave = () => {
+  // API function to update admission form data
+  const updateAdmissionData = async (fieldData) => {
+    if (!childId) {
+      console.error('Child ID is required for API update');
+      return;
+    }
+
+    try {
+      const response = await fetch(`https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/admission_segment/${childId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(fieldData)
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to update admission data: ${response.status}`);
+      }
+
+      const result = await response.json();
+      console.log('Admission data updated successfully:', result);
+      return result;
+    } catch (error) {
+      console.error('Error updating admission data:', error);
+      throw error;
+    }
+  };
+
+  // Initialize form data from props
+  React.useEffect(() => {
+    if (initialFormData) {
+      setPassword(initialFormData.child_password_pick_up_password_form ?? '');
+      setAgree(initialFormData.do_you_agree_this_pick_up_password_form == 'on');
+    }
+  }, [initialFormData]);
+
+  const handleSave = async () => {
+    if (!childId) {
+      alert('Error: Child ID is missing');
+      return;
+    }
+
     if (!password || !agree) {
       alert('Please enter the password and agree to the instructions.');
       return;
+    }
+
+    try {
+      const saveData = {
+        child_id: childId,
+        child_password_pick_up_password_form: password,
+        do_you_agree_this_pick_up_password_form: agree ? 'on' : 'off'
+      };
+
+      await updateAdmissionData(saveData);
+      alert('Pick-up password saved successfully!');
+    } catch (error) {
+      console.error('Failed to save pick-up password:', error);
+      alert('Error saving pick-up password. Please try again.');
     }
   };
 

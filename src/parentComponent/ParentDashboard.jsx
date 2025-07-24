@@ -314,6 +314,7 @@ const ParentDashboard = () => {
            <AdmissionForm 
              selectedSubForm={selectedSubForm}
              initialFormData={childFormData}
+             childId={activeChildId}
            />
             {/* <h3 className="text-lg font-semibold text-[#0F2D52] mb-4">Admission Forms</h3>
             <p className="text-gray-600">Admission forms will be loaded here by another team...</p> */}

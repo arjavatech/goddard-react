@@ -129,7 +129,6 @@ const ParentHandbook = ({ selectedSubForm = null, initialFormData = null, childI
 const handleSubmit = async (type) => {
     // Handle submit functionality
     if (type === 'parent') {
-      handleSave();
       if (!childId) {
       alert('Error: Child ID is missing');
       return;
@@ -158,7 +157,6 @@ const handleSubmit = async (type) => {
       alert('Error saving Parent Handbook form data. Please try again.');
     }
     } else if (type === 'admin') {
-      handleSave();
       if (!childId) {
       alert('Error: Child ID is missing');
       return;

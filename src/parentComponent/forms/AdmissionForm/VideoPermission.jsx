@@ -1,10 +1,39 @@
 import React, { useState, useEffect } from 'react';
 import CheckboxWithLabel from './CheckboxWithLabel';
 
-export default function VideoPermission({ initialFormData = null }) {
+export default function VideoPermission({ initialFormData = null, childId = null }) {
   const [agreePhotos, setAgreePhotos] = useState(false);
   const [agreeGroup, setAgreeGroup] = useState(false);
   const [photoUsageType, setPhotoUsageType] = useState('');
+
+  // API function to update admission form data
+  const updateAdmissionData = async (fieldData) => {
+    if (!childId) {
+      console.error('Child ID is required for API update');
+      return;
+    }
+
+    try {
+      const response = await fetch(`https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/admission_form/update/${childId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(fieldData)
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to update admission data: ${response.status}`);
+      }
+
+      const result = await response.json();
+      console.log('Admission data updated successfully:', result);
+      return result;
+    } catch (error) {
+      console.error('Error updating admission data:', error);
+      throw error;
+    }
+  };
 
   useEffect(() => {
     if (initialFormData) {
@@ -21,6 +50,28 @@ export default function VideoPermission({ initialFormData = null }) {
 
   const handleAgreeGroupChange = (checked) => {
     setAgreeGroup(checked);
+  };
+
+  const handleSave = async () => {
+    if (!childId) {
+      alert('Error: Child ID is missing');
+      return;
+    }
+
+    try {
+      const saveData = {
+        child_id: childId,
+        photo_usage_photo_video_permission_form: photoUsageType,
+        photo_permission_agree_group_photos_electronic: agreePhotos ? 'on' : 'off',
+        do_you_agree_this_photo_video_permission_form: agreeGroup ? 'on' : 'off'
+      };
+
+      await updateAdmissionData(saveData);
+      alert('Video permission data saved successfully!');
+    } catch (error) {
+      console.error('Failed to save video permission:', error);
+      alert('Error saving video permission data. Please try again.');
+    }
   };
 
   return (
@@ -102,7 +153,10 @@ export default function VideoPermission({ initialFormData = null }) {
 
             {/* Save Button */}
             <div className="text-center pt-6">
-              <button className="bg-[#0F2D52] hover:bg-[#093567] text-white font-semibold px-8 py-2">
+              <button 
+                className="bg-[#0F2D52] hover:bg-[#093567] text-white font-semibold px-8 py-2"
+                onClick={handleSave}
+              >
                 Save
               </button>
             </div>

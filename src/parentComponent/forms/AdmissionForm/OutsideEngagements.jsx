@@ -1,16 +1,64 @@
 import React, { useState } from "react";
 import CheckboxWithLabel from "./CheckboxWithLabel";
 
-export default function OutsideEngagements({initialFormData = null }) {
+export default function OutsideEngagements({initialFormData = null, childId }) {
     const [agreePhotos, setAgreePhotos] = useState(initialFormData.parent_sign_outside_waiver == 'on');
     const [submitted, setSubmitted] = useState(false);
 
-    const handleSave = () => {
-        setSubmitted(true);
-        if (agreePhotos) {
-            alert("Form saved successfully!");
-        }
-    };
+    
+
+    const updateAdmissionData = async (fieldData) => {
+    if (!childId) {
+      console.error('Child ID is required for API update');
+      return;
+    }
+
+    try {
+      const response = await fetch(`https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/admission_segment/${childId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(fieldData)
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to update Admission data: ${response.status}`);
+      }
+
+      const result = await response.json();
+      console.log('Admission data updated successfully:', result);
+      return result;
+    } catch (error) {
+      console.error('Error updating Admission data:', error);
+      throw error;
+    }
+  };
+
+
+    const handleSave = async () => {
+    if (!childId) {
+      alert('Error: Child ID is missing');
+      return;
+    }
+
+    try {
+      // Prepare the complete form data for API call including child_id
+      const saveData = {
+        child_id: childId,
+        parent_sign_outside_waiver: agreePhotos ? 'on' : 'off'
+      };
+
+      // Call the API to save all form data
+      await updateAdmissionData(saveData);
+      
+      // Show success alert
+      alert('Admission form data saved successfully!');
+    } catch (error) {
+      console.error('Failed to save Admission form:', error);
+      alert('Error saving Admission form data. Please try again.');
+    }
+  };
 
     return (
         <>

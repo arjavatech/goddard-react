@@ -1,14 +1,63 @@
 import React, { useState } from "react";
 import CheckboxWithLabel from "./CheckboxWithLabel";
 
-export default function HealthPolicies({initialFormData = null}) {
-    const [agreePhotos, setAgreePhotos] = useState(initialFormData.do_you_agree_this_health_policies == 'on');
+export default function HealthPolicies({initialFormData = null, childId = null}) {
+    const [agreePhotos, setAgreePhotos] = useState(false);
     const [submitted, setSubmitted] = useState(false);
 
-    const handleSave = () => {
-        setSubmitted(agreePhotos);
-        if (do_you_agree_this_health_policies) {
-            alert("Form saved successfully!");
+    // API function to update admission form data
+    const updateAdmissionData = async (fieldData) => {
+        if (!childId) {
+            console.error('Child ID is required for API update');
+            return;
+        }
+
+        try {
+            const response = await fetch(`https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/admission_segment/${childId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(fieldData)
+            });
+
+            if (!response.ok) {
+                throw new Error(`Failed to update admission data: ${response.status}`);
+            }
+
+            const result = await response.json();
+            console.log('Admission data updated successfully:', result);
+            return result;
+        } catch (error) {
+            console.error('Error updating admission data:', error);
+            throw error;
+        }
+    };
+
+    // Initialize form data from props
+    React.useEffect(() => {
+        if (initialFormData) {
+            setAgreePhotos(initialFormData.do_you_agree_this_health_policies == 'on');
+        }
+    }, [initialFormData]);
+
+    const handleSave = async () => {
+        if (!childId) {
+            alert('Error: Child ID is missing');
+            return;
+        }
+
+        try {
+            const saveData = {
+                child_id: childId,
+                do_you_agree_this_health_policies: agreePhotos ? 'on' : 'off'
+            };
+
+            await updateAdmissionData(saveData);
+            alert('Health policies data saved successfully!');
+        } catch (error) {
+            console.error('Failed to save health policies:', error);
+            alert('Error saving health policies data. Please try again.');
         }
     };
 

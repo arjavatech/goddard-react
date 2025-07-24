@@ -1,8 +1,59 @@
 import React, { useState, useEffect } from 'react';
 import './ImmunizationInstructions.css'; // assuming you have this CSS
 
-const ImmunizationInstructions = ({ initialFormData = null }) => {
+const ImmunizationInstructions = ({ initialFormData = null , childId}) => {
   const [isChecked, setIsChecked] = useState(false);
+
+  // API function to update admission form data
+  const updateAdmissionData = async (fieldData) => {
+    if (!childId) {
+      console.error('Child ID is required for API update');
+      return;
+    }
+
+    try {
+      const response = await fetch(`https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/admission_segment/${childId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(fieldData)
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to update admission data: ${response.status}`);
+      }
+
+      const result = await response.json();
+      console.log('Admission data updated successfully:', result);
+      return result;
+    } catch (error) {
+      console.error('Error updating admission data:', error);
+      throw error;
+    }
+  };
+
+
+  const handleSave = async () => {
+    if (!childId) {
+      alert('Error: Child ID is missing');
+      return;
+    }
+
+    try {
+      const saveData = {
+        child_id: childId,
+        do_you_agree_this_immunization_instructions: isChecked ? 'on' : 'off'
+      };
+
+      await updateAdmissionData(saveData);
+      alert('Medical transportation waiver saved successfully!');
+    } catch (error) {
+      console.error('Failed to save medical transportation waiver:', error);
+      alert('Error saving medical transportation waiver. Please try again.');
+    }
+  };
+
 
   useEffect(() => {
     if (initialFormData) {
@@ -87,7 +138,8 @@ const ImmunizationInstructions = ({ initialFormData = null }) => {
           </div>
 
           <div className="text-center">
-            <button className="bg-slate-700 text-white px-8 py-3 rounded-md hover:bg-slate-800 transition-colors">
+            <button className="bg-slate-700 text-white px-8 py-3 rounded-md hover:bg-slate-800 transition-colors"
+            onClick={handleSave}>
                             Save
                         </button>
           </div>

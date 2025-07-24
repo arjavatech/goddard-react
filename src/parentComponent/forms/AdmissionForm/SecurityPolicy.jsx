@@ -1,8 +1,37 @@
 import React, { useState, useEffect } from 'react';
 import CheckboxWithLabel from "./CheckboxWithLabel";
 
-const SecurityPolicy = ({ initialFormData = null }) => {
+const SecurityPolicy = ({ initialFormData = null, childId = null }) => {
   const [agreed, setAgreed] = useState(false);
+
+  // API function to update admission form data
+  const updateAdmissionData = async (fieldData) => {
+    if (!childId) {
+      console.error('Child ID is required for API update');
+      return;
+    }
+
+    try {
+      const response = await fetch(`https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/admission_segment/${childId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(fieldData)
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to update admission data: ${response.status}`);
+      }
+
+      const result = await response.json();
+      console.log('Admission data updated successfully:', result);
+      return result;
+    } catch (error) {
+      console.error('Error updating admission data:', error);
+      throw error;
+    }
+  };
 
   useEffect(() => {
     if (initialFormData) {
@@ -12,6 +41,26 @@ const SecurityPolicy = ({ initialFormData = null }) => {
 
   const handleAgreedChange = (checked) => {
     setAgreed(checked);
+  };
+
+  const handleSave = async () => {
+    if (!childId) {
+      alert('Error: Child ID is missing');
+      return;
+    }
+
+    try {
+      const saveData = {
+        child_id: childId,
+        security_release_policy_form: agreed ? 'on' : 'off'
+      };
+
+      await updateAdmissionData(saveData);
+      alert('Security policy data saved successfully!');
+    } catch (error) {
+      console.error('Failed to save security policy:', error);
+      alert('Error saving security policy data. Please try again.');
+    }
   };
 
   return (
@@ -61,6 +110,7 @@ const SecurityPolicy = ({ initialFormData = null }) => {
           <button
             className="bg-[#0F2D52] hover:bg-[#093567] text-white font-semibold px-8 py-2"
             disabled={!agreed}
+            onClick={handleSave}
           >
             Save
           </button>
