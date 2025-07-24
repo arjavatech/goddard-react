@@ -1,7 +1,151 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { FormInput } from './InputComponent';
 import { DownIcon,UpIcon } from '../../../../components/common/Arrows';
-const MedicalCareProvider = ({ openSection, setOpenSection, formData, handleInputChange }) => {
+const MedicalCareProvider = ({ openSection, setOpenSection, initialFormData, charProviderData, handleInputChange, childId }) => {
+    
+    const [formData, setFormData] = useState({
+            child_care_provider_id: "",
+            child_care_provider_name: "",
+            child_hospital_affiliation: "",
+            child_care_provider_zip_address: "",
+            child_care_provider_city_address: "",
+            child_care_provider_state_address: "",
+            child_care_provider_street_address: "",
+            child_care_provider_telephone_number: "",
+            child_dentist_name: "",
+            dentist_telephone_number: "",
+            dentist_street_address: "",
+            dentist_city_address: "",
+            dentist_state_address: "",
+            dentist_zip_address: "",
+            special_diabilities: "",
+            allergies_medication_reaction: "",
+            additional_info: "",
+            medication: "",
+            health_insurance: "",
+            policy_number: ""
+          });
+    
+    
+        const handleChange = (e) => {
+        const { name, value } = e.target;
+    
+    
+        
+        // Update local state only - no API call
+        setFormData(prevState => ({
+          ...prevState,
+          [name]: value
+        }));
+      };
+    
+        useEffect(() => {
+          setFormData(prevState => ({
+            
+            ...prevState
+          }));
+        }, []);
+      
+        useEffect(() => {
+          if (initialFormData) {
+            setFormData(prevState => ({
+              child_id: childId,
+                    child_care_provider_id: charProviderData.child_care_provider_id,
+                    child_care_provider_name: charProviderData.child_care_provider_name,
+                    child_hospital_affiliation: charProviderData.child_hospital_affiliation,
+                    child_care_provider_zip_address: charProviderData.child_care_provider_zip_address,
+                    child_care_provider_city_address: charProviderData.child_care_provider_city_address,
+                    child_care_provider_state_address: charProviderData.child_care_provider_state_address,
+                    child_care_provider_street_address: charProviderData.child_care_provider_street_address,
+                    child_care_provider_telephone_number: charProviderData.child_care_provider_telephone_number,
+                    child_dentist_name: initialFormData.child_dentist_name,
+                    dentist_telephone_number: initialFormData.dentist_telephone_number,
+                    dentist_street_address: initialFormData.dentist_street_address,
+                    dentist_city_address: initialFormData.dentist_city_address,
+                    dentist_state_address: initialFormData.dentist_state_address,
+                    dentist_zip_address: initialFormData.dentist_zip_address,
+                    special_diabilities: initialFormData.special_diabilities,
+                    allergies_medication_reaction: initialFormData.allergies_medication_reaction,
+                    additional_info: initialFormData.additional_info,
+                    medication: initialFormData.medication,
+                    health_insurance: initialFormData.health_insurance,
+                    policy_number: initialFormData.policy_number
+            }));
+          }
+        }, [initialFormData]);
+    
+        
+    
+          // API function to update admission form data
+          const updateAdmissionData = async (fieldData) => {
+              if (!childId) {
+                  console.error('Child ID is required for API update');
+                  return;
+              }
+      
+              try {
+                  const response = await fetch(`https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/admission_segment/${childId}`, {
+                      method: 'PUT',
+                      headers: {
+                          'Content-Type': 'application/json',
+                      },
+                      body: JSON.stringify(fieldData)
+                  });
+      
+                  if (!response.ok) {
+                      throw new Error(`Failed to update admission data: ${response.status}`);
+                  }
+      
+                  const result = await response.json();
+                  console.log('Admission data updated successfully:', result);
+                  return result;
+              } catch (error) {
+                  console.error('Error updating admission data:', error);
+                  throw error;
+              }
+          };
+    
+    const handleSave = async () => {
+            if (!childId) {
+                alert('Error: Child ID is missing');
+                return;
+            }
+    
+            try {
+                const saveData = {
+                    child_id: childId,
+                    child_care_provider_info : {
+                    child_care_provider_id: formData.child_care_provider_id,
+                    child_care_provider_name: formData.child_care_provider_name,
+                    child_hospital_affiliation: formData.child_hospital_affiliation,
+                    child_care_provider_zip_address: formData.child_care_provider_zip_address,
+                    child_care_provider_city_address: formData.child_care_provider_city_address,
+                    child_care_provider_state_address: formData.child_care_provider_state_address,
+                    child_care_provider_street_address: formData.child_care_provider_street_address,
+                    child_care_provider_telephone_number: formData.child_care_provider_telephone_number,
+                    },
+                    child_dentist_name: formData.child_dentist_name,
+                    dentist_telephone_number: formData.dentist_telephone_number,
+                    dentist_street_address: formData.dentist_street_address,
+                    dentist_city_address: formData.dentist_city_address,
+                    dentist_state_address: formData.dentist_state_address,
+                    dentist_zip_address: formData.dentist_zip_address,
+                    special_diabilities: formData.special_diabilities,
+                    allergies_medication_reaction: formData.allergies_medication_reaction,
+                    additional_info: formData.additional_info,
+                    medication: formData.medication,
+                    health_insurance: formData.health_insurance,
+                    policy_number: formData.policy_number
+                };
+                console.log(saveData) // Log the data being sent to the API for debugging pur)
+                await updateAdmissionData(saveData);
+                alert('Child details data saved successfully!');
+            } catch (error) {
+                console.error('Failed to save Child details:', error);
+                alert('Error saving Child details data. Please try again.');
+            }
+        };
+    
     return (
         <>
             <div
@@ -43,9 +187,9 @@ const MedicalCareProvider = ({ openSection, setOpenSection, formData, handleInpu
                         <div>
                             <FormInput
                                 label="NAME OF CHILD'S PHYSICIAN /MEDICAL CARE PROVIDER"
-                                value={formData.physicianName || ''}
-                                onChange={(e) => handleInputChange('physicianName', e.target.value)}
-                                name="physicianName"
+                                value={formData.child_care_provider_name || ''}
+                                onChange={handleChange}
+                                name="child_care_provider_name"
                             />
                         </div>
 
@@ -53,16 +197,16 @@ const MedicalCareProvider = ({ openSection, setOpenSection, formData, handleInpu
                             <FormInput
                                 label="TELEPHONE NUMBER"
                                 type="tel"
-                                value={formData.physicianPhone || ''}
-                                onChange={(e) => handleInputChange('physicianPhone', e.target.value)}
+                                value={formData.child_care_provider_telephone_number || ''}
+                                onChange={handleChange}
                                 placeholder="+1(555) 555-1234"
-                                name="physicianPhone"
+                                name="child_care_provider_telephone_number"
                             />
                             <FormInput
                                 label="HOSPITAL AFFILIATION"
-                                value={formData.hospitalAffiliation || ''}
-                                onChange={(e) => handleInputChange('hospitalAffiliation', e.target.value)}
-                                name="hospitalAffiliation"
+                                value={formData.child_hospital_affiliation || ''}
+                                onChange={handleChange}
+                                name="child_hospital_affiliation"
                             />
                         </div>
 
@@ -71,27 +215,27 @@ const MedicalCareProvider = ({ openSection, setOpenSection, formData, handleInpu
                             <div className="grid md:grid-cols-4 gap-4">
                                 <FormInput
                                     label="STREET"
-                                    value={formData.physicianStreet || ''}
-                                    onChange={(e) => handleInputChange('physicianStreet', e.target.value)}
-                                    name="physicianStreet"
+                                    value={formData.child_care_provider_street_address || ''}
+                                    onChange={handleChange}
+                                    name="child_care_provider_street_address"
                                 />
                                 <FormInput
                                     label="CITY"
-                                    value={formData.physicianCity || ''}
-                                    onChange={(e) => handleInputChange('physicianCity', e.target.value)}
-                                    name="physicianCity"
+                                    value={formData.child_care_provider_city_address || ''}
+                                    onChange={handleChange}
+                                    name="child_care_provider_city_address"
                                 />
                                 <FormInput
                                     label="STATE"
-                                    value={formData.physicianState || ''}
-                                    onChange={(e) => handleInputChange('physicianState', e.target.value)}
-                                    name="physicianState"
+                                    value={formData.child_care_provider_state_address || ''}
+                                    onChange={handleChange}
+                                    name="child_care_provider_state_address"
                                 />
                                 <FormInput
                                     label="ZIP"
-                                    value={formData.physicianZip || ''}
-                                    onChange={(e) => handleInputChange('physicianZip', e.target.value)}
-                                    name="physicianZip"
+                                    value={formData.child_care_provider_zip_address || ''}
+                                    onChange={handleChange}
+                                    name="child_care_provider_zip_address"
                                 />
                             </div>
                         </div>
@@ -104,44 +248,44 @@ const MedicalCareProvider = ({ openSection, setOpenSection, formData, handleInpu
                         <div className="grid md:grid-cols-3 gap-4">
                             <FormInput
                                 label="NAME OF CHILD'S DENTIST"
-                                value={formData.dentistName || ''}
-                                onChange={(e) => handleInputChange('dentistName', e.target.value)}
-                                name="dentistName"
+                                value={formData.child_dentist_name || ''}
+                                onChange={handleChange}
+                                name="child_dentist_name"
                             />
                             <FormInput
                                 label="DENTIST TELEPHONE NUMBER"
                                 type="tel"
-                                value={formData.dentistPhone || ''}
-                                onChange={(e) => handleInputChange('dentistPhone', e.target.value)}
+                                value={formData.dentist_telephone_number || ''}
+                                onChange={handleChange}
                                 placeholder="+1(555) 555-1234"
-                                name="dentistPhone"
+                                name="dentist_telephone_number"
                             />
                             <FormInput
                                 label="STREET"
-                                value={formData.dentistStreet || ''}
-                                onChange={(e) => handleInputChange('dentistStreet', e.target.value)}
-                                name="dentistStreet"
+                                value={formData.dentist_street_address || ''}
+                                onChange={handleChange}
+                                name="dentist_street_address"
                             />
                         </div>
 
                         <div className="grid md:grid-cols-3 gap-4">
                             <FormInput
                                 label="CITY"
-                                value={formData.dentistCity || ''}
-                                onChange={(e) => handleInputChange('dentistCity', e.target.value)}
-                                name="dentistCity"
+                                value={formData.dentist_city_address || ''}
+                                onChange={handleChange}
+                                name="dentist_city_address"
                             />
                             <FormInput
                                 label="STATE"
-                                value={formData.dentistState || ''}
-                                onChange={(e) => handleInputChange('dentistState', e.target.value)}
-                                name="dentistState"
+                                value={formData.dentist_state_address || ''}
+                                onChange={handleChange}
+                                name="dentist_state_address"
                             />
                             <FormInput
                                 label="ZIP"
-                                value={formData.dentistZip || ''}
-                                onChange={(e) => handleInputChange('dentistZip', e.target.value)}
-                                name="dentistZip"
+                                value={formData.dentist_zip_address || ''}
+                                onChange={handleChange}
+                                name="dentist_zip_address"
                             />
                         </div>
                     </div>
@@ -151,57 +295,58 @@ const MedicalCareProvider = ({ openSection, setOpenSection, formData, handleInpu
                         <div className="grid md:grid-cols-2 gap-4">
                             <FormInput
                                 label="SPECIAL DISABILITIES (IF ANY)"
-                                value={formData.specialDisabilities || ''}
-                                onChange={(e) => handleInputChange('specialDisabilities', e.target.value)}
-                                name="specialDisabilities"
+                                value={formData.special_diabilities || ''}
+                                onChange={handleChange}
+                                name="special_diabilities"
                             />
                             <FormInput
                                 label="ALLERGIES (MEDICATION REACTION)"
-                                value={formData.allergies || ''}
-                                onChange={(e) => handleInputChange('allergies', e.target.value)}
-                                name="allergies"
+                                value={formData.allergies_medication_reaction || ''}
+                                onChange={handleChange}
+                                name="allergies_medication_reaction"
                             />
                         </div>
 
                         <div>
                             <FormInput
                                 label="ADDITIONAL INFORMATION REGARDING SPECIAL NEEDS"
-                                value={formData.additionalSpecialNeeds || ''}
-                                onChange={(e) => handleInputChange('additionalSpecialNeeds', e.target.value)}
-                                name="additionalSpecialNeeds"
+                                value={formData.additional_info || ''}
+                                onChange={handleChange}
+                                name="additional_info"
                             />
                         </div>
 
                         <div>
                             <FormInput
                                 label="MEDICATION, SPECIAL CONDITIONS NUMBER"
-                                value={formData.medicationConditions || ''}
-                                onChange={(e) => handleInputChange('medicationConditions', e.target.value)}
-                                name="medicationConditions"
+                                value={formData.medication || ''}
+                                onChange={handleChange}
+                                name="medication"
                             />
                         </div>
 
                         <div>
                             <FormInput
                                 label="HEALTH INSURANCE COVERAGE FOR CHILD OR MEDICAL ASSISTANCE BENEFITS"
-                                value={formData.healthInsurance || ''}
-                                onChange={(e) => handleInputChange('healthInsurance', e.target.value)}
-                                name="healthInsurance"
+                                value={formData.health_insurance || ''}
+                                onChange={handleChange}
+                                name="health_insurance"
                             />
                         </div>
 
                         <div>
                             <FormInput
                                 label="POLICY NUMBER"
-                                value={formData.policyNumber || ''}
-                                onChange={(e) => handleInputChange('policyNumber', e.target.value)}
-                                name="policyNumber"
+                                value={formData.policy_number || ''}
+                                onChange={handleChange}
+                                name="policy_number"
                             />
                         </div>
                     </div>
 
                     <div className="flex justify-center pt-4">
-                        <button className="bg-slate-700 text-white px-8 py-3 rounded-md hover:bg-slate-800 transition-colors">
+                        <button className="bg-slate-700 text-white px-8 py-3 rounded-md hover:bg-slate-800 transition-colors"
+                        onClick={handleSave}>
                             Save
                         </button>
                     </div>
