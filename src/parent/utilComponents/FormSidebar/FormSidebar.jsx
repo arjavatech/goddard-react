@@ -17,9 +17,7 @@ const FormSidebar = ({
 
   const availableFormSections = formSections.filter(section => {
     if (incompleteForms !== undefined && Array.isArray(incompleteForms)) {
-      return incompleteForms.some(apiFormName => 
-        formNameMapping[apiFormName] === section.key
-      );
+      return incompleteForms.some(apiFormName => formNameMapping[apiFormName] === section.key);
     }
     return !formStatus[section.key]?.completed;
   });
@@ -29,7 +27,6 @@ const FormSidebar = ({
     onHideCompleted?.();
     onSectionChange?.(sectionKey);
     onSubFormChange?.(null);
-    
   };
 
   const handleItemClick = (sectionKey, itemName) => {
@@ -44,7 +41,14 @@ const FormSidebar = ({
   };
 
   const sidebarContent = (
-    <>
+    <div className="p-3">
+      {loading && (
+        <div className="text-center py-4">
+          <div className="inline-block animate-spin rounded-full h-6 w-6 border-b-2 border-[#0F2D52]"></div>
+          <p className="mt-2 text-sm">Loading forms...</p>
+        </div>
+      )}
+
       <div className="bg-[#0F2D52] text-white text-center py-2 mt-3 font-medium rounded">
         Incomplete {!loading && `(${availableFormSections.length})`}
       </div>
@@ -72,62 +76,65 @@ const FormSidebar = ({
       <div className="mt-4">
         <button
           onClick={handleToggleCompleted}
-          className="w-full bg-[#0F2D52] text-white py-2 font-semibold rounded cursor-pointer hover:bg-[#1a3a6b] transition-colors duration-200"
+          className="w-full bg-[#0F2D52] text-white py-2 font-semibold rounded cursor-pointer hover:bg-[#1a3a6b]"
         >
           View All Completed Forms
         </button>
       </div>
-    </>
+    </div>
   );
 
   return (
-    <div className="w-full max-w-xs mx-auto mt-2 bg-white shadow-lg  overflow-hidden md:sticky md:top-4 md:h-[calc(100vh-1rem)] md:max-h-[calc(100vh-1rem)] md:overflow-y-auto"> 
-      {/* Mobile View */}
-      <div className="md:hidden">
-        {/* Mobile Header - Always visible */}
-        <div className="flex justify-between items-center bg-[#0F2D52] text-white px-4 py-2 ">
-          <h2 className="font-bold text-base">Forms Status</h2>
-          <button 
-            onClick={() => setIsMobileOpen(!isMobileOpen)}
-            className="p-1 transition-transform duration-200 hover:scale-110"
-            aria-expanded={isMobileOpen}
-          >
-            <svg 
-              className={`w-6 h-6 transition-transform duration-300 ${isMobileOpen ? 'rotate-180' : ''}`}
-              fill="none" 
-              stroke="currentColor" 
-              strokeWidth="2"
-              viewBox="0 0 24 24"
-            >
-              <path 
-                strokeLinecap="round" 
-                strokeLinejoin="round"
-                d={isMobileOpen ? "M5 15l7-7 7 7" : "M19 9l-7 7-7-7"}
-              />
+    <>
+      {/* Fixed Sidebar for desktop (≥lg) */}
+      <div className="hidden lg:block bg-white rounded-md shadow-md text-sm font-sans m-3 w-full max-w-xs">
+        <h2 className="bg-[#0F2D52] text-white font-bold text-center rounded-t-md py-2">
+          Forms Status
+        </h2>
+        {sidebarContent}
+      </div>
+
+      {/* Mobile/Tablet View */}
+      <div className="block lg:hidden">
+        {/* Top Header Bar */}
+        <div className="bg-[#0F2D52] text-white font-bold text-base flex items-center justify-between px-4 py-2">
+          <span>Forms Status</span>
+          <button onClick={() => setIsMobileOpen(true)}>
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
             </svg>
           </button>
         </div>
 
-        {/* Mobile Content - Slides down from header */}
-        <div 
-          className={`bg-white shadow-md overflow-hidden transition-all duration-300 ease-in-out ${isMobileOpen ? 'max-h-[1000px] opacity-100' : 'max-h-0 opacity-0'}`}
-        >
-          <div className="p-3">
+        {/* Slide-In Drawer and Overlay - Always Rendered */}
+        <div className="fixed inset-0 z-40 pointer-events-none">
+          {/* Overlay with fade transition */}
+          <div
+            className={`absolute inset-0 bg-black backdrop-blur-sm transition-opacity duration-300 ${
+              isMobileOpen ? 'opacity-30 pointer-events-auto' : 'opacity-0'
+            }`}
+            onClick={() => setIsMobileOpen(false)}
+          ></div>
+
+          {/* Sidebar with slide animation */}
+          <div
+            className={`absolute left-0 top-0 h-full w-72 sm:w-80 bg-white z-50 shadow-md transform transition-transform duration-300 ease-in-out ${
+              isMobileOpen ? 'translate-x-0' : '-translate-x-full'
+            }`}
+          >
+            <div className="flex items-center justify-between p-3 border-b">
+              <h2 className="text-[#0F2D52] font-bold text-base">Forms Status</h2>
+              <button onClick={() => setIsMobileOpen(false)} className="text-gray-700 hover:text-black">
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
             {sidebarContent}
           </div>
         </div>
       </div>
-
-      {/* Desktop View - Unchanged */}
-      <div className="hidden md:block bg-white shadow-md  ">
-        <div className="bg-[#0F2D52] text-white font-bold text-center  py-2">
-          Forms Status
-        </div>
-        <div className="p-3">
-          {sidebarContent}
-        </div>
-      </div>
-    </div>
+    </>
   );
 };
 
