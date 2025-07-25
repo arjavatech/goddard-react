@@ -58,6 +58,11 @@ const Parent_Argeement = ({ expandedSections, toggleSection, formData, handleInp
     }
   };
 
+  // Function to check if agreement is confirmed
+  const isFormComplete = () => {
+    return localFormData.agreementConfirmed === true;
+  };
+
   const handleSave = async () => {
     if (!childId) {
       alert('Error: Child ID is missing');
@@ -96,7 +101,14 @@ const Parent_Argeement = ({ expandedSections, toggleSection, formData, handleInp
           }
         }}
       >
-        <span className="font-semibold">Parent Agreement</span>
+        <div className="flex items-center space-x-3">
+          <span className="font-semibold">Parent Agreement</span>
+          <img 
+            src={isFormComplete() ? "/image/tick.png" : "/image/circle-with.png"} 
+            alt={isFormComplete() ? "Complete" : "Incomplete"} 
+            className="w-5 h-5"
+          />
+        </div>
         {isOpen ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
       </div>
 

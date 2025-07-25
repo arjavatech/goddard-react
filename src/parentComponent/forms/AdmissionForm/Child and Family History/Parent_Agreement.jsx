@@ -59,6 +59,10 @@ const Parent_Agreement = ({ openSection, setOpenSection, formData, handleInputCh
         }
     };
 
+    const isFormComplete = () => {
+        return localFormData.agree_all_above_info_is_correct.includes('I agree all the above information is correct.');
+    };
+
     const handleSave = async () => {
         if (!childId) {
             alert('Error: Child ID is missing');
@@ -103,7 +107,12 @@ const Parent_Agreement = ({ openSection, setOpenSection, formData, handleInputCh
                 }}
             >
                 <div className="flex items-center space-x-3">
-                    <h2 className="text-lg font-semibold">Parent Agreement </h2>
+                    <span className="text-lg font-semibold">Parent Agreement</span>
+                    <img 
+                        src={isFormComplete() ? "/image/tick.png" : "/image/circle-with.png"} 
+                        alt={isFormComplete() ? "Complete" : "Incomplete"} 
+                        className="w-5 h-5"
+                    />
                 </div>
                 <div className="text-xl transform transition-transform duration-200">
                     {openSection === 'ParentAgreement' ? (

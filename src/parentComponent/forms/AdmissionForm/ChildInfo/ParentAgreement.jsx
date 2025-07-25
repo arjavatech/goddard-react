@@ -47,6 +47,11 @@ const ParentAgreement = ({ openSection, setOpenSection, formData, handleInputCha
         }
       }, [formData]);
     
+      // Function to check if agreement is complete
+      const isFormComplete = () => {
+          return submitted && obtainText.trim() !== '' && procedure.trim() !== '';
+      };
+
       const handleSave = async () => {
         if (!childId) {
           alert('Error: Child ID is missing');
@@ -102,7 +107,14 @@ const ParentAgreement = ({ openSection, setOpenSection, formData, handleInputCha
                 }}
             >
                 <div className="flex items-center space-x-3">
-                    <h2 className="text-lg font-semibold">Parent Agreement</h2>
+                    <div className="flex items-center space-x-3">
+                        <h2 className="text-lg font-semibold">Parent Agreement</h2>
+                        <img 
+                            src={isFormComplete() ? "/image/tick.png" : "/image/circle-with.png"} 
+                            alt={isFormComplete() ? "Complete" : "Incomplete"} 
+                            className="w-5 h-5"
+                        />
+                    </div>
                 </div>
                 <div className="text-xl transform transition-transform duration-200">
                     {openSection === 'parentAgreement' ? <DownIcon className="h-5 w-5 text-gray-500" /> : <UpIcon className="h-5 w-5 text-black" />}

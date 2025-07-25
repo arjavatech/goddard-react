@@ -15,7 +15,7 @@ const FormSection = ({ section, formStatus, isOpen, onToggle, onItemClick, selec
         <div className="flex gap-1 items-center">
           <span>{section.title}</span>
           <img
-            src={formStatus[section.key]?.completed ? "image/tick.png" : "image/circle-with.png"}
+            src={formStatus[section.key]?.completed ? "/image/tick.png" : "/image/circle-with.png"}
             alt={formStatus[section.key]?.completed ? "Completed" : "Incomplete"}
             className="w-5 h-5"
           />

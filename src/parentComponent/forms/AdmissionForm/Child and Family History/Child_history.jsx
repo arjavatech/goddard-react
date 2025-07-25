@@ -62,6 +62,18 @@ const Child_history = ({ openSection, setOpenSection, formData, handleInputChang
         }
     };
 
+    // Function to check if all required fields are filled
+    const isFormComplete = () => {
+        const requiredFields = [
+            'DateOfLastPhysicalExam',
+            'DateOfLastDentalExam'
+        ];
+        
+        return requiredFields.every(field => 
+            localFormData[field] && localFormData[field].toString().trim() !== ''
+        );
+    };
+
     const handleSave = async () => {
         if (!childId) {
             alert('Error: Child ID is missing');
@@ -108,7 +120,14 @@ const Child_history = ({ openSection, setOpenSection, formData, handleInputChang
             >
                 <div className="flex items-center space-x-3">
                     <h2 className="text-lg font-semibold">
-                        Child History 
+                        <div className="flex items-center space-x-3">
+                            <span>Child History</span>
+                            <img 
+                                src={isFormComplete() ? "/image/tick.png" : "/image/circle-with.png"} 
+                                alt={isFormComplete() ? "Complete" : "Incomplete"} 
+                                className="w-5 h-5"
+                            />
+                        </div> 
                     </h2>
                 </div>
                 <div className="text-xl transform transition-transform duration-200">

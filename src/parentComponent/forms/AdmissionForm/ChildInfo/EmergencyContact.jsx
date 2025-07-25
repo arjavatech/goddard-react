@@ -92,6 +92,14 @@ const EmergencyContact = ({ openSection, setOpenSection, initialFormData, handle
                   }
               };
         
+        // Function to check if at least one emergency contact is complete
+        const isFormComplete = () => {
+            const hasFirstContact = formData.emergencyContact1Name && 
+                                  formData.emergencyContact1Relationship && 
+                                  formData.emergencyContact1Phone;
+            return hasFirstContact;
+        };
+
         const handleSave = async () => {
                 if (!childId) {
                     alert('Error: Child ID is missing');
@@ -165,7 +173,14 @@ const EmergencyContact = ({ openSection, setOpenSection, initialFormData, handle
                 }}
             >
                 <div className="flex items-center space-x-3">
-                    <h2 className="text-lg font-semibold">Emergency Contact</h2>
+                    <div className="flex items-center space-x-3">
+                        <h2 className="text-lg font-semibold">Emergency Contact</h2>
+                        <img 
+                            src={isFormComplete() ? "/image/tick.png" : "/image/circle-with.png"} 
+                            alt={isFormComplete() ? "Complete" : "Incomplete"} 
+                            className="w-5 h-5"
+                        />
+                    </div>
                 </div>
                 <div className="text-xl transform transition-transform duration-200">
                     {openSection === 'emergencyContact' ? <DownIcon className="h-5 w-5 text-gray-500" /> : <UpIcon className="h-5 w-5 text-black" />}

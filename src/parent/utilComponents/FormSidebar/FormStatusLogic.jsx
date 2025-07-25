@@ -15,6 +15,7 @@ const useFormStatus = (activeChildId) => {
     if (completed) completed.classList.toggle("hidden");
   };
 
+
   useEffect(() => {
     if (!activeChildId) return;
     
@@ -83,18 +84,47 @@ const useFormStatus = (activeChildId) => {
           formDetails.preferred_start_date &&
           formDetails.preferred_schedule;
 
+        // Debug: Log Authorization form data
+        console.log('Authorization Form Debug:', {
+          bank_routing: formDetails.bank_routing,
+          bank_account: formDetails.bank_account,
+          driver_license: formDetails.driver_license,
+          state: formDetails.state,
+          parent_sign_ach: formDetails.parent_sign_ach,
+          admin_sign_ach: formDetails.admin_sign_ach,
+          admin_sign_date_ach: formDetails.admin_sign_date_ach
+        });
+
         const isAuthorizationACHComplete =
-          formDetails.bank_routing &&
-          formDetails.bank_account &&
-          formDetails.driver_license &&
-          formDetails.state &&
-          formDetails.i;
+          formDetails.bank_routing && formDetails.bank_routing.toString().trim() !== '' &&
+          formDetails.bank_account && formDetails.bank_account.toString().trim() !== '' &&
+          formDetails.driver_license && formDetails.driver_license.toString().trim() !== '' &&
+          formDetails.state && formDetails.state.toString().trim() !== '';
 
         const isParentSignComplete =
-          formDetails.parent_sign_date_ach;
+          formDetails.parent_sign_ach && formDetails.parent_sign_ach.toString().trim() !== '';
+
+        const isAdminSignComplete =
+          formDetails.admin_sign_ach && formDetails.admin_sign_ach.toString().trim() !== '' &&
+          formDetails.admin_sign_date_ach && formDetails.admin_sign_date_ach.toString().trim() !== '';
+
+        // Debug: Log completion status with detailed checks
+        console.log('Authorization Completion Status:', {
+          isAuthorizationACHComplete,
+          isParentSignComplete,
+          isAdminSignComplete,
+          // Individual field checks
+          bank_routing_valid: formDetails.bank_routing && formDetails.bank_routing.toString().trim() !== '',
+          bank_account_valid: formDetails.bank_account && formDetails.bank_account.toString().trim() !== '',
+          driver_license_valid: formDetails.driver_license && formDetails.driver_license.toString().trim() !== '',
+          state_valid: formDetails.state && formDetails.state.toString().trim() !== '',
+          parent_sign_valid: formDetails.parent_sign_ach && formDetails.parent_sign_ach.toString().trim() !== '',
+          admin_sign_valid: formDetails.admin_sign_ach && formDetails.admin_sign_ach.toString().trim() !== '',
+          admin_date_valid: formDetails.admin_sign_date_ach && formDetails.admin_sign_date_ach.toString().trim() !== ''
+        });
 
         const isAuthorizationComplete =
-          isAuthorizationACHComplete && isParentSignComplete;
+          isAuthorizationACHComplete && isParentSignComplete && isAdminSignComplete;
 
         const isEnrollmentParentSign = formDetails.parent_sign_enroll;
 
@@ -341,6 +371,7 @@ const useFormStatus = (activeChildId) => {
         // Add detailed form status to the existing updatedStatus object
         updatedStatus["authorization_ach"] = { completed: isAuthorizationACHComplete };
         updatedStatus["authorization_signature"] = { completed: isParentSignComplete };
+        updatedStatus["authorization_admin_signature"] = { completed: isAdminSignComplete };
         updatedStatus["enrollment_signature"] = { completed: isEnrollmentParentSign };
         updatedStatus["parenthandbook_policy"] = { completed: isPolicyComplete };
         updatedStatus["parenthandbook_signature"] = { completed: isHandbookParentSign };

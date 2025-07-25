@@ -89,6 +89,27 @@ const Parent_argeement = ({ openSection, setOpenSection, formData, handleInputCh
         }
     };
 
+    const isFormComplete = () => {
+        const requiredFields = [
+            localFormData.AllergiesFoodDrug,
+            localFormData.Asthma,
+            localFormData.BleedingProblems,
+            localFormData.Diabetes,
+            localFormData.Epilepsy,
+            localFormData.FrequentEarInfections,
+            localFormData.FrequentIllnesses,
+            localFormData.HearingProblems,
+            localFormData.HighFevers,
+            localFormData.Hospitialization,
+            localFormData.RheumaticFever,
+            localFormData.SeizuresConvulsions,
+            localFormData.SeriousInjuriesAccidents,
+            localFormData.Surgeries,
+            localFormData.VisionProblems
+        ];
+        return requiredFields.some(field => field && field.trim() !== '');
+    };
+
     const handleSave = async () => {
         if (!childId) {
             alert('Error: Child ID is missing');
@@ -148,7 +169,12 @@ const Parent_argeement = ({ openSection, setOpenSection, formData, handleInputCh
                 }}
             >
                 <div className="flex items-center space-x-3">
-                    <h2 className="text-lg font-semibold">Medical History And Illnesses</h2>
+                    <span className="text-lg font-semibold">Medical History And Illnesses</span>
+                    <img 
+                        src={isFormComplete() ? "/image/tick.png" : "/image/circle-with.png"} 
+                        alt={isFormComplete() ? "Complete" : "Incomplete"} 
+                        className="w-5 h-5"
+                    />
                 </div>
                 <div className="text-xl transform transition-transform duration-200">
                     {openSection === 'parentArgeement' ? (

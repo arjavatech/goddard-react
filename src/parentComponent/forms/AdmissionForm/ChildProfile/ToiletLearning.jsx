@@ -74,6 +74,18 @@ const ToiletLearning = ({ expandedSections, toggleSection, formData, handleInput
     }
   };
 
+  // Function to check if all required fields are filled
+  const isFormComplete = () => {
+    const requiredFields = [
+      'restsInMiddleOfDay',
+      'isToiletTrained'
+    ];
+    
+    return requiredFields.every(field => 
+      localFormData[field] && localFormData[field].toString().trim() !== ''
+    );
+  };
+
   const handleSave = async () => {
     if (!childId) {
       alert('Error: Child ID is missing');
@@ -116,7 +128,14 @@ const ToiletLearning = ({ expandedSections, toggleSection, formData, handleInput
           }
         }}
       >
-        <span className="font-semibold">Rest and Diapering/Toilet Learning</span>
+        <div className="flex items-center space-x-3">
+          <span className="font-semibold">Rest and Diapering/Toilet Learning</span>
+          <img 
+            src={isFormComplete() ? "/image/tick.png" : "/image/circle-with.png"} 
+            alt={isFormComplete() ? "Complete" : "Incomplete"} 
+            className="w-5 h-5"
+          />
+        </div>
         {isOpen ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
       </div>
 

@@ -75,6 +75,19 @@ const FamilyHistory = ({ openSection, setOpenSection, formData, handleInputChang
         }
     };
 
+    // Function to check if any required field is filled (at least one checkbox)
+    const isFormComplete = () => {
+        const allCheckboxGroups = [
+            'hobbies', 'HeartProblems', 'Tuberculosis', 'Asthma', 
+            'HighBloodPressure', 'VisionProblems', 'Diabetes', 
+            'Hyperactivity', 'Epilepsy', 'NoIllnesses'
+        ];
+        
+        return allCheckboxGroups.some(group => 
+            localFormData[group] && localFormData[group].length > 0
+        );
+    };
+
     const handleSave = async () => {
         if (!childId) {
             alert('Error: Child ID is missing');
@@ -129,6 +142,11 @@ const FamilyHistory = ({ openSection, setOpenSection, formData, handleInputChang
             >
                 <div className="flex items-center space-x-3">
                     <h2 className="text-lg font-semibold">Family History</h2>
+                    <img 
+                        src={isFormComplete() ? "/image/tick.png" : "/image/circle-with.png"} 
+                        alt={isFormComplete() ? "Complete" : "Incomplete"} 
+                        className="w-5 h-5"
+                    />
                 </div>
                 <div className="text-xl transform transition-transform duration-200">
                     {openSection === 'FamilyHistory' ? (

@@ -82,6 +82,19 @@ const PregnancyAndInfantHistory = ({ openSection, setOpenSection, formData, hand
         }
     };
 
+    const isFormComplete = () => {
+        const requiredFields = [
+            localFormData.IllnessDuringPregnancy,
+            localFormData.ConditionOfNewborn,
+            localFormData.DurationOfPregnancy,
+            localFormData.BirthWeight,
+            localFormData.Complications,
+            localFormData.BottleFed,
+            localFormData.BreastFed
+        ];
+        return requiredFields.some(field => field && field.trim() !== '');
+    };
+
     const handleSave = async () => {
         if (!childId) {
             alert('Error: Child ID is missing');
@@ -141,8 +154,13 @@ const PregnancyAndInfantHistory = ({ openSection, setOpenSection, formData, hand
                     }
                 }}
             >
-                <div className="flex items-center gap-3">
-                    <h1 className="text-lg font-medium">Pregnancy And Infant History</h1>
+                <div className="flex items-center space-x-3">
+                    <span className="text-lg font-medium">Pregnancy And Infant History</span>
+                    <img 
+                        src={isFormComplete() ? "/image/tick.png" : "/image/circle-with.png"} 
+                        alt={isFormComplete() ? "Complete" : "Incomplete"} 
+                        className="w-5 h-5"
+                    />
                 </div>
                 <div className="text-xl transform transition-transform duration-200">
                     {openSection === 'PregnancyAndInfantHistory' ? (

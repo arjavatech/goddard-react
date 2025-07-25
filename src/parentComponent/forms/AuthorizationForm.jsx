@@ -60,6 +60,23 @@ const AuthorizationForm = ({ selectedSubForm = null, initialFormData = null, chi
     }));
   };
 
+  // Completion validation functions for each sub-form
+  const isACHFormComplete = () => {
+    const requiredFields = ['bank_routing', 'bank_account', 'driver_license', 'state'];
+    return requiredFields.every(field => 
+      formData[field] && formData[field].toString().trim() !== ''
+    );
+  };
+
+  const isParentSignatureComplete = () => {
+    return formData.parent_sign_ach && formData.parent_sign_ach.toString().trim() !== '';
+  };
+
+  const isAdminSignatureComplete = () => {
+    return formData.admin_sign_ach && formData.admin_sign_ach.toString().trim() !== '' &&
+           formData.admin_sign_date_ach && formData.admin_sign_date_ach.toString().trim() !== '';
+  };
+
   const handleSave = async () => {
     if (!childId) {
       alert('Error: Child ID is missing');
@@ -193,7 +210,14 @@ const AuthorizationForm = ({ selectedSubForm = null, initialFormData = null, chi
   const renderACHForm = () => (
     <div id="authorizationach" className="container tab-pane bg-white shadow-lg rounded mb-4">
       <div className="card">
-        <h4 className="text-center bg-[#0F2D52] text-white p-3 rounded-t">Authorization ACH</h4>
+        <h4 className="flex items-center justify-center space-x-3 bg-[#0F2D52] text-white p-3 rounded-t">
+          <span>Authorization ACH</span>
+          <img 
+            src={isACHFormComplete() ? "/image/tick.png" : "/image/circle-with.png"} 
+            alt={isACHFormComplete() ? "Complete" : "Incomplete"} 
+            className="w-5 h-5"
+          />
+        </h4>
         <div className="p-4">
           <div className="container" id="avf_form">
             <section className="wizard-section">
@@ -354,7 +378,14 @@ const AuthorizationForm = ({ selectedSubForm = null, initialFormData = null, chi
   const renderParentSignatureForm = () => (
     <div id="authorizationparentsign" className="container tab-pane bg-white shadow-lg rounded mb-4">
       <div className="card">
-        <h2 className="text-center bg-[#0F2D52] text-white p-3 rounded-t">Parent Signature</h2>
+        <h2 className="flex items-center justify-center space-x-3 bg-[#0F2D52] text-white p-3 rounded-t">
+          <span>Parent Signature</span>
+          <img 
+            src={isParentSignatureComplete() ? "/image/tick.png" : "/image/circle-with.png"} 
+            alt={isParentSignatureComplete() ? "Complete" : "Incomplete"} 
+            className="w-5 h-5"
+          />
+        </h2>
         <div className="flex flex-wrap -mx-3 p-4">
           <div className="w-full md:w-1/2 px-3 mb-4">
             <div className="form-group">
@@ -400,7 +431,14 @@ const AuthorizationForm = ({ selectedSubForm = null, initialFormData = null, chi
   const renderAdminSignatureForm = () => (
     <div id="authorizationadminsign" className="container tab-pane bg-white shadow-lg rounded mb-4">
       <div className="card">
-        <h2 className="text-center bg-[#0F2D52] text-white p-3 rounded-t">Admin Signature</h2>
+        <h2 className="flex items-center justify-center space-x-3 bg-[#0F2D52] text-white p-3 rounded-t">
+          <span>Admin Signature</span>
+          <img 
+            src={isAdminSignatureComplete() ? "/image/tick.png" : "/image/circle-with.png"} 
+            alt={isAdminSignatureComplete() ? "Complete" : "Incomplete"} 
+            className="w-5 h-5"
+          />
+        </h2>
         <div className="flex flex-wrap -mx-3 p-4">
           <div className="w-full md:w-1/2 px-3 mb-4">
             <div className="form-group">

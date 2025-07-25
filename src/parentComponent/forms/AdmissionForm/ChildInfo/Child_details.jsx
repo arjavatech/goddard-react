@@ -45,6 +45,21 @@ const Child_details = ({ openSection, setOpenSection, initialFormData, childId }
       }
     }, [initialFormData]);
 
+    // Function to check if all required fields are filled
+    const isFormComplete = () => {
+        const requiredFields = [
+            'child_first_name',
+            'child_last_name', 
+            'dob',
+            'gender',
+            'primary_language'
+        ];
+        
+        return requiredFields.every(field => 
+            formData[field] && formData[field].toString().trim() !== ''
+        );
+    };
+
     
 
       // API function to update admission form data
@@ -130,7 +145,13 @@ const handleSave = async () => {
                 }}
             >
                 <div className="flex items-center space-x-3">
+                    
                     <h2 className="text-lg font-semibold">Child Details</h2>
+                    <img 
+                        src={isFormComplete() ? "image/tick.png" : "image/circle-with.png"} 
+                        alt={isFormComplete() ? "Complete" : "Incomplete"} 
+                        className="w-5 h-5"
+                    />
                 </div>
                 <div className="text-xl transform transition-transform duration-200">
                     {openSection === 'childDetails' ? <DownIcon className="h-5 w-5 text-gray-500" /> : <UpIcon className="h-5 w-5 text-black" />}

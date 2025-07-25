@@ -67,6 +67,20 @@ const ChildProfileDetails = ({ expandedSections, toggleSection, initialFormData,
         }
     };
 
+    // Function to check if all required fields are filled
+    const isFormComplete = () => {
+        const requiredFields = [
+            'important_fam_members',
+            'childcare_before',
+            'drop_off_time',
+            'pick_up_time'
+        ];
+        
+        return requiredFields.every(field => 
+            localFormData[field] && localFormData[field].toString().trim() !== ''
+        );
+    };
+
     const handleSave = async () => {
         if (!childId) {
             alert('Error: Child ID is missing');
@@ -113,7 +127,14 @@ const ChildProfileDetails = ({ expandedSections, toggleSection, initialFormData,
         }}
       >
         <div className="flex items-center gap-2">
-          <span className="font-semibold">Child Profile Details</span>
+          <div className="flex items-center space-x-3">
+            <span className="font-semibold">Child Profile Details</span>
+            <img 
+              src={isFormComplete() ? "/image/tick.png" : "/image/circle-with.png"} 
+              alt={isFormComplete() ? "Complete" : "Incomplete"} 
+              className="w-5 h-5"
+            />
+          </div>
         </div>
         {expandedSections.profile ? (
           <ChevronUp className="w-5 h-5" />

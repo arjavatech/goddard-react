@@ -74,6 +74,22 @@ const Nutrition = ({ expandedSections, toggleSection, formData, handleInputChang
     }
   };
 
+  // Function to check if all required fields are filled
+  const isFormComplete = () => {
+    // Check if radio buttons are answered
+    const hasSpecialDiet = localFormData.hasSpecialDiet && localFormData.hasSpecialDiet.trim() !== '';
+    const eatsOnOwn = localFormData.eatsOnOwn && localFormData.eatsOnOwn.trim() !== '';
+    
+    // Check if explanation fields are filled (should have content or "NA")
+    const specialDietExplanation = localFormData.specialDietExplanation && localFormData.specialDietExplanation.trim() !== '';
+    const eatsOnOwnExplanation = localFormData.eatsOnOwnExplanation && localFormData.eatsOnOwnExplanation.trim() !== '';
+    
+    // Check if favorite foods is filled
+    const favoriteFoods = localFormData.favoriteFoods && localFormData.favoriteFoods.trim() !== '';
+    
+    return hasSpecialDiet && eatsOnOwn && specialDietExplanation && eatsOnOwnExplanation && favoriteFoods;
+  };
+
   const handleSave = async () => {
     if (!childId) {
       alert('Error: Child ID is missing');
@@ -118,7 +134,14 @@ const Nutrition = ({ expandedSections, toggleSection, formData, handleInputChang
           }
         }}
       >
-        <span>Nutrition</span>
+        <div className="flex items-center space-x-3">
+          <span>Nutrition</span>
+          <img 
+            src={isFormComplete() ? "/image/tick.png" : "/image/circle-with.png"} 
+            alt={isFormComplete() ? "Complete" : "Incomplete"} 
+            className="w-5 h-5"
+          />
+        </div>
         {isOpen ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
       </div>
 

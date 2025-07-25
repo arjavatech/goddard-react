@@ -105,6 +105,20 @@ const MedicalCareProvider = ({ openSection, setOpenSection, initialFormData, cha
               }
           };
     
+    // Function to check if essential medical provider info is filled
+    const isFormComplete = () => {
+        const requiredFields = [
+            'child_care_provider_name',
+            'child_care_provider_telephone_number',
+            'child_dentist_name',
+            'dentist_telephone_number'
+        ];
+        
+        return requiredFields.every(field => 
+            formData[field] && formData[field].toString().trim() !== ''
+        );
+    };
+
     const handleSave = async () => {
             if (!childId) {
                 alert('Error: Child ID is missing');
@@ -171,7 +185,14 @@ const MedicalCareProvider = ({ openSection, setOpenSection, initialFormData, cha
                 }}
             >
                 <div className="flex items-center space-x-3">
-                    <h2 className="text-lg font-semibold">Medical Care Provider Details</h2>
+                    <div className="flex items-center space-x-3">
+                        <h2 className="text-lg font-semibold">Medical Care Provider Details</h2>
+                        <img 
+                            src={isFormComplete() ? "/image/tick.png" : "/image/circle-with.png"} 
+                            alt={isFormComplete() ? "Complete" : "Incomplete"} 
+                            className="w-5 h-5"
+                        />
+                    </div>
                 </div>
                 <div className="text-xl transform transition-transform duration-200">
                     {openSection === 'medicalCareProvider' ? <DownIcon className="h-5 w-5 text-gray-500" /> : <UpIcon className="h-5 w-5 text-black" />}

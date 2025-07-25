@@ -141,6 +141,24 @@ const MedicalGeneral = ({ initialFormData = null, expandedSections, toggleSectio
     }
   };
 
+  // Function to check if all required fields are filled
+  const isFormComplete = () => {
+    const requiredFields = [
+      'hasExistingCondition',
+      'functioningAtAge', 
+      'canWalk',
+      'canCommunicate',
+      'needsTreatment',
+      'usesEquipment',
+      'needsSupervision',
+      'needsAccommodation'
+    ];
+    
+    return requiredFields.every(field => 
+      localFormData[field] && localFormData[field].toString().trim() !== ''
+    );
+  };
+
   const handleSave = async () => {
     if (!childId) {
       alert('Error: Child ID is missing');
@@ -196,7 +214,14 @@ const MedicalGeneral = ({ initialFormData = null, expandedSections, toggleSectio
           }
         }}
       >
-        <span>Medical General</span>
+        <div className="flex items-center space-x-3">
+          <span>Medical General</span>
+          <img 
+            src={isFormComplete() ? "/image/tick.png" : "/image/circle-with.png"} 
+            alt={isFormComplete() ? "Complete" : "Incomplete"} 
+            className="w-5 h-5"
+          />
+        </div>
         {isOpen ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
       </div>
 

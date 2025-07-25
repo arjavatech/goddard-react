@@ -5,7 +5,11 @@ const FormItem = ({ item, sectionKey, formStatus, onItemClick,isSelected }) => {
   const getItemKey = () => {
     if (item.toLowerCase().includes("ach")) return "authorization_ach";
     if (item.toLowerCase().includes("signature")) {
-      if (sectionKey === "authorization") return "authorization_signature";
+      if (sectionKey === "authorization") {
+        if (item.toLowerCase().includes("parent")) return "authorization_signature";
+        if (item.toLowerCase().includes("admin")) return "authorization_admin_signature";
+        return "authorization_signature"; // fallback
+      }
       if (sectionKey === "enrollment") return "enrollment_signature";
       if (sectionKey === "parentHandbook") return "parenthandbook_signature";
       if (sectionKey === "admission") return "admission_parentsignature";
@@ -28,6 +32,13 @@ const FormItem = ({ item, sectionKey, formStatus, onItemClick,isSelected }) => {
 
   const itemKey = getItemKey();
 
+  // Debug: Log authorization items for troubleshooting
+  if (sectionKey === "authorization") {
+    const isCompleted = formStatus[itemKey]?.completed === true;
+    const imageSrc = isCompleted ? "/image/tick.png" : "/image/circle-with.png";
+    console.log(`Authorization FormItem - Item: "${item}", Key: "${itemKey}", Status:`, formStatus[itemKey], 'Completed:', formStatus[itemKey]?.completed, 'Will show image:', imageSrc);
+  }
+
   const handleItemClick = () => {
     if (onItemClick) {
       onItemClick(sectionKey, item);
@@ -43,8 +54,14 @@ const FormItem = ({ item, sectionKey, formStatus, onItemClick,isSelected }) => {
   >
       <span>{item}</span>
       <img
-        src={formStatus[itemKey]?.completed ? "image/tick.png" : "image/circle-with.png"}
-        alt={formStatus[itemKey]?.completed ? "Completed" : "Incomplete"}
+        src={
+          formStatus[itemKey]?.completed === true ? "/image/tick.png" : "/image/circle-with.png"
+        }
+        alt={
+          formStatus[itemKey]?.completed === true ? "Completed" : 
+          formStatus[itemKey] === undefined ? `Debug - Status Unknown for ${itemKey}` : 
+          "Incomplete"
+        }
         className="w-5 h-5"
       />
     </div>

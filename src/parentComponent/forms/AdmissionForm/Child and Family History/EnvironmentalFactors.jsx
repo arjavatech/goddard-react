@@ -68,6 +68,18 @@ const EnvironmentalFactors = ({ openSection, setOpenSection, formData, handleInp
         }
     };
 
+    const isFormComplete = () => {
+        const requiredFields = [
+            localFormData.HowManyTimesHaveYouMovedInTheLastFiveYears,
+            localFormData.EducationalToysGamesBooksUsedAtHome,
+            localFormData.HowManyHoursOfTelevisionDaily,
+            localFormData.LanguageUsedInTheHome,
+            localFormData.HaveThereBeenAnyChangesInTheHomeSituationRecently,
+            localFormData.WhatAreYourEducationalExpectationsOfYourChild
+        ];
+        return requiredFields.some(field => field && field.trim() !== '');
+    };
+
     const handleSave = async () => {
         if (!childId) {
             alert('Error: Child ID is missing');
@@ -117,7 +129,12 @@ const EnvironmentalFactors = ({ openSection, setOpenSection, formData, handleInp
                 }}
             >
                 <div className="flex items-center space-x-3">
-                    <h2 className="text-lg font-semibold">Environmental Factors</h2>
+                    <span className="text-lg font-semibold">Environmental Factors</span>
+                    <img 
+                        src={isFormComplete() ? "/image/tick.png" : "/image/circle-with.png"} 
+                        alt={isFormComplete() ? "Complete" : "Incomplete"} 
+                        className="w-5 h-5"
+                    />
                 </div>
                 <div className="text-xl transform transition-transform duration-200">
                     {openSection === 'EnvironmentalFactors' ? (
