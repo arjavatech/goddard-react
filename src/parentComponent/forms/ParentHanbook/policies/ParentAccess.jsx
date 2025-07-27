@@ -29,8 +29,12 @@ const ParentAccess = ({fieldValue, openSection, setOpenSection, handleChange: pa
   
     const isOpen = openSection === 'ParentAccess';
 
-    const headerClasses = `border bg-blue-50 px-6 py-4 flex items-center justify-between cursor-pointer 
-        hover:bg-slate-700 hover:text-white ${isOpen ? 'bg-slate-700 text-white' : 'text-slate-700'}`;
+    const headerClasses = `
+    border px-6 py-4 flex items-center justify-between cursor-pointer
+    hover:bg-[#0F2D52] hover:text-white
+    ${isOpen ? 'bg-[#0F2D52] text-white' : 'bg-blue-100 text-slate-700'}
+  `;
+  
 
     return (
         <>
@@ -53,11 +57,11 @@ const ParentAccess = ({fieldValue, openSection, setOpenSection, handleChange: pa
       className="w-full h-auto mx-auto p-6 text-left text-justify text-gray-700 font-semibold"
       style={{ height: "80%", width: "100%", textAlign: "justify" }}
     >
-      <h1 className="text-2xl font-bold mb-4 text-center">
+      <h1 className="text-2xl font-bold mb-10  max-sm:text-[17px]  text-center">
       PARENT ACCESS
       </h1>
-
-      <p className="text-base leading-relaxed mt-4">
+      {/* <div className='max-sm:text-[11px]  max-sm:-mb-1 max-sm:-ml-5 max-sm:-mr-5'> */}
+      <p className="text-base max-sm:text-[11px] max-sm:-mt-1 max-sm:-ml-5 max-sm:-mr-5 leading-relaxed mt-4">
       A parent of a child enrolled in The Goddard School®, shall be permitted free access, without prior
        notice, throughout the school whenever the child is in attendance. In cases where the Family 
        Court or other legal entities have established visitation or custody rights, a copy of the 
@@ -67,14 +71,15 @@ const ParentAccess = ({fieldValue, openSection, setOpenSection, handleChange: pa
         appointments and are allowed in the childcare areas only at the discretion of the Director 
         and/or Owner. Visitors will be accompanied by a staff member at all times.
       </p>
+     
 
     
-      <h1 className="text-2xl font-bold mb-4 text-center mt-5">
+      <h1 className="text-2xl font-bold mb-10 max-sm:text-[17px] text-center mt-5">
       PARKING AND SPEED LIMIT
 
       </h1>
 
-      <p className="mt-5">
+      <p className=" max-sm:text-[11px] max-sm:-mt-1 max-sm:-ml-5 max-sm:-mr-5 mt-5">
       The speed limit through the parking area is 5 mph. Parent parking is in front of the building.
        Parents should not park in the fire lane, as this is reserved for emergency vehicles.
         Handicap spaces, by Washington State law, must be reserved for vehicles displaying an 
@@ -84,14 +89,14 @@ const ParentAccess = ({fieldValue, openSection, setOpenSection, handleChange: pa
           when walking to or from the building while in the parking lot.
       </p>
 
-      <p className="mt-4">Please do not leave any child in your vehicle unattended when dropping off or picking up 
+      <p  className="max-sm:text-[11px] max-sm:-mt-1 max-sm:-ml-5 max-sm:-mr-5 mt-8">Please do not leave any child in your vehicle unattended when dropping off or picking up 
       siblings. Doing so is unsafe and should never happen per RCW 10.52.215.</p>
 
-      <h1 className="text-2xl font-bold mb-4 text-center mt-5">
+      <h1 className="text-2xl font-bold mb-10 max-sm:text-[17px] text-center mt-10">
    ARRIVAL AND DEPARTURE
       </h1>
 
-      <p className="mt-4">
+      <p className=" max-sm:text-[11px] max-sm:-mt-1 max-sm:-ml-5 max-sm:-mr-5 mt-4">
       Upon arrival each morning, children must be signed in using the electronic devices in the foyer.
        Children are to be escorted to their designated classroom area and delivered to the supervising
         staff member. Children are required by law to be under adult supervision at all times. Do not
@@ -101,14 +106,14 @@ const ParentAccess = ({fieldValue, openSection, setOpenSection, handleChange: pa
           parents from “sneaking out” of the school.
       </p>
 
-     <p className="mt-4">Children attending our program should be settled and ready to begin no later than 
+     <p className="max-sm:text-[11px] max-sm:-mt-1 max-sm:-ml-5 max-sm:-mr-5 mt-8">Children attending our program should be settled and ready to begin no later than 
         10:00 AM. Late arrivals may make a child feel left out since their classmates will already be 
         involved in the day’s activities. Late arrivals also cause a disruption to the other children 
         already in attendance. All late arrivals require preapproval from the administrative staff.
          We reserve the right not to accept late arrivals without proper notification.</p>
 
 
-    <p className="mt-4">
+    <p className="max-sm:text-[11px] max-sm:-mt-1 max-sm:-ml-5 max-sm:-mr-5 mt-8">
 
     When picking up individual children at the end of the day, parents must sign their children out on 
     the appropriate electronic device in the foyer. Attendance is reviewed by Washington State licensing 
@@ -116,7 +121,7 @@ const ParentAccess = ({fieldValue, openSection, setOpenSection, handleChange: pa
     </p>
 
 
-    <p className="mt-4"> At pickup/drop off times, please ensure that you are with your child at all times 
+    <p className="mt-8 max-sm:text-[11px] max-sm:-mt-1 max-sm:-ml-5 max-sm:-mr-5"> At pickup/drop off times, please ensure that you are with your child at all times 
         on school property. For example, running through the hallway, parking lots, adult bathrooms, etc. 
         will not be allowed. Once a child is removed from the supervising staff member it becomes the
          responsibility of the person picking up your child to provide supervision. We advise all parents

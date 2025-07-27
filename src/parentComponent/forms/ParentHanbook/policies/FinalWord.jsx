@@ -33,8 +33,12 @@ const FinalWord = ({fieldValue, openSection, setOpenSection, handleSave: parentH
   };
     const isOpen = openSection === 'FinalWord';
 
-    const headerClasses = `rounded-b-lg  border bg-blue-50 px-6 py-4 flex items-center justify-between cursor-pointer 
-      hover:bg-slate-700 hover:text-white ${isOpen ? 'bg-slate-700 text-white' : 'text-slate-700'}`;
+    const headerClasses = `
+    rounded-b-lg mb-7 border px-6 py-4 flex items-center justify-between cursor-pointer
+    hover:bg-[#0F2D52] hover:text-white
+    ${isOpen ? 'bg-[#0F2D52] text-white' : 'bg-blue-100 text-slate-700'}
+  `;
+  
 
     return (
         <>
@@ -70,7 +74,7 @@ const FinalWord = ({fieldValue, openSection, setOpenSection, handleSave: parentH
                         <div>
                         <h1 className="text-2xl font-bold text-center mb-8">A Final Word</h1>
         
-        <div className="space-y-6 text-md leading-relaxed">
+        <div className="space-y-6 text-md leading-relaxed max-sm:text-[11px] max-sm:-ml-5 max-sm:-mr-5">
           <p>
             The Owner and/or Director reserve the right to deny, cancel, sever, suspend, or terminate the services of any child, 
             without notice, for any reason, so long as the determination is not based on whole or part on the race, color, creed, 
@@ -114,13 +118,13 @@ const FinalWord = ({fieldValue, openSection, setOpenSection, handleSave: parentH
       <div className="p-8 min-h-screen">
         <h1 className="text-2xl font-bold text-center mb-8">CHAIN OF COMMAND</h1>
         
-        <p className="text-md leading-relaxed mb-8">
+        <p className="text-md leading-relaxed mb-8 max-sm:text-[11px] max-sm:-ml-11 max-sm:-mr-11">
           We are all part of the team working to support your family. The Goddard School® strives to meet all of your 
           family's needs. If you have a concern, please go directly to the source to handle the concern most efficiently. If your 
           concern is not resolved, please continue up the ladder until we have reached mutual understanding.
         </p>
         
-        <div className="text-center space-y-4 text-md">
+        <div className="text-center space-y-4 text-md max-sm:text-[11px] max-sm:-ml-11 max-sm:-mr-11">
           <div className="mb-6">
             <h2 className="font-bold underline text-base mb-2">The Goddard School® of Lynnwood</h2>
             <div className="space-y-1">
@@ -136,7 +140,7 @@ const FinalWord = ({fieldValue, openSection, setOpenSection, handleSave: parentH
             </div>
           </div>
           
-          <div className="mb-6">
+          <div className="mb-6 max-sm:text-[11px] max-sm:-ml-11 max-sm:-mr-11">
             <h3 className="font-bold underline text-base mb-2">Goddard Systems, Inc.</h3>
             <p>1016 West Ninth Street, King of Prussia, PA 19406</p>
             <p>Franchise Relations, 610-265-8510 Extension 530</p>
@@ -153,13 +157,13 @@ const FinalWord = ({fieldValue, openSection, setOpenSection, handleSave: parentH
         <div className="p-8 border-b-2 border-gray-300 min-h-screen">
         <h1 className="text-2xl font-bold text-center mb-8">EMERGENCY OPERATIONS PLAN</h1>
         
-        <p className="text-md leading-relaxed mb-8">
+        <p className="text-md leading-relaxed mb-8 max-sm:text-[11px] max-sm:-ml-11 max-sm:-mr-11">
           Our primary concern is for the safety and welfare of the children attending The Goddard School® in Lynnwood, 
           WA. Our Emergency Operations Plan provides for response to all types of emergencies. Depending on the 
           circumstances of the emergency, we will use one of the following protective actions:
         </p>
         
-        <ul className="space-y-4 text-md leading-relaxed mb-8 ml-4">
+        <ul className="space-y-4 text-md leading-relaxed mb-8 ml-4 max-sm:text-[11px] max-sm:-ml-11 max-sm:-mr-11">
           <li className="flex">
             <span className="mr-2">•</span>
             <div>
@@ -192,24 +196,24 @@ const FinalWord = ({fieldValue, openSection, setOpenSection, handleSave: parentH
           </li>
         </ul>
         
-        <p className="text-md leading-relaxed mb-8">
+        <p className="text-md leading-relaxed mb-8 max-sm:text-[11px] max-sm:-ml-11 max-sm:-mr-11">
           In the event of a local or regional emergency, please tune into your local news and radio stations for updated 
           announcements. You may also go to goddardschool.com and click on the Lynnwood, WA location for 
           announcements relating to any of the emergency actions listed above.
         </p>
         
-        <p className="text-md leading-relaxed mb-8">
+        <p className="text-md leading-relaxed mb-8 max-sm:text-[11px] max-sm:-ml-11 max-sm:-mr-11">
           We ask that you do not call the school during an emergency. This will keep the main telephone line free to make 
           emergency calls and relay information. We will call you and let you know that we've taken one of these protective 
           actions. We will also call you when we have resolved the situation, and it is safe for you to pick up your child(ren).
         </p>
         
-        <p className="text-md leading-relaxed mb-8">
+        <p className="text-md leading-relaxed mb-8 max-sm:text-[11px] max-sm:-ml-11 max-sm:-mr-11">
           The Owner and/or Directors may provide an alternative phone number (i.e. cell phone number) to call in the event 
           of an emergency via group email or posting on our school's website.
         </p>
         
-        <p className="text-md leading-relaxed mb-8">
+        <p className="text-md leading-relaxed mb-8 max-sm:text-[11px] max-sm:-ml-11 max-sm:-mr-11">
           Our emergency preparedness plan is reviewed on a semi-annual basis with all staff and is located in each classroom 
           binder as well as in the Director and Owner offices.
         </p>

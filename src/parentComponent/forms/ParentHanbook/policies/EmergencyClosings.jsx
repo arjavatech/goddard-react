@@ -27,8 +27,12 @@ const EmergencyClosings = ({fieldValue, openSection, setOpenSection, handleChang
 
     const isOpen = openSection === 'EmergencyClosings';
 
-    const headerClasses = `border bg-blue-50 px-6 py-4 flex items-center justify-between cursor-pointer 
-      hover:bg-slate-700 hover:text-white ${isOpen ? 'bg-slate-700 text-white' : 'text-slate-700'}`;
+    const headerClasses = `
+    border px-6 py-4 flex items-center justify-between cursor-pointer
+    hover:bg-[#0F2D52] hover:text-white
+    ${isOpen ? 'bg-[#0F2D52] text-white' : 'bg-blue-100 text-slate-700'}
+  `;
+  
 
     return (
         <>
@@ -60,34 +64,34 @@ const EmergencyClosings = ({fieldValue, openSection, setOpenSection, handleChang
                         }}
                     >
                         {/* --- REST TIME --- */}
-                        <h1 className="text-2xl font-bold mb-4 text-center">
+                        <h1 className="text-2xl font-bold mb-10 text-center max-sm:text-[17px]">
                         EMERGENCY CLOSINGS
                         </h1>
 
-                        <p className="text-base leading-relaxed mt-4">
+                        <p className="text-base leading-relaxed mt-4 max-sm:text-[11px] max-sm:-ml-5 max-sm:-mr-5 ">
                         The Goddard School® will make every effort to open on time and remain open in the event of inclement weather. However, in the case of extremely dangerous road conditions or states of emergency, it may be necessary for the school to cancel school or delay the opening time or early dismissal. We will send Kaymbu, Emails and Text Messages out as soon as possible. Should parents be prevented by weather conditions from reaching the facility to pick up their children, please make plans for an alternate pick-up. Closing staff members will care for the children and maintain proper staff-child ratio, until such time as the parents can safely reach the school.
                         </p>
 
 
-                        <p className="text-base leading-relaxed mt-6">Should the building require emergency evacuation, the staff-child ratios will be maintained, and the children will be evacuated to a nearby location. Each staff member responsible for a group of children will carry emergency contact information and class attendance records with them to the new site. Parents will be contacted by telephone as to the location of the children, or by radio broadcast if phone transmission is not possible, depending on circumstances, parents may be requested to pick up their children, or arrange for the emergency contact person to pick up their children.</p>
+                        <p className="text-base leading-relaxed mt-9 max-sm:text-[11px] max-sm:-ml-5 max-sm:-mr-5 ">Should the building require emergency evacuation, the staff-child ratios will be maintained, and the children will be evacuated to a nearby location. Each staff member responsible for a group of children will carry emergency contact information and class attendance records with them to the new site. Parents will be contacted by telephone as to the location of the children, or by radio broadcast if phone transmission is not possible, depending on circumstances, parents may be requested to pick up their children, or arrange for the emergency contact person to pick up their children.</p>
 
-   <h1 className="text-2xl font-bold mb-4 text-center mt-6">
+   <h1 className="text-2xl font-bold mb-10 text-center mt-10 max-sm:text-[17px]">
    RELIGIOUS AFFILIATION
                         </h1>
 
-                        <p className="mt-4">
+                        <p className="mt-4 max-sm:text-[11px] max-sm:-ml-5 max-sm:-mr-5 ">
                         The Goddard School located in Lynnwood, WA claims to have no association with a church or religious affiliation. Our staff abides by The Goddard School guidelines for the separation of church and school.
                         </p>
 
 
- <h1 className="text-2xl font-bold mb-4 mt-6 text-center">
+ <h1 className="text-2xl font-bold mb-10 mt-10 text-center max-sm:text-[17px]">
  POLICIES
                         </h1>
 
-                        <p className="mt-4">This handbook of policies and procedures is reviewed by the Owner and Director annually or upon state regulatory changes. Should changes occur, you will be notified of the changes and the effective date of the changes.
+                        <p className="mt-4 max-sm:text-[11px] max-sm:-ml-5 max-sm:-mr-5 ">This handbook of policies and procedures is reviewed by the Owner and Director annually or upon state regulatory changes. Should changes occur, you will be notified of the changes and the effective date of the changes.
                             </p>
 
-                        <p className="mt-4">
+                        <p className="mt-8 max-sm:text-[11px] max-sm:-ml-5 max-sm:-mr-5 ">
                         Additionally, all policies are available in the Owner’s Office as well as on Goddard Family Connect, including the Bloodborne Pathogens Policy and the Pesticide Policy are included.</p>
 
 

@@ -29,8 +29,12 @@ const ReleaseOfChildren = ({fieldValue, openSection, setOpenSection, handleChang
   
     const isOpen = openSection === 'ReleaseOfChildren';
 
-    const headerClasses = `border bg-blue-50 px-6 py-4 flex items-center justify-between cursor-pointer 
-        hover:bg-slate-700 hover:text-white ${isOpen ? 'bg-slate-700 text-white' : 'text-slate-700'}`;
+    const headerClasses = `
+    border px-6 py-4 flex items-center justify-between cursor-pointer
+    hover:bg-[#0F2D52] hover:text-white
+    ${isOpen ? 'bg-[#0F2D52] text-white' : 'bg-blue-100 text-slate-700'}
+  `;
+  
 
     return (
         <>
@@ -53,11 +57,11 @@ const ReleaseOfChildren = ({fieldValue, openSection, setOpenSection, handleChang
       className="w-full h-auto mx-auto p-6 text-left  text-justify text-gray-700 font-semibold"
       style={{ height: "80%", width: "100%", textAlign: "justify" }}
     >
-      <h1 className="text-2xl font-bold mb-4 text-center">
+      <h1 className="text-2xl font-bold mb-10 text-center max-sm:text-[17px]">
       RELEASE OF CHILDREN
       </h1>
 
-      <p className="text-base leading-relaxed mt-4">
+      <p className="text-base leading-relaxed mt-4 max-sm:text-[11px] max-sm:-mt-1 max-sm:-ml-5 max-sm:-mr-5">
       Since the safety of the children is our utmost concern, The Goddard School® 
       maintains a strict policy regarding the individuals to whom we will release
        a child. The enrollment forms require a parent to specify at least two (2) 
@@ -65,7 +69,7 @@ const ReleaseOfChildren = ({fieldValue, openSection, setOpenSection, handleChang
         In addition, parents are asked to specify a password for the release of the child.
       </p>
 
-      <p className="mt-4">
+      <p className="mt-8 max-sm:text-[11px] max-sm:-mt-1 max-sm:-ml-5 max-sm:-mr-5">
       Advance written notice is required for an individual to be authorized to pick up a child.
        In the case of an emergency, the Director or Owner may be notified by phone as to the name,
         address, phone number, and brief description of the person picking up the child. 
@@ -76,7 +80,7 @@ const ReleaseOfChildren = ({fieldValue, openSection, setOpenSection, handleChang
           child from their designated classroom. The child must still be signed out.
       </p>
      
-     <p className="mt-4">
+     <p className="mt-8 max-sm:text-[11px] max-sm:-mt-1 max-sm:-ml-5 max-sm:-mr-5">
      If a non-custodial parent is not included among those persons authorized by the custodial 
      parent to pick up the child, please inform the Director or Owner. A copy of the appropriate 
      documentation regarding visitation must be included in the child’s school record. This
@@ -84,7 +88,7 @@ const ReleaseOfChildren = ({fieldValue, openSection, setOpenSection, handleChang
        the needs of the child.
      </p>
 
-        <p className="mt-4">
+        <p className="mt-8 max-sm:text-[11px] max-sm:-mt-1 max-sm:-ml-5 max-sm:-mr-5">
         Should an unauthorized individual arrive to pick up a child, a parent or emergency 
         contact will be immediately notified by phone. If the Director is unable to contact 
         a parent or emergency contact, the child will not be released. Should an unauthorized 
@@ -92,7 +96,7 @@ const ReleaseOfChildren = ({fieldValue, openSection, setOpenSection, handleChang
         the local authorities will be notified.
         </p>
 
-        <p className="mt-4">
+        <p className="mt-8 max-sm:text-[11px] max-sm:-mt-1 max-sm:-ml-5 max-sm:-mr-5">
         The Goddard School® will not release a child to any parent, 
         relative, or other authorized adult who appears to be impaired
          by the use of drugs or alcohol. In the event this situation occurs, 

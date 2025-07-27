@@ -29,8 +29,12 @@ const OutsideEngagement = ({fieldValue, openSection, setOpenSection, handleChang
   
     const isOpen = openSection === 'OutsideEngagement';
 
-    const headerClasses = `border bg-blue-50 px-6 py-4 flex items-center justify-between cursor-pointer 
-        hover:bg-slate-700 hover:text-white ${isOpen ? 'bg-slate-700 text-white' : 'text-slate-700'}`;
+    const headerClasses = `
+    border px-6 py-4 flex items-center justify-between cursor-pointer
+    hover:bg-[#0F2D52] hover:text-white
+    ${isOpen ? 'bg-[#0F2D52] text-white' : 'bg-blue-100 text-slate-700'}
+  `;
+  
 
     return (
         <>
@@ -53,11 +57,11 @@ const OutsideEngagement = ({fieldValue, openSection, setOpenSection, handleChang
                         className="w-full h-auto mx-auto p-6 text-left  text-justify text-gray-700 font-semibold"
                         style={{ height: "80%", width: "100%", textAlign: "justify" }}
                     >
-                        <h1 className="text-2xl font-bold mb-4 text-center">
+                        <h1 className="text-2xl font-bold mb-10 text-center max-sm:text-[17px]">
                             OUTSIDE ENGAGEMENTS
                         </h1>
 
-                        <p className="text-base leading-relaxed mt-4">
+                        <p className="text-base leading-relaxed mt-4 max-sm:text-[11px] max-sm:-mt-1 max-sm:-ml-5 max-sm:-mr-5">
                             In the event Parents engage employees of the School from time to time for outside child care services
                             (“Outside Engagements”), Parents agree that Outside Engagements are not related to the School,
                             its Owner or Goddard Systems, Inc. With respect to Outside Engagements, Parents release and discharge
@@ -69,11 +73,11 @@ const OutsideEngagement = ({fieldValue, openSection, setOpenSection, handleChang
                             Releases based in whole or in part on or arising out of or related to any Outside Engagements.
                         </p>
 
-                        <h1 className="text-2xl font-bold mb-4 mt-6 text-center">
+                        <h1 className="text-2xl font-bold mb-10 mt-10 text-center max-sm:text-[17px]">
                             ADDITIONAL DAYS/HOURS
                         </h1>
 
-                        <p className="mt-4">
+                        <p className="mt-4 max-sm:text-[11px] max-sm:-mt-1 max-sm:-ml-5 max-sm:-mr-5">
                             Switching of scheduled days is not allowed. Additional days may be added based on the rates quoted
                             in the enrollment agreement. Parents are required to let the Director or Owner know at least 48
                             hours in advance, if planning to bring a child for an additional day. Additional days are offered

@@ -28,8 +28,12 @@ const AddressingIndividualChildConcern = ({fieldValue, openSection, setOpenSecti
 
     const isOpen = openSection === 'AddressingIndividualChildConcern';
 
-    const headerClasses = `border bg-blue-50 px-6 py-4 flex items-center justify-between cursor-pointer 
-      hover:bg-slate-700 hover:text-white ${isOpen ? 'bg-slate-700 text-white' : 'text-slate-700'}`;
+     const headerClasses = `
+    border px-6 py-4 flex items-center justify-between cursor-pointer
+    hover:bg-[#0F2D52] hover:text-white
+    ${isOpen ? 'bg-[#0F2D52] text-white' : 'bg-blue-100 text-slate-700'}
+  `;
+  
 
     return (
         <>
@@ -61,9 +65,9 @@ const AddressingIndividualChildConcern = ({fieldValue, openSection, setOpenSecti
                         }}
                     >
                         {/* --- REST TIME --- */}
-                        <h1 className="text-2xl font-bold text-center mb-8">ADDRESSING INDIVIDUAL CHILD CONCERNS</h1>
+                        <h1 className="text-2xl font-bold text-center mb-8 max-sm:text-[17px]">ADDRESSING INDIVIDUAL CHILD CONCERNS</h1>
         
-        <div className="space-y-6 text-md leading-relaxed">
+        <div className="space-y-6 text-md leading-relaxed max-sm:text-[11px] max-sm:-ml-1 max-sm:-mr-1 ">
           <p>
             The Goddard School® has developed a strong working relationship with Kindering, an early intervention center 
             serving urban East King County. Kindering is the largest intervention center in Washington, one of the three largest 
@@ -92,14 +96,14 @@ const AddressingIndividualChildConcern = ({fieldValue, openSection, setOpenSecti
       <div className="p-8 border-b-2 border-gray-300 min-h-screen">
      
         
-        <h1 className="text-2xl font-bold text-center mb-8">PARENT CODE OF CONDUCT</h1>
+        <h1 className="text-2xl font-bold text-center mb-8 max-sm:text-[17px]">PARENT CODE OF CONDUCT</h1>
         
-        <p className="text-md leading-relaxed mb-8">
+        <p className="text-md leading-relaxed mb-8 max-sm:text-[11px] max-sm:-ml-5 max-sm:-mr-5 ">
           The Goddard School® expects parents to observe a certain standard of conduct at the center and on its grounds. 
           The following behaviors are not acceptable in the facility or on the grounds:
         </p>
         
-        <ul className="space-y-3 text-md leading-relaxed mb-12 ml-6">
+        <ul className="space-y-3 text-md leading-relaxed mb-12 ml-6 max-sm:text-[11px] max-sm:-ml-5 max-sm:-mr-5 ">
           <li className="flex">
             <span className="mr-3">•</span>
             <span>Physical or verbal punishment of their children</span>
@@ -126,9 +130,9 @@ const AddressingIndividualChildConcern = ({fieldValue, openSection, setOpenSecti
           </li>
         </ul>
         
-        <h1 className="text-2xl font-bold text-center mb-8">PARENT COMMUNICATION</h1>
+        <h1 className="text-2xl font-bold text-center mb-8 max-sm:text-[17px]">PARENT COMMUNICATION</h1>
         
-        <p className="text-md leading-relaxed mb-8">
+        <p className="text-md leading-relaxed mb-8 max-sm:text-[11px] max-sm:-ml-5 max-sm:-mr-5 ">
           The Goddard School® provides many opportunities for parents to receive information on the progress of their 
           children, as well as details on other general activities occurring from time to time at the school. Examples of the 
           types of communication that parents will receive include:
@@ -136,8 +140,8 @@ const AddressingIndividualChildConcern = ({fieldValue, openSection, setOpenSecti
         
         <div className="space-y-6 text-md leading-relaxed">
           <div>
-            <h3 className="font-bold mb-2">Kaymbu/The Goddard Family App</h3>
-            <p>
+            <h3 className="font-bold mb-2 ">Kaymbu/The Goddard Family App</h3>
+            <p className='max-sm:text-[11px] max-sm:-ml-5 max-sm:-mr-5 '>
               A written daily report for each child in The Goddard School® provides a parent with an overview of the activities in 
               which the child participated, as well as information on meals, sleep, and toileting will be emailed to you via 
               KAYMBU (you can also download the App).
@@ -151,8 +155,8 @@ const AddressingIndividualChildConcern = ({fieldValue, openSection, setOpenSecti
       <div className="p-8 min-h-screen">
         <div className="space-y-6 text-md leading-relaxed">
           <div>
-            <h3 className="font-bold mb-2">Parent Conferences</h3>
-            <p>
+            <h3 className="font-bold mb-2 max-sm:text-[13px]">Parent Conferences</h3>
+            <p className='max-sm:text-[11px] max-sm:-ml-11 max-sm:-mr-11 '>
               At least twice a year, or more often by parent (or staff) request, a formal parent/teacher conference time is 
               scheduled. Our school is closed for the two scheduled conference dates, sign ups occur for families with siblings 
               first and then open to the remaining classmates. These meetings serve to summarize each child's progress in detail. 
@@ -161,8 +165,8 @@ const AddressingIndividualChildConcern = ({fieldValue, openSection, setOpenSecti
           </div>
           
           <div>
-            <h3 className="font-bold mb-2">Information Boards</h3>
-            <p>
+            <h3 className="font-bold mb-2 max-sm:text-[13px]">Information Boards</h3>
+            <p className='max-sm:text-[11px] max-sm:-ml-11 max-sm:-mr-11'>
               Boards are located outside each classroom or inside the classroom by the door for your convenience. Information is 
               provided about upcoming school and community events, as well as miscellaneous points of interest. Individual 
               classroom boards will contain lesson plans, class schedules, and staff hours. It is recommended that parents check 
@@ -171,8 +175,8 @@ const AddressingIndividualChildConcern = ({fieldValue, openSection, setOpenSecti
           </div>
           
           <div>
-            <h3 className="font-bold mb-2">Daily Feedback</h3>
-            <p>
+            <h3 className="font-bold mb-2 max-sm:text-[13px]">Daily Feedback</h3>
+            <p className='max-sm:text-[11px] max-sm:-ml-11 max-sm:-mr-11'>
               Daily communication will occur between staff and parents in the morning and evening to provide updates on the 
               children's health, disposition, etc. A long dialogue may not be possible at the drop- off or pick-up time, as these are 
               particularly busy times when staff are responsible for supervising all of the children in their care. If you have a 
@@ -181,8 +185,8 @@ const AddressingIndividualChildConcern = ({fieldValue, openSection, setOpenSecti
           </div>
           
           <div>
-            <h3 className="font-bold mb-2">Newsletters and Monthly Calendars</h3>
-            <p>
+            <h3 className="font-bold mb-2 max-sm:text-[13px]">Newsletters and Monthly Calendars</h3>
+            <p className='max-sm:text-[11px] max-sm:-ml-11 max-sm:-mr-11'>
               Monthly newsletters are emailed out to keep parents posted on all school activities. Monthly calendars will be 
               available on or before the first of each month. These will be emailed out to all families a few days before the new 
               month begins.

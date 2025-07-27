@@ -28,9 +28,12 @@ const RestTimeMealsSnacks = ({fieldValue, openSection, setOpenSection, handleCha
   
     const isOpen = openSection === 'RestTimeMealsSnacks';
 
-    const headerClasses = `border bg-blue-50 px-6 py-4 flex items-center justify-between cursor-pointer 
-      hover:bg-slate-700 hover:text-white ${isOpen ? 'bg-slate-700 text-white' : 'text-slate-700'}`;
-
+    const headerClasses = `
+    border px-6 py-4 flex items-center justify-between cursor-pointer
+    hover:bg-[#0F2D52] hover:text-white
+    ${isOpen ? 'bg-[#0F2D52] text-white' : 'bg-blue-100 text-slate-700'}
+  `;
+  
     return (
         <>
             <div
@@ -61,11 +64,11 @@ const RestTimeMealsSnacks = ({fieldValue, openSection, setOpenSection, handleCha
                         }}
                     >
                         {/* --- REST TIME --- */}
-                        <h1 className="text-2xl font-bold mb-4 text-center">
+                        <h1 className="text-2xl font-bold mb-8 text-center max-sm:text-[17px]">
                             REST TIME
                         </h1>
 
-                        <p className="text-base leading-relaxed mt-4">
+                        <p className="text-base leading-relaxed mt-4 max-sm:text-[11px] max-sm:-ml-5 max-sm:-mr-5 ">
                             Children in the Toddler and Preschool classes are required to
                             lie quietly on their sleeping mats for approximately 30–45
                             minutes daily. This allows those children who do wish to sleep
@@ -78,7 +81,7 @@ const RestTimeMealsSnacks = ({fieldValue, openSection, setOpenSection, handleCha
                             classrooms are non-napping classes.
                         </p>
 
-                        <p className="mt-4">
+                        <p className="mt-8 max-sm:text-[11px] max-sm:-ml-5 max-sm:-mr-5 ">
                             Although we make every effort to meet each child’s rest needs, it
                             is difficult to guarantee a specific length of nap time, or
                             wake-up time, as a child’s rest needs vary with activity level,
@@ -87,7 +90,7 @@ const RestTimeMealsSnacks = ({fieldValue, openSection, setOpenSection, handleCha
                             awake if he/she wants to rest.
                         </p>
 
-                        <p className="mt-4">
+                        <p className="mt-8 max-sm:text-[11px] max-sm:-ml-5 max-sm:-mr-5 ">
                             Infants will rest on an individual schedule of time and length.
                             Infants who cannot turn over on their own will be placed in the
                             crib lying on their <u>backs only</u> unless a medical reason
@@ -95,11 +98,11 @@ const RestTimeMealsSnacks = ({fieldValue, openSection, setOpenSection, handleCha
                         </p>
 
                         {/* --- MEALS AND SNACKS --- */}
-                        <h1 className="text-2xl font-bold mt-10 mb-4 text-center">
+                        <h1 className="text-2xl font-bold mt-10 mb-10 text-center max-sm:text-[17px]">
                             MEALS AND SNACKS
                         </h1>
 
-                        <p className="text-base leading-relaxed mt-4">
+                        <p className="text-base leading-relaxed mt-4 max-sm:text-[11px] max-sm:-ml-5 max-sm:-mr-5 ">
                             The Goddard School® has found that parents prefer to provide
                             lunch for their children. This way a parent can send a meal that
                             meets their child’s individual needs and preferences. Children
@@ -109,7 +112,7 @@ const RestTimeMealsSnacks = ({fieldValue, openSection, setOpenSection, handleCha
                             as the full day children prepare for rest time.
                         </p>
 
-                        <p className="mt-4">
+                        <p className="mt-8 max-sm:text-[11px] max-sm:-ml-5 max-sm:-mr-5 ">
                             The Goddard School® provides morning and afternoon snacks on a
                             daily basis. These may include items such as crackers, Cheerios,
                             pretzels, and graham crackers. Fresh fruits and vegetables will
@@ -118,7 +121,7 @@ const RestTimeMealsSnacks = ({fieldValue, openSection, setOpenSection, handleCha
                             and emailed out to parents at the beginning of each month.
                         </p>
 
-                        <p className="mt-4">
+                        <p className="mt-8 max-sm:text-[11px] max-sm:-ml-5 max-sm:-mr-5 ">
                             Parents of infants must send prepared bottles of breast milk or
                             formula that is clearly labeled with the child’s first and last
                             name, contents, and date. Arrangements may be made for mothers
@@ -136,7 +139,7 @@ const RestTimeMealsSnacks = ({fieldValue, openSection, setOpenSection, handleCha
                         </p>
 
 
-                        <div className="mt-4">
+                        <div className="mt-8 max-sm:text-[11px] max-sm:-ml-5 max-sm:-mr-5 ">
                             As solid foods are introduced, parents are requested to bring labeled containers or small
                             containers of food. For the safety and protection of all our infants, no glass jars are allowed.
                             Please send only plastic containers. All food should be portioned out in clean and sanitized
@@ -149,7 +152,7 @@ const RestTimeMealsSnacks = ({fieldValue, openSection, setOpenSection, handleCha
                             of each day.
                         </div>
 
-                      <div className="mt-4">
+                      <div className="mt-8 max-sm:text-[11px] max-sm:-ml-5 max-sm:-mr-5 ">
                       Breakfast from home may be provided for children who arrive prior to 8:00 AM. All food should be 
                       sent ready to serve. If any preparation is required, parents should plan to spend several minutes
                        assisting their children, as the staff will be supervising both eating and play time. Children 
@@ -158,17 +161,17 @@ const RestTimeMealsSnacks = ({fieldValue, openSection, setOpenSection, handleCha
                         is served between 9:00 AM and 10:00 AM daily.
                       </div>
 
-                      <div className="mt-4">
+                      <div className="mt-8 max-sm:text-[11px] max-sm:-ml-5 max-sm:-mr-5 ">
                       For lunch, sandwiches, yogurt, soup, fruit, crackers, cheese, etc. are recommended so that the children receive a serving from each food group. Please try to avoid foods that contain excessive amounts of sugar, preservatives, artificial flavorings, colors, or caffeine. Lunches should be ready to serve (fruit peeled, soup in a microwave-safe container, etc.). Items that require refrigeration must be labeled with the child’s first and last name and placed in the appropriate tray in the classroom. The trays will then be placed in the refrigerator in the kitchen.
                       </div>
 
-            <div className="mt-4">
+            <div className="mt-4 max-sm:text-[11px] max-sm:-ml-5 max-sm:-mr-5 ">
             All bibs, bottles, cups, bowls, spoons, etc., must be taken home daily. Washington State Department of Health requirements do not allow us to wash and store these items. All items must be labeled with first and last names (no initials).
             </div>
 
 
 
-<div className="mt-4">
+<div className="mt-4 max-sm:text-[11px] max-sm:-ml-5 max-sm:-mr-5 ">
 Your child will be encouraged to eat the balanced meal that you have provided. However, if a child refuses certain foods, those choices will be respected and will remain in the child’s lunch box if unopened. Please review your child’s daily report for an indication of appetite and food consumption. We are unable to save open food, our teachers do take a picture of their lunch after they are completed so that you can see what was eaten.
 </div>
 

@@ -29,8 +29,12 @@ const RegisterationTutionFees = ({fieldValue, openSection, setOpenSection, handl
   
     const isOpen = openSection === 'RegisterationTutionFees';
 
-    const headerClasses = `border bg-blue-50 px-6 py-4 flex items-center justify-between cursor-pointer 
-        hover:bg-slate-700 hover:text-white ${isOpen ? 'bg-slate-700 text-white' : 'text-slate-700'}`;
+    const headerClasses = `
+    border px-6 py-4 flex items-center justify-between cursor-pointer
+    hover:bg-[#0F2D52] hover:text-white
+    ${isOpen ? 'bg-[#0F2D52] text-white' : 'bg-blue-100 text-slate-700'}
+  `;
+  
 
     return (
         <>
@@ -53,20 +57,21 @@ const RegisterationTutionFees = ({fieldValue, openSection, setOpenSection, handl
       className="w-full h-auto mx-auto p-6 text-left text-justify text-gray-700 font-semibold"
       style={{ height: "80%", width: "100%", textAlign: "justify" }}
     >
-      <h1 className="text-2xl font-bold mb-4 text-center">
+      <h1 className="text-2xl font-bold mb-10 text-center max-sm:text-[17px]">
       REGISTRATION FEE
       </h1>
 
-      <p className="text-base leading-relaxed mt-4">
+
+      <p className="text-base leading-relaxed mt-4 max-sm:text-[11px] max-sm:-mt-1 max-sm:-ml-5 max-sm:-mr-5">
       A non-refundable registration fee is payable upon enrollment, and due annually when the 
       child is re-enrolled for each new school year.
       </p>
 
-      <h1 className="text-2xl font-bold mb-4 mt-6 text-center">
+      <h1 className="text-2xl font-bold mb-10 mt-6 text-center max-sm:text-[17px]">
       TUITION PAYMENTS AND FEES
       </h1>
 
-      <p className="mt-4">
+      <p className="mt-4 max-sm:text-[11px] max-sm:-mt-1 max-sm:-ml-5 max-sm:-mr-5">
       Tuition is paid on a monthly basis. Monthly tuition is due on or before the first of each month.A 
       payment box is located outside the office. There will be a service fee of $50 for each check 
       returned by the bank. This fee is due at the time of notification. We offer ACH in order to 
@@ -79,7 +84,7 @@ const RegisterationTutionFees = ({fieldValue, openSection, setOpenSection, handl
           anticipated so alternative arrangements can be made.
       </p>
      
-            <p className="mt-4">
+            <p className="mt-8 max-sm:text-[11px] max-sm:-mt-1 max-sm:-ml-5 max-sm:-mr-5">
         
         Monthly tuition fees are non-refundable regardless of holidays, vacation, inclement weather
         days or School closures resulting from causes beyond the reasonable control of the School 
@@ -93,7 +98,7 @@ const RegisterationTutionFees = ({fieldValue, openSection, setOpenSection, handl
             </p>
 
 
-        <p className="mt-4">
+        <p className="mt-8 max-sm:text-[11px] max-sm:-mt-1 max-sm:-ml-5 max-sm:-mr-5">
     Monthly tuition fees are non-refundable regardless of holidays, vacation, inclement weather days 
     or School closures resulting from causes beyond the reasonable control of the School or its
      management including, but not limited to fire, floods, civil commotions, strikes, lockouts
@@ -105,14 +110,14 @@ const RegisterationTutionFees = ({fieldValue, openSection, setOpenSection, handl
        electronic communication.
         </p>
 
-        <p className="mt-4">
+        <p className="mt-8 max-sm:text-[11px] max-sm:-mt-1 max-sm:-ml-5 max-sm:-mr-5">
         Monthly tuition fees are non-refundable regardless of illness, pandemics, Covid19, public health 
         crises, government order, closures mandated by Washington State Department of Health and/or King 
         County Department of Health, closures mandated by Department of Child, Youth and Families. Parents
          will be notified of any school closures via electronic communication.
         </p>
         
-        <p className="mt-4">
+        <p className="mt-8 max-sm:text-[11px] max-sm:-mt-1 max-sm:-ml-5 max-sm:-mr-5">
         The School will open at 7:00am and close at 6:00pm, however modified school hours
         may apply in case of any unforeseen circumstances. A fee will be charged for any child not picked
         up before the School’s regular closing time. Full day student late fees begin at 6:31pm. Half day 

@@ -30,8 +30,12 @@ const HealthPolicies = ({fieldValue, openSection, setOpenSection, handleChange: 
   
   const isOpen = openSection === 'healthPolicies';
 
-  const headerClasses = `border bg-blue-50 px-6 py-4 flex items-center justify-between cursor-pointer 
-        hover:bg-slate-700 hover:text-white ${isOpen ? 'bg-slate-700 text-white' : 'text-slate-700'}`;
+  const headerClasses = `
+  border px-6 py-4 flex items-center justify-between cursor-pointer
+  hover:bg-[#0F2D52] hover:text-white
+  ${isOpen ? 'bg-[#0F2D52] text-white' : 'bg-blue-100 text-slate-700'}
+`;
+
 
   return (
     <>
@@ -54,11 +58,11 @@ const HealthPolicies = ({fieldValue, openSection, setOpenSection, handleChange: 
             className="w-full h-auto mx-auto p-6 text-left text-justify text-gray-700 font-semibold"
             style={{ height: "80%", width: "100%", textAlign: "justify" }}
           >
-            <h1 className="text-2xl font-bold mb-4 text-center">
+            <h1 className="text-2xl font-bold mb-10 text-center max-sm:text-[17px]">
               HEALTH POLICIES
             </h1>
 
-            <p className="text-base leading-relaxed mt-4">
+            <p className="text-base leading-relaxed mt-4 max-sm:text-[11px] max-sm:-mt-1 max-sm:-ml-5 max-sm:-mr-5">
               The owners and staff at The Goddard School® do all we can to promote a healthy environment
               for your children. Our teachers make sure children wash their hands when arriving at school,
               before meals, after art projects, after toileting and diapering, after coming in from outside,
@@ -68,7 +72,7 @@ const HealthPolicies = ({fieldValue, openSection, setOpenSection, handleChange: 
               toys on a daily basis. Our preschool toys are disinfected weekly.
             </p>
 
-            <p className="mt-4">The health of the children is very important to the staff at The Goddard School®.
+            <p className="mt-8 max-sm:text-[11px] max-sm:-mt-1 max-sm:-ml-5 max-sm:-mr-5">The health of the children is very important to the staff at The Goddard School®.
               Children who are ill cannot be appropriately cared for in a childcare setting. A child who is
               unable to participate due to illness should not be in attendance. The Goddard School® staff
               understands that it may be difficult to make alternate arrangements when a child may be
@@ -81,23 +85,23 @@ const HealthPolicies = ({fieldValue, openSection, setOpenSection, handleChange: 
               during times of illness where multiple children and/or staff are out with similar symptoms
               to contain the illness and reduce the spread.</p>
 
-            <p className="mt-4">
+            <p className="mt-8 max-sm:text-[11px] max-sm:-mt-1 max-sm:-ml-5 max-sm:-mr-5">
               If a child does arrive in the morning showing signs of ill health, we will be unable to accept
               him/ her. The exception to this requirement would be that a licensed physician has examined
               thechild and indicated, in writing, that there would be no health risk to your child or
               others, and the child is capable of participating in all activities, including outdoor play.
             </p>
 
-            <p className="mt-4">
+            <p className="mt-8 max-sm:text-[11px] max-sm:-mt-1 max-sm:-ml-5 max-sm:-mr-5">
               Fever is an indication that the body is fighting something, and we need to be sure that
               children are not attending school who have been medicated to reduce the fever. Children
               continue to be contagious even when a fever is controlled by a fever reducing medication.
             </p>
 
-            <p className="mt-4">Examples of health symptoms that require exclusion from the program include, but are not limited to:</p>
+            <p className="mt-10 max-sm:text-[11px] max-sm:-mt-1 max-sm:-ml-5 max-sm:-mr-5">Examples of health symptoms that require exclusion from the program include, but are not limited to:</p>
 
             <div
-              className=" w-full h-auto mx-auto p-6 mt-5 text-gray-800 font-medium"
+              className=" w-full h-auto mx-auto p-6 mt-5 text-gray-800 font-medium max-sm:text-[11px] max-sm:-mt-1 max-sm:-ml-5 max-sm:-mr-5"
               style={{ width: "100%" }}
             >
               <ul className="list-disc pl-6 space-y-2">
@@ -131,7 +135,7 @@ const HealthPolicies = ({fieldValue, openSection, setOpenSection, handleChange: 
 
 
 
-            <p className="mt-4">
+            <p className="mt-10 max-sm:text-[11px] max-sm:-mt-1 max-sm:-ml-5 max-sm:-mr-5">
               If a child becomes ill during the day, a parent will be advised immediately.
               The child will be given the opportunity to rest or have other activities in a separated,
               supervised area until a designated release person can pick up the child. If the child is
@@ -145,7 +149,7 @@ const HealthPolicies = ({fieldValue, openSection, setOpenSection, handleChange: 
               participate in all school activities, including outdoor play.
             </p>
 
-            <p className="mt-4">In cases of certain communicable diseases, The Goddard School® is required
+            <p className="mt-8 max-sm:text-[11px] max-sm:-mt-1 max-sm:-ml-5 max-sm:-mr-5">In cases of certain communicable diseases, The Goddard School® is required
               to file a report with the Department of Health within 24 hours, so control measures can
               be used. Parents and staff are reminded to notify The Goddard School® within 24 hours if
               a child or family member has developed a known or suspected communicable disease. If a
@@ -154,7 +158,7 @@ const HealthPolicies = ({fieldValue, openSection, setOpenSection, handleChange: 
               of a vaccine-preventable disease, as directed by Washington State Department of Health.</p>
 
 
-            <p className="mt-4">
+            <p className="mt-8 max-sm:text-[11px] max-sm:-mt-1 max-sm:-ml-5 max-sm:-mr-5">
               In cases of certain communicable diseases, The Goddard School® is required to file a report
               with the Department of Health within 24 hours, so control measures can be used. Parents and
               staff are reminded to notify The Goddard School® within 24 hours if a child or family member
@@ -164,13 +168,13 @@ const HealthPolicies = ({fieldValue, openSection, setOpenSection, handleChange: 
               as directed by Washington State Department of Health.
             </p>
 
-            <p className="mt-4">All parents will be informed in writing if a communicable disease is reported.
+            <p className="mt-8 max-sm:text-[11px] max-sm:-mt-1 max-sm:-ml-5 max-sm:-mr-5">All parents will be informed in writing if a communicable disease is reported.
               The Goddard School® follows the reporting guidelines as established by the Washington State
               Department of Health. A copy of the health policy is on file in the Director’s office and
               is available for your review.</p>
 
-            <p class="font-bold underline mt-5">“No Nit” Policy.</p>
-            <p className="mt-1">
+            <p class="font-bold underline mb-5 mt-8 max-sm:text-[11px] max-sm:-ml-5 max-sm:-mr-5">“No Nit” Policy.</p>
+            <p className="mt-1 max-sm:text-[11px] max-sm:-mt-1 max-sm:-ml-5 max-sm:-mr-5">
               The Goddard School has determined the best way to prevent head lice is to institute a “no nit”
               policy at our school. We will periodically check the children in our school for head lice.
               If a child is found to have head lice, they will need to be picked up immediately. Before

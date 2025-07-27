@@ -28,8 +28,11 @@ const WebsiteAndBlog = ({fieldValue, openSection, setOpenSection, handleChange: 
 
   const isOpen = openSection === 'WebsiteAndBlog';
 
-  const headerClasses = `border bg-blue-50 px-6 py-4 flex items-center justify-between cursor-pointer 
-    hover:bg-slate-700 hover:text-white ${isOpen ? 'bg-slate-700 text-white' : 'text-slate-700'}`;
+  const headerClasses = `
+  border px-6 py-4 flex items-center justify-between cursor-pointer
+  hover:bg-[#0F2D52] hover:text-white
+  ${isOpen ? 'bg-[#0F2D52] text-white' : 'bg-blue-100 text-slate-700'}
+`;
 
     return (
         <>
@@ -62,45 +65,45 @@ const WebsiteAndBlog = ({fieldValue, openSection, setOpenSection, handleChange: 
                     >
                         {/* --- REST TIME --- */}
                         <div>
-          <h2 className="text-xl font-bold text-center mb-6 text-gray-800 mt-6">
+          <h2 className="text-xl font-bold text-center mb-10 text-gray-800 mt-2 max-sm:text-[17px]">
             WEBSITES, BLOGS, AND SECURITY ISSUES
           </h2>
           
-          <p className="text-base">
+          <p className="text-base max-sm:text-[11px] max-sm:-ml-5 max-sm:-mr-5 ">
             Out of concern for child safety, we do not permit the use of The Goddard School name or service mark, including logos, photographs of school grounds, and photographs of any child, parent, or employee of the school, to be posted on a web site, blog, or online social network without written permission from The Goddard School. If you wish to share information about The Goddard School in this manner, please check with your on-site owner or school director. We also have a Social Media Policy if you would like a copy for your information.
           </p>
         </div>
 
         <div>
-          <h2 className="text-xl font-bold text-center mb-6 text-gray-800 mt-6">
+          <h2 className="text-xl font-bold text-center mb-10 text-gray-800 mt-10 max-sm:text-[17px]">
             REPORTING OF SUSPECTED CHILD ABUSE OR NEGLECT
           </h2>
           
-          <p className="text-base">
+          <p className="text-base max-sm:text-[11px] max-sm:-ml-5 max-sm:-mr-5 ">
             Every school is required by law to notify state authorities if there is knowledge or suspicion of physical or sexual abuse of children in or outside of school. The Goddard School located in Lynnwood, WA complies with this law and cooperates with authorities in investigations.
           </p>
         </div>
 
         <div>
-          <h2 className="text-xl font-bold text-center mb-6 text-gray-800 mt-6">
+          <h2 className="text-xl font-bold text-center mb-10 text-gray-800 mt-10 max-sm:text-[17px]">
             BEHAVIOR POLICY
           </h2>
           
-          <p className="text-base">
+          <p className="text-base max-sm:text-[11px] max-sm:-ml-5 max-sm:-mr-5 ">
             It is the policy of The Goddard School<sup>®</sup> to keep disciplinary issues minimized and to help children monitor their own behavior. The staff of The Goddard School<sup>®</sup> present and model age-appropriate behavioral guidelines and use reflective communication to encourage children to express their emotions. The staff encourages self-control, self-direction, responsibility, and cooperation. At this time practical and safe, logical, or natural consequences will be presented to the child.
           </p>
         </div>
 
 
-        <p className="text-base">
+        <p className="text-base mt-8 max-sm:text-[11px] max-sm:-ml-5 max-sm:-mr-5 ">
           The Goddard School<sup>®</sup> staff are trained in the process of positive discipline. Positive discipline instructs children as to what they should do. For example: "We walk inside the building" vs. "No running!" This philosophy of behavior is in accordance with The Goddard School<sup>®</sup> belief that children learn best in an environment where love, guidance, and encouragement promote the development of self-esteem.
         </p>
 
-        <p className="text-base">
+        <p className="text-base mt-8 max-sm:text-[11px] max-sm:-ml-5 max-sm:-mr-5 ">
           "Quiet time" may be used selectively for children over 18 months of age who are at risk of harming themselves or others. "Quiet time" is used as a last resort after several attempts of redirection have been made. The period of "quiet time" will be just long enough to enable the child to regain control of him or herself and will never be longer than 1-2 minutes per year of age. During the "quiet time" period, the child will be in an area where they may be visually observed by a teacher/Director.
         </p>
 
-        <p className="text-base">
+        <p className="text-base mt-8 max-sm:text-[11px] max-sm:-ml-5 max-sm:-mr-5 ">
           Aggressive physical behavior (fighting, hitting, biting, etc.) by a child
            toward another child or staff member is unacceptable. Staff members will 
            intervene immediately should this type of situation occur, in order to protect
@@ -123,7 +126,7 @@ const WebsiteAndBlog = ({fieldValue, openSection, setOpenSection, handleChange: 
         </p>
    
 
-   <div className="mt-4">
+   <div className="mt-8 max-sm:text-[11px] max-sm:-ml-5 max-sm:-mr-5 ">
    At no time, at The Goddard School® will a child be subjected to physical corporal punishment (shaking, hitting, biting, pinching, etc.), humiliated, frightened, or verbally abused by our staff. Children will never be disciplined for sleep habits, toileting accidents, food consumption, or lack of participation in scheduled activities. At all times, a child’s age, emotional state, and past experiences will be considered in discipline matters. Any violation of the school’s discipline policy should be brought to the Director or Owner’s attention immediately.
    </div>
 

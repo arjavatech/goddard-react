@@ -28,11 +28,16 @@ const ExpulsionPolicy = ({fieldValue, openSection, setOpenSection, handleChange:
 
     const isOpen = openSection === 'ExpulsionPolicy';
 
-    const headerClasses = `border bg-blue-50 px-6 py-4 flex items-center justify-between cursor-pointer 
-      hover:bg-slate-700 hover:text-white ${isOpen ? 'bg-slate-700 text-white' : 'text-slate-700'}`;
+    const headerClasses = `
+    border px-6 py-4 flex items-center justify-between cursor-pointer
+    hover:bg-[#0F2D52] hover:text-white
+    ${isOpen ? 'bg-[#0F2D52] text-white' : 'bg-blue-100 text-slate-700'}
+  `;
+  
 
     return (
         <>
+  
             <div
                 className={headerClasses}
                 onClick={() =>
@@ -63,25 +68,25 @@ const ExpulsionPolicy = ({fieldValue, openSection, setOpenSection, handleChange:
                         {/* --- REST TIME --- */}
                        
                         <div>
-          <h2 className="text-xl font-bold text-center mb-6 text-gray-800">
+          <h2 className="text-xl font-bold text-center mb-10  text-gray-800 max-sm:text-[17px]">
             EXPULSION POLICY
           </h2>
           
-          <p className="text-base mb-6">
+          <p className="text-base mb-6 max-sm:text-[11px] max-sm:-ml-5 max-sm:-mr-5 ">
             At The Goddard School, our primary concern is the safety and well-being of all children and staff members. In the rare event that a child's behavior poses a serious risk to themselves or others, expulsion from our childcare services may be necessary.
           </p>
         </div>
 
         <div>
-          <h3 className="text-lg font-semibold mb-4 text-gray-800 underline">
+          <h3 className="text-lg font-semibold mb-8 text-gray-800 underline max-sm:text-[17px]">
             Criteria for Expulsion:
           </h3>
           
-          <p className="text-base mb-4">
+          <p className="text-base mb-4 max-sm:text-[11px] max-sm:-ml-5 max-sm:-mr-5 ">
             Expulsion may occur under the following circumstances, including but not limited to:
           </p>
           
-          <ul className="list-disc ml-6 space-y-2 text-base">
+          <ul className="list-disc ml-6 space-y-2 text-base max-sm:text-[11px] max-sm:-ml-5 max-sm:-mr-5 ">
             <li>Repeated and severe disruptive behavior that jeopardizes the safety of others.</li>
             <li>Physical aggression or violence towards other children or staff.</li>
             <li>Continuous refusal to adhere to childcare center rules and regulations.</li>
@@ -91,11 +96,11 @@ const ExpulsionPolicy = ({fieldValue, openSection, setOpenSection, handleChange:
         </div>
 
         <div>
-          <h3 className="text-lg font-semibold mb-4 mt-6 text-gray-800 underline">
+          <h3 className="text-lg font-semibold mb-8 mt-9 text-gray-800 underline max-sm:text-[17px]">
             Procedure for Expulsion:
           </h3>
           
-          <ul className="list-disc ml-6 space-y-3 text-base">
+          <ul className="list-disc ml-6 space-y-3 text-base max-sm:text-[11px] max-sm:-ml-5 max-sm:-mr-5 ">
             <li><strong>Documentation:</strong> Incidents of concerning behavior will be thoroughly documented by staff members.</li>
             <li><strong>Parental Communication:</strong> Parents or guardians will be promptly notified of any incidents and involved in developing strategies to address the behavior.</li>
             <li><strong>Intervention and Support:</strong> The childcare center will offer appropriate interventions and support to help modify the behavior, including behavior management techniques and referrals to external resources if necessary.</li>
@@ -106,15 +111,15 @@ const ExpulsionPolicy = ({fieldValue, openSection, setOpenSection, handleChange:
         </div>
 
         <div className="mt-8">
-          <h2 className="text-xl font-bold text-center mb-6 text-gray-800">
+          <h2 className="text-xl font-bold text-center mb-8 mb-8 text-gray-800 max-sm:text-[17px]">
             Termination of Services
           </h2>
           
-          <p className="text-base mb-4">
+          <p className="text-base mb-8 max-sm:text-[11px] max-sm:-ml-5 max-sm:-mr-5 ">
             Termination of childcare services may occur under the following circumstances, but not limited to:
           </p>
           
-          <ul className="list-disc ml-6 space-y-2 text-base">
+          <ul className="list-disc ml-6 mt-8 space-y-2 text-base max-sm:text-[11px] max-sm:-ml-5 max-sm:-mr-5 ">
             <li>Continued non-payment of fees despite reminders and notifications.</li>
             <li>Failure to comply with the terms and conditions outlined in the childcare services agreement.</li>
             <li>Any other circumstances deemed unacceptable or detrimental to the overall functioning of the childcare center.</li>
@@ -145,7 +150,9 @@ const ExpulsionPolicy = ({fieldValue, openSection, setOpenSection, handleChange:
                         </label>
                     </div>
                 </div>
+                
             )}
+         
         </>
     );
 };

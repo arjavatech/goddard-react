@@ -29,8 +29,12 @@ const MissionStatement = ({fieldValue, openSection, setOpenSection, handleChange
   
     const isOpen = openSection === 'MissionStatementMissionStatement';
 
-    const headerClasses = `border bg-blue-50 px-6 py-4 flex items-center justify-between cursor-pointer 
-        hover:bg-slate-700 hover:text-white ${isOpen ? 'bg-slate-700 text-white' : 'text-slate-700'}`;
+    const headerClasses = `
+    border px-6 py-4 flex items-center justify-between cursor-pointer
+    hover:bg-[#0F2D52] hover:text-white
+    ${isOpen ? 'bg-[#0F2D52] text-white' : 'bg-blue-100 text-slate-700'}
+  `;
+  
 
     return (
         <>
@@ -54,68 +58,72 @@ const MissionStatement = ({fieldValue, openSection, setOpenSection, handleChange
                             className="w-full  h-auto mx-auto p-6 text-left text-justify text-gray-700 font-semibold "
                             style={{ height: "80%", width: "100%", textAlign: "justify" }}
                         >
-                            <h1 className="text-2xl font-bold mb-4 text-center">
+                            <h1 className="text-2xl font-bold mb-10 max-sm:text-[16] text-center">
                                 Mission Statement
                             </h1>
-                            <p className=" text-base leading-relaxed">
+
+                           
+                            <p className=" text-base leading-relaxed max-sm:text-[11px] max-sm:-mt-5  max-sm:-mb-5 max-sm:-ml-5 max-sm:-mr-5">
                                 We are dedicated to giving children a love of learning in a safe and secure environment.
                                 Our teachers design and individualize their own lesson plans to help children learn and
                                 explore the world at their own pace.
                             </p>
+                       
+                         
 
-
-                            <p className="mt-4">Our teachers are loving, nurturing, trained professionals committed to
+                            <div className='max-sm:text-[11px] max-sm:-mt-5  max-sm:-mb-5 max-sm:-ml-5 max-sm:-mr-5'>
+                            <p className="mt-13">Our teachers are loving, nurturing, trained professionals committed to
                                 maintaining the highest quality in early childhood education. Through onsite training
                                 provided by the Director, as well as Goddard University, our teachers receive ongoing
                                 training in order to learn the latest developments within the field of Early Childhood Education. </p>
 
-                            <p className="mt-4">Our school is a safe, secure, clean, and happy environment for
+                            <p className="mt-13">Our school is a safe, secure, clean, and happy environment for
                                 children to grow and learn. We will make the transition from home to school a positive experience. </p>
 
-                            <p className="mt-4">Each child is treated as a unique individual. Each child is
+                            <p className="mt-13">Each child is treated as a unique individual. Each child is
                                 given individual attention within a group allowing him/her to progress according to
                                 his/her own needs and rate of development </p>
 
-                            <p className="mt-4">Communication with parents is the key. It is based upon
+                            <p className="mt-13">Communication with parents is the key. It is based upon
                                 being open, honest, and respectful - encouraging both involvement and support.
                                 Parents are informed daily of their child’s progress and development.</p>
 
-                            <p className="mt-5">We strive to provide the best in child care and development
+                            <p className="mt-13">We strive to provide the best in child care and development
                                 . We are committed to Goddard’s standards of excellence and are continually
                                 seeking to improve.</p>
 
-                            <p className="mt-5">Our number one priority is providing every child with a
+                            <p className="mt-13">Our number one priority is providing every child with a
                                 loving and caring atmosphere conducive to the development of self-esteem,
                                 confidence, creativity, and a love of learning.</p>
 
-                            <h1 className="text-2xl font-bold mb-4 text-center mt-5">
+                            <h1 className="text-2xl font-bold mb-13 text-center max-sm:text-[16] mt-13">
                                 Children’s Bill of Rights
                             </h1>
 
-                            <p className="mt-5">We, the faculty, and staff of The Goddard School<sup>®</sup>,
+                            <p className="mt-13">We, the faculty, and staff of The Goddard School<sup>®</sup>,
                                 pledge to honor this Children’s Bill of Rights.</p>
 
-                            <p className="mt-5">Every child in our program has the right to be respected as an individual
+                            <p className="mt-13">Every child in our program has the right to be respected as an individual
                                 with concern for his or her own interests, challenges, talents, and pace of learning.</p>
 
-                            <p className="mt-5">Every child has the right to a calm, warm, loving, and nurturing
+                            <p className="mt-13">Every child has the right to a calm, warm, loving, and nurturing
                                 environment where affection is freely given so that a child feels valued and secure and
                                 is thus able to develop self-confidence.</p>
 
-                            <p className="mt-5">Every child has the right to personal attention, a relaxed atmosphere,
+                            <p className="mt-13">Every child has the right to personal attention, a relaxed atmosphere,
                                 and freedom of choice in daily activities that can only be provided in a small group setting.</p>
 
-                            <p className="mt-5">Every child has the right to have all physical needs met, including
+                            <p className="mt-13">Every child has the right to have all physical needs met, including
                                 the need for rest and relaxation throughout the day.</p>
 
-                            <p className="mt-5">Every child has the right to a clean, safe environment in which to
+                            <p className="mt-13">Every child has the right to a clean, safe environment in which to
                                 spend their day.</p>
 
-                            <p className="mt-5">Every child has the right to experience a variety of activities
+                            <p className="mt-13">Every child has the right to experience a variety of activities
                                 throughout the day that help them develop a feeling of independence and confidence.
                                 These activities provide opportunities for creativity, exploration, and a lifelong love of learning.</p>
 
-
+</div>
 
 
 

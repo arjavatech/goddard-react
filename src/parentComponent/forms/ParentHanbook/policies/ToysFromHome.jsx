@@ -29,8 +29,11 @@ const ToysFromHome = ({fieldValue, openSection, setOpenSection, handleChange: pa
   };
   const isOpen = openSection === 'ToysFromHome';
 
-  const headerClasses = `border bg-blue-50 px-6 py-4 flex items-center justify-between cursor-pointer 
-        hover:bg-slate-700 hover:text-white ${isOpen ? 'bg-slate-700 text-white' : 'text-slate-700'}`;
+  const headerClasses = `
+  border px-6 py-4 flex items-center justify-between cursor-pointer
+  hover:bg-[#0F2D52] hover:text-white
+  ${isOpen ? 'bg-[#0F2D52] text-white' : 'bg-blue-100 text-slate-700'}
+`;
 
   return (
     <>
@@ -53,30 +56,30 @@ const ToysFromHome = ({fieldValue, openSection, setOpenSection, handleChange: pa
             className="w-full h-auto mx-auto p-6 text-left  text-justify text-gray-700 font-semibold"
             style={{ height: "80%", width: "100%", textAlign: "justify" }}
         >
-            <h1 className="text-2xl font-bold mb-4 text-center">
+            <h1 className="text-2xl font-bold mb-10 text-center max-sm:text-[17px]">
             TOYS FROM HOME
             </h1>
 
-            <p className="mt-4">
+            <p className="mt-4 max-sm:text-[11px] max-sm:-ml-5 max-sm:-mr-5 ">
             It is recommended that all personal toys remain at home. It is very difficult for young children to share favorite possessions, and all toys that enter the school must be shared. In addition, many toys break easily and contain small parts. These types of toys may be inappropriate for our setting.
             </p>
 
-            <p className="mt-4">
+            <p className="mt-8 max-sm:text-[11px] max-sm:-ml-5 max-sm:-mr-5 ">
             Show and tell items may occasionally be requested by a child’s teacher. Suggested show and tell items include books, photographs, special treasures such as seashells, or theme related items. These should be discussed with the teacher and items will be shown at the teacher’s discretion. Anything pertaining to violence (guns, war toys, etc.) or having anything to do with religious beliefs cannot be utilized at The Goddard School®. Material deemed inappropriate for a preschool audience will not be used. All electronic devices from home are not permitted at school.
             </p>
 
-            <h1 className="text-2xl font-bold mb-4 text-center mt-7">
+            <h1 className="text-2xl font-bold mb-10 text-center mt-10 max-sm:text-[17px]">
             ITEMS TO BRING TO SCHOOL
             </h1>
             <p class="font-bold underline mt-5">Infants</p>
 
-            <div className="mt-4">
+            <div className="mt-4 max-sm:text-[11px] max-sm:-ml-5 max-sm:-mr-5 ">
             Each infant is provided with their own crib and mattress upon enrollment. The 
             parent must provide:
             </div>
 
             <div className="max-w-2xl mx-auto p-6 text-gray-800">
-      <ul className="list-disc list-inside space-y-2">
+      <ul className="list-disc list-inside space-y-2 max-sm:text-[11px] max-sm:-ml-5 max-sm:-mr-5 ">
         <li>2–3 crib sheets (port-a-crib or play yard size).</li>
         <li>A sleep sac when appropriate.</li>
         <li>2–3 complete changes of clothing for the appropriate season.</li>
@@ -88,7 +91,7 @@ const ToysFromHome = ({fieldValue, openSection, setOpenSection, handleChange: pa
 
 
 
-    <div className="mt-5">
+    <div className="mt-8 max-sm:text-[11px] max-sm:-ml-5 max-sm:-mr-5 ">
     If a child becomes ill during the day, a parent will be advised immediately. The child 
     will be given the opportunity to rest or have other activities in a separated, supervised 
     area until a designated release person can pick up the child. If the child is not picked
@@ -102,7 +105,7 @@ const ToysFromHome = ({fieldValue, openSection, setOpenSection, handleChange: pa
          in all school activities, including outdoor play.
     </div>
 
-  <div className="mt-4">
+  <div className="mt-9 max-sm:text-[11px] max-sm:-ml-5 max-sm:-mr-5 ">
   In cases of certain communicable diseases, The Goddard School® is required to file a report
    with the Department of Health within 24 hours, so control measures can be used. Parents 
    and staff are reminded to notify The Goddard School® within 24 hours if a child or family
@@ -112,15 +115,15 @@ const ToysFromHome = ({fieldValue, openSection, setOpenSection, handleChange: pa
        disease, as directed by Washington State Department of Health.
   </div>
 
-  <div className="mt-4">
+  <div className="mt-8 max-sm:text-[11px] max-sm:-ml-5 max-sm:-mr-5 ">
   All parents will be informed in writing if a communicable disease is reported. The 
   Goddard School® follows the reporting guidelines as established by the Washington State
    Department of Health. A copy of the health policy is on file in the Director’s office and
     is available for your review.
   </div>
 
-  <p class="font-bold underline mt-5">“No Nit” Policy</p>
-  <div className="mt-4">The Goddard School has determined the best way to prevent head lice 
+  <p class="font-bold underline mt-8 mb-8">“No Nit” Policy</p>
+  <div className="mt-4 max-sm:text-[11px] max-sm:-ml-5 max-sm:-mr-5 ">The Goddard School has determined the best way to prevent head lice 
     is to institute a “no nit” policy at our school. We will periodically check the children 
     in our school for head lice. If a child is found to have head lice, they will need 
     to be picked up immediately. Before returning to class, the child should be brought

@@ -28,8 +28,12 @@ const StatementOfConfidentiality = ({fieldValue, openSection, setOpenSection, ha
   };
     const isOpen = openSection === 'StatementOfConfidentiality';
 
-    const headerClasses = `border bg-blue-50 px-6 py-4 flex items-center justify-between cursor-pointer 
-        hover:bg-slate-700 hover:text-white ${isOpen ? 'bg-slate-700 text-white' : 'text-slate-700'}`;
+    const headerClasses = `
+    border px-6 py-4 flex items-center justify-between cursor-pointer
+    hover:bg-[#0F2D52] hover:text-white
+    ${isOpen ? 'bg-[#0F2D52] text-white' : 'bg-blue-100 text-slate-700'}
+  `;
+  
 
     return (
         <>
@@ -52,22 +56,24 @@ const StatementOfConfidentiality = ({fieldValue, openSection, setOpenSection, ha
       className="w-full h-auto mx-auto p-6 text-left text-justify text-gray-700 font-semibold"
       style={{ height: "80%", width: "100%", textAlign: "justify" }}
     >
-      <h1 className="text-2xl font-bold mb-4 text-center">
+      <h1 className="text-2xl font-bold mb-10 text-center max-sm:text-[17px]">
       STATEMENT OF CONFIDENTIALITY
       </h1>
-
-      <p className="text-base leading-relaxed mt-4">
+      <div className='max-sm:text-[11px]  max-sm:-mb-1 max-sm:-ml-5 max-sm:-mr-5'>
+      <p className="text-base leading-relaxed mt-4 max-sm:text-[11px]">
         As a professional organization you can be assured all information regarding your family’s 
         needs, file contents and handling, medical information, and conversations, will be handled 
         with the appropriate confidentiality. Information will be shared only with those people
          requiring the knowledge to better serve your family.
       </p>
+      </div>
 
     
-      <h1 className="text-2xl font-bold mb-4 text-center mt-5">
+      <h1 className="text-2xl font-bold mb-10 text-center max-sm:text-[17px] mt-5">
       NON-DISCRIMINATION
       </h1>
 
+      <div className='max-sm:text-[11px] max-sm:-mt-5  max-sm:-mb-1 max-sm:-ml-5 max-sm:-mr-5'>
       <p className="mt-5">
       The Goddard School <sup>®</sup> located in Lynnwood, WA will not discriminate against students, 
       parents, or staff. We believe that our students have the right to learn and play in 
@@ -78,11 +84,13 @@ const StatementOfConfidentiality = ({fieldValue, openSection, setOpenSection, ha
         state, or federal law. You are encouraged to raise any questions regarding your equal
          opportunity at The Goddard School.
       </p>
+      </div>
 
 
-      <h1 className="text-2xl font-bold mb-4 text-center mt-5">
+      <h1 className="text-2xl font-bold mb-10 max-sm:text-[17px] text-center mt-5">
       ATTENDANCE
       </h1>
+      <div className='max-sm:text-[11px] max-sm:-mt-5  max-sm:-mb-5 max-sm:-ml-5 max-sm:-mr-5'>
 
       <p className="mt-4">
       A parent should notify The Goddard School® by 9:00 AM by calling 425-882-1100 whenever
@@ -92,6 +100,7 @@ const StatementOfConfidentiality = ({fieldValue, openSection, setOpenSection, ha
         staff to track any illness that may occur at the school. We reserve the right to deny entry
          and attendance if a child arrives after 10am without informing and checking in with school admins.
       </p>
+      </div>
 
       <label className="flex items-center space-x-2 text-lg font-medium mt-5">
         <input
@@ -100,7 +109,7 @@ const StatementOfConfidentiality = ({fieldValue, openSection, setOpenSection, ha
                                 onChange={handleChange}
           className="form-checkbox h-4 w-4 text-blue-600 border-gray-300 rounded"
         />
-        <span>
+        <span className='mt-5'>
           I agree <strong>all the above information</strong>.
         </span>
       </label>

@@ -227,7 +227,15 @@ const handleSubmit = async (type) => {
 
     // Policy Form Component (all existing policy components)
     const renderPolicyForm = () => (
-        <div className="rounded-lg shadow-sm overflow-hidden">
+
+        <div className=" min-h-screen py-6 px-4 flex justify-center">
+        <div className="w-full max-w-6xl bg-white rounded-lg shadow-lg">
+          {/* Outer Header */}
+          <div className="bg-[#0F2D52] text-white text-center font-semibold text-lg py-3 min-h-[60px] shadow-md">
+            Goddard Parent Handbook
+          </div>
+
+        <div className="rounded-lg shadow-sm overflow-hidden mt-7 ml-7 mr-7">
             <div>
                 <TheGoddardSchool 
                     fieldValue={formData.welcome_goddard_agreement} 
@@ -340,6 +348,8 @@ const handleSubmit = async (type) => {
                 />
             </div>
         </div>
+        </div>
+      </div>
     ); 
 
     // Original Parent Signature Form Component
