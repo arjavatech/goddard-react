@@ -1,7 +1,7 @@
 import React from 'react';
 
 const FormItem = ({ item, sectionKey, formStatus, onItemClick,isSelected }) => {
-
+console.log(formStatus)
   const getItemKey = () => {
     if (item.toLowerCase().includes("ach")) return "authorization_ach";
     if (item.toLowerCase().includes("signature")) {
@@ -10,10 +10,27 @@ const FormItem = ({ item, sectionKey, formStatus, onItemClick,isSelected }) => {
         if (item.toLowerCase().includes("admin")) return "authorization_admin_signature";
         return "authorization_signature"; // fallback
       }
-      if (sectionKey === "enrollment") return "enrollment_signature";
-      if (sectionKey === "parentHandbook") return "parenthandbook_signature";
-      if (sectionKey === "admission") return "admission_parentsignature";
+      
+      if (sectionKey === "enrollment") {
+        if (item.toLowerCase().includes("parent")) return "enrollment_parent_signature";
+        if (item.toLowerCase().includes("admin")) return "enrollment_admin_signature";
+        return "enrollment_parent_signature"; // fallback
+      }
+      
+      if (sectionKey === "parentHandbook")
+      {
+        if (item.toLowerCase().includes("parent")) return "parenthandbook_signature";
+        if (item.toLowerCase().includes("admin")) return "parenthandbook_admin_signature";
+        return "parenthandbook_signature";
+      }
+         
+      if (sectionKey === "admission")
+        {
+        if (item.toLowerCase().includes("parent")) return "admission_parentsignature";
+        if (item.toLowerCase().includes("admin")) return "admission_adminsignature";
+        } return "admission_parentsignature";
     }
+    if (item.toLowerCase().includes("agreement") && sectionKey === "enrollment") return "enrollment_agreement";
     if (item.toLowerCase().includes("policy") && sectionKey === "parentHandbook") return "parenthandbook_policy";
     if (item.toLowerCase().includes("child information")) return "admission_childinformation";
     if (item.toLowerCase().includes("child and family history")) return "admission_childandfamilyhistory";
@@ -31,13 +48,24 @@ const FormItem = ({ item, sectionKey, formStatus, onItemClick,isSelected }) => {
   };
 
   const itemKey = getItemKey();
+  
+
+  
 
   // Debug: Log authorization items for troubleshooting
-  if (sectionKey === "authorization") {
+  if (sectionKey) {
+    console.log("formStatus[itemKey]", formStatus[itemKey])
     const isCompleted = formStatus[itemKey]?.completed === true;
     const imageSrc = isCompleted ? "/image/tick.png" : "/image/circle-with.png";
     console.log(`Authorization FormItem - Item: "${item}", Key: "${itemKey}", Status:`, formStatus[itemKey], 'Completed:', formStatus[itemKey]?.completed, 'Will show image:', imageSrc);
   }
+  if (sectionKey === "parentHandbook") {
+    const isCompleted = formStatus[itemKey]?.completed === true;
+    const imageSrc = isCompleted ? "/image/tick.png" : "/image/circle-with.png";
+    console.log(`Parent Handbook FormItem - Item: "${item}", Key: "${itemKey}", Status:`, formStatus[itemKey], 'Completed:', formStatus[itemKey]?.completed, 'Will show image:', imageSrc);
+  }
+
+  
 
   const handleItemClick = () => {
     if (onItemClick) {
