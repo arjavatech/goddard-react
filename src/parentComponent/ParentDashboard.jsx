@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Header from '../components/Header';
 import DataTable from '../components/DataTable';
 import { useAuth } from '../hooks/useAuth';
@@ -9,9 +9,14 @@ import AuthorizationForm from './forms/AuthorizationForm';
 import ParentHandbbok from './forms/ParentHanbook/policies/All';
 import EnrollmentForm from './forms/EnrollmentForm';
 import AdmissionForm from './forms/AdmissionForm/AdmissionForm';
+import ParentHandbook from './pdf_forms/ParentHandbook';
+import AdmissionFormPDF from './pdf_forms/AdmissionForm';
+import AuthorizationFormPDF from './pdf_forms/AuthorizationForm';
+import EnrollmentAgreementPDF from './pdf_forms/EnrollmentAgreement';
 
 
 const ParentDashboard = () => {
+  console.log('ParentDashboard component loaded');
   const { isAuthenticated, signOut } = useAuth();
   const [children, setChildren] = useState([]);
   const [activeChildId, setActiveChildId] = useState(null);
@@ -24,6 +29,10 @@ const ParentDashboard = () => {
   const [formStatus, setFormStatus] = useState({}); // Track form completion status
   const [selectedSubForm, setSelectedSubForm] = useState(null); // Track selected sub-form
   const [childFormData, setChildFormData] = useState(null); // Store child form data from API
+  const handbookContentRef = useRef(null); // Ref for ParentHandbook content
+  const admissionFormRef = useRef(null); // Ref for AdmissionForm content
+  const authorizationFormRef = useRef(null); // Ref for AuthorizationForm content
+  const enrollmentFormRef = useRef(null); // Ref for EnrollmentForm content
 
   const urlParams = new URLSearchParams(window.location.search);
   const editID = urlParams.get('id') || '';
@@ -194,6 +203,236 @@ const ParentDashboard = () => {
       return 'Welcome Admin';
     }
     return `Welcome ${parentName}`;
+  };
+
+  // Get form ref based on form name
+  const getFormRef = (formName) => {
+    switch (formName) {
+      case 'parent_handbook':
+        return handbookContentRef;
+      case 'admission_form':
+        return admissionFormRef;
+      case 'authorization_form':
+        return authorizationFormRef;
+      case 'enrollment_form':
+        return enrollmentFormRef;
+      default:
+        return null;
+    }
+  };
+
+  // Handle download functionality
+  const handleDownload = async (formName, url) => {
+    console.log('Download button clicked for:', formName, 'URL:', url);
+    
+    const formRef = getFormRef(formName);
+    if (formRef) {
+      console.log(`Processing ${formName} download from PDF component...`);
+      // Handle PDF form download directly from component
+      const loadScript = (src) => {
+        return new Promise((resolve, reject) => {
+          const script = document.createElement('script');
+          script.src = src;
+          script.onload = resolve;
+          script.onerror = reject;
+          document.head.appendChild(script);
+        });
+      };
+
+      // Load required libraries
+      Promise.all([
+        loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js'),
+        loadScript('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js')
+      ])
+      .then(() => {
+        console.log('PDF libraries loaded successfully');
+        // Add a small delay to ensure component is fully rendered
+        setTimeout(() => {
+          const { jsPDF } = window.jspdf;
+          const content = formRef.current;
+        
+        if (!content) {
+          console.error(`${formName} content not found`);
+          return;
+        }
+        console.log(`${formName} content found:`, content);
+        console.log('Content innerHTML length:', content.innerHTML.length);
+        console.log('Content HTML preview:', content.innerHTML.substring(0, 500));
+        console.log('Generating PDF...');
+        
+        // Hide checkboxes for PDF
+        const checkboxes = content.querySelectorAll('.custom-checkbox');
+        checkboxes.forEach(checkbox => {
+          checkbox.style.display = 'none';
+        });
+
+        // Create PDF
+        const pdf = new jsPDF('p', 'mm', 'a4');
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const pdfHeight = pdf.internal.pageSize.getHeight();
+        const margins = 10;
+        
+        // Apply larger font styles for PDF generation
+        const originalFontSizes = {};
+        const elements = content.querySelectorAll('p, h3, h4, h5, li');
+        
+        // Store original font sizes and set larger ones
+        elements.forEach(el => {
+          originalFontSizes[el] = el.style.fontSize;
+          el.style.fontSize = el.tagName === 'P' || el.tagName === 'LI' ? '34px' : 
+                             el.tagName === 'H5' ? '38px' : 
+                             el.tagName === 'H4' ? '40px' : 
+                             el.tagName === 'H3' ? '42px' : '34px';
+        });
+        
+        // Function to add pages
+        const addPage = (element, index) => {
+          return html2canvas(element, {
+            scale: 0.4,
+            useCORS: true,
+            logging: false
+          }).then(canvas => {
+            const imgData = canvas.toDataURL('image/jpeg', 0.2);
+            if (index > 0) pdf.addPage();
+            
+            // Calculate aspect ratio to fit within page
+            const imgWidth = pdfWidth - (margins * 2);
+            const imgHeight = (canvas.height * imgWidth) / canvas.width;
+            
+            pdf.addImage(imgData, 'JPEG', margins, margins, imgWidth, imgHeight);
+          });
+        };
+
+        // Process content
+        addPage(content, 0).then(() => {
+          console.log('PDF generated successfully, saving...');
+          pdf.save(`${formName}.pdf`);
+          
+          // Restore original font sizes
+          elements.forEach(el => {
+            el.style.fontSize = originalFontSizes[el] || '';
+          });
+          console.log('Download completed successfully');
+        });
+        }, 1000); // 1 second delay to ensure rendering
+      })
+      .catch(error => {
+        console.error('Error loading PDF libraries:', error);
+      });
+      return;
+    }
+
+    // For other forms, use the existing HTML file approach
+    console.log('Processing regular form download for:', formName);
+    try {
+      const response = await fetch(url);
+      const text = await response.text();
+      
+      // Create hidden div for PDF generation
+      const hiddenDiv = document.createElement('div');
+      hiddenDiv.id = 'formContent';
+      hiddenDiv.style.display = 'none';
+      hiddenDiv.innerHTML = text;
+      document.body.appendChild(hiddenDiv);
+
+      // Generate PDF using jsPDF
+      if (window.jspdf) {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF('p', 'mm', [1500, 1400]);
+        
+        doc.html(hiddenDiv, {
+          callback: function () {
+            doc.save(`${formName}.pdf`);
+            document.body.removeChild(hiddenDiv);
+          },
+          x: 12,
+          y: 12,
+          autoPaging: 'slice',
+          html2canvas: { scale: 0.75 },
+          pagesplit: true,
+        });
+      }
+    } catch (error) {
+      console.error('Error downloading form:', error);
+    }
+  };
+
+  // Handle print functionality
+  const handlePrint = async (formName, url) => {
+    console.log('Print button clicked for:', formName, 'URL:', url);
+    
+    const formRef = getFormRef(formName);
+    if (formRef) {
+      console.log(`Processing ${formName} print from PDF component...`);
+      // Handle PDF form print directly from component
+      const content = formRef.current;
+      if (!content) {
+        console.error(`${formName} content not found for printing`);
+        return;
+      }
+      
+      console.log(`${formName} content found, opening print window...`);
+      const printWindow = window.open('', '_blank');
+      printWindow.document.write(`
+        <html>
+          <head>
+            <title>Goddard ${formName.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}</title>
+            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" />
+            <style>
+            p, ol li, ul li { font-weight: 500; text-align: justify; }
+              .form-body { border: 2px solid #0F2D52; }
+              .header-border { border-bottom: 2px solid #0F2D52; }
+              .title_bg { background-color: #0F2D52; color: white;  }
+              .logo-style { display: flex; align-items: center; justify-content: center; }
+              .custom-checkbox { display: none; }
+            </style>
+          </head>
+          <body>
+            ${content.innerHTML}
+          </body>
+        </html>
+      `);
+      printWindow.document.close();
+      printWindow.focus();
+      setTimeout(() => {
+        console.log('Triggering print dialog...');
+        printWindow.print();
+        printWindow.close();
+        console.log('Print completed successfully');
+      }, 500);
+      return;
+    }
+
+    // For other forms, use the existing HTML file approach
+    console.log('Processing regular form print for:', formName);
+    try {
+      const response = await fetch(url);
+      const text = await response.text();
+      
+      const printWindow = window.open('', '', 'height=1400,width=1500');
+      printWindow.document.write('<html><head><title>Print Form</title>');
+      printWindow.document.write('</head><body>');
+      printWindow.document.write(text);
+      printWindow.document.write('</body></html>');
+      printWindow.document.close();
+      
+      printWindow.onload = function () {
+        printWindow.focus();
+        printWindow.print();
+        printWindow.close();
+      };
+    } catch (error) {
+      console.error('Error printing form:', error);
+    }
+  };
+
+  // Get form URLs for download/print (now all forms use direct component approach)
+  const getFormUrls = (formName) => {
+    // All forms now use direct component approach, no HTML files needed
+    return {
+      download: '',
+      print: ''
+    };
   };
 
   // Function to render the current active form section
@@ -464,20 +703,41 @@ const ParentDashboard = () => {
                       {
                         key: 'action',
                         title: 'Action',
-                        render: (value, row) => (
-                          <div className="flex gap-1 sm:gap-2">
-                            <button className="text-[#0F2D52] hover:opacity-60 p-1">
-                              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="16" height="16">
-                                <path fill="#0F2D52" d="M256 0a256 256 0 1 0 0 512A256 256 0 1 0 256 0zM376.9 294.6L269.8 394.5c-3.8 3.5-8.7 5.5-13.8 5.5s-10.1-2-13.8-5.5L135.1 294.6c-4.5-4.2-7.1-10.1-7.1-16.3c0-12.3 10-22.3 22.3-22.3l57.7 0 0-96c0-17.7 14.3-32 32-32l32 0c17.7 0 32 14.3 32 32l0 96 57.7 0c12.3 0 22.3 10 22.3 22.3c0 6.2-2.6 12.1-7.1 16.3z"/>
-                              </svg>
-                            </button>
-                            <button className="text-[#0F2D52] hover:opacity-60 p-1">
-                              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="16" height="16">
-                                <path fill="#0F2D52" d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zM432 248a24 24 0 1 1 0 48 24 24 0 1 1 0-48z"/>
-                              </svg>
-                            </button>
-                          </div>
-                        ),
+                        render: (value, row) => {
+                          const urls = getFormUrls(row.formname);
+                          return (
+                            <div className="flex gap-1 sm:gap-2">
+                              <button 
+                                className="text-[#0F2D52] hover:opacity-60 p-1"
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  e.stopPropagation();
+                                  console.log('Download button clicked - immediate log');
+                                  handleDownload(row.formname, urls.download);
+                                }}
+                                title="Download"
+                              >
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="16" height="16">
+                                  <path fill="#0F2D52" d="M256 0a256 256 0 1 0 0 512A256 256 0 1 0 256 0zM376.9 294.6L269.8 394.5c-3.8 3.5-8.7 5.5-13.8 5.5s-10.1-2-13.8-5.5L135.1 294.6c-4.5-4.2-7.1-10.1-7.1-16.3c0-12.3 10-22.3 22.3-22.3l57.7 0 0-96c0-17.7 14.3-32 32-32l32 0c17.7 0 32 14.3 32 32l0 96 57.7 0c12.3 0 22.3 10 22.3 22.3c0 6.2-2.6 12.1-7.1 16.3z"/>
+                                </svg>
+                              </button>
+                              <button 
+                                className="text-[#0F2D52] hover:opacity-60 p-1"
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  e.stopPropagation();
+                                  console.log('Print button clicked - immediate log');
+                                  handlePrint(row.formname, urls.print);
+                                }}
+                                title="Print"
+                              >
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="16" height="16">
+                                  <path fill="#0F2D52" d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zM432 248a24 24 0 1 1 0 48 24 24 0 1 1 0-48z"/>
+                                </svg>
+                              </button>
+                            </div>
+                          );
+                        },
                         sortable: false,
                         className: 'min-w-[80px]'
                       }
@@ -492,6 +752,58 @@ const ParentDashboard = () => {
             </div>
           </div>
         </div>
+      </div>
+    </div>
+    
+    {/* Hidden PDF form components for download/print functionality */}
+    <div style={{ 
+      position: 'fixed', 
+      left: '-100vw', 
+      top: '0', 
+      width: '100vw',
+      height: '100vh',
+      overflow: 'hidden',
+      pointerEvents: 'none',
+      zIndex: -1000
+    }}>
+      {/* ParentHandbook */}
+      <div ref={handbookContentRef} id="handbook-content" style={{ 
+        width: '210mm', 
+        minHeight: '297mm',
+        backgroundColor: 'white',
+        marginBottom: '20px'
+      }}>
+        <ParentHandbook />
+      </div>
+      
+      {/* AdmissionForm */}
+      <div ref={admissionFormRef} id="admission-content" style={{ 
+        width: '210mm', 
+        minHeight: '297mm',
+        backgroundColor: 'white',
+        marginBottom: '20px'
+      }}>
+        <AdmissionFormPDF />
+      </div>
+      
+      {/* AuthorizationForm */}
+      <div ref={authorizationFormRef} id="authorization-content" style={{ 
+        width: '210mm', 
+        minHeight: '297mm',
+        backgroundColor: 'white',
+        marginBottom: '20px'
+      }}>
+        <AuthorizationFormPDF />
+      </div>
+      
+      {/* EnrollmentForm */}
+      <div ref={enrollmentFormRef} id="enrollment-content" style={{ 
+        width: '210mm', 
+        minHeight: '297mm',
+        backgroundColor: 'white',
+        marginBottom: '20px'
+      }}>
+        <EnrollmentAgreementPDF />
       </div>
     </div>
   </div>

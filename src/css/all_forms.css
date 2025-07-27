@@ -1,0 +1,154 @@
+p, ol li, ul li
+{
+    font-weight: 500;
+    text-align: justify;
+    font-size: 16px;
+}
+
+.container {
+    padding: 0% !important;
+}
+
+.form-body {
+    border: 2px solid #0F2D52;
+}
+.form-head {
+    margin: 0;
+    border-bottom: 2px solid #0F2D52;
+}
+.title_bg {
+    background-color: #0F2D52;
+    color: #fff;
+    padding: 20px;
+}
+.logo-style img {
+    max-width: 100%;
+    height: auto;
+}
+.text-box {
+    width: 100%;
+}
+
+.header-border {
+    border: none !important;
+    border-bottom: 2px solid #0F2D52 !important;
+    border-radius: 0 !important;
+}
+
+.title_bg
+{
+    background-color: #0F2D52;
+    color: #fff;
+    padding: 10px;
+}
+
+.form-control
+{
+    border: 1px solid #888888 !important;
+}
+
+.logo-style
+{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.form-body
+{
+    border: 2px solid #0F2D52;
+}
+
+/***Checkbox style***/
+  /* Hide the default checkbox */
+  .custom-checkbox {
+    position: relative;
+    width: 20px;
+    height: 20px;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-color: #fff;
+    border: 2px solid #333;
+    border-radius: 4px;
+    cursor: pointer;
+    outline: none;
+    transition: all 0.3s ease-in-out;
+}
+
+/* When the checkbox is checked */
+.custom-checkbox:checked {
+    background-color: #0F2D52;
+    border-color: #0F2D52;
+}
+
+/* The tick mark */
+.custom-checkbox::after {
+    content: "✓";
+    font-size: 16px;
+    color: white;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    transition: opacity 1s ease-in-out;
+}
+
+/* Show the tick mark when checked */
+.custom-checkbox:checked::after {
+    opacity: 1;
+}
+
+/* input box focus style */
+.form-control:focus {
+    border-color: rgb(15, 45, 82) !important;
+    -webkit-box-shadow: 0 0 8px rgb(15, 45, 82, 0.6) !important;
+    box-shadow: 0 0 8px rgb(15, 45, 82, 0.6) !important;
+}
+
+/* Print styles */
+@media print {
+    .btn {
+        display: none !important;
+    }
+    
+    .custom-checkbox {
+        display: none !important;
+    }
+    
+    .form-body {
+        border: 2px solid #0F2D52 !important;
+        margin: 10px !important;
+        page-break-inside: avoid;
+        break-inside: avoid;
+    }
+    
+    .header-border {
+        border-bottom: 2px solid #0F2D52 !important;
+    }
+    
+    .title_bg {
+        background-color: #0F2D52 !important;
+        color: white !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+        color-adjust: exact !important;
+    }
+    
+    .m-5 {
+        page-break-inside: avoid;
+        break-inside: avoid;
+        margin: 0.5rem !important;
+    }
+    
+    .card {
+        page-break-inside: avoid;
+        break-inside: avoid;
+    }
+    
+    @page {
+        size: portrait;
+        margin: 0.25cm;
+    }
+}
