@@ -10,9 +10,14 @@
       }
 
       /* Input field styling for PDF forms */
-      .underline-input {
+      .underline-input,
+      .text-box,
+      input[type="text"],
+      input[type="date"] {
         background: transparent !important;
-        border: none !important;
+        border-top: none !important;
+        border-left: none !important;
+        border-right: none !important;
         border-bottom: 2px solid #000 !important;
         border-radius: 0 !important;
         padding: 2px 4px !important;
@@ -22,14 +27,20 @@
         min-height: 20px;
       }
 
-      .underline-input:focus {
+      .underline-input:focus,
+      .text-box:focus,
+      input[type="text"]:focus,
+      input[type="date"]:focus {
         border-bottom-color: #0f2d52 !important;
         box-shadow: none !important;
       }
 
       /* Ensure underlines are visible in PDF generation */
       @media print {
-        .underline-input {
+        .underline-input,
+        .text-box,
+        input[type="text"],
+        input[type="date"] {
           border-bottom: 2px solid #000 !important;
           -webkit-print-color-adjust: exact !important;
           print-color-adjust: exact !important;

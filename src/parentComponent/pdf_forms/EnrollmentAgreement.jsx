@@ -1,4 +1,5 @@
 import React from 'react';
+import "./index.css";
 import logo from "../../../public/image/goddrd logo.png";
 
 

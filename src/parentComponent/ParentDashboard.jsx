@@ -266,18 +266,44 @@ const ParentDashboard = () => {
           checkbox.style.display = 'none';
         });
 
-        // Enhance input styling for PDF
-        const inputs = content.querySelectorAll('.underline-input');
+        // Fix OKLCH color issue for html2canvas compatibility
+        const replaceOKLCHColors = (element) => {
+          const allElements = element.querySelectorAll('*');
+          allElements.forEach((el) => {
+            const style = window.getComputedStyle(el);
+            ['color', 'backgroundColor', 'borderColor', 'borderTopColor', 'borderBottomColor', 'borderLeftColor', 'borderRightColor'].forEach((prop) => {
+              if (style[prop]?.includes('oklch')) {
+                // Convert oklch to appropriate fallback colors
+                if (prop.includes('background') || prop.includes('Background')) {
+                  el.style[prop] = style[prop].includes('0.15') ? '#0f2d52' : '#ffffff';
+                } else if (prop.includes('border') || prop.includes('Border')) {
+                  el.style[prop] = '#0f2d52';
+                } else {
+                  el.style[prop] = '#000000';
+                }
+              }
+            });
+          });
+        };
+        
+        // Apply OKLCH color fixes
+        replaceOKLCHColors(content);
+
+        // Enhance input styling for PDF - handle all input types
+        const inputs = content.querySelectorAll('.underline-input, .text-box, input[type="text"], input[type="date"]');
         const originalInputStyles = {};
         inputs.forEach((input, index) => {
           originalInputStyles[index] = {
             borderBottom: input.style.borderBottom,
             borderColor: input.style.borderColor,
-            minHeight: input.style.minHeight
+            minHeight: input.style.minHeight,
+            borderWidth: input.style.borderWidth
           };
-          input.style.borderBottom = '3px solid #000';
-          input.style.borderColor = '#000';
+          // Force visible borders for PDF
+          input.style.borderBottom = '3px solid #000 !important';
+          input.style.borderColor = '#000 !important';
           input.style.minHeight = '25px';
+          input.style.borderWidth = '0 0 3px 0';
         });
 
         // Create PDF
@@ -375,10 +401,26 @@ const ParentDashboard = () => {
               input.style.borderBottom = originalInputStyles[index].borderBottom || '';
               input.style.borderColor = originalInputStyles[index].borderColor || '';
               input.style.minHeight = originalInputStyles[index].minHeight || '';
+              input.style.borderWidth = originalInputStyles[index].borderWidth || '';
             }
           });
 
           console.log('Download completed successfully');
+        }).catch(error => {
+          console.error('Error during PDF generation:', error);
+          
+          // Restore styles even if PDF generation fails
+          elements.forEach(el => {
+            el.style.fontSize = originalFontSizes[el] || '';
+          });
+          inputs.forEach((input, index) => {
+            if (originalInputStyles[index]) {
+              input.style.borderBottom = originalInputStyles[index].borderBottom || '';
+              input.style.borderColor = originalInputStyles[index].borderColor || '';
+              input.style.minHeight = originalInputStyles[index].minHeight || '';
+              input.style.borderWidth = originalInputStyles[index].borderWidth || '';
+            }
+          });
         });
         }, 1000); // 1 second delay to ensure rendering
       })
