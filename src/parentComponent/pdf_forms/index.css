@@ -8,3 +8,31 @@
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji" !important;
         font-size: 1rem;
       }
+
+      /* Input field styling for PDF forms */
+      .underline-input {
+        background: transparent !important;
+        border: none !important;
+        border-bottom: 2px solid #000 !important;
+        border-radius: 0 !important;
+        padding: 2px 4px !important;
+        font-size: inherit;
+        font-family: inherit;
+        outline: none;
+        min-height: 20px;
+      }
+
+      .underline-input:focus {
+        border-bottom-color: #0f2d52 !important;
+        box-shadow: none !important;
+      }
+
+      /* Ensure underlines are visible in PDF generation */
+      @media print {
+        .underline-input {
+          border-bottom: 2px solid #000 !important;
+          -webkit-print-color-adjust: exact !important;
+          print-color-adjust: exact !important;
+          color-adjust: exact !important;
+        }
+      }

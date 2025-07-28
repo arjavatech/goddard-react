@@ -266,6 +266,20 @@ const ParentDashboard = () => {
           checkbox.style.display = 'none';
         });
 
+        // Enhance input styling for PDF
+        const inputs = content.querySelectorAll('.underline-input');
+        const originalInputStyles = {};
+        inputs.forEach((input, index) => {
+          originalInputStyles[index] = {
+            borderBottom: input.style.borderBottom,
+            borderColor: input.style.borderColor,
+            minHeight: input.style.minHeight
+          };
+          input.style.borderBottom = '3px solid #000';
+          input.style.borderColor = '#000';
+          input.style.minHeight = '25px';
+        });
+
         // Create PDF
         const pdf = new jsPDF('p', 'mm', 'a4');
         const pdfWidth = pdf.internal.pageSize.getWidth();
@@ -285,26 +299,68 @@ const ParentDashboard = () => {
                              el.tagName === 'H3' ? '42px' : '34px';
         });
         
-        // Function to add pages
-        const addPage = (element, index) => {
+        // Function to add pages with proper multi-page support
+        const addMultiPage = (element) => {
           return html2canvas(element, {
-            scale: 0.4,
+            scale: 2,
             useCORS: true,
-            logging: false
+            logging: false,
+            height: element.scrollHeight,
+            width: element.scrollWidth,
+            allowTaint: true,
+            backgroundColor: '#ffffff',
+            removeContainer: false,
+            foreignObjectRendering: false
           }).then(canvas => {
-            const imgData = canvas.toDataURL('image/jpeg', 0.2);
-            if (index > 0) pdf.addPage();
+            const imgData = canvas.toDataURL('image/jpeg', 0.8);
             
-            // Calculate aspect ratio to fit within page
+            // Calculate dimensions
             const imgWidth = pdfWidth - (margins * 2);
             const imgHeight = (canvas.height * imgWidth) / canvas.width;
+            const pageHeight = pdfHeight - (margins * 2);
             
-            pdf.addImage(imgData, 'JPEG', margins, margins, imgWidth, imgHeight);
+            // If content fits on one page
+            if (imgHeight <= pageHeight) {
+              pdf.addImage(imgData, 'JPEG', margins, margins, imgWidth, imgHeight);
+            } else {
+              // Split content across multiple pages
+              let currentY = 0;
+              let pageIndex = 0;
+              
+              while (currentY < imgHeight) {
+                if (pageIndex > 0) pdf.addPage();
+                
+                const remainingHeight = imgHeight - currentY;
+                const heightToAdd = Math.min(pageHeight, remainingHeight);
+                
+                // Create a temporary canvas for this page section
+                const pageCanvas = document.createElement('canvas');
+                const pageCtx = pageCanvas.getContext('2d');
+                
+                pageCanvas.width = canvas.width;
+                pageCanvas.height = (heightToAdd * canvas.width) / imgWidth;
+                
+                // Draw the portion of the original canvas onto the page canvas
+                pageCtx.drawImage(
+                  canvas,
+                  0, (currentY * canvas.width) / imgWidth,
+                  canvas.width, pageCanvas.height,
+                  0, 0,
+                  canvas.width, pageCanvas.height
+                );
+                
+                const pageImgData = pageCanvas.toDataURL('image/jpeg', 0.8);
+                pdf.addImage(pageImgData, 'JPEG', margins, margins, imgWidth, heightToAdd);
+                
+                currentY += heightToAdd;
+                pageIndex++;
+              }
+            }
           });
         };
 
-        // Process content
-        addPage(content, 0).then(() => {
+        // Process content with multi-page support
+        addMultiPage(content).then(() => {
           console.log('PDF generated successfully, saving...');
           pdf.save(`${formName}.pdf`);
           
@@ -312,6 +368,16 @@ const ParentDashboard = () => {
           elements.forEach(el => {
             el.style.fontSize = originalFontSizes[el] || '';
           });
+
+          // Restore original input styles
+          inputs.forEach((input, index) => {
+            if (originalInputStyles[index]) {
+              input.style.borderBottom = originalInputStyles[index].borderBottom || '';
+              input.style.borderColor = originalInputStyles[index].borderColor || '';
+              input.style.minHeight = originalInputStyles[index].minHeight || '';
+            }
+          });
+
           console.log('Download completed successfully');
         });
         }, 1000); // 1 second delay to ensure rendering
