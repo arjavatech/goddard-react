@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
-import '../css/all_forms.css';
-import logo from "../assets/goddrd logo.png";
+import '../../css/all_forms.css';
+import logo from "../../../public/image/goddrd logo.png";
 
 const ParentHandbook = () => {
   console.log('ParentHandbook component rendered');

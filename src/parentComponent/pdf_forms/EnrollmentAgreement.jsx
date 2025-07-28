@@ -1,4 +1,5 @@
 import React from 'react';
+import logo from "../../../public/image/goddrd logo.png";
 
 const EnrollmentAgreementForm = () => {
     // State management for form fields would go here in a real React app

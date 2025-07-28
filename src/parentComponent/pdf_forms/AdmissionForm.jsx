@@ -1,6 +1,6 @@
 
 import "./index.css";
-import logo from "../assets/gs_logo_branch.png";
+import logo from "../../../public/image/goddrd logo.png";
 import { useRef } from "react";
 
 function Admission_pdt() {
