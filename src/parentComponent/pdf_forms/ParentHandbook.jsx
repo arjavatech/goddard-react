@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useImperativeHandle, forwardRef } from 'react';
-import logo from "../../../public/image/gs_logo_branch.png";
+import logo from "/image/gs_logo_branch.png";
 import '../../css/all_forms.css'
 
 const ParentHandbook = forwardRef((props, ref) => {

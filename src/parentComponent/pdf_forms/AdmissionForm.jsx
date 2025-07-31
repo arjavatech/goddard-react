@@ -2,7 +2,7 @@
 import React, {  useRef, forwardRef, useImperativeHandle } from "react";
 import { jsPDF } from "jspdf";
 import html2canvas from "html2canvas";
-import logo from "../../../public/image/gs_logo_branch.png";
+import logo from "/image/gs_logo_branch.png";
 import "./index.css"
 
 const AdmissionSection = forwardRef((props, ref) => {
