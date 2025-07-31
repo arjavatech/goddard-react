@@ -2,7 +2,7 @@ import React, { useRef, useCallback, useState, forwardRef, useImperativeHandle }
 import "./index.css"; // Ensure your Tailwind CSS is correctly imported in index.css
 
 // Use forwardRef to allow parent components (like App.jsx) to get a ref to this component
-const ACHForm = forwardRef((props, ref) => {
+const ACHForm = forwardRef(({ initialFormData }, ref) => {
   const contentRef = useRef(); // Ref for the content to be converted to PDF
   const [loadingPdf, setLoadingPdf] = useState(false); // State to indicate if PDF is being generated (internal to ACHForm, can be removed if App.jsx handles all loading visuals)
   const [pdfError, setPdfError] = useState(null); // State to store any PDF generation errors
@@ -247,19 +247,19 @@ const ACHForm = forwardRef((props, ref) => {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 md:gap-6 px-0 py-6 sm:py-8 md:py-10 lg:py-15">
             <div>
               <label className="font-bold block mb-1 text-xs sm:text-sm md:text-[15px]">Bank Routing</label>
-              <input type="text" className="underline-input w-full text-sm sm:text-base md:text-[15px]" />
+              <input id="bank_routing" type="text" className="underline-input w-full text-sm sm:text-base md:text-[15px]" defaultValue={initialFormData?.bank_routing || ''} />
             </div>
             <div>
               <label className="font-bold block mb-1 text-xs sm:text-sm md:text-[15px]">Bank Account</label>
-              <input type="text" className="underline-input w-full text-sm sm:text-base md:text-[15px]" />
+              <input id="bank_account" type="text" className="underline-input w-full text-sm sm:text-base md:text-[15px]" defaultValue={initialFormData?.bank_account || ''} />
             </div>
             <div>
               <label className="font-bold block mb-1 text-xs sm:text-sm md:text-[15px]">Driver’s License</label>
-              <input type="text" className="underline-input w-full text-sm sm:text-base md:text-[15px]" />
+              <input id="driver_license" type="text" className="underline-input w-full text-sm sm:text-base md:text-[15px]" defaultValue={initialFormData?.driver_license || ''} />
             </div>
             <div>
               <label className="font-bold block mb-1 text-xs sm:text-sm md:text-[15px]">State</label>
-              <input type="text" className="underline-input w-full text-sm sm:text-base md:text-[15px]" />
+              <input id="state" type="text" className="underline-input w-full text-sm sm:text-base md:text-[15px]" defaultValue={initialFormData?.state || ''} />
             </div>
           </div>
 
@@ -271,8 +271,10 @@ const ACHForm = forwardRef((props, ref) => {
             <p className="font-semibold mb-2 sm:mb-3 leading-relaxed text-justify text-xs sm:text-sm md:text-[15px]">
               I{" "}
               <input
+                id="i" 
                 type="text"
                 className="underline-input inline-block w-24 sm:w-40 md:w-60 align-baseline text-xs sm:text-sm md:text-[15px]"
+                defaultValue={initialFormData?.i || ''}
               />{" "}
               hereby authorize (Alphabetz Corp, dba The Goddard School) to charge
               my above referenced bank account for the invoiced amount once each
@@ -299,11 +301,11 @@ const ACHForm = forwardRef((props, ref) => {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 md:gap-6 px-0 pb-5 sm:pb-6 md:pb-8">
             <div>
               <label className="font-bold block mb-1 text-xs sm:text-sm md:text-[15px]">Parent Signature</label>
-              <input type="text" className="underline-input w-full text-sm sm:text-base md:text-[15px]" />
+              <input id="parent_sign_ach" type="text" className="underline-input w-full text-sm sm:text-base md:text-[15px]" defaultValue={initialFormData?.parent_sign_ach || ''} />
             </div>
             <div>
               <label className="font-bold block mb-1 text-xs sm:text-sm md:text-[15px]">Date</label>
-              <input type="date" className="underline-input w-full text-sm sm:text-base md:text-[15px]" />
+              <input id="parent_sign_date_ach" type="date" className="underline-input w-full text-sm sm:text-base md:text-[15px]" defaultValue={initialFormData?.parent_sign_date_ach || ''} />
             </div>
           </div>
         </div>

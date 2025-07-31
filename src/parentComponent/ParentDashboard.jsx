@@ -68,6 +68,7 @@ const ParentDashboard = () => {
       
     } 
   };
+
    const handleDownload3 = async () => {
     try {
       // Call the handleGeneratePdf method directly on the ACHForm component via its ref
@@ -953,7 +954,17 @@ const ParentDashboard = () => {
 
 
         {/* AuthorizationForm */}
-       <ACHForm ref={achFormRef} />
+       <ACHForm ref={achFormRef} initialFormData={childFormData ? {
+                bank_routing: childFormData.bank_routing || '',
+                bank_account: childFormData.bank_account || '',
+                driver_license: childFormData.driver_license || '',
+                state: childFormData.state || '',
+                i: childFormData.i || '',
+                parent_sign_ach: childFormData.parent_sign_ach || '',
+                parent_sign_date_ach: childFormData.parent_sign_date_ach || '',
+                admin_sign_ach: childFormData.admin_sign_ach || '',
+                admin_sign_date_ach: childFormData.admin_sign_date_ach || ''
+              } : null}/>
 
         {/* EnrollmentForm */}
         <div ref={enrollmentFormRef} id="enrollment-content" style={{
