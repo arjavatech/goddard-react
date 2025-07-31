@@ -1,7 +1,40 @@
-import React, { useState, useCallback, useImperativeHandle, forwardRef } from 'react';
+import React, { useState, useCallback, useImperativeHandle, forwardRef, useEffect } from 'react';
 import logo from "/image/gs_logo_branch.png";
 
-const EnrollmentAgreementForm = forwardRef((props, ref) => {
+const EnrollmentAgreementForm = forwardRef(({ initialFormData }, ref) => {
+
+    console.log('EnrollmentAgreement - initialFormData:', initialFormData);
+    console.log('full_day value:', initialFormData?.full_day);
+    console.log('half_day value:', initialFormData?.half_day);
+    console.log('full_day type:', typeof initialFormData?.full_day);
+    console.log('half_day type:', typeof initialFormData?.half_day);
+    console.log('full_day === "on":', initialFormData?.full_day === 'on');
+    console.log('half_day === "on":', initialFormData?.half_day === 'on');
+
+    // Helper function to determine if checkbox should be checked
+    const isChecked = (value) => {
+        const result = value === 'on' || value === true || value === 'true';
+        console.log(`isChecked(${value}) = ${result}`);
+        return result;
+    };
+
+    // State for checkboxes
+    const [fullDayChecked, setFullDayChecked] = useState(false);
+    const [halfDayChecked, setHalfDayChecked] = useState(false);
+
+    // Set initial checkbox states when initialFormData changes
+    useEffect(() => {
+        if (initialFormData) {
+            const fullDayValue = isChecked(initialFormData.full_day);
+            const halfDayValue = isChecked(initialFormData.half_day);
+            
+            console.log('Setting fullDayChecked to:', fullDayValue);
+            console.log('Setting halfDayChecked to:', halfDayValue);
+            
+            setFullDayChecked(fullDayValue);
+            setHalfDayChecked(halfDayValue);
+        }
+    }, [initialFormData]);
 
 
     const holidayData2025 = [
@@ -62,10 +95,10 @@ const EnrollmentAgreementForm = forwardRef((props, ref) => {
             console.log('PDF libraries loaded successfully');
 
             const { jsPDF } = window.jspdf;
-            const content = document.getElementById("enrollment-content");
+            const content = document.getElementById("enrollment-agreement-content");
 
             if (!content) {
-                console.error('Error: The element with ID "enrollment-content" was not found.');
+                console.error('Error: The element with ID "enrollment-agreement-content" was not found.');
                 // setPdfError('Failed to capture form content for PDF. Element not found.');
                 return;
             }
@@ -232,7 +265,7 @@ const EnrollmentAgreementForm = forwardRef((props, ref) => {
     return (
         <div className="bg-white mx-auto text-[#0f2d52] text-[14px] sm:text-[15px] md:text-[16px] lg:text-[17px] xl:text-[18px] p-4 sm:p-6 md:p-8 lg:p-10 text-black">
 
-            <div id="enrollment-content">
+            <div id="enrollment-agreement-content">
                 <div className="mb-8 xl:mb-[12%]">
                     <div className="border-2 border-[#0F2D52]">
                         <div className="w-full border-b-2 border-[#0f2d52]">
@@ -266,6 +299,7 @@ const EnrollmentAgreementForm = forwardRef((props, ref) => {
                                                     name="point_one_field_one"
                                                     type="text"
                                                     className="form-control text-box border-b-2 max-w-[150px] border-[#0F2D52] rounded-none w-full md:w-[30%] inline-block focus:border-[#0F2D52] focus:shadow-[0_0_8px_rgba(15,45,82,0.6)] text-sm sm:text-base"
+                                                    defaultValue={initialFormData?.point_one_field_one || ''}
                                                 />{' '}
                                                 is between Cool Kidz LLC dba The Goddard School, an independent franchisee operating The Goddard School® located at 4200 228th Ave NE, Redmond, WA pursuant to a license from Goddard Systems, Inc., and
                                                 <input
@@ -273,6 +307,7 @@ const EnrollmentAgreementForm = forwardRef((props, ref) => {
                                                     name="point_one_field_three"
                                                     type="text"
                                                     className="form-control text-box border-b-2 border-[#0F2D52] rounded-none w-full md:w-[30%] inline-block focus:border-[#0F2D52] focus:shadow-[0_0_8px_rgba(15,45,82,0.6)] text-sm sm:text-base"
+                                                    defaultValue={initialFormData?.point_one_field_three || ''}
                                                 />{' '}
                                                 (“Parents”).
                                             </li>
@@ -284,8 +319,9 @@ const EnrollmentAgreementForm = forwardRef((props, ref) => {
                                                 id="point_two_initial_here"
                                                 name="point_two_initial_here"
                                                 type="text"
-                                                className="form-control text-box border-b-2 border-[#0F2D52] relative top-[10px] rounded-none w-48 sm:w-54 md:w-[30%] inline-block text-transparent caret-transparent placeholder-transparent focus:outline-none focus:border-[#0F2D52] focus:shadow-[0_0_8px_rgba(15,45,82,0.6)] text-sm sm:text-base"
+                                                className="form-control text-box border-b-2 border-[#0F2D52] relative top-[10px] rounded-none w-48 sm:w-54 md:w-[30%] inline-block focus:outline-none focus:border-[#0F2D52] focus:shadow-[0_0_8px_rgba(15,45,82,0.6)] text-sm sm:text-base"
                                                 placeholder="."
+                                                defaultValue={initialFormData?.point_two_initial_here || ''}
                                             />
                                         </span>
 
@@ -301,8 +337,9 @@ const EnrollmentAgreementForm = forwardRef((props, ref) => {
                                                 id="point_three_initial_here"
                                                 name="point_three_initial_here"
                                                 type="text"
-                                                className="form-control text-box border-b-2 border-[#0F2D52] relative top-[10px] rounded-none w-48 sm:w-54 md:w-[30%] inline-block text-transparent caret-transparent placeholder-transparent focus:outline-none focus:border-[#0F2D52] focus:shadow-[0_0_8px_rgba(15,45,82,0.6)] text-sm sm:text-base"
+                                                className="form-control text-box border-b-2 border-[#0F2D52] relative top-[10px] rounded-none w-48 sm:w-54 md:w-[30%] inline-block focus:outline-none focus:border-[#0F2D52] focus:shadow-[0_0_8px_rgba(15,45,82,0.6)] text-sm sm:text-base"
                                                 placeholder="."
+                                                defaultValue={initialFormData?.point_three_initial_here || ''}
                                             />
                                         </span>
                                         <ol className="list-decimal pl-5" start="3">
@@ -317,8 +354,9 @@ const EnrollmentAgreementForm = forwardRef((props, ref) => {
                                                 id="point_four_initial_here"
                                                 name="point_four_initial_here"
                                                 type="text"
-                                                className="form-control text-box border-b-2 border-[#0F2D52] relative top-[10px] rounded-none w-48 sm:w-54 md:w-[30%] inline-block text-transparent caret-transparent placeholder-transparent focus:outline-none focus:border-[#0F2D52] focus:shadow-[0_0_8px_rgba(15,45,82,0.6)] text-sm sm:text-base"
+                                                className="form-control text-box border-b-2 border-[#0F2D52] relative top-[10px] rounded-none w-48 sm:w-54 md:w-[30%] inline-block focus:outline-none focus:border-[#0F2D52] focus:shadow-[0_0_8px_rgba(15,45,82,0.6)] text-sm sm:text-base"
                                                 placeholder="."
+                                                defaultValue={initialFormData?.point_four_initial_here || ''}
                                             />
                                         </span>
                                         <ol className="list-decimal pl-5" start="4">
@@ -333,8 +371,9 @@ const EnrollmentAgreementForm = forwardRef((props, ref) => {
                                                 id="point_five_initial_here"
                                                 name="point_five_initial_here"
                                                 type="text"
-                                                className="form-control text-box border-b-2 border-[#0F2D52] relative top-[10px] rounded-none w-48 sm:w-54 md:w-[30%] inline-block text-transparent caret-transparent placeholder-transparent focus:outline-none focus:border-[#0F2D52] focus:shadow-[0_0_8px_rgba(15,45,82,0.6)] text-sm sm:text-base"
+                                                className="form-control text-box border-b-2 border-[#0F2D52] relative top-[10px] rounded-none w-48 sm:w-54 md:w-[30%] inline-block focus:outline-none focus:border-[#0F2D52] focus:shadow-[0_0_8px_rgba(15,45,82,0.6)] text-sm sm:text-base"
                                                 placeholder="."
+                                                defaultValue={initialFormData?.point_five_initial_here || ''}
                                             />
                                         </span>
                                         <ol className="list-decimal pl-5" start="5">
@@ -349,8 +388,9 @@ const EnrollmentAgreementForm = forwardRef((props, ref) => {
                                                 id="point_six_initial_here"
                                                 name="point_six_initial_here"
                                                 type="text"
-                                                className="form-control text-box border-b-2 border-[#0F2D52] relative top-[10px] rounded-none w-48 sm:w-54 md:w-[30%] inline-block text-transparent caret-transparent placeholder-transparent focus:outline-none focus:border-[#0F2D52] focus:shadow-[0_0_8px_rgba(15,45,82,0.6)] text-sm sm:text-base"
+                                                className="form-control text-box border-b-2 border-[#0F2D52] relative top-[10px] rounded-none w-48 sm:w-54 md:w-[30%] inline-block focus:outline-none focus:border-[#0F2D52] focus:shadow-[0_0_8px_rgba(15,45,82,0.6)] text-sm sm:text-base"
                                                 placeholder="."
+                                                defaultValue={initialFormData?.point_six_initial_here || ''}
                                             />
                                         </span>
                                         <ol className="list-decimal pl-5" start="6">
@@ -365,8 +405,9 @@ const EnrollmentAgreementForm = forwardRef((props, ref) => {
                                                 id="point_seven_initial_here"
                                                 name="point_seven_initial_here"
                                                 type="text"
-                                                className="form-control text-box border-b-2 border-[#0F2D52] relative top-[10px] rounded-none w-48 sm:w-54 md:w-[30%] inline-block text-transparent caret-transparent placeholder-transparent focus:outline-none focus:border-[#0F2D52] focus:shadow-[0_0_8px_rgba(15,45,82,0.6)] text-sm sm:text-base"
+                                                className="form-control text-box border-b-2 border-[#0F2D52] relative top-[10px] rounded-none w-48 sm:w-54 md:w-[30%] inline-block focus:outline-none focus:border-[#0F2D52] focus:shadow-[0_0_8px_rgba(15,45,82,0.6)] text-sm sm:text-base"
                                                 placeholder="."
+                                                defaultValue={initialFormData?.point_seven_initial_here || ''}
                                             />
                                         </span>
                                         <ol className="list-decimal pl-5" start="7">
@@ -381,8 +422,9 @@ const EnrollmentAgreementForm = forwardRef((props, ref) => {
                                                 id="point_eight_initial_here"
                                                 name="point_eight_initial_here"
                                                 type="text"
-                                                className="form-control text-box border-b-2 border-[#0F2D52] relative top-[10px] rounded-none w-48 sm:w-54 md:w-[30%] inline-block text-transparent caret-transparent placeholder-transparent focus:outline-none focus:border-[#0F2D52] focus:shadow-[0_0_8px_rgba(15,45,82,0.6)] text-sm sm:text-base"
+                                                className="form-control text-box border-b-2 border-[#0F2D52] relative top-[10px] rounded-none w-48 sm:w-54 md:w-[30%] inline-block focus:outline-none focus:border-[#0F2D52] focus:shadow-[0_0_8px_rgba(15,45,82,0.6)] text-sm sm:text-base"
                                                 placeholder="."
+                                                defaultValue={initialFormData?.point_eight_initial_here || ''}
                                             />
                                         </span>
 
@@ -440,8 +482,9 @@ const EnrollmentAgreementForm = forwardRef((props, ref) => {
                                                 id="point_nine_initial_here"
                                                 name="point_nine_initial_here"
                                                 type="text"
-                                                className="form-control text-box border-b-2 border-[#0F2D52] relative top-[10px] rounded-none w-48 sm:w-54 md:w-[30%] inline-block text-transparent caret-transparent placeholder-transparent focus:outline-none focus:border-[#0F2D52] focus:shadow-[0_0_8px_rgba(15,45,82,0.6)] text-sm sm:text-base"
+                                                className="form-control text-box border-b-2 border-[#0F2D52] relative top-[10px] rounded-none w-48 sm:w-54 md:w-[30%] inline-block focus:outline-none focus:border-[#0F2D52] focus:shadow-[0_0_8px_rgba(15,45,82,0.6)] text-sm sm:text-base"
                                                 placeholder="."
+                                                defaultValue={initialFormData?.point_nine_initial_here || ''}
                                             />
                                         </span>
                                     </div>
@@ -488,8 +531,9 @@ const EnrollmentAgreementForm = forwardRef((props, ref) => {
                                             id="point_ten_initial_here"
                                             name="point_ten_initial_here"
                                             type="text"
-                                            className="form-control text-box border-b-2 border-[#0F2D52] relative top-[10px] rounded-none w-48 sm:w-54 md:w-[30%] inline-block text-transparent caret-transparent placeholder-transparent focus:outline-none focus:border-[#0F2D52] focus:shadow-[0_0_8px_rgba(15,45,82,0.6)] text-sm sm:text-base"
+                                            className="form-control text-box border-b-2 border-[#0F2D52] relative top-[10px] rounded-none w-48 sm:w-54 md:w-[30%] inline-block focus:outline-none focus:border-[#0F2D52] focus:shadow-[0_0_8px_rgba(15,45,82,0.6)] text-sm sm:text-base"
                                             placeholder="."
+                                            defaultValue={initialFormData?.point_ten_initial_here || ''}
                                         />
                                     </span>
                                     <ol className="list-decimal pl-5" start="10">
@@ -504,8 +548,9 @@ const EnrollmentAgreementForm = forwardRef((props, ref) => {
                                             id="point_eleven_initial_here"
                                             name="point_eleven_initial_here"
                                             type="text"
-                                            className="form-control text-box border-b-2 border-[#0F2D52] relative top-[10px] rounded-none w-48 sm:w-54 md:w-[30%] inline-block text-transparent caret-transparent placeholder-transparent focus:outline-none focus:border-[#0F2D52] focus:shadow-[0_0_8px_rgba(15,45,82,0.6)] text-sm sm:text-base"
+                                            className="form-control text-box border-b-2 border-[#0F2D52] relative top-[10px] rounded-none w-48 sm:w-54 md:w-[30%] inline-block focus:outline-none focus:border-[#0F2D52] focus:shadow-[0_0_8px_rgba(15,45,82,0.6)] text-sm sm:text-base"
                                             placeholder="."
+                                            defaultValue={initialFormData?.point_eleven_initial_here || ''}
                                         />
                                     </span>
                                     <ol className="list-decimal pl-5" start="11">
@@ -520,8 +565,9 @@ const EnrollmentAgreementForm = forwardRef((props, ref) => {
                                             id="point_twelven_initial_here"
                                             name="point_twelven_initial_here"
                                             type="text"
-                                            className="form-control text-box border-b-2 border-[#0F2D52] relative top-[10px] rounded-none w-48 sm:w-54 md:w-[30%] inline-block text-transparent caret-transparent placeholder-transparent focus:outline-none focus:border-[#0F2D52] focus:shadow-[0_0_8px_rgba(15,45,82,0.6)] text-sm sm:text-base"
+                                            className="form-control text-box border-b-2 border-[#0F2D52] relative top-[10px] rounded-none w-48 sm:w-54 md:w-[30%] inline-block focus:outline-none focus:border-[#0F2D52] focus:shadow-[0_0_8px_rgba(15,45,82,0.6)] text-sm sm:text-base"
                                             placeholder="."
+                                            defaultValue={initialFormData?.point_twelve_initial_here || ''}
                                         />
                                     </span>
                                     <ol className="list-decimal pl-5" start="12">
@@ -536,8 +582,9 @@ const EnrollmentAgreementForm = forwardRef((props, ref) => {
                                             id="point_thirteen_initial_here"
                                             name="point_thirteen_initial_here"
                                             type="text"
-                                            className="form-control text-box border-b-2 border-[#0F2D52] relative top-[10px] rounded-none w-48 sm:w-54 md:w-[30%] inline-block text-transparent caret-transparent placeholder-transparent focus:outline-none focus:border-[#0F2D52] focus:shadow-[0_0_8px_rgba(15,45,82,0.6)] text-sm sm:text-base"
+                                            className="form-control text-box border-b-2 border-[#0F2D52] relative top-[10px] rounded-none w-48 sm:w-54 md:w-[30%] inline-block focus:outline-none focus:border-[#0F2D52] focus:shadow-[0_0_8px_rgba(15,45,82,0.6)] text-sm sm:text-base"
                                             placeholder="."
+                                            defaultValue={initialFormData?.point_thirteen_initial_here || ''}
                                         />
                                     </span>
                                     <ol className="list-decimal pl-5" start="13">
@@ -552,8 +599,9 @@ const EnrollmentAgreementForm = forwardRef((props, ref) => {
                                             id="point_fourteen_initial_here"
                                             name="point_fourteen_initial_here"
                                             type="text"
-                                            className="form-control text-box border-b-2 border-[#0F2D52] relative top-[10px] rounded-none w-48 sm:w-54 md:w-[30%] inline-block text-transparent caret-transparent placeholder-transparent focus:outline-none focus:border-[#0F2D52] focus:shadow-[0_0_8px_rgba(15,45,82,0.6)] text-sm sm:text-base"
+                                            className="form-control text-box border-b-2 border-[#0F2D52] relative top-[10px] rounded-none w-48 sm:w-54 md:w-[30%] inline-block focus:outline-none focus:border-[#0F2D52] focus:shadow-[0_0_8px_rgba(15,45,82,0.6)] text-sm sm:text-base"
                                             placeholder="."
+                                            defaultValue={initialFormData?.point_fourteen_initial_here || ''}
                                         />
                                     </span>
                                     <ol className="list-decimal pl-5" start="14">
@@ -568,8 +616,9 @@ const EnrollmentAgreementForm = forwardRef((props, ref) => {
                                             id="point_fifteen_initial_here"
                                             name="point_fifteen_initial_here"
                                             type="text"
-                                            className="form-control text-box border-b-2 border-[#0F2D52] relative top-[10px] rounded-none w-48 sm:w-54 md:w-[30%] inline-block text-transparent caret-transparent placeholder-transparent focus:outline-none focus:border-[#0F2D52] focus:shadow-[0_0_8px_rgba(15,45,82,0.6)] text-sm sm:text-base"
+                                            className="form-control text-box border-b-2 border-[#0F2D52] relative top-[10px] rounded-none w-48 sm:w-54 md:w-[30%] inline-block focus:outline-none focus:border-[#0F2D52] focus:shadow-[0_0_8px_rgba(15,45,82,0.6)] text-sm sm:text-base"
                                             placeholder="."
+                                            defaultValue={initialFormData?.point_fifteen_initial_here || ''}
                                         />
                                     </span><br />
                                     <ol className="list-decimal pl-5" start="15">
@@ -584,8 +633,9 @@ const EnrollmentAgreementForm = forwardRef((props, ref) => {
                                             id="point_sixteen_initial_here"
                                             name="point_sixteen_initial_here"
                                             type="text"
-                                            className="form-control text-box border-b-2 border-[#0F2D52] relative top-[10px] rounded-none w-48 sm:w-54 md:w-[30%] inline-block text-transparent caret-transparent placeholder-transparent focus:outline-none focus:border-[#0F2D52] focus:shadow-[0_0_8px_rgba(15,45,82,0.6)] text-sm sm:text-base"
+                                            className="form-control text-box border-b-2 border-[#0F2D52] relative top-[10px] rounded-none w-48 sm:w-54 md:w-[30%] inline-block focus:outline-none focus:border-[#0F2D52] focus:shadow-[0_0_8px_rgba(15,45,82,0.6)] text-sm sm:text-base"
                                             placeholder="."
+                                            defaultValue={initialFormData?.point_sixteen_initial_here || ''}
                                         />
                                     </span>
                                     <ol className="list-decimal pl-5" start="16">
@@ -600,8 +650,9 @@ const EnrollmentAgreementForm = forwardRef((props, ref) => {
                                             id="point_seventeen_initial_here"
                                             name="point_seventeen_initial_here"
                                             type="text"
-                                            className="form-control text-box border-b-2 border-[#0F2D52] relative top-[10px] rounded-none w-48 sm:w-54 md:w-[30%] inline-block text-transparent caret-transparent placeholder-transparent focus:outline-none focus:border-[#0F2D52] focus:shadow-[0_0_8px_rgba(15,45,82,0.6)] text-sm sm:text-base"
+                                            className="form-control text-box border-b-2 border-[#0F2D52] relative top-[10px] rounded-none w-48 sm:w-54 md:w-[30%] inline-block focus:outline-none focus:border-[#0F2D52] focus:shadow-[0_0_8px_rgba(15,45,82,0.6)] text-sm sm:text-base"
                                             placeholder="."
+                                            defaultValue={initialFormData?.point_seventeen_initial_here || ''}
                                         />
                                     </span>
                                     <ol className="list-decimal pl-5" start="17">
@@ -616,8 +667,9 @@ const EnrollmentAgreementForm = forwardRef((props, ref) => {
                                             id="point_eighteen_initial_here"
                                             name="point_eighteen_initial_here"
                                             type="text"
-                                            className="form-control text-box border-b-2 border-[#0F2D52] relative top-[10px] rounded-none w-48 sm:w-54 md:w-[30%] inline-block text-transparent caret-transparent placeholder-transparent focus:outline-none focus:border-[#0F2D52] focus:shadow-[0_0_8px_rgba(15,45,82,0.6)] text-sm sm:text-base"
+                                            className="form-control text-box border-b-2 border-[#0F2D52] relative top-[10px] rounded-none w-48 sm:w-54 md:w-[30%] inline-block focus:outline-none focus:border-[#0F2D52] focus:shadow-[0_0_8px_rgba(15,45,82,0.6)] text-sm sm:text-base"
                                             placeholder="."
+                                            defaultValue={initialFormData?.point_eighteen_initial_here || ''}
                                         />
                                     </span>
                                     <ol className="list-decimal pl-5" start="18">
@@ -632,8 +684,9 @@ const EnrollmentAgreementForm = forwardRef((props, ref) => {
                                             id="point_ninteen_initial_here"
                                             name="point_ninteen_initial_here"
                                             type="text"
-                                            className="form-control text-box border-b-2 border-[#0F2D52] relative top-[10px] rounded-none w-48 sm:w-54 md:w-[30%] inline-block text-transparent caret-transparent placeholder-transparent focus:outline-none focus:border-[#0F2D52] focus:shadow-[0_0_8px_rgba(15,45,82,0.6)] text-sm sm:text-base"
+                                            className="form-control text-box border-b-2 border-[#0F2D52] relative top-[10px] rounded-none w-48 sm:w-54 md:w-[30%] inline-block focus:outline-none focus:border-[#0F2D52] focus:shadow-[0_0_8px_rgba(15,45,82,0.6)] text-sm sm:text-base"
                                             placeholder="."
+                                            defaultValue={initialFormData?.point_ninteen_initial_here || ''}
                                         />
                                     </span>
                                     <ol className="list-decimal pl-5" start="19">
@@ -651,7 +704,7 @@ const EnrollmentAgreementForm = forwardRef((props, ref) => {
                                                 <label htmlFor="child_first_name" className="block text-sm sm:text-base font-bold mb-1">
                                                     Child’s Name
                                                 </label>
-                                                <input type="text" className="w-full border-b-2 border-[#0F2D52] rounded-none focus:outline-none focus:border-[#0F2D52] focus:shadow-[0_0_8px_rgba(15,45,82,0.6)] p-2 text-sm sm:text-base" id="child_first_name" name="child_first_name" />
+                                                <input type="text" className="w-full border-b-2 border-[#0F2D52] rounded-none focus:outline-none focus:border-[#0F2D52] focus:shadow-[0_0_8px_rgba(15,45,82,0.6)] p-2 text-sm sm:text-base" id="child_first_name" name="child_first_name" defaultValue={initialFormData?.child_first_name || ''} />
                                             </div>
                                         </div>
                                         <div className="w-full sm:w-1/2 px-2 mb-4">
@@ -659,7 +712,7 @@ const EnrollmentAgreementForm = forwardRef((props, ref) => {
                                                 <label htmlFor="dob" className="block text-sm sm:text-base font-bold mb-1">
                                                     Date of Birth
                                                 </label>
-                                                <input type="date" className="w-full border-b-2 border-[#0F2D52] rounded-none focus:outline-none focus:border-[#0F2D52] focus:shadow-[0_0_8px_rgba(15,45,82,0.6)] p-2 text-sm sm:text-base" id="dob" name="dob" />
+                                                <input type="date" className="w-full border-b-2 border-[#0F2D52] rounded-none focus:outline-none focus:border-[#0F2D52] focus:shadow-[0_0_8px_rgba(15,45,82,0.6)] p-2 text-sm sm:text-base" id="dob" name="dob" defaultValue={initialFormData?.dob || ''} />
                                             </div>
                                         </div>
                                         <div className="w-full sm:w-1/2 px-2 mb-4">
@@ -667,7 +720,7 @@ const EnrollmentAgreementForm = forwardRef((props, ref) => {
                                                 <label htmlFor="preferred_start_date" className="block text-sm sm:text-base font-bold mb-1">
                                                     Preferred Start Date
                                                 </label>
-                                                <input type="date" className="w-full border-b-2 border-[#0F2D52] rounded-none focus:outline-none focus:border-[#0F2D52] focus:shadow-[0_0_8px_rgba(15,45,82,0.6)] p-2 text-sm sm:text-base" id="preferred_start_date" name="preferred_start_date" />
+                                                <input type="date" className="w-full border-b-2 border-[#0F2D52] rounded-none focus:outline-none focus:border-[#0F2D52] focus:shadow-[0_0_8px_rgba(15,45,82,0.6)] p-2 text-sm sm:text-base" id="preferred_start_date" name="preferred_start_date" defaultValue={initialFormData?.preferred_start_date || ''} />
                                             </div>
                                         </div>
                                     </div>
@@ -702,11 +755,25 @@ const EnrollmentAgreementForm = forwardRef((props, ref) => {
                         <div className="p-3 sm:p-5">
                             <div className="flex flex-wrap -mx-2">
                                 <div className="w-full sm:w-1/2 px-2 mb-4 flex items-center gap-2">
-                                    <input type="checkbox" className="custom-checkbox h-4 w-4 sm:h-5 sm:w-5 appearance-none bg-white border-2 border-gray-700 rounded-md cursor-pointer outline-none transition-all duration-300 ease-in-out checked:bg-[#0F2D52] checked:border-[#0F2D52] checked:after:content-['✓'] checked:after:text-white checked:after:absolute checked:after:top-1/2 checked:after:left-1/2 checked:after:-translate-x-1/2 checked:after:-translate-y-1/2 checked:after:opacity-100 after:opacity-0 after:transition-opacity after:duration-1000 after:ease-in-out" id="full_day" name="full_day" />
+                                    <input 
+                                        type="checkbox" 
+                                        className="custom-checkbox h-4 w-4 sm:h-5 sm:w-5 appearance-none bg-white border-2 border-gray-700 rounded-md cursor-pointer outline-none transition-all duration-300 ease-in-out checked:bg-[#0F2D52] checked:border-[#0F2D52] checked:after:content-['✓'] checked:after:text-white checked:after:absolute checked:after:top-1/2 checked:after:left-1/2 checked:after:-translate-x-1/2 checked:after:-translate-y-1/2 checked:after:opacity-100 after:opacity-0 after:transition-opacity after:duration-1000 after:ease-in-out" 
+                                        id="full_day" 
+                                        name="full_day" 
+                                        checked={fullDayChecked}
+                                        onChange={(e) => setFullDayChecked(e.target.checked)}
+                                    />
                                     <label className="text-sm sm:text-base" htmlFor="full_day">
                                         <span><b>Full-Day</b></span>
                                     </label>
-                                    <input type="checkbox" className="custom-checkbox h-4 w-4 sm:h-5 sm:w-5 appearance-none bg-white border-2 border-gray-700 rounded-md cursor-pointer outline-none transition-all duration-300 ease-in-out checked:bg-[#0F2D52] checked:border-[#0F2D52] checked:after:content-['✓'] checked:after:text-white checked:after:absolute checked:after:top-1/2 checked:after:left-1/2 checked:after:-translate-x-1/2 checked:after:-translate-y-1/2 checked:after:opacity-100 after:opacity-0 after:transition-opacity after:duration-1000 after:ease-in-out" id="half_day" name="half_day" />
+                                    <input 
+                                        type="checkbox" 
+                                        className="custom-checkbox h-4 w-4 sm:h-5 sm:w-5 appearance-none bg-white border-2 border-gray-700 rounded-md cursor-pointer outline-none transition-all duration-300 ease-in-out checked:bg-[#0F2D52] checked:border-[#0F2D52] checked:after:content-['✓'] checked:after:text-white checked:after:absolute checked:after:top-1/2 checked:after:left-1/2 checked:after:-translate-x-1/2 checked:after:-translate-y-1/2 checked:after:opacity-100 after:opacity-0 after:transition-opacity after:duration-1000 after:ease-in-out" 
+                                        id="half_day" 
+                                        name="half_day" 
+                                        checked={halfDayChecked}
+                                        onChange={(e) => setHalfDayChecked(e.target.checked)}
+                                    />
                                     <label className="text-sm sm:text-base" htmlFor="half_day">
                                         <span><b>Half-Day</b></span>
                                     </label>
@@ -716,7 +783,7 @@ const EnrollmentAgreementForm = forwardRef((props, ref) => {
                                         <label htmlFor="preferred_schedule" className="block text-sm sm:text-base font-bold mb-1">
                                             Preferred Schedule
                                         </label>
-                                        <input type="text" className="w-full border-b-2 border-[#0F2D52] rounded-none focus:outline-none focus:border-[#0F2D52] focus:shadow-[0_0_8px_rgba(15,45,82,0.6)] p-2 text-sm sm:text-base" id="preferred_schedule" name="preferred_schedule" />
+                                        <input type="text" className="w-full border-b-2 border-[#0F2D52] rounded-none focus:outline-none focus:border-[#0F2D52] focus:shadow-[0_0_8px_rgba(15,45,82,0.6)] p-2 text-sm sm:text-base" id="preferred_schedule" name="preferred_schedule" defaultValue={initialFormData?.preferred_schedule || ''} />
                                     </div>
                                 </div>
                                 <div className="w-full sm:w-1/2 px-2 mb-4">
@@ -724,7 +791,7 @@ const EnrollmentAgreementForm = forwardRef((props, ref) => {
                                         <label htmlFor="primary_parent_email" className="block text-sm sm:text-base font-bold mb-1">
                                             Email
                                         </label>
-                                        <input type="email" className="w-full border-b-2 border-[#0F2D52] rounded-none focus:outline-none focus:border-[#0F2D52] focus:shadow-[0_0_8px_rgba(15,45,82,0.6)] p-2 text-sm sm:text-base" id="primary_parent_email" name="primary_parent_email" />
+                                        <input type="email" className="w-full border-b-2 border-[#0F2D52] rounded-none focus:outline-none focus:border-[#0F2D52] focus:shadow-[0_0_8px_rgba(15,45,82,0.6)] p-2 text-sm sm:text-base" id="primary_parent_email" name="primary_parent_email" defaultValue={initialFormData?.primary_parent_email || ''} />
                                     </div>
                                 </div>
                                 <div className="w-full sm:w-1/2 px-2 mb-4">
@@ -732,7 +799,7 @@ const EnrollmentAgreementForm = forwardRef((props, ref) => {
                                         <label htmlFor="preferred_home_addr" className="block text-sm sm:text-base font-bold mb-1">
                                             Home Address
                                         </label>
-                                        <input type="text" className="w-full border-b-2 border-[#0F2D52] rounded-none focus:outline-none focus:border-[#0F2D52] focus:shadow-[0_0_8px_rgba(15,45,82,0.6)] p-2 text-sm sm:text-base" id="preferred_home_addr" name="preferred_home_addr" />
+                                        <input type="text" className="w-full border-b-2 border-[#0F2D52] rounded-none focus:outline-none focus:border-[#0F2D52] focus:shadow-[0_0_8px_rgba(15,45,82,0.6)] p-2 text-sm sm:text-base" id="preferred_home_addr" name="preferred_home_addr" defaultValue={initialFormData?.preferred_home_addr || ''} />
                                     </div>
                                 </div>
                             </div>
@@ -744,7 +811,7 @@ const EnrollmentAgreementForm = forwardRef((props, ref) => {
                                         <label htmlFor="parent_sign_enroll" className="block text-sm sm:text-base font-bold mb-1">
                                             Parent Signature
                                         </label>
-                                        <input type="text" className="w-full border-b-2 border-[#0F2D52] rounded-none focus:outline-none focus:border-[#0F2D52] focus:shadow-[0_0_8px_rgba(15,45,82,0.6)] p-2 text-sm sm:text-base" id="parent_sign_enroll" name="parent_sign_enroll" />
+                                        <input type="text" className="w-full border-b-2 border-[#0F2D52] rounded-none focus:outline-none focus:border-[#0F2D52] focus:shadow-[0_0_8px_rgba(15,45,82,0.6)] p-2 text-sm sm:text-base" id="parent_sign_enroll" name="parent_sign_enroll" defaultValue={initialFormData?.parent_sign_enroll || ''} />
                                     </div>
                                 </div>
                                 <div className="w-full sm:w-1/2 px-2 mb-4">
@@ -752,7 +819,7 @@ const EnrollmentAgreementForm = forwardRef((props, ref) => {
                                         <label htmlFor="parent_sign_date_enroll" className="block text-sm sm:text-base font-bold mb-1">
                                             Date
                                         </label>
-                                        <input type="date" className="w-full border-b-2 border-[#0F2D52] rounded-none focus:outline-none focus:border-[#0F2D52] focus:shadow-[0_0_8px_rgba(15,45,82,0.6)] p-2 text-sm sm:text-base" id="parent_sign_date_enroll" name="parent_sign_date_enroll" /* onClick={() => dateValidation('parent_sign_date_enroll')} */ />
+                                        <input type="date" className="w-full border-b-2 border-[#0F2D52] rounded-none focus:outline-none focus:border-[#0F2D52] focus:shadow-[0_0_8px_rgba(15,45,82,0.6)] p-2 text-sm sm:text-base" id="parent_sign_date_enroll" name="parent_sign_date_enroll" defaultValue={initialFormData?.parent_sign_date_enroll || ''} /* onClick={() => dateValidation('parent_sign_date_enroll')} */ />
                                     </div>
                                 </div>
                             </div>

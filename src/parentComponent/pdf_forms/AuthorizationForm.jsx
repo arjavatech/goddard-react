@@ -217,7 +217,7 @@ const ACHForm = forwardRef(({ initialFormData }, ref) => {
 
       {/* The main content div that will be captured for PDF generation */}
       <div
-        id="enrollment-content" 
+        id="authorization-content" 
         ref={contentRef}
         className="bg-white border-2 border-[#0f2d52] max-w-full lg:max-w-6xl mx-auto text-[#0f2d52] text-xs sm:text-sm md:text-[15px] text-black overflow-hidden"
       >

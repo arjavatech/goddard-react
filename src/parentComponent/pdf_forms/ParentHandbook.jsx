@@ -29,10 +29,10 @@ const ParentHandbook = forwardRef((props, ref) => {
             console.log('PDF libraries loaded successfully');
 
             const { jsPDF } = window.jspdf;
-            const content = document.getElementById("enrollment-content");
+            const content = document.getElementById("parent-handbook-content");
 
             if (!content) {
-                console.error('Error: The element with ID "enrollment-content" was not found.');
+                console.error('Error: The element with ID "parent-handbook-content" was not found.');
                 // setPdfError('Failed to capture form content for PDF. Element not found.');
                 return;
             }
@@ -724,7 +724,7 @@ const ParentHandbook = forwardRef((props, ref) => {
         //     </div>
         // </div>
 
-        <div id="enrollment-content">
+        <div id="parent-handbook-content">
             <div className="m-5">
                 <div className="card">
                     <div className="form-body">

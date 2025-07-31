@@ -42,6 +42,7 @@ const ParentDashboard = () => {
   const admissionRef = useRef();
   const achFormRef = useRef();
   const phbFormRef = useRef();
+  const enrollFormRef = useRef();
 
 
   const handleDownload1 = async () => {
@@ -73,6 +74,15 @@ const ParentDashboard = () => {
     try {
       // Call the handleGeneratePdf method directly on the ACHForm component via its ref
       await phbFormRef.current?.generatePdf(); 
+    } catch (error) {
+      console.error("Error in download:", error);
+      
+    } 
+  };
+
+  const handleDownload4 = async () => {
+    try {
+      await enrollFormRef.current?.generatePdf(); 
     } catch (error) {
       console.error("Error in download:", error);
       
@@ -863,16 +873,24 @@ const ParentDashboard = () => {
                                     e.preventDefault();
                                     e.stopPropagation();
                                     if (formName == 'admission_form') {
-                                      console.log("if condition")
                                       handleDownload1();
                                     }
                                     else if(formName == 'authorization_form')
                                     {
                                       handleDownload2();
                                     }
-                                    else
+                                    else if(formName == 'parent_handbook')
                                     {
                                       handleDownload3();
+                                    }
+                                    else if(formName == 'enrollment_form' || formName == 'enrollment_agreement')
+                                    {
+                                      handleDownload4();
+                                    }
+                                    else
+                                    {
+                                      console.log('Unknown form name:', formName);
+                                      handleDownload4(); // Default to enrollment download
                                     }
                                   }}
                                   title="Download"
@@ -930,8 +948,6 @@ const ParentDashboard = () => {
         </div>
       </div>
       
-
-      {/* Hidden PDF form components for download/print functionality */}
       <div style={{
         position: 'fixed',
         left: '-100vw',
@@ -952,8 +968,6 @@ const ParentDashboard = () => {
         <ParentHandbook ref={phbFormRef} />
 
 
-
-        {/* AuthorizationForm */}
        <ACHForm ref={achFormRef} initialFormData={childFormData ? {
                 bank_routing: childFormData.bank_routing || '',
                 bank_account: childFormData.bank_account || '',
@@ -966,15 +980,46 @@ const ParentDashboard = () => {
                 admin_sign_date_ach: childFormData.admin_sign_date_ach || ''
               } : null}/>
 
-        {/* EnrollmentForm */}
-        <div ref={enrollmentFormRef} id="enrollment-content" style={{
-          width: '210mm',
-          minHeight: '297mm',
-          backgroundColor: 'white',
-          marginBottom: '20px'
-        }}>
-          <EnrollmentAgreementPDF />
-        </div>
+        
+          <EnrollmentAgreementPDF ref={enrollFormRef} initialFormData={childFormData ? (() => {
+            console.log('ParentDashboard - childFormData.full_day:', childFormData.full_day);
+            console.log('ParentDashboard - childFormData.half_day:', childFormData.half_day);
+            const formData = {
+            point_one_field_one: childFormData.point_one_field_one || '',
+            point_one_field_three: childFormData.point_one_field_three || '',
+            point_two_initial_here: childFormData.point_two_initial_here || '',
+            point_three_initial_here: childFormData.point_three_initial_here || '',
+            point_four_initial_here: childFormData.point_four_initial_here || '',
+            point_five_initial_here: childFormData.point_five_initial_here || '',
+            point_six_initial_here: childFormData.point_six_initial_here || '',
+            point_seven_initial_here: childFormData.point_seven_initial_here || '',
+            point_eight_initial_here: childFormData.point_eight_initial_here || '',
+            point_nine_initial_here: childFormData.point_nine_initial_here || '',
+            point_ten_initial_here: childFormData.point_ten_initial_here || '',
+            point_eleven_initial_here: childFormData.point_eleven_initial_here || '',
+            point_twelve_initial_here: childFormData.point_twelve_initial_here || '',
+            point_thirteen_initial_here: childFormData.point_thirteen_initial_here || '',
+            point_fourteen_initial_here: childFormData.point_fourteen_initial_here || '',
+            point_fifteen_initial_here: childFormData.point_fifteen_initial_here || '',
+            point_sixteen_initial_here: childFormData.point_sixteen_initial_here || '',
+            point_seventeen_initial_here: childFormData.point_seventeen_initial_here || '',
+            point_eighteen_initial_here: childFormData.point_eighteen_initial_here || '',
+            point_ninteen_initial_here: childFormData.point_ninteen_initial_here || '',
+            child_first_name: childFormData.child_first_name || '',
+            dob: childFormData.dob || '',
+            preferred_start_date: childFormData.preferred_start_date || '',
+            full_day: childFormData.full_day === 'on' || childFormData.full_day === true,
+            half_day: childFormData.half_day === 'on' || childFormData.half_day === true,
+            preferred_schedule: childFormData.preferred_schedule || '',
+            primary_parent_email: childFormData.primary_parent_email || '',
+            preferred_home_addr: childFormData.preferred_home_addr || '',
+            parent_sign_enroll: childFormData.parent_sign_enroll || '',
+            parent_sign_date_enroll: childFormData.parent_sign_date_enroll || ''
+            };
+            console.log('ParentDashboard - transformed formData.full_day:', formData.full_day);
+            console.log('ParentDashboard - transformed formData.half_day:', formData.half_day);
+            return formData;
+          })() : null} />
       </div>
     </div>
   );
