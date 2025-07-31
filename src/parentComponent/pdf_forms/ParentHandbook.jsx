@@ -1,8 +1,50 @@
-import React, { useState, useCallback, useImperativeHandle, forwardRef } from 'react';
+import React, { useState, useCallback, useImperativeHandle, forwardRef, useEffect } from 'react';
 import logo from "/image/gs_logo_branch.png";
 import '../../css/all_forms.css'
 
-const ParentHandbook = forwardRef((props, ref) => {
+const ParentHandbook = forwardRef(({ initialFormData }, ref) => {
+    console.log('ParentHandbook - initialFormData:', initialFormData);
+
+    // Helper function to determine if checkbox should be checked
+    const isChecked = (value) => {
+        const result = value === 'on' || value === true || value === 'true';
+        return result;
+    };
+
+    // State for all checkboxes
+    const [checkboxStates, setCheckboxStates] = useState({
+        welcome_goddard_agreement: false,
+        mission_statement_agreement: false,
+        general_information_agreement: false,
+        medical_care_provider_agreement: false,
+        parent_access_agreement: false,
+        release_of_children_agreement: false,
+        registration_fees_agreement: false,
+        outside_engagements_agreement: false,
+        health_policies_agreement: false,
+        medication_procedures_agreement: false,
+        bring_to_school_agreement: false,
+        rest_time_agreement: false,
+        training_philosophy_agreement: false,
+        affiliation_policy_agreement: false,
+        security_issue_agreement: false,
+        expulsion_policy_agreement: false,
+        addressing_individual_child_agreement: false,
+        finalword_agreement: false
+    });
+
+    // Set initial checkbox states when initialFormData changes
+    useEffect(() => {
+        if (initialFormData) {
+            const newStates = {};
+            Object.keys(checkboxStates).forEach(key => {
+                newStates[key] = isChecked(initialFormData[key]);
+            });
+            console.log('ParentHandbook - Setting checkbox states:', newStates);
+            setCheckboxStates(newStates);
+        }
+    }, [initialFormData]);
+
     const loadScript = (src) => {
         return new Promise((resolve, reject) => {
             const script = document.createElement('script');
@@ -850,8 +892,14 @@ const ParentHandbook = forwardRef((props, ref) => {
                             </div>
                             <div className="row m-1 mb-3">
                                 <div className="form-group d-flex align-items-center gap-1">
-                                    <input type="checkbox" className="input-checkbox custom-checkbox" id="welcome_goddard_agreement"
-                                        name="welcome_goddard_agreement" />
+                                    <input 
+                                        type="checkbox" 
+                                        className="input-checkbox custom-checkbox" 
+                                        id="welcome_goddard_agreement"
+                                        name="welcome_goddard_agreement" 
+                                        checked={checkboxStates.welcome_goddard_agreement}
+                                        onChange={(e) => setCheckboxStates(prev => ({...prev, welcome_goddard_agreement: e.target.checked}))}
+                                    />
                                     <label className="form-check-label" htmlFor="welcome_goddard_agreement">
                                         <span><b>I agree all the above information.</b></span>
                                     </label>
@@ -1037,8 +1085,14 @@ const ParentHandbook = forwardRef((props, ref) => {
                         </div>
                         <div className="row m-1 mb-4">
                             <div className="form-group d-flex align-items-center gap-1">
-                                <input type="checkbox" className="input-checkbox custom-checkbox" id="mission_statement_agreement"
-                                    name="mission_statement_agreement" />
+                                <input 
+                                    type="checkbox" 
+                                    className="input-checkbox custom-checkbox" 
+                                    id="mission_statement_agreement"
+                                    name="mission_statement_agreement" 
+                                    checked={checkboxStates.mission_statement_agreement}
+                                    onChange={(e) => setCheckboxStates(prev => ({...prev, mission_statement_agreement: e.target.checked}))}
+                                />
                                 <label className="form-check-label" htmlFor="mission_statement_agreement">
                                     <span><b>I agree all the above information.</b></span>
                                 </label>
@@ -1098,8 +1152,14 @@ const ParentHandbook = forwardRef((props, ref) => {
                             </div>
                             <div className="row m-1 mb-5">
                                 <div className="form-group d-flex align-items-center gap-1">
-                                    <input type="checkbox" className="input-checkbox custom-checkbox" id="general_information_agreement"
-                                        name="general_information_agreement" />
+                                    <input 
+                                        type="checkbox" 
+                                        className="input-checkbox custom-checkbox" 
+                                        id="general_information_agreement"
+                                        name="general_information_agreement" 
+                                        checked={checkboxStates.general_information_agreement}
+                                        onChange={(e) => setCheckboxStates(prev => ({...prev, general_information_agreement: e.target.checked}))}
+                                    />
                                     <label className="form-check-label" htmlFor="general_information_agreement">
                                         <span><b>I agree all the above information.</b></span>
                                     </label>
@@ -1178,8 +1238,14 @@ const ParentHandbook = forwardRef((props, ref) => {
                             </div>
                             <div className="row m-1 mb-2">
                                 <div className="form-group d-flex align-items-center gap-1">
-                                    <input type="checkbox" className="input-checkbox custom-checkbox" id="medical_care_provider_agreement"
-                                        name="medical_care_provider_agreement" />
+                                    <input 
+                                        type="checkbox" 
+                                        className="input-checkbox custom-checkbox" 
+                                        id="medical_care_provider_agreement"
+                                        name="medical_care_provider_agreement" 
+                                        checked={checkboxStates.medical_care_provider_agreement}
+                                        onChange={(e) => setCheckboxStates(prev => ({...prev, medical_care_provider_agreement: e.target.checked}))}
+                                    />
                                     <label className="form-check-label" htmlFor="medical_care_provider_agreement">
                                         <span><b>I agree all the above information.</b></span>
                                     </label>
@@ -1284,8 +1350,14 @@ const ParentHandbook = forwardRef((props, ref) => {
                             </div>
                             <div className="row m-1 mb-2">
                                 <div className="form-group d-flex align-items-center gap-1">
-                                    <input type="checkbox" className="input-checkbox custom-checkbox" id="parent_access_agreement"
-                                        name="parent_access_agreement" />
+                                    <input 
+                                        type="checkbox" 
+                                        className="input-checkbox custom-checkbox" 
+                                        id="parent_access_agreement"
+                                        name="parent_access_agreement" 
+                                        checked={checkboxStates.parent_access_agreement}
+                                        onChange={(e) => setCheckboxStates(prev => ({...prev, parent_access_agreement: e.target.checked}))}
+                                    />
                                     <label className="form-check-label" htmlFor="parent_access_agreement">
                                         <span><b>I agree all the above information.</b></span>
                                     </label>
@@ -1405,8 +1477,14 @@ const ParentHandbook = forwardRef((props, ref) => {
                             </p>
                             <div className="row m-1 mb-1">
                                 <div className="form-group d-flex align-items-center gap-1">
-                                    <input type="checkbox" className="input-checkbox custom-checkbox" id="release_of_children_agreement"
-                                        name="release_of_children_agreement" />
+                                    <input 
+                                        type="checkbox" 
+                                        className="input-checkbox custom-checkbox" 
+                                        id="release_of_children_agreement"
+                                        name="release_of_children_agreement" 
+                                        checked={checkboxStates.release_of_children_agreement}
+                                        onChange={(e) => setCheckboxStates(prev => ({...prev, release_of_children_agreement: e.target.checked}))}
+                                    />
                                     <label className="form-check-label" htmlFor="release_of_children_agreement">
                                         <span><b>I agree all the above information.</b></span>
                                     </label>
@@ -1513,8 +1591,14 @@ const ParentHandbook = forwardRef((props, ref) => {
                             </div>
                             <div className="row m-1 mb-4">
                                 <div className="form-group d-flex align-items-center gap-1">
-                                    <input type="checkbox" className="input-checkbox custom-checkbox" id="registration_fees_agreement"
-                                        name="registration_fees_agreement" />
+                                    <input 
+                                        type="checkbox" 
+                                        className="input-checkbox custom-checkbox" 
+                                        id="registration_fees_agreement"
+                                        name="registration_fees_agreement" 
+                                        checked={checkboxStates.registration_fees_agreement}
+                                        onChange={(e) => setCheckboxStates(prev => ({...prev, registration_fees_agreement: e.target.checked}))}
+                                    />
                                     <label className="form-check-label" htmlFor="registration_fees_agreement">
                                         <span><b>I agree all the above information.</b></span>
                                     </label>
@@ -1582,8 +1666,14 @@ const ParentHandbook = forwardRef((props, ref) => {
                             </p>
                             <div className="row m-1 mb-2">
                                 <div className="form-group d-flex align-items-center gap-1">
-                                    <input type="checkbox" className="input-checkbox custom-checkbox" id="outside_engagements_agreement"
-                                        name="outside_engagements_agreement" />
+                                    <input 
+                                        type="checkbox" 
+                                        className="input-checkbox custom-checkbox" 
+                                        id="outside_engagements_agreement"
+                                        name="outside_engagements_agreement" 
+                                        checked={checkboxStates.outside_engagements_agreement}
+                                        onChange={(e) => setCheckboxStates(prev => ({...prev, outside_engagements_agreement: e.target.checked}))}
+                                    />
                                     <label className="form-check-label" htmlFor="outside_engagements_agreement">
                                         <span><b>I agree all the above information.</b></span>
                                     </label>
@@ -1826,8 +1916,14 @@ const ParentHandbook = forwardRef((props, ref) => {
                             </p>
                             <div className="row m-1">
                                 <div className="form-group d-flex align-items-center gap-1">
-                                    <input type="checkbox" className="input-checkbox custom-checkbox" id="health_policies_agreement"
-                                        name="health_policies_agreement" />
+                                    <input 
+                                        type="checkbox" 
+                                        className="input-checkbox custom-checkbox" 
+                                        id="health_policies_agreement"
+                                        name="health_policies_agreement" 
+                                        checked={checkboxStates.health_policies_agreement}
+                                        onChange={(e) => setCheckboxStates(prev => ({...prev, health_policies_agreement: e.target.checked}))}
+                                    />
                                     <label className="form-check-label" htmlFor="health_policies_agreement">
                                         <span><b>I agree all the above information.</b></span>
                                     </label>
@@ -1993,8 +2089,14 @@ const ParentHandbook = forwardRef((props, ref) => {
                             </p>
                             <div className="row m-1 mb-2">
                                 <div className="form-group d-flex align-items-center gap-1">
-                                    <input type="checkbox" className="input-checkbox custom-checkbox" id="medication_procedures_agreement"
-                                        name="medication_procedures_agreement" />
+                                    <input 
+                                        type="checkbox" 
+                                        className="input-checkbox custom-checkbox" 
+                                        id="medication_procedures_agreement"
+                                        name="medication_procedures_agreement" 
+                                        checked={checkboxStates.medication_procedures_agreement}
+                                        onChange={(e) => setCheckboxStates(prev => ({...prev, medication_procedures_agreement: e.target.checked}))}
+                                    />
                                     <label className="form-check-label" htmlFor="medication_procedures_agreement">
                                         <span><b>I agree all the above information.</b></span>
                                     </label>
@@ -2153,8 +2255,14 @@ const ParentHandbook = forwardRef((props, ref) => {
                             </div>
                             <div className="row m-1 mb-4">
                                 <div className="form-group d-flex align-items-center gap-1">
-                                    <input type="checkbox" className="input-checkbox custom-checkbox" id="bring_to_school_agreement"
-                                        name="bring_to_school_agreement" />
+                                    <input 
+                                        type="checkbox" 
+                                        className="input-checkbox custom-checkbox" 
+                                        id="bring_to_school_agreement"
+                                        name="bring_to_school_agreement" 
+                                        checked={checkboxStates.bring_to_school_agreement}
+                                        onChange={(e) => setCheckboxStates(prev => ({...prev, bring_to_school_agreement: e.target.checked}))}
+                                    />
                                     <label className="form-check-label" htmlFor="bring_to_school_agreement">
                                         <span><b>I agree all the above information.</b></span>
                                     </label>
@@ -2386,8 +2494,14 @@ const ParentHandbook = forwardRef((props, ref) => {
                             </p>
                             <div className="row m-1">
                                 <div className="form-group d-flex align-items-center gap-1">
-                                    <input type="checkbox" className="input-checkbox custom-checkbox" id="rest_time_agreement"
-                                        name="rest_time_agreement" />
+                                    <input 
+                                        type="checkbox" 
+                                        className="input-checkbox custom-checkbox" 
+                                        id="rest_time_agreement"
+                                        name="rest_time_agreement" 
+                                        checked={checkboxStates.rest_time_agreement}
+                                        onChange={(e) => setCheckboxStates(prev => ({...prev, rest_time_agreement: e.target.checked}))}
+                                    />
                                     <label className="form-check-label" htmlFor="rest_time_agreement">
                                         <span><b>I agree all the above information.</b></span>
                                     </label>
@@ -2618,8 +2732,14 @@ const ParentHandbook = forwardRef((props, ref) => {
                                 </p>
                                 <div className="row m-1 mb-3">
                                     <div className="form-group d-flex align-items-center gap-1">
-                                        <input type="checkbox" className="input-checkbox custom-checkbox" id="training_philosophy_agreement"
-                                            name="training_philosophy_agreement" />
+                                        <input 
+                                        type="checkbox" 
+                                        className="input-checkbox custom-checkbox" 
+                                        id="training_philosophy_agreement"
+                                            name="training_philosophy_agreement" 
+                                        checked={checkboxStates.training_philosophy_agreement}
+                                        onChange={(e) => setCheckboxStates(prev => ({...prev, training_philosophy_agreement: e.target.checked}))}
+                                    />
                                         <label className="form-check-label" htmlFor="training_philosophy_agreement">
                                             <span><b>I agree all the above information.</b></span>
                                         </label>
@@ -2708,8 +2828,14 @@ const ParentHandbook = forwardRef((props, ref) => {
                                 </p>
                                 <div className="row m-1 mb-2">
                                     <div className="form-group d-flex align-items-center gap-1">
-                                        <input type="checkbox" className="input-checkbox custom-checkbox" id="affiliation_policy_agreement"
-                                            name="affiliation_policy_agreement" />
+                                        <input 
+                                        type="checkbox" 
+                                        className="input-checkbox custom-checkbox" 
+                                        id="affiliation_policy_agreement"
+                                            name="affiliation_policy_agreement" 
+                                        checked={checkboxStates.affiliation_policy_agreement}
+                                        onChange={(e) => setCheckboxStates(prev => ({...prev, affiliation_policy_agreement: e.target.checked}))}
+                                    />
                                         <label className="form-check-label" htmlFor="affiliation_policy_agreement">
                                             <span><b>I agree all the above information.</b></span>
                                         </label>
@@ -2908,8 +3034,14 @@ const ParentHandbook = forwardRef((props, ref) => {
                             </div>
                             <div className="row m-1 mb-2">
                                 <div className="form-group d-flex align-items-center gap-1">
-                                    <input type="checkbox" className="input-checkbox custom-checkbox" id="security_issue_agreement"
-                                        name="security_issue_agreement" />
+                                    <input 
+                                        type="checkbox" 
+                                        className="input-checkbox custom-checkbox" 
+                                        id="security_issue_agreement"
+                                        name="security_issue_agreement" 
+                                        checked={checkboxStates.security_issue_agreement}
+                                        onChange={(e) => setCheckboxStates(prev => ({...prev, security_issue_agreement: e.target.checked}))}
+                                    />
                                     <label className="form-check-label" htmlFor="security_issue_agreement">
                                         <span><b>I agree all the above information.</b></span>
                                     </label>
@@ -3083,8 +3215,14 @@ const ParentHandbook = forwardRef((props, ref) => {
                                 </ul>
                                 <div className="row m-1 mb-2">
                                     <div className="form-group d-flex align-items-center gap-1">
-                                        <input type="checkbox" className="input-checkbox custom-checkbox" id="expulsion_policy_agreement"
-                                            name="expulsion_policy_agreement" />
+                                        <input 
+                                        type="checkbox" 
+                                        className="input-checkbox custom-checkbox" 
+                                        id="expulsion_policy_agreement"
+                                            name="expulsion_policy_agreement" 
+                                        checked={checkboxStates.expulsion_policy_agreement}
+                                        onChange={(e) => setCheckboxStates(prev => ({...prev, expulsion_policy_agreement: e.target.checked}))}
+                                    />
                                         <label className="form-check-label" htmlFor="expulsion_policy_agreement">
                                             <span><b>I agree all the above information.</b></span>
                                         </label>
@@ -3265,7 +3403,10 @@ const ParentHandbook = forwardRef((props, ref) => {
                         <div className="row m-1 mb-2">
                             <div className="form-group d-flex align-items-center gap-1">
                                 <input type="checkbox" className="input-checkbox custom-checkbox" id="addressing_individual_child_agreement"
-                                    name="addressing_individual_child_agreement" />
+                                    name="addressing_individual_child_agreement" 
+                                    checked={checkboxStates.addressing_individual_child_agreement}
+                                    onChange={(e) => setCheckboxStates(prev => ({...prev, addressing_individual_child_agreement: e.target.checked}))}
+                                />
                                 <label className="form-check-label" htmlFor="addressing_individual_child_agreement">
                                     <span><b>I agree all the above information.</b></span>
                                 </label>
@@ -3500,8 +3641,14 @@ const ParentHandbook = forwardRef((props, ref) => {
                             <h4 className="text-center">Parent Agreement</h4>
                             <div className="row m-1 mb-4">
                                 <div className="form-group d-flex align-items-center gap-1">
-                                    <input type="checkbox" className="input-checkbox custom-checkbox" id="finalword_agreement"
-                                        name="finalword_agreement" />
+                                    <input 
+                                        type="checkbox" 
+                                        className="input-checkbox custom-checkbox" 
+                                        id="finalword_agreement"
+                                        name="finalword_agreement" 
+                                        checked={checkboxStates.finalword_agreement}
+                                        onChange={(e) => setCheckboxStates(prev => ({...prev, finalword_agreement: e.target.checked}))}
+                                    />
                                     <label className="form-check-label" htmlFor="finalword_agreement">
                                         <span><b>I agree all the above information.</b></span>
                                     </label>
@@ -3513,7 +3660,7 @@ const ParentHandbook = forwardRef((props, ref) => {
                                         <label htmlFor="parent_sign_handbook" className="form-label"><b>Parent Signature</b>
                                         </label>
                                         <input type="text" className="form-control text-box" id="parent_sign_handbook"
-                                            name="parent_sign_handbook" />
+                                            name="parent_sign_handbook" defaultValue={initialFormData?.parent_sign_handbook || ''} />
                                     </div>
                                 </div>
                                 <div className="col-sm">
@@ -3525,6 +3672,7 @@ const ParentHandbook = forwardRef((props, ref) => {
                                             className="form-control text-box"
                                             id="parent_sign_date_handbook"
                                             name="parent_sign_date_handbook"
+                                            defaultValue={initialFormData?.parent_sign_date_handbook || ''}
                                             onClick={() => dateValidation('parent_sign_date_handbook')}
                                         />
 
