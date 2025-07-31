@@ -10,12 +10,14 @@ import ParentHandbbok from './forms/ParentHanbook/policies/All';
 import EnrollmentForm from './forms/EnrollmentForm';
 import AdmissionForm from './forms/AdmissionForm/AdmissionForm';
 import ParentHandbook from './pdf_forms/ParentHandbook';
-import AdmissionFormPDF from './pdf_forms/AdmissionForm';
-import AuthorizationFormPDF from './pdf_forms/AuthorizationForm';
+import AdmissionSection from './pdf_forms/AdmissionForm';
+import ACHForm from './pdf_forms/AuthorizationForm';
 import EnrollmentAgreementPDF from './pdf_forms/EnrollmentAgreement';
 
 
 const ParentDashboard = () => {
+
+
   console.log('ParentDashboard component loaded');
   const { isAuthenticated, signOut } = useAuth();
   const [children, setChildren] = useState([]);
@@ -36,6 +38,45 @@ const ParentDashboard = () => {
 
   const urlParams = new URLSearchParams(window.location.search);
   const editID = urlParams.get('id') || '';
+
+  const admissionRef = useRef();
+  const achFormRef = useRef();
+  const phbFormRef = useRef();
+
+
+  const handleDownload1 = async () => {
+
+    try {
+      console.log("function")
+      await admissionRef.current?.handleDownload2();
+      console.log("function end")
+    } catch (error) {
+      console.error("Error in download:", error);
+      alert("Failed to generate PDF. Please try again.");
+    } finally {
+      // setIsGenerating(false);
+    }
+  };
+
+  // Function to handle the download button click
+  const handleDownload2 = async () => {
+    try {
+      // Call the handleGeneratePdf method directly on the ACHForm component via its ref
+      await achFormRef.current?.handleGeneratePdf(); 
+    } catch (error) {
+      console.error("Error in download:", error);
+      
+    } 
+  };
+   const handleDownload3 = async () => {
+    try {
+      // Call the handleGeneratePdf method directly on the ACHForm component via its ref
+      await phbFormRef.current?.generatePdf(); 
+    } catch (error) {
+      console.error("Error in download:", error);
+      
+    } 
+  };
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -60,7 +101,7 @@ const ParentDashboard = () => {
       setSelectedSubForm(null);
       setCompletedForms([]); // Clear old child's completed forms immediately
       setChildFormData(null); // Clear old child's form data immediately
-      
+
       // Load data for the new child
       loadIncompletedForms();
       loadCompletedForms();
@@ -72,22 +113,22 @@ const ParentDashboard = () => {
     const loggedInEmail = localStorage.getItem('logged_in_email');
     if (editID === loggedInEmail || loggedInEmail === 'goddard01arjava@gmail.com' || editID === '') {
       try {
-        const url = editID ? 
+        const url = editID ?
           `https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/admission_child_personal/parent_email/${editID}` :
           `https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/admission_child_personal/parent_email/${loggedInEmail}`;
-        
+
         const response = await fetch(url);
         const data = await response.json();
-        
+
         if (data.parent_name) {
           localStorage.setItem('parent_name', data.parent_name);
           setParentName(data.parent_name);
         }
-        
+
         if (data.children) {
           setChildren(data.children);
           localStorage.setItem('number_of_children', data.children.length.toString());
-          
+
           const putcallId = sessionStorage.getItem('putcallId');
           if (putcallId) {
             setActiveChildId(putcallId);
@@ -120,7 +161,7 @@ const ParentDashboard = () => {
       loadCompletedForms();
       return;
     }
-    
+
     // If not showing completed forms, show them
     setShowCompletedForms(true);
     setCurrentSection(null); // Hide current form
@@ -129,13 +170,13 @@ const ParentDashboard = () => {
 
   const loadCompletedForms = async () => {
     if (!activeChildId) return;
-    
+
     try {
       const response = await fetch(
         `https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/admission_child_personal/completed_form_status_year/${activeChildId}/${selectedYear}`
       );
       const data = await response.json();
-      
+
       // Always set completedForms - either with data or empty array
       if (data.CompletedFormStatus) {
         setCompletedForms(data.CompletedFormStatus);
@@ -149,19 +190,19 @@ const ParentDashboard = () => {
 
   const loadIncompletedForms = async () => {
     if (!activeChildId) return;
-    
+
     try {
       // Fetch incomplete form status using the same API as FormStatusLogic
       const incompleteResponse = await fetch(
         `https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/admission_child_personal/incomplete_form_status/${activeChildId}`
       );
-      
+
       if (!incompleteResponse.ok) {
         throw new Error('Failed to fetch incomplete form data');
       }
 
       const incompleteResult = await incompleteResponse.json();
-      
+
       // Extract incomplete forms list from API response (same logic as FormStatusLogic)
       const incompleteFormsList = [];
       if (incompleteResult?.InCompletedFormStatus) {
@@ -169,9 +210,9 @@ const ParentDashboard = () => {
           incompleteFormsList.push(value.replace(/\s+/g, "_").toLowerCase());
         }
       }
-      
+
       setIncompleteForms(incompleteFormsList);
-      
+
     } catch (error) {
       setIncompleteForms([]);
     }
@@ -179,19 +220,19 @@ const ParentDashboard = () => {
 
   const loadChildFormDetails = async () => {
     if (!activeChildId) return;
-    
+
     try {
       const response = await fetch(
         `https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/child_all_form_details/fetch/${activeChildId}`
       );
-      
+
       if (!response.ok) {
         throw new Error('Failed to fetch child form details');
       }
 
       const formData = await response.json();
       setChildFormData(formData);
-      
+
     } catch (error) {
       setChildFormData(null);
     }
@@ -224,7 +265,7 @@ const ParentDashboard = () => {
   // Handle download functionality
   const handleDownload = async (formName, url) => {
     console.log('Download button clicked for:', formName, 'URL:', url);
-    
+
     const formRef = getFormRef(formName);
     if (formRef) {
       console.log(`Processing ${formName} download from PDF component...`);
@@ -244,198 +285,197 @@ const ParentDashboard = () => {
         loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js'),
         loadScript('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js')
       ])
-      .then(() => {
-        console.log('PDF libraries loaded successfully');
-        // Add a small delay to ensure component is fully rendered
-        setTimeout(() => {
-          const { jsPDF } = window.jspdf;
-          const content = formRef.current;
-        
-        if (!content) {
-          console.error(`${formName} content not found`);
-          return;
-        }
-        console.log(`${formName} content found:`, content);
-        console.log('Content innerHTML length:', content.innerHTML.length);
-        console.log('Content HTML preview:', content.innerHTML.substring(0, 500));
-        console.log('Generating PDF...');
-        
-        // Hide checkboxes for PDF
-        const checkboxes = content.querySelectorAll('.custom-checkbox');
-        checkboxes.forEach(checkbox => {
-          checkbox.style.display = 'none';
-        });
+        .then(() => {
+          console.log('PDF libraries loaded successfully');
+          // Add a small delay to ensure component is fully rendered
+          setTimeout(() => {
+            const { jsPDF } = window.jspdf;
+            const content = formRef.current;
 
-        // Fix OKLCH color issue for html2canvas compatibility
-        const replaceOKLCHColors = (element) => {
-          const allElements = element.querySelectorAll('*');
-          allElements.forEach((el) => {
-            const style = window.getComputedStyle(el);
-            ['color', 'backgroundColor', 'borderColor', 'borderTopColor', 'borderBottomColor', 'borderLeftColor', 'borderRightColor'].forEach((prop) => {
-              if (style[prop]?.includes('oklch')) {
-                // Convert oklch to appropriate fallback colors
-                if (prop.includes('background') || prop.includes('Background')) {
-                  el.style[prop] = style[prop].includes('0.15') ? '#0f2d52' : '#ffffff';
-                } else if (prop.includes('border') || prop.includes('Border')) {
-                  el.style[prop] = '#0f2d52';
-                } else {
-                  el.style[prop] = '#000000';
-                }
-              }
+            if (!content) {
+              console.error(`${formName} content not found`);
+              return;
+            }
+            console.log(`${formName} content found:`, content);
+            console.log('Content innerHTML length:', content.innerHTML.length);
+            console.log('Content HTML preview:', content.innerHTML.substring(0, 500));
+            console.log('Generating PDF...');
+
+            // Hide checkboxes for PDF
+            const checkboxes = content.querySelectorAll('.custom-checkbox');
+            checkboxes.forEach(checkbox => {
+              checkbox.style.display = 'none';
             });
-          });
-        };
-        
-        // Apply OKLCH color fixes
-        replaceOKLCHColors(content);
 
-        // Enhance input styling for PDF - handle all input types
-        const inputs = content.querySelectorAll('.underline-input, .text-box, input[type="text"], input[type="date"]');
-        const originalInputStyles = {};
-        inputs.forEach((input, index) => {
-          originalInputStyles[index] = {
-            borderBottom: input.style.borderBottom,
-            borderColor: input.style.borderColor,
-            minHeight: input.style.minHeight,
-            borderWidth: input.style.borderWidth
-          };
-          // Force visible borders for PDF
-          input.style.borderBottom = '3px solid #000 !important';
-          input.style.borderColor = '#000 !important';
-          input.style.minHeight = '25px';
-          input.style.borderWidth = '0 0 3px 0';
+            // Fix OKLCH color issue for html2canvas compatibility
+            const replaceOKLCHColors = (element) => {
+              const allElements = element.querySelectorAll('*');
+              allElements.forEach((el) => {
+                const style = window.getComputedStyle(el);
+                ['color', 'backgroundColor', 'borderColor', 'borderTopColor', 'borderBottomColor', 'borderLeftColor', 'borderRightColor'].forEach((prop) => {
+                  if (style[prop]?.includes('oklch')) {
+                    // Convert oklch to appropriate fallback colors
+                    if (prop.includes('background') || prop.includes('Background')) {
+                      el.style[prop] = style[prop].includes('0.15') ? '#0f2d52' : '#ffffff';
+                    } else if (prop.includes('border') || prop.includes('Border')) {
+                      el.style[prop] = '#0f2d52';
+                    } else {
+                      el.style[prop] = '#000000';
+                    }
+                  }
+                });
+              });
+            };
+
+            // Apply OKLCH color fixes
+            replaceOKLCHColors(content);
+
+            // Enhance input styling for PDF - handle all input types
+            const inputs = content.querySelectorAll('.underline-input, .text-box, input[type="text"], input[type="date"]');
+            const originalInputStyles = {};
+            inputs.forEach((input, index) => {
+              originalInputStyles[index] = {
+                borderBottom: input.style.borderBottom,
+                borderColor: input.style.borderColor,
+                minHeight: input.style.minHeight,
+                borderWidth: input.style.borderWidth
+              };
+              // Force visible borders for PDF
+              input.style.borderBottom = '3px solid #000 !important';
+              input.style.borderColor = '#000 !important';
+              input.style.minHeight = '25px';
+              input.style.borderWidth = '0 0 3px 0';
+            });
+
+            // Create PDF
+            const pdf = new jsPDF('p', 'mm', 'a4');
+            const pdfWidth = pdf.internal.pageSize.getWidth();
+            const pdfHeight = pdf.internal.pageSize.getHeight();
+            const margins = 10;
+
+            // Apply larger font styles for PDF generation
+            const originalFontSizes = {};
+            const elements = content.querySelectorAll('p, h3, h4, h5, li');
+
+            // Store original font sizes and set larger ones
+            elements.forEach(el => {
+              originalFontSizes[el] = el.style.fontSize;
+              el.style.fontSize = el.tagName === 'P' || el.tagName === 'LI' ? '34px' :
+                el.tagName === 'H5' ? '38px' :
+                  el.tagName === 'H4' ? '40px' :
+                    el.tagName === 'H3' ? '42px' : '34px';
+            });
+
+            // Function to add pages with proper multi-page support
+            const addMultiPage = (element) => {
+              return html2canvas(element, {
+                scale: 2,
+                useCORS: true,
+                logging: false,
+                height: element.scrollHeight,
+                width: element.scrollWidth,
+                allowTaint: true,
+                backgroundColor: '#ffffff',
+                removeContainer: false,
+                foreignObjectRendering: false
+              }).then(canvas => {
+                const imgData = canvas.toDataURL('image/jpeg', 0.8);
+
+                // Calculate dimensions
+                const imgWidth = pdfWidth - (margins * 2);
+                const imgHeight = (canvas.height * imgWidth) / canvas.width;
+                const pageHeight = pdfHeight - (margins * 2);
+
+                // If content fits on one page
+                if (imgHeight <= pageHeight) {
+                  pdf.addImage(imgData, 'JPEG', margins, margins, imgWidth, imgHeight);
+                } else {
+                  // Split content across multiple pages
+                  let currentY = 0;
+                  let pageIndex = 0;
+
+                  while (currentY < imgHeight) {
+                    if (pageIndex > 0) pdf.addPage();
+
+                    const remainingHeight = imgHeight - currentY;
+                    const heightToAdd = Math.min(pageHeight, remainingHeight);
+
+                    // Create a temporary canvas for this page section
+                    const pageCanvas = document.createElement('canvas');
+                    const pageCtx = pageCanvas.getContext('2d');
+
+                    pageCanvas.width = canvas.width;
+                    pageCanvas.height = (heightToAdd * canvas.width) / imgWidth;
+
+                    // Draw the portion of the original canvas onto the page canvas
+                    pageCtx.drawImage(
+                      canvas,
+                      0, (currentY * canvas.width) / imgWidth,
+                      canvas.width, pageCanvas.height,
+                      0, 0,
+                      canvas.width, pageCanvas.height
+                    );
+
+                    const pageImgData = pageCanvas.toDataURL('image/jpeg', 0.8);
+                    pdf.addImage(pageImgData, 'JPEG', margins, margins, imgWidth, heightToAdd);
+
+                    currentY += heightToAdd;
+                    pageIndex++;
+                  }
+                }
+              });
+            };
+
+            // Process content with multi-page support
+            addMultiPage(content).then(() => {
+              console.log('PDF generated successfully, saving...');
+              console.log(formName);
+            console.log("----------------------------")
+              pdf.save(`${formName}.pdf`);
+
+              // Restore original font sizes
+              elements.forEach(el => {
+                el.style.fontSize = originalFontSizes[el] || '';
+              });
+
+              // Restore original input styles
+              inputs.forEach((input, index) => {
+                if (originalInputStyles[index]) {
+                  input.style.borderBottom = originalInputStyles[index].borderBottom || '';
+                  input.style.borderColor = originalInputStyles[index].borderColor || '';
+                  input.style.minHeight = originalInputStyles[index].minHeight || '';
+                  input.style.borderWidth = originalInputStyles[index].borderWidth || '';
+                }
+              });
+
+              console.log('Download completed successfully');
+            }).catch(error => {
+              console.error('Error during PDF generation:', error);
+
+              // Restore styles even if PDF generation fails
+              elements.forEach(el => {
+                el.style.fontSize = originalFontSizes[el] || '';
+              });
+              inputs.forEach((input, index) => {
+                if (originalInputStyles[index]) {
+                  input.style.borderBottom = originalInputStyles[index].borderBottom || '';
+                  input.style.borderColor = originalInputStyles[index].borderColor || '';
+                  input.style.minHeight = originalInputStyles[index].minHeight || '';
+                  input.style.borderWidth = originalInputStyles[index].borderWidth || '';
+                }
+              });
+            });
+          }, 1000); // 1 second delay to ensure rendering
+        })
+        .catch(error => {
+          console.error('Error loading PDF libraries:', error);
         });
-
-        // Create PDF
-        const pdf = new jsPDF('p', 'mm', 'a4');
-        const pdfWidth = pdf.internal.pageSize.getWidth();
-        const pdfHeight = pdf.internal.pageSize.getHeight();
-        const margins = 10;
-        
-        // Apply larger font styles for PDF generation
-        const originalFontSizes = {};
-        const elements = content.querySelectorAll('p, h3, h4, h5, li');
-        
-        // Store original font sizes and set larger ones
-        elements.forEach(el => {
-          originalFontSizes[el] = el.style.fontSize;
-          el.style.fontSize = el.tagName === 'P' || el.tagName === 'LI' ? '34px' : 
-                             el.tagName === 'H5' ? '38px' : 
-                             el.tagName === 'H4' ? '40px' : 
-                             el.tagName === 'H3' ? '42px' : '34px';
-        });
-        
-        // Function to add pages with proper multi-page support
-        const addMultiPage = (element) => {
-          return html2canvas(element, {
-            scale: 2,
-            useCORS: true,
-            logging: false,
-            height: element.scrollHeight,
-            width: element.scrollWidth,
-            allowTaint: true,
-            backgroundColor: '#ffffff',
-            removeContainer: false,
-            foreignObjectRendering: false
-          }).then(canvas => {
-            const imgData = canvas.toDataURL('image/jpeg', 0.8);
-            
-            // Calculate dimensions
-            const imgWidth = pdfWidth - (margins * 2);
-            const imgHeight = (canvas.height * imgWidth) / canvas.width;
-            const pageHeight = pdfHeight - (margins * 2);
-            
-            // If content fits on one page
-            if (imgHeight <= pageHeight) {
-              pdf.addImage(imgData, 'JPEG', margins, margins, imgWidth, imgHeight);
-            } else {
-              // Split content across multiple pages
-              let currentY = 0;
-              let pageIndex = 0;
-              
-              while (currentY < imgHeight) {
-                if (pageIndex > 0) pdf.addPage();
-                
-                const remainingHeight = imgHeight - currentY;
-                const heightToAdd = Math.min(pageHeight, remainingHeight);
-                
-                // Create a temporary canvas for this page section
-                const pageCanvas = document.createElement('canvas');
-                const pageCtx = pageCanvas.getContext('2d');
-                
-                pageCanvas.width = canvas.width;
-                pageCanvas.height = (heightToAdd * canvas.width) / imgWidth;
-                
-                // Draw the portion of the original canvas onto the page canvas
-                pageCtx.drawImage(
-                  canvas,
-                  0, (currentY * canvas.width) / imgWidth,
-                  canvas.width, pageCanvas.height,
-                  0, 0,
-                  canvas.width, pageCanvas.height
-                );
-                
-                const pageImgData = pageCanvas.toDataURL('image/jpeg', 0.8);
-                pdf.addImage(pageImgData, 'JPEG', margins, margins, imgWidth, heightToAdd);
-                
-                currentY += heightToAdd;
-                pageIndex++;
-              }
-            }
-          });
-        };
-
-        // Process content with multi-page support
-        addMultiPage(content).then(() => {
-          console.log('PDF generated successfully, saving...');
-          pdf.save(`${formName}.pdf`);
-          
-          // Restore original font sizes
-          elements.forEach(el => {
-            el.style.fontSize = originalFontSizes[el] || '';
-          });
-
-          // Restore original input styles
-          inputs.forEach((input, index) => {
-            if (originalInputStyles[index]) {
-              input.style.borderBottom = originalInputStyles[index].borderBottom || '';
-              input.style.borderColor = originalInputStyles[index].borderColor || '';
-              input.style.minHeight = originalInputStyles[index].minHeight || '';
-              input.style.borderWidth = originalInputStyles[index].borderWidth || '';
-            }
-          });
-
-          console.log('Download completed successfully');
-        }).catch(error => {
-          console.error('Error during PDF generation:', error);
-          
-          // Restore styles even if PDF generation fails
-          elements.forEach(el => {
-            el.style.fontSize = originalFontSizes[el] || '';
-          });
-          inputs.forEach((input, index) => {
-            if (originalInputStyles[index]) {
-              input.style.borderBottom = originalInputStyles[index].borderBottom || '';
-              input.style.borderColor = originalInputStyles[index].borderColor || '';
-              input.style.minHeight = originalInputStyles[index].minHeight || '';
-              input.style.borderWidth = originalInputStyles[index].borderWidth || '';
-            }
-          });
-        });
-        }, 1000); // 1 second delay to ensure rendering
-      })
-      .catch(error => {
-        console.error('Error loading PDF libraries:', error);
-      });
       return;
     }
-
-    // For other forms, use the existing HTML file approach
-    console.log('Processing regular form download for:', formName);
     try {
       const response = await fetch(url);
       const text = await response.text();
-      
+
       // Create hidden div for PDF generation
       const hiddenDiv = document.createElement('div');
       hiddenDiv.id = 'formContent';
@@ -447,9 +487,10 @@ const ParentDashboard = () => {
       if (window.jspdf) {
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF('p', 'mm', [1500, 1400]);
-        
+
         doc.html(hiddenDiv, {
           callback: function () {
+            
             doc.save(`${formName}.pdf`);
             document.body.removeChild(hiddenDiv);
           },
@@ -468,7 +509,7 @@ const ParentDashboard = () => {
   // Handle print functionality
   const handlePrint = async (formName, url) => {
     console.log('Print button clicked for:', formName, 'URL:', url);
-    
+
     const formRef = getFormRef(formName);
     if (formRef) {
       console.log(`Processing ${formName} print from PDF component...`);
@@ -478,7 +519,7 @@ const ParentDashboard = () => {
         console.error(`${formName} content not found for printing`);
         return;
       }
-      
+
       console.log(`${formName} content found, opening print window...`);
       const printWindow = window.open('', '_blank');
       printWindow.document.write(`
@@ -516,14 +557,14 @@ const ParentDashboard = () => {
     try {
       const response = await fetch(url);
       const text = await response.text();
-      
+
       const printWindow = window.open('', '', 'height=1400,width=1500');
       printWindow.document.write('<html><head><title>Print Form</title>');
       printWindow.document.write('</head><body>');
       printWindow.document.write(text);
       printWindow.document.write('</body></html>');
       printWindow.document.close();
-      
+
       printWindow.onload = function () {
         printWindow.focus();
         printWindow.print();
@@ -558,14 +599,14 @@ const ParentDashboard = () => {
         </div>
       );
     }
-    
+
     switch (currentSection) {
-    
-      
+
+
       case 'authorization':
         return (
           <div className="m-3">
-            <AuthorizationForm 
+            <AuthorizationForm
               selectedSubForm={selectedSubForm}
               childId={activeChildId}
               initialFormData={childFormData ? {
@@ -585,7 +626,7 @@ const ParentDashboard = () => {
       case 'parentHandbook':
         return (
           <div className="m-3">
-            <ParentHandbbok 
+            <ParentHandbbok
               selectedSubForm={selectedSubForm}
               childId={activeChildId}
               initialFormData={childFormData ? {
@@ -619,7 +660,7 @@ const ParentDashboard = () => {
       case 'enrollment':
         return (
           <div className="m-3">
-            <EnrollmentForm 
+            <EnrollmentForm
               selectedSubForm={selectedSubForm}
               childId={activeChildId}
               initialFormData={childFormData ? {
@@ -658,11 +699,11 @@ const ParentDashboard = () => {
         return (
           <div className="p-4 bg-white rounded m-3">
 
-           <AdmissionForm 
-             selectedSubForm={selectedSubForm}
-             initialFormData={childFormData}
-             childId={activeChildId}
-           />
+            <AdmissionForm
+              selectedSubForm={selectedSubForm}
+              initialFormData={childFormData}
+              childId={activeChildId}
+            />
             {/* <h3 className="text-lg font-semibold text-[#0F2D52] mb-4">Admission Forms</h3>
             <p className="text-gray-600">Admission forms will be loaded here by another team...</p> */}
           </div>
@@ -670,7 +711,7 @@ const ParentDashboard = () => {
       default:
         return (
           <div className="p-4 bg-white rounded m-3">
-            
+
             <h3 className="text-lg font-semibold text-[#0F2D52] mb-4">Form Not Found</h3>
             <p className="text-gray-600">The selected form section is not available.</p>
           </div>
@@ -678,7 +719,7 @@ const ParentDashboard = () => {
     }
   };
 
-  
+
 
   if (!isAuthenticated) {
     return null;
@@ -686,235 +727,245 @@ const ParentDashboard = () => {
 
   return (
     <div className="min-h-screen bg-white">
-    {/* Navigation Bar */}
-    <Header onSignOut={signOut}></Header>
+      {/* Navigation Bar */}
+      <Header onSignOut={signOut}></Header>
 
-    {/* Welcome Section */}
-    <div className="p-3">
-      <h2 className="text-[#0F2D52] text-xl sm:text-2xl font-bold text-center pt-4">
-        Parent Dashboard
-      </h2>
-      <h4 className="text-lg sm:text-xl text-center pt-2" id="welcomeText">
-        {getWelcomeMessage()}
-      </h4>
-    </div>
-
-    {/* Success/Error Messages - Responsive positioning */}
-    <div className="success-msg fixed top-16 sm:top-4 left-1/2 transform -translate-x-1/2 w-[95%] sm:w-auto sm:left-4 z-20 p-4 bg-green-100 border border-green-500 text-green-700 rounded hidden">
-      <strong>Success!</strong> Data saved successfully!
-    </div>
-    <div className="error-msg fixed top-16 sm:top-4 left-1/2 transform -translate-x-1/2 w-[95%] sm:w-auto sm:left-4 z-20 p-4 bg-red-100 border border-red-500 text-red-700 rounded hidden">
-      <strong>Oops!</strong> Failed to save admission form!
-    </div>
-
-    {/* Main Content */}
-    <div className="bg-[#0F2D52] mx-0 sm:mx-2 mt-1 min-h-screen">
-      {/* Child Tabs - Responsive */}
-      <div className="bg-[#0F2D52] text-white rounded overflow-x-auto">
-        <ul className="flex p-1 items-start list-none min-w-max" role="tablist" id="dynamicChildCards">
-          {children.map((child) => (
-            <li key={child.child_id} className="flex-none min-w-[100px]">
-              <button
-                className={`w-full py-2 px-3 sm:px-6 text-center font-semibold transition-colors text-sm sm:text-base ${
-                  activeChildId === child.child_id
-                    ? 'bg-[#0F2D52] text-white border-2 border-[#D8E9FF]'
-                    : 'bg-[#D8E9FF] text-[#0F2D52] hover:border-[#D8E9FF] border-2 border-[#0F2D52]'
-                }`}
-                onClick={() => handleChildSelect(child.child_id)}
-              >
-                <div className="h-10 flex items-center justify-center">
-                  <h6 className="text-center font-semibold truncate">
-                    {child.child_first_name}
-                  </h6>
-                </div>
-              </button>
-            </li>
-          ))}
-        </ul>
+      {/* Welcome Section */}
+      <div className="p-3">
+        <h2 className="text-[#0F2D52] text-xl sm:text-2xl font-bold text-center pt-4">
+          Parent Dashboard
+        </h2>
+        <h4 className="text-lg sm:text-xl text-center pt-2" id="welcomeText">
+          {getWelcomeMessage()}
+        </h4>
       </div>
 
-      {/* Main Content Area - Responsive Layout */}
-      <div className="flex flex-col lg:flex-row m-0 sm:m-1 bg-[#D8E9FF] h-full min-h-screen">
-        {/* Sidebar - Your existing responsive sidebar */}
-        <FormSidebar 
-          activeChildId={activeChildId}
-          onSectionChange={setCurrentSection}
-          currentSection={currentSection}
-          onHideCompleted={() => setShowCompletedForms(false)}
-          onToggleCompleted={toggleCompletedForms}
-          onSubFormChange={setSelectedSubForm}
-          selectedSubForm={selectedSubForm}
-          incompleteForms={incompleteForms}
-        />
+      {/* Success/Error Messages - Responsive positioning */}
+      <div className="success-msg fixed top-16 sm:top-4 left-1/2 transform -translate-x-1/2 w-[95%] sm:w-auto sm:left-4 z-20 p-4 bg-green-100 border border-green-500 text-green-700 rounded hidden">
+        <strong>Success!</strong> Data saved successfully!
+      </div>
+      <div className="error-msg fixed top-16 sm:top-4 left-1/2 transform -translate-x-1/2 w-[95%] sm:w-auto sm:left-4 z-20 p-4 bg-red-100 border border-red-500 text-red-700 rounded hidden">
+        <strong>Oops!</strong> Failed to save admission form!
+      </div>
 
-        {/* Main Content - Full width on mobile, 3/4 on desktop */}
-        <div className="w-full lg:w-3/4 p-1 sm:p-2 overflow-x-hidden">
-          {/* Form Content */}
-          {renderCurrentFormSection()}
-          
-          {/* Completed Forms Table - Responsive */}
-          <div 
-            id="completedFormDetails" 
-            className={`container mx-auto m-1 sm:m-3 ${showCompletedForms ? 'block' : 'hidden'}`}
-          >
-            <div className="bg-white shadow-lg rounded overflow-hidden">
-              <h3 className="text-center bg-[#0F2D52] text-white p-2 sm:p-3 text-sm sm:text-base rounded-t">
-                Completed Forms
-              </h3>
-              
-              <div className="flex flex-col sm:flex-row p-2 sm:p-4">
-                <div className="flex-1 mb-2 sm:mb-0">
-                  <h4 className="text-sm sm:text-lg font-semibold">
-                    Child: <span className="font-normal">{localStorage.getItem('child_name')}</span>
-                  </h4>
-                </div>
-                <div className="w-full sm:w-1/3">
-                  <div className="sm:float-right">
-                    <label htmlFor="year" className="block font-bold mb-1 sm:mb-2 text-sm sm:text-base">Year</label>
-                    <select
-                      name="year"
-                      id="year"
-                      className="form-control border border-gray-300 rounded px-2 py-1 sm:px-3 sm:py-2 w-full text-sm sm:text-base"
-                      value={selectedYear}
-                      onChange={(e) => setSelectedYear(parseInt(e.target.value))}
-                      required
-                    >
-                      {[...Array(11)].map((_, i) => {
-                        const year = new Date().getFullYear() - 10 + i;
-                        return (
-                          <option key={year} value={year}>
-                            {year}
-                          </option>
-                        );
-                      })}
-                    </select>
+      {/* Main Content */}
+      <div className="bg-[#0F2D52] mx-0 sm:mx-2 mt-1 min-h-screen">
+        {/* Child Tabs - Responsive */}
+        <div className="bg-[#0F2D52] text-white rounded overflow-x-auto">
+          <ul className="flex p-1 items-start list-none min-w-max" role="tablist" id="dynamicChildCards">
+            {children.map((child) => (
+              <li key={child.child_id} className="flex-none min-w-[100px]">
+                <button
+                  className={`w-full py-2 px-3 sm:px-6 text-center font-semibold transition-colors text-sm sm:text-base ${activeChildId === child.child_id
+                    ? 'bg-[#0F2D52] text-white border-2 border-[#D8E9FF]'
+                    : 'bg-[#D8E9FF] text-[#0F2D52] hover:border-[#D8E9FF] border-2 border-[#0F2D52]'
+                    }`}
+                  onClick={() => handleChildSelect(child.child_id)}
+                >
+                  <div className="h-10 flex items-center justify-center">
+                    <h6 className="text-center font-semibold truncate">
+                      {child.child_first_name}
+                    </h6>
+                  </div>
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        {/* Main Content Area - Responsive Layout */}
+        <div className="flex flex-col lg:flex-row m-0 sm:m-1 bg-[#D8E9FF] h-full min-h-screen">
+          {/* Sidebar - Your existing responsive sidebar */}
+          <FormSidebar
+            activeChildId={activeChildId}
+            onSectionChange={setCurrentSection}
+            currentSection={currentSection}
+            onHideCompleted={() => setShowCompletedForms(false)}
+            onToggleCompleted={toggleCompletedForms}
+            onSubFormChange={setSelectedSubForm}
+            selectedSubForm={selectedSubForm}
+            incompleteForms={incompleteForms}
+          />
+
+          {/* Main Content - Full width on mobile, 3/4 on desktop */}
+          <div className="w-full lg:w-3/4 p-1 sm:p-2 overflow-x-hidden">
+            {/* Form Content */}
+            {renderCurrentFormSection()}
+
+            {/* Completed Forms Table - Responsive */}
+            <div
+              id="completedFormDetails"
+              className={`container mx-auto m-1 sm:m-3 ${showCompletedForms ? 'block' : 'hidden'}`}
+            >
+              <div className="bg-white shadow-lg rounded overflow-hidden">
+                <h3 className="text-center bg-[#0F2D52] text-white p-2 sm:p-3 text-sm sm:text-base rounded-t">
+                  Completed Forms
+                </h3>
+
+                <div className="flex flex-col sm:flex-row p-2 sm:p-4">
+                  <div className="flex-1 mb-2 sm:mb-0">
+                    <h4 className="text-sm sm:text-lg font-semibold">
+                      Child: <span className="font-normal">{localStorage.getItem('child_name')}</span>
+                    </h4>
+                  </div>
+                  <div className="w-full sm:w-1/3">
+                    <div className="sm:float-right">
+                      <label htmlFor="year" className="block font-bold mb-1 sm:mb-2 text-sm sm:text-base">Year</label>
+                      <select
+                        name="year"
+                        id="year"
+                        className="form-control border border-gray-300 rounded px-2 py-1 sm:px-3 sm:py-2 w-full text-sm sm:text-base"
+                        value={selectedYear}
+                        onChange={(e) => setSelectedYear(parseInt(e.target.value))}
+                        required
+                      >
+                        {[...Array(11)].map((_, i) => {
+                          const year = new Date().getFullYear() - 10 + i;
+                          return (
+                            <option key={year} value={year}>
+                              {year}
+                            </option>
+                          );
+                        })}
+                      </select>
+                    </div>
                   </div>
                 </div>
-              </div>
-              
-              <div className="flex justify-center m-1 sm:m-4">
-                <div className="w-full overflow-x-auto">
-                  <DataTable
-                    data={completedForms}
-                    columns={[
-                      {
-                        key: 'formname',
-                        title: 'Form Name',
-                        className: 'min-w-[120px]'
-                      },
-                      {
-                        key: 'completedTimestamp',
-                        title: 'Time Stamp',
-                        render: (value) => new Date(value).toLocaleString(),
-                        className: 'min-w-[150px]'
-                      },
-                      {
-                        key: 'action',
-                        title: 'Action',
-                        render: (value, row) => {
-                          const urls = getFormUrls(row.formname);
-                          return (
-                            <div className="flex gap-1 sm:gap-2">
-                              <button 
-                                className="text-[#0F2D52] hover:opacity-60 p-1"
-                                onClick={(e) => {
-                                  e.preventDefault();
-                                  e.stopPropagation();
-                                  console.log('Download button clicked - immediate log');
-                                  handleDownload(row.formname, urls.download);
-                                }}
-                                title="Download"
-                              >
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="16" height="16">
-                                  <path fill="#0F2D52" d="M256 0a256 256 0 1 0 0 512A256 256 0 1 0 256 0zM376.9 294.6L269.8 394.5c-3.8 3.5-8.7 5.5-13.8 5.5s-10.1-2-13.8-5.5L135.1 294.6c-4.5-4.2-7.1-10.1-7.1-16.3c0-12.3 10-22.3 22.3-22.3l57.7 0 0-96c0-17.7 14.3-32 32-32l32 0c17.7 0 32 14.3 32 32l0 96 57.7 0c12.3 0 22.3 10 22.3 22.3c0 6.2-2.6 12.1-7.1 16.3z"/>
-                                </svg>
-                              </button>
-                              <button 
-                                className="text-[#0F2D52] hover:opacity-60 p-1"
-                                onClick={(e) => {
-                                  e.preventDefault();
-                                  e.stopPropagation();
-                                  console.log('Print button clicked - immediate log');
-                                  handlePrint(row.formname, urls.print);
-                                }}
-                                title="Print"
-                              >
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="16" height="16">
-                                  <path fill="#0F2D52" d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zM432 248a24 24 0 1 1 0 48 24 24 0 1 1 0-48z"/>
-                                </svg>
-                              </button>
-                            </div>
-                          );
+
+                <div className="flex justify-center m-1 sm:m-4">
+                  <div className="w-full overflow-x-auto">
+                    <DataTable
+                      data={completedForms}
+                      columns={[
+                        {
+                          key: 'formname',
+                          title: 'Form Name',
+                          className: 'min-w-[120px]'
                         },
-                        sortable: false,
-                        className: 'min-w-[80px]'
-                      }
-                    ]}
-                    tableId="example"
-                    className="w-full border-collapse border border-gray-300 text-sm sm:text-base"
-                    headerClassName="bg-[#0F2D52] text-white p-2 sm:p-3"
-                    cellClassName="border border-gray-300 p-1 sm:p-2 sm:p-3"
-                  />
+                        {
+                          key: 'completedTimestamp',
+                          title: 'Time Stamp',
+                          render: (value) => new Date(value).toLocaleString(),
+                          className: 'min-w-[150px]'
+                        },
+                        {
+                          key: 'action',
+                          title: 'Action',
+                          render: (value, row) => {
+                            const urls = getFormUrls(row.formname);
+                            const formName = row.formname
+                            return (
+                              <div className="flex gap-1 sm:gap-2">
+                                <button
+                                  className="text-[#0F2D52] hover:opacity-60 p-1"
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    if (formName == 'admission_form') {
+                                      console.log("if condition")
+                                      handleDownload1();
+                                    }
+                                    else if(formName == 'authorization_form')
+                                    {
+                                      handleDownload2();
+                                    }
+                                    else
+                                    {
+                                      handleDownload3();
+                                    }
+                                  }}
+                                  title="Download"
+                                >
+                                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="16" height="16">
+                                    <path fill="#0F2D52" d="M256 0a256 256 0 1 0 0 512A256 256 0 1 0 256 0zM376.9 294.6L269.8 394.5c-3.8 3.5-8.7 5.5-13.8 5.5s-10.1-2-13.8-5.5L135.1 294.6c-4.5-4.2-7.1-10.1-7.1-16.3c0-12.3 10-22.3 22.3-22.3l57.7 0 0-96c0-17.7 14.3-32 32-32l32 0c17.7 0 32 14.3 32 32l0 96 57.7 0c12.3 0 22.3 10 22.3 22.3c0 6.2-2.6 12.1-7.1 16.3z" />
+                                  </svg>
+                                </button>
+                                <div style={{
+                                  position: 'fixed',
+                                  left: '-100vw',
+                                  top: '0',
+                                  width: '100vw',
+                                  height: '100vh',
+                                  overflow: 'hidden',
+                                  pointerEvents: 'none',
+                                  zIndex: -1000
+                                }}>
+                                  {/* The admission form sections */}
+                                  <AdmissionSection ref={admissionRef} />
+                                </div>
+
+                                <button
+                                  className="text-[#0F2D52] hover:opacity-60 p-1"
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    console.log('Print button clicked - immediate log');
+
+                                    handlePrint(row.formname, urls.print);
+                                  }}
+                                  title="Print"
+                                >
+                                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="16" height="16">
+                                    <path fill="#0F2D52" d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zM432 248a24 24 0 1 1 0 48 24 24 0 1 1 0-48z" />
+                                  </svg>
+                                </button>
+                              </div>
+                            );
+                          },
+                          sortable: false,
+                          className: 'min-w-[80px]'
+                        }
+                      ]}
+                      tableId="example"
+                      className="w-full border-collapse border border-gray-300 text-sm sm:text-base"
+                      headerClassName="bg-[#0F2D52] text-white p-2 sm:p-3"
+                      cellClassName="border border-gray-300 p-1 sm:p-2 sm:p-3"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-    
-    {/* Hidden PDF form components for download/print functionality */}
-    <div style={{ 
-      position: 'fixed', 
-      left: '-100vw', 
-      top: '0', 
-      width: '100vw',
-      height: '100vh',
-      overflow: 'hidden',
-      pointerEvents: 'none',
-      zIndex: -1000
-    }}>
-      {/* ParentHandbook */}
-      <div ref={handbookContentRef} id="handbook-content" style={{ 
-        width: '210mm', 
-        minHeight: '297mm',
-        backgroundColor: 'white',
-        marginBottom: '20px'
-      }}>
-        <ParentHandbook />
-      </div>
       
-      {/* AdmissionForm */}
-      <div ref={admissionFormRef} id="admission-content" style={{ 
-        width: '210mm', 
-        minHeight: '297mm',
-        backgroundColor: 'white',
-        marginBottom: '20px'
+
+      {/* Hidden PDF form components for download/print functionality */}
+      <div style={{
+        position: 'fixed',
+        left: '-100vw',
+        top: '0',
+        width: '100vw',
+        height: '100vh',
+        overflow: 'hidden',
+        pointerEvents: 'none',
+        zIndex: -1000
       }}>
-        <AdmissionFormPDF />
+        <div ref={admissionFormRef} id="admission-content" style={{
+
+      }}>
+        <AdmissionSection />
       </div>
-      
-      {/* AuthorizationForm */}
-      <div ref={authorizationFormRef} id="authorization-content" style={{ 
-        width: '210mm', 
-        minHeight: '297mm',
-        backgroundColor: 'white',
-        marginBottom: '20px'
-      }}>
-        <AuthorizationFormPDF />
-      </div>
-      
-      {/* EnrollmentForm */}
-      <div ref={enrollmentFormRef} id="enrollment-content" style={{ 
-        width: '210mm', 
-        minHeight: '297mm',
-        backgroundColor: 'white',
-        marginBottom: '20px'
-      }}>
-        <EnrollmentAgreementPDF />
+          
+          
+        <ParentHandbook ref={phbFormRef} />
+
+
+
+        {/* AuthorizationForm */}
+       <ACHForm ref={achFormRef} />
+
+        {/* EnrollmentForm */}
+        <div ref={enrollmentFormRef} id="enrollment-content" style={{
+          width: '210mm',
+          minHeight: '297mm',
+          backgroundColor: 'white',
+          marginBottom: '20px'
+        }}>
+          <EnrollmentAgreementPDF />
+        </div>
       </div>
     </div>
-  </div>
   );
 };
 
