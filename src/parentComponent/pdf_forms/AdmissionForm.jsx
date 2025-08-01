@@ -310,13 +310,11 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
                 </label>
                 <input
                   name="child_first_name"
-                  value=""
                   type="text"
-                  maxLength={20}
-                  className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent"
+                  maxLength={40}
+                  className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}}
                   id="child_first_name"
-                  defaultValue={initialFormData?.child_first_name || '----'}
-                  style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}}
+                  defaultValue={initialFormData?.child_first_name || ''}
                   
                 />
               </div>
@@ -1209,7 +1207,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
               className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" 
               style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}} 
               name="allergies" id="allergies" 
-              defaultValue={initialFormData?.family_history_allergies || ''}></input>
+              defaultValue={initialFormData?.allergies || ''}></input>
             </div>
             <div>
               <label htmlFor="bleeding_problems" className="form-label"><b>Bleeding
@@ -3108,9 +3106,9 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
                     name="approve_social_media_post"
                     id="approve_social_media_post1"
                     value="approve_social_media_post"
-                    type="radio"
+                    type="checkbox"
                     checked={checkboxStates.approve_social_media_post}
-                    className="w-4 h-4 text-blue-600"
+                    className="w-4 h-4 text-blue-600 rounded-full border-gray-300"
                   />
                   <label htmlFor="approve_social_media_post1" className="text-sm md:text-base pl-3">
                     Approve Social Media Postings
@@ -3121,9 +3119,9 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
                     name="approve_social_media_post"
                     id="approve_social_media_post2"
                     value="do_not_approve_social_media_post"
-                    type="radio"
-                    checked={!(checkboxStates.approve_social_media_post)}
-                    className="w-4 h-4 ml-5 text-blue-600"
+                    type="checkbox"
+                    checked={checkboxStates.approve_social_media_post == false}
+                    className="w-4 h-4 text-blue-600 rounded-full border-gray-300"
                   />
                   <label htmlFor="approve_social_media_post2" className="text-sm md:text-base pl-3">
                     Do NOT Approve Postings to Social Media
