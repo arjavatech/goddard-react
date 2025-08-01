@@ -10,9 +10,16 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
 
   // Helper function to determine if checkbox should be checked
   const isChecked = (value) => {
-    const result = value === 'on' || value === true || value === 'true';
+    console.log('isChecked - checking value:', value, 'type:', typeof value);
+    const result = value === 'on' || value === true || value === 'true' || value === 1 || value === '1';
+    console.log('isChecked - result:', result);
     return result;
   };
+
+  // State for radio buttons
+  const [radioStates, setRadioStates] = useState({
+    approve_social_media_post: null // null = no selection, true = approve, false = do not approve
+  });
 
   // State for checkboxes (based on actual API data)
   const [checkboxStates, setCheckboxStates] = useState({
@@ -43,15 +50,82 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
 
   // Set initial checkbox states when initialFormData changes
   useEffect(() => {
+    console.log('useEffect - initialFormData changed:', initialFormData);
     if (initialFormData) {
+      // Define all checkbox keys explicitly to avoid dependency issues
+      const checkboxKeys = [
+        'agree_all_above_info_is_correct',
+        'agree_all_above_information_is_correct',
+        'approve_social_media_post',
+        'do_you_agree_this',
+        'do_you_agree_this_health_policies',
+        'do_you_agree_this_immunization_instructions',
+        'do_you_agree_this_photo_video_permission_form',
+        'do_you_agree_this_pick_up_password_form',
+        'do_you_agree_this_social_media_post',
+        'medical_transportation_waiver',
+        'no_illnesses_for_this_child',
+        'parent_sign_outside_waiver',
+        'photo_permission_agree_group_photos_electronic',
+        'security_release_policy_form',
+        'family_history_asthma',
+        'family_history_allergies',
+        'family_history_diabetes',
+        'family_history_epilepsy',
+        'family_history_heart_problems',
+        'family_history_high_blood_pressure',
+        'family_history_hyperactivity',
+        'family_history_tuberculosis',
+        'family_history_vision_problems'
+      ];
+
       const newStates = {};
-      Object.keys(checkboxStates).forEach(key => {
-        newStates[key] = isChecked(initialFormData[key]);
+      checkboxKeys.forEach(key => {
+        const apiValue = initialFormData[key];
+        console.log(`useEffect - Processing ${key}:`, apiValue);
+        newStates[key] = isChecked(apiValue);
+        
+        // Special logging for the health policies checkbox
+        if (key === 'do_you_agree_this_health_policies') {
+          console.log('*** HEALTH POLICIES CHECKBOX DEBUG ***');
+          console.log('Raw API value:', apiValue);
+          console.log('Final checkbox state:', newStates[key]);
+          console.log('*** END DEBUG ***');
+        }
       });
-      console.log('AdmissionSection - Setting checkbox states:', newStates);
-      setCheckboxStates(newStates);
+      
+      console.log('AdmissionSection - Final checkbox states:', newStates);
+      
+      // Handle radio button data separately
+      const radioData = initialFormData.approve_social_media_post;
+      console.log('Radio button data:', radioData, typeof radioData);
+      
+      let radioValue = null;
+      if (radioData === true || radioData === 'true' || radioData === '1' || radioData === 1) {
+        radioValue = true; // Approve
+      } else if (radioData === false || radioData === 'false' || radioData === '2' || radioData === 2) {
+        radioValue = false; // Do not approve
+      }
+      console.log('Processed radio value:', radioValue);
+      
+      // Use setTimeout to ensure state update happens after render
+      setTimeout(() => {
+        setCheckboxStates(newStates);
+        setRadioStates({ approve_social_media_post: radioValue });
+        console.log('AdmissionSection - States set successfully');
+      }, 0);
     }
   }, [initialFormData]);
+
+  // Debug useEffect to monitor checkbox state changes
+  useEffect(() => {
+    console.log('checkboxStates updated:', checkboxStates);
+  }, [checkboxStates]);
+
+  // Debug useEffect to monitor radio state changes  
+  useEffect(() => {
+    console.log('radioStates updated:', radioStates);
+  }, [radioStates]);
 
   // Define 19 individual refs
 
@@ -802,7 +876,8 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
               </label><br />
               <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}} aria-label="emergency_address"
                 id="child_emergency_contact_zip_address2"
-                name="child_emergency_contact_zip_address2" defaultValue={initialFormData?.emergency_contact_info[2]?.child_emergency_contact_zip_address || ''}></input>
+                name="child_emergency_contact_zip_address2" 
+                defaultValue={initialFormData?.emergency_contact_info[2]?.child_emergency_contact_zip_address || ''}></input>
             </div>
 
 
@@ -815,7 +890,10 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
                 PROVIDER</b>
               </label><br />
               <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}} id="child_care_provider_name"
-                name="child_care_provider_name"></input>
+                name="child_care_provider_name"
+                defaultValue={initialFormData?.child_care_provider_info?.child_care_provider_name || ''}>
+
+                </input>
             </div>
 
             <div>
@@ -823,7 +901,8 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
                 AFFILIATION</b>
               </label><br />
               <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}} id="child_hospital_affiliation"
-                name="child_hospital_affiliation"></input>
+                name="child_hospital_affiliation"
+                defaultValue={initialFormData?.child_care_provider_info?.child_hospital_affiliation || ''}></input>
             </div>
           </div>
 
@@ -862,13 +941,15 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
               </label><br />
               <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}}
                 id="child_care_provider_street_address"
-                name="child_care_provider_street_address"></input>
+                name="child_care_provider_street_address"
+                defaultValue={initialFormData?.child_care_provider_info?.child_care_provider_street_address || ''}></input>
             </div>
             <div>
               <label htmlFor="child_care_provider_city_address" className="form-label"><b>CITY</b>
               </label><br />
               <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}}
-                id="child_care_provider_city_address" name="child_care_provider_city_address"></input>
+                id="child_care_provider_city_address" name="child_care_provider_city_address"
+                defaultValue={initialFormData?.child_care_provider_info?.child_care_provider_city_address || ''}></input>
             </div>
           </div>
 
@@ -877,14 +958,18 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
               <label htmlFor="child_care_provider_state_address" className="form-label"><b>STATE</b>
               </label><br />
               <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}}
-                id="child_care_provider_state_address" name="child_care_provider_state_address"></input>
+                id="child_care_provider_state_address" 
+                name="child_care_provider_state_address"
+                defaultValue={initialFormData?.child_care_provider_info?.child_care_provider_state_address || ''}></input>
             </div>
 
             <div>
               <label htmlFor="child_care_provider_zip_address" className="form-label"><b>ZIP</b>
               </label>
               <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}}
-                id="child_care_provider_zip_address" name="child_care_provider_zip_address"
+                id="child_care_provider_zip_address" 
+                name="child_care_provider_zip_address"
+                defaultValue={initialFormData?.child_care_provider_info?.child_care_provider_zip_address || ''}
               />
               <span id="child_care_provider_zip_address_span" style={{ display: 'none' }}>
                 Enter valid input [only numbers].</span>
@@ -897,6 +982,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
               <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}}
                 id="child_care_provider_telephone_number"
                 name="child_care_provider_telephone_number"
+                defaultValue={initialFormData?.child_care_provider_info?.child_care_provider_telephone_number || ''}
               />
               <span id="child_care_provider_telephone_number_span"
                 style={{ display: "none" }}>
@@ -908,7 +994,8 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
                 DENTIST</b>
               </label><br />
               <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}} id="child_dentist_name"
-                name="child_dentist_name"></input>
+                name="child_dentist_name"
+                defaultValue={initialFormData?.child_dentist_name || ''}></input>
             </div>
 
             <div>
@@ -917,6 +1004,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
               </label>
               <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}} id="dentist_telephone_number"
                 name="dentist_telephone_number"
+                defaultValue={initialFormData?.dentist_telephone_number || ''}
               />
               <span id="dentist_telephone_number_span" style={{ display: "none" }}>
                 Enter valid input [only numbers,+,-,()].</span>
@@ -927,7 +1015,8 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
                 (MEDICATION REACTION)</b>
               </label><br />
               <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}} id="allergies_medication_reaction"
-                name="allergies_medication_reaction"></input>
+                name="allergies_medication_reaction"
+                defaultValue={initialFormData?.allergies_medication_reaction || ''}></input>
             </div>
           </div>
 
@@ -938,21 +1027,25 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
               <label htmlFor="dentist_street_address" className="form-label"><b>STREET</b>
               </label><br />
               <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}} id="dentist_street_address"
-                name="dentist_street_address"></input>
+                name="dentist_street_address"
+                defaultValue={initialFormData?.dentist_street_address || ''}></input>
             </div>
 
             <div>
               <label htmlFor="dentist_city_address" className="form-label"><b>CITY</b>
               </label><br />
               <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}} id="dentist_city_address"
-                name="dentist_city_address"></input>
+                name="dentist_city_address"
+                defaultValue={initialFormData?.dentist_city_address || ''}></input>
             </div>
 
             <div>
               <label htmlFor="dentist_state_address" className="form-label"><b>STATE</b>
               </label><br />
               <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}} id="dentist_state_address"
-                name="dentist_state_address"></input>
+                name="dentist_state_address"
+                defaultValue={initialFormData?.dentist_state_address || ''}
+                ></input>
             </div>
 
             <div>
@@ -960,6 +1053,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
               </label>
               <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}} id="dentist_zip_address"
                 name="dentist_zip_address"
+                defaultValue={initialFormData?.dentist_zip_address || ''}
               />
               <span id="child_care_provider_zip_address_span" style={{ display: 'none' }}>
                 Enter valid input [only numbers].</span>
@@ -972,7 +1066,8 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
                 DIABILITIES (IF ANY)</b>
               </label><br />
               <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}} id="special_diabilities"
-                name="special_diabilities"></input>
+                name="special_diabilities"
+                defaultValue={initialFormData?.special_diabilities || ''}></input>
             </div>
 
             <div>
@@ -987,14 +1082,16 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
                 INFORMATION REGARDING SPECIAL NEEDS</b>
               </label><br />
               <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}} id="additional_info"
-                name="additional_info"></input>
+                name="additional_info"
+                defaultValue={initialFormData?.additional_info || ''}></input>
             </div>
 
             <div>
               <label htmlFor="policy_number" className="form-label"><b>POLICY NUMBER</b>
               </label><br />
               <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}} id="policy_number"
-                name="policy_number"></input>
+                name="policy_number"
+                defaultValue={initialFormData?.policy_number || ''}></input>
             </div>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-1 gap-6 px-4 sm:px-6 pb-6">
@@ -1003,7 +1100,8 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
                 COVERAGE FOR CHILD OR MEDICAL ASSISTANCE BENEFITS</b>
               </label><br />
               <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}} id="health_insurance"
-                name="health_insurance"></input>
+                name="health_insurance"
+                defaultValue={initialFormData?.health_insurance || ''}></input>
             </div>
           </div>
 
@@ -1044,7 +1142,8 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
               </label><br />
               <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}}
                 id="obtaining_emergency_medical_care"
-                name="obtaining_emergency_medical_care"></input>
+                name="obtaining_emergency_medical_care"
+                defaultValue={initialFormData?.obtaining_emergency_medical_care || ''}></input>
             </div>
 
             <div>
@@ -1053,7 +1152,9 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
                   PROCEDURES</b></label><br />
               <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}}
                 id="administration_first_aid_procedures"
-                name="administration_first_aid_procedures"></input>
+                name="administration_first_aid_procedures"
+                defaultValue={initialFormData?.administration_first_aid_procedures || ''}
+                ></input>
             </div>
           </div>
 
@@ -1083,6 +1184,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
               </label><br />
               <input type="date" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}} id="physical_exam_last_date"
                 name="physical_exam_last_date"
+                defaultValue={initialFormData?.physical_exam_last_date || ''}
               ></input>
             </div>
 
@@ -1091,7 +1193,8 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
                 Dental Exam</b>
               </label><br />
               <input type="date" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}} id="dental_exam_last_date"
-                name="dental_exam_last_date" ></input>
+                name="dental_exam_last_date" 
+                defaultValue={initialFormData?.dental_exam_last_date || ''}></input>
             </div>
 
           </div>
@@ -1102,7 +1205,11 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
             <div>
               <label htmlFor="allergies" className="form-label"><b>Allergies (food/drug)</b>
               </label><br />
-              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}} name="allergies" id="allergies" defaultValue={initialFormData?.family_history_allergies || ''}></input>
+              <input type="text" 
+              className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" 
+              style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}} 
+              name="allergies" id="allergies" 
+              defaultValue={initialFormData?.family_history_allergies || ''}></input>
             </div>
             <div>
               <label htmlFor="bleeding_problems" className="form-label"><b>Bleeding
@@ -1458,7 +1565,8 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
 
             <div>
               <input type="checkbox" className="input-checkbox custom-checkbox"
-                id="family_history_epilepsy" name="family_history_epilepsy" />
+                id="family_history_epilepsy" name="family_history_epilepsy"
+                defaultValue={initialFormData?.family_history_epilepsy || ''} />
               <label className="form-check-label pl-3"
                 htmlFor="family_history_epilepsy"><span><b>Epilepsy</b></span>
               </label>
@@ -1472,41 +1580,48 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
                 friends</b>
               </label><br />
               <input type="text" className="form-control text-box w-full border-b px-2 py-1 focus:border-transparent" id="age_group_friends"
-                name="age_group_friends"></input>
+                name="age_group_friends"
+                defaultValue={initialFormData?.age_group_friends || ''}></input>
             </div>
             <div>
               <label htmlFor="neighborhood_friends" className="form-label"><b>Neighborhood
                 friends</b>
               </label><br />
               <input type="text" className="form-control text-box w-full border-b px-2 py-1 focus:border-transparent" id="neighborhood_friends"
-                name="neighborhood_friends"></input>
+                name="neighborhood_friends"
+                defaultValue={initialFormData?.neighborhood_friends || ''}></input>
             </div>
             <div>
               <label htmlFor="relationship_with_mother" className="form-label"><b>Relationship
                 with mother</b>
               </label><br />
               <input type="text" className="form-control text-box w-full border-b px-2 py-1 focus:border-transparent" id="relationship_with_mother"
-                name="relationship_with_mother"></input>
+                name="relationship_with_mother"
+                defaultValue={initialFormData?.relationship_with_mother || ''}></input>
             </div>
             <div>
               <label htmlFor="relationship_with_father" className="form-label"><b>Relationship
                 with father</b>
               </label><br />
               <input type="text" className="form-control text-box w-full border-b px-2 py-1 focus:border-transparent" id="relationship_with_father"
-                name="relationship_with_father"></input>
+                name="relationship_with_father"
+                defaultValue={initialFormData?.relationship_with_father || ''}></input>
             </div>
             <div>
               <label htmlFor="relationship_with_siblings" className="form-label"><b>Relationship with
                 siblings</b>
               </label><br />
               <input type="text" className="form-control text-box w-full border-b px-2 py-1 focus:border-transparent" id="relationship_with_siblings"
-                name="relationship_with_siblings"></input>
+                name="relationship_with_siblings"
+                defaultValue={initialFormData?.relationship_with_siblings || ''}></input>
             </div>
             <div>
               <label htmlFor="relationship_with_extended_family" className="form-label">
                 <b>Relationship with extended family</b></label><br />
               <input type="text" className="form-control text-box w-full border-b px-2 py-1 focus:border-transparent"
-                id="relationship_with_extended_family" name="relationship_with_extended_family"></input>
+                id="relationship_with_extended_family" 
+                name="relationship_with_extended_family"
+                defaultValue={initialFormData?.relationship_with_extended_family || ''}></input>
             </div>
 
             <div>
@@ -1514,14 +1629,16 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
                 Conflicts</b>
               </label><br />
               <input type="text" className="form-control text-box w-full border-b px-2 py-1 focus:border-transparent" id="fears_conflicts"
-                name="fears_conflicts"></input>
+                name="fears_conflicts"
+                defaultValue={initialFormData?.fears_conflicts || ''}></input>
             </div>
             <div>
               <label htmlFor="child_response_frustration" className="form-label"><b>Child’s
                 response to frustration</b>
               </label><br />
               <input type="text" className="form-control text-box w-full border-b px-2 py-1 focus:border-transparent" id="child_response_frustration"
-                name="child_response_frustration"></input>
+                name="child_response_frustration"
+                defaultValue={initialFormData?.child_response_frustration || ''}></input>
             </div>
           </div>
 
@@ -1558,7 +1675,8 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
                 activities</b>
               </label><br />
               <input type="text" className="form-control text-box w-full border-b px-2 py-1 focus:border-transparent" id="favorite_activities"
-                name="favorite_activities"></input>
+                name="favorite_activities"
+                defaultValue={initialFormData?.favorite_activities || ''}></input>
             </div>
           </div>
           <h4 className="text-center mb-2 pt-2 text-black text-[1.5rem]"><b>Environmental Factors</b></h4>
@@ -1567,28 +1685,32 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
               <label htmlFor="last_five_years_moved" className="form-label">
                 <b>How many times have you moved in the last five years?</b></label><br />
               <input type="text" className="form-control text-box w-full border-b px-2 py-1 focus:border-transparent" id="last_five_years_moved"
-                name="last_five_years_moved" />
+                name="last_five_years_moved"
+                defaultValue={initialFormData?.last_five_years_moved || ''} />
             </div>
 
             <div>
               <label htmlFor="things_used_at_home" className="form-label">
                 <b>Educational toys, games, books used at home?</b></label><br />
               <input type="text" className="form-control text-box w-full border-b px-2 py-1 focus:border-transparent" id="things_used_at_home"
-                name="things_used_at_home"></input>
+                name="things_used_at_home"
+                defaultValue={initialFormData?.things_used_at_home || ''}></input>
             </div>
 
             <div>
               <label htmlFor="hours_of_television_daily" className="form-label">
                 <b>How many hours of television daily?</b></label><br />
               <input type="text" className="form-control text-box w-full border-b px-2 py-1 focus:border-transparent" id="hours_of_television_daily"
-                name="hours_of_television_daily"></input>
+                name="hours_of_television_daily"
+                defaultValue={initialFormData?.hours_of_television_daily || ''}></input>
             </div>
 
             <div>
               <label htmlFor="language_used_at_home" className="form-label">
                 <b>Language used in the home?</b></label><br />
               <input type="text" className="form-control text-box w-full border-b px-2 py-1 focus:border-transparent" id="language_used_at_home"
-                name="language_used_at_home"></input>
+                name="language_used_at_home"
+                defaultValue={initialFormData?.language_used_at_home || ''}></input>
             </div>
 
             <div>
@@ -1596,7 +1718,8 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
                 there been any changes in the home situation recently, i.e.
                 addition/loss/death/divorce.</b></label><br />
               <input type="text" className="form-control text-box w-full border-b px-2 py-1 focus:border-transparent" id="changes_at_home_situation"
-                name="changes_at_home_situation"></input>
+                name="changes_at_home_situation"
+                defaultValue={initialFormData?.changes_at_home_situation || ''}></input>
             </div>
 
             <div>
@@ -1605,13 +1728,16 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
                 child?</b>
               </label><br />
               <input type="text" className="form-control text-box w-full border-b px-2 py-1 focus:border-transparent"
-                id="educational_expectations_of_child" name="educational_expectations_of_child"></input>
+                id="educational_expectations_of_child" 
+                name="educational_expectations_of_child"
+                defaultValue={initialFormData?.educational_expectations_of_child || ''}></input>
             </div>
             <h4 className="text-center mb-2 pt-2 text-black text-[1.5rem]"><b>Parent Agreement</b></h4>
 
             <div className="form-group d-flex align-items-center gap-1">
               <input type="checkbox" className="input-checkbox custom-checkbox"
-                id="agree_all_above_info_is_correct" name="agree_all_above_info_is_correct" />
+                id="agree_all_above_info_is_correct" name="agree_all_above_info_is_correct" 
+                checked={checkboxStates.agree_all_above_info_is_correct} />
               <label className="form-check-label pl-3" htmlFor="agree_all_above_info_is_correct">
                 <span><b>I agree all the above information is correct.</b></span>
               </label>
@@ -1702,6 +1828,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
                   className="input-checkbox custom-checkbox"
                   id="do_you_agree_this_immunization_instructions"
                   name="do_you_agree_this_immunization_instructions"
+                  checked={checkboxStates.do_you_agree_this_immunization_instructions}
                 />
                 <label className="form-check-label pl-3" htmlFor="do_you_agree_this_immunization_instructions">
                   <span>
@@ -1729,6 +1856,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
                     className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}}
                     id="important_fam_members"
                     name="important_fam_members"
+                    defaultValue={initialFormData?.important_fam_members || ''}
                   />
                 </div>
 
@@ -1745,6 +1873,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
                     className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}}
                     id="about_family_celebrations"
                     name="about_family_celebrations"
+                    defaultValue={initialFormData?.about_family_celebrations || ''}
                   />
                 </div>
 
@@ -1788,7 +1917,8 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
                 been
                 in childcare before?</b></label><br />
               <input type="text" className="form-control text-box w-full border-b px-2 py-1 focus:border-transparent" name="reason_for_childcare_before"
-                id="reason_for_childcare_before"></input>
+                id="reason_for_childcare_before"
+                defaultValue={initialFormData?.reason_for_childcare_before || ''}></input>
             </div>
 
             <div>
@@ -1797,7 +1927,8 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
 
               </label><br />
               <input type="text" className="form-control text-box w-full border-b px-2 py-1 focus:border-transparent" id="what_child_interests"
-                name="what_child_interests"></input>
+                name="what_child_interests"
+                 defaultValue={initialFormData?.what_child_interests || ''}></input>
             </div>
 
           </div>
@@ -1812,15 +1943,18 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
 
               </label><br />
               <input type="time" className="form-control text-box w-full border-b px-2 py-1 focus:border-transparent" id="drop_off_time"
-                name="drop_off_time" />
+                name="drop_off_time"
+                 defaultValue={initialFormData?.drop_off_time || ''} />
             </div>
 
             <div>
               <label htmlFor="pick_up_time" className="form-label"><b>Pick up time?</b>
 
               </label><br />
-              <input type="time" className="form-control text-box w-full border-b px-2 py-1 focus:border-transparent" id="pick_up_time"
-                name="pick_up_time" />
+              <input type="time" 
+              className="form-control text-box w-full border-b px-2 py-1 focus:border-transparent" id="pick_up_time"
+                name="pick_up_time" 
+                defaultValue={initialFormData?.pick_up_time || ''}/>
             </div>
 
           </div>
@@ -1839,6 +1973,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
                   className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}}
                   name="restricted_diet_reason"
                   id="restricted_diet_reason"
+                  defaultValue={initialFormData?.restricted_diet_reason || ''}
                 />
               </div>
             </div>
@@ -1853,6 +1988,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
                   className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}}
                   id="favorite_foods"
                   name="favorite_foods"
+                  defaultValue={initialFormData?.favorite_foods || ''}
                 />
               </div>
             </div>
@@ -1867,6 +2003,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
                   className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}}
                   name="eat_own_reason"
                   id="eat_own_reason"
+                  defaultValue={initialFormData?.eat_own_reason || ''}
                 />
               </div>
             </div>
@@ -1888,6 +2025,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
                   className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}}
                   name="reason_for_rest_in_the_middle_day"
                   id="reason_for_rest_in_the_middle_day"
+                  defaultValue={initialFormData?.reason_for_rest_in_the_middle_day || ''}
                 />
               </div>
             </div>
@@ -1903,6 +2041,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
                   className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}}
                   id="rest_routine"
                   name="rest_routine"
+                   defaultValue={initialFormData?.rest_routine || ''}
                 />
               </div>
             </div>
@@ -1949,6 +2088,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
                   className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}}
                   name="reason_for_toilet_trained"
                   id="reason_for_toilet_trained"
+                  defaultValue={initialFormData?.reason_for_toilet_trained || ''}
                 />
               </div>
             </div>
@@ -1969,6 +2109,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
                   className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}}
                   name="explain_for_existing_illness_allergy"
                   id="explain_for_existing_illness_allergy"
+                  defaultValue={initialFormData?.explain_for_existing_illness_allergy || ''}
                 />
               </div>
             </div>
@@ -1986,6 +2127,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
                   className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}}
                   name="explain_for_functioning_at_age"
                   id="explain_for_functioning_at_age"
+                   defaultValue={initialFormData?.explain_for_functioning_at_age || ''}
                 />
               </div>
             </div>
@@ -2000,6 +2142,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
                   className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}}
                   name="explain_for_able_to_walk"
                   id="explain_for_able_to_walk"
+                  defaultValue={initialFormData?.explain_for_able_to_walk || ''}
                 />
               </div>
             </div>
@@ -2017,6 +2160,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
                   className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}}
                   name="explain_for_communicate_their_needs"
                   id="explain_for_communicate_their_needs"
+                  defaultValue={initialFormData?.explain_for_communicate_their_needs || ''}
                 />
               </div>
             </div>
@@ -2034,6 +2178,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
                   className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}}
                   name="explain_for_any_medication"
                   id="explain_for_any_medication"
+                  defaultValue={initialFormData?.explain_for_any_medication || ''}
                 />
               </div>
             </div>
@@ -2056,6 +2201,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
                   className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}}
                   name="explain_for_utilize_special_equipment"
                   id="explain_for_utilize_special_equipment"
+                  defaultValue={initialFormData?.explain_for_utilize_special_equipment || ''}
                 />
               </div>
             </div>
@@ -2073,6 +2219,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
                   className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}}
                   name="explain_for_significant_periods"
                   id="explain_for_significant_periods"
+                  defaultValue={initialFormData?.explain_for_significant_periods || ''}
                 />
               </div>
             </div>
@@ -2125,6 +2272,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
                   className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}}
                   name="explain_for_desire_any_accommodations"
                   id="explain_for_desire_any_accommodations"
+                  defaultValue={initialFormData?.explain_for_desire_any_accommodations || ''}
                 />
               </div>
             </div>
@@ -2139,6 +2287,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
                   className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}}
                   id="additional_information"
                   name="additional_information"
+                  defaultValue={initialFormData?.additional_information || ''}
                 />
               </div>
             </div>
@@ -2165,6 +2314,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
                 className="input-checkbox custom-checkbox"
                 id="do_you_agree_this"
                 name="do_you_agree_this"
+                checked={checkboxStates.do_you_agree_this}
               />
               <label className="form-check-label pl-3" htmlFor="do_you_agree_this">
                 <span>
@@ -2255,6 +2405,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
                     className="form-control text-box mx-auto border-b block mt-2 w-1/2"
                     id="child_password_pick_up_password_form"
                     name="child_password_pick_up_password_form"
+                    defaultValue={initialFormData?.child_password_pick_up_password_form || ''}
                   />
                   <p className="pt-2 text-center font-bold text-sm md:text-base">
                     (5 digits, alphanumeric characters)
@@ -2268,6 +2419,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
                     className="input-checkbox custom-checkbox"
                     id="do_you_agree_this_pick_up_password_form"
                     name="do_you_agree_this_pick_up_password_form"
+                     checked={checkboxStates.do_you_agree_this_pick_up_password_form}
                   />
                   <label
                     className="form-check-label pl-3"
@@ -2297,6 +2449,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
                     className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}}
                     id="photo_usage_photo_video_permission_form"
                     name="photo_usage_photo_video_permission_form"
+                    checked={checkboxStates.photo_usage_photo_video_permission_form}
                   />
                 </div>
               </div>
@@ -2361,6 +2514,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
                   className="input-checkbox custom-checkbox"
                   id="photo_permission_agree_group_photos_electronic"
                   name="photo_permission_agree_group_photos_electronic"
+                  checked={checkboxStates.photo_permission_agree_group_photos_electronic}
                 />
                 <label
                   className="form-check-label"
@@ -2386,6 +2540,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
                   className="input-checkbox custom-checkbox"
                   id="do_you_agree_this_photo_video_permission_form"
                   name="do_you_agree_this_photo_video_permission_form"
+                  checked={checkboxStates.do_you_agree_this_photo_video_permission_form}
                 />
                 <label
                   className="form-check-label"
@@ -2464,6 +2619,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
                   className="input-checkbox custom-checkbox"
                   id="security_release_policy_form"
                   name="security_release_policy_form"
+                  checked={checkboxStates.security_release_policy_form}
                 />
                 <label
                   className="form-check-label"
@@ -2485,6 +2641,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
                   className="form-control inputBox text-box mx-2"
                   id="med_technicians_med_transportation_waiver"
                   name="med_technicians_med_transportation_waiver"
+                  defaultValue={initialFormData?.med_technicians_med_transportation_waiver || ''}
                 />
                 (“Student”) to receive medical care, if such transportation/care is deemed
                 necessary.
@@ -2507,6 +2664,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
                   className="input-checkbox custom-checkbox"
                   id="medical_transportation_waiver"
                   name="medical_transportation_waiver"
+                  checked={checkboxStates.medical_transportation_waiver}
                 />
                 <label
                   className="form-check-label"
@@ -2782,6 +2940,8 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
                   className="w-5 h-5 text-blue-600 border-[3px] border-gray-300 rounded"
                   id="do_you_agree_this_health_policies"
                   name="do_you_agree_this_health_policies"
+                  checked={checkboxStates.do_you_agree_this_health_policies}
+                  onChange={(e) => setCheckboxStates(prev => ({...prev, do_you_agree_this_health_policies: e.target.checked}))}
                 />
                 <label
                   className="text-sm md:text-base"
@@ -2883,6 +3043,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
                   className="w-5 h-5 text-blue-600 border-gray-300 rounded"
                   id="parent_sign_outside_waiver"
                   name="parent_sign_outside_waiver"
+                  checked={checkboxStates.parent_sign_outside_waiver}
                 />
                 <label
                   htmlFor="parent_sign_outside_waiver"
@@ -2948,7 +3109,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
                     id="approve_social_media_post1"
                     value="approve_social_media_post"
                     type="radio"
-                    defaultChecked
+                    checked={checkboxStates.approve_social_media_post}
                     className="w-4 h-4 text-blue-600"
                   />
                   <label htmlFor="approve_social_media_post1" className="text-sm md:text-base pl-3">
@@ -2961,8 +3122,8 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
                     id="approve_social_media_post2"
                     value="do_not_approve_social_media_post"
                     type="radio"
+                    checked={!(checkboxStates.approve_social_media_post)}
                     className="w-4 h-4 ml-5 text-blue-600"
-                    defaultValue={initialFormData?.parent_sign_admission || ''}
                   />
                   <label htmlFor="approve_social_media_post2" className="text-sm md:text-base pl-3">
                     Do NOT Approve Postings to Social Media
@@ -2992,7 +3153,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
                   className="w-5 h-5 text-blue-600 border-gray-300 rounded"
                   id="do_you_agree_this_social_media_post"
                   name="do_you_agree_this_social_media_post"
-                   defaultValue={initialFormData?.do_you_agree_this_social_media_post == 'on' || ''}
+                  checked={checkboxStates.do_you_agree_this_social_media_post}
                 />
                 <label htmlFor="do_you_agree_this_social_media_post" className="text-sm md:text-base">
                   <b>I have read this agreement and understand its terms.</b>
