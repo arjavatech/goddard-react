@@ -68,17 +68,34 @@ console.log(formStatus)
   
 
   const handleItemClick = () => {
+    // Check if user is NOT admin and trying to access Admin Signature
+    const loggedInEmail = localStorage.getItem('logged_in_email');
+    if (loggedInEmail !== 'goddard01arjava@gmail.com' && item.toLowerCase().includes('admin signature')) {
+      // Don't allow non-admin users to click on Admin Signature sections
+      console.log('Non-admin user cannot access Admin Signature section');
+      return;
+    }
+    
     if (onItemClick) {
       onItemClick(sectionKey, item);
     }
   };
 
+  // Check if current user is NOT admin and this is an Admin Signature item
+  const loggedInEmail = localStorage.getItem('logged_in_email');
+  const isAdminRestricted = loggedInEmail !== 'goddard01arjava@gmail.com' && item.toLowerCase().includes('admin signature');
+
   return (
     <div 
     className={`flex justify-between items-center px-3 py-1 border-b-2 border-[#0F2D52] last:border-none ${
       isSelected ? "bg-[#0F2D52] text-white" : "bg-[#E2F1FF]"
-    } hover:bg-[#0F2D52] hover:text-white cursor-pointer`}
+    } ${
+      isAdminRestricted 
+        ? "opacity-50 cursor-not-allowed bg-gray-200" 
+        : "hover:bg-[#0F2D52] hover:text-white cursor-pointer"
+    }`}
     onClick={handleItemClick}
+    title={isAdminRestricted ? "Only admin users can access Admin Signature sections" : ""}
   >
       <span>{item}</span>
       <img
