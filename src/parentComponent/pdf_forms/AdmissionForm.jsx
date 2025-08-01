@@ -97,6 +97,19 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
       if (style.color === "transparent") {
         el.style.color = "#000000";
       }
+
+      // Fix input text clipping for PDF generation
+      if (el.tagName === "INPUT" && (el.type === "text" || el.type === "date")) {
+        el.style.paddingBottom = "25px";
+        el.style.paddingTop = "5px";
+        el.style.lineHeight = "1.8";
+        el.style.minHeight = "50px";
+        el.style.fontSize = "18px";
+        el.style.borderBottom = "2px solid #000";
+        el.style.color = "#000";
+        el.style.background = "transparent";
+        el.style.verticalAlign = "top";
+      }
     });
   };
 
@@ -229,7 +242,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
                   className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent"
                   id="child_first_name"
                   defaultValue={initialFormData?.child_first_name || '----'}
-                  style={{paddingBottom:"3px"}}
+                  style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}}
                   
                 />
               </div>
@@ -241,7 +254,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
                   name="child_last_name"
                   type="text"
                   maxLength={20}
-                  className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"10px"}}
+                  className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}}
                   id="child_last_name"
                   defaultValue={initialFormData?.child_last_name || ''}
                 />
@@ -254,7 +267,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
                   name="nick_name"
                   type="text"
                   maxLength={50}
-                  className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"10px"}}
+                  className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}}
                   id="nick_name"
                   defaultValue={initialFormData?.nick_name || ''}
                 />
@@ -275,13 +288,13 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
 
               <div>
                 <label htmlFor="primary_language" className="form-label"><b>PRIMARY LANGUAGE</b></label><br />
-                <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"10px"}} aria-label="Telephone Number"
+                <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}} aria-label="Telephone Number"
                   id="primary_language" name="primary_language" defaultValue={initialFormData?.primary_language || ''} />
               </div>
 
               <div>
                 <label htmlFor="gender1" className="form-label"><b>GENDER</b></label>
-                <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"10px"}} name="gender" id="gender" defaultValue={initialFormData?.gender == '1' ? "Male" : initialFormData?.child_gender == '2' ? "Female" : initialFormData?.child_gender == '3' ? "Others"  : ''} />
+                <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}} name="gender" id="gender" defaultValue={initialFormData?.gender == '1' ? "Male" : initialFormData?.child_gender == '2' ? "Female" : initialFormData?.child_gender == '3' ? "Others"  : ''} />
               </div>
 
             </div>
@@ -292,14 +305,14 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
                 <label htmlFor="school_age_child_school" className="form-label"><b>SCHOOL-AGE CHILD’S
                   SCHOOL</b>
                 </label><br />
-                <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"10px"}} id="school_age_child_school"
+                <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}} id="school_age_child_school"
                   name="school_age_child_school" defaultValue={initialFormData?.school_age_child_school || ''} />
               </div>
               <div>
                 <label htmlFor="home_telephone_number" className="form-label"><b>TELEPHONE
                   NUMBER</b>
                 </label><br />
-                <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"10px"}} aria-label="Telephone Number"
+                <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}} aria-label="Telephone Number"
                   id="home_telephone_number" name="home_telephone_number" defaultValue={initialFormData?.primary_parent_info?.parent_home_telephone_number || ''}
                 />
                 <span id="home_telephone_number_span text-red-500" style={{ display: 'none' }}
@@ -326,7 +339,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
               <div>
                 <label htmlFor="parent_street_address" className="form-label"><b>STREET</b>
                 </label><br />
-                <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"10px"}} id="parent_street_address"
+                <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}} id="parent_street_address"
                   name="parent_street_address" defaultValue={initialFormData?.primary_parent_info?.parent_street_address || ''}></input>
               </div>
               <div>
@@ -369,14 +382,14 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
               <div>
                 <label htmlFor="work_hours_from" className="form-label"><b>WORK HOURS FROM</b>
                 </label><br />
-                <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"10px"}} id="work_hours_from"
+                <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}} id="work_hours_from"
                   name="work_hours_from" defaultValue={initialFormData?.primary_parent_info?.parent_work_hours_from || ''}></input>
               </div>
 
               <div>
                 <label htmlFor="work_hours_to" className="form-label"><b>WORK HOURS TO</b>
                 </label><br />
-                <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"10px"}} id="work_hours_to"
+                <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}} id="work_hours_to"
                   name="work_hours_to" defaultValue={initialFormData?.primary_parent_info?.parent_work_hours_to || ''}></input>
               </div>
 
@@ -384,7 +397,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
                 <label htmlFor="business_telephone_number" className="form-label"><b>TELEPHONE
                   NUMBER</b>
                 </label><br />
-                <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"10px"}} id="business_telephone_number"
+                <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}} id="business_telephone_number"
                   name="business_telephone_number" defaultValue={initialFormData?.primary_parent_info?.parent_business_telephone_number || ''}
                 />
                 <span id="business_telephone_number_span" style={{ display: 'none' }}>
@@ -397,14 +410,14 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
               <div>
                 <label htmlFor="business_cell_number" className="form-label"><b>CELL NUMBER</b>
                 </label><br></br>
-                <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"10px"}} aria-label="Telephone Number"
+                <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}} aria-label="Telephone Number"
                   id="business_cell_number" name="business_cell_number" defaultValue={initialFormData?.primary_parent_info?.parent_business_cell_number || ''}></input>
               </div>
 
               <div>
                 <label htmlFor="primary_parent_email" className="form-label"><b>EMAIL ADDRESS</b>
                 </label><br></br>
-                <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"10px"}} id="primary_parent_email"
+                <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}} id="primary_parent_email"
                   name="primary_parent_email" defaultValue={initialFormData?.primary_parent_info?.parent_email || ''}></input>
               </div>
 
@@ -446,14 +459,14 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
               <label htmlFor="parent_two_name" className="form-label"><b>PARENT’S / LEGAL
                 GUARDIAN’S NAME</b>
               </label><br />
-              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"10px"}} id="parent_two_name"
+              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}} id="parent_two_name"
                 name="parent_two_name" defaultValue={initialFormData?.additional_parent_info?.parent_name || ''}></input>
             </div>
             <div>
               <label htmlFor="parent_two_home_telephone_number" className="form-label"><b>TELEPHONE
                 NUMBER</b>
               </label><br />
-              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"10px"}} aria-label="Telephone Number"
+              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}} aria-label="Telephone Number"
                 id="parent_two_home_telephone_number" name="parent_two_home_telephone_number" defaultValue={initialFormData?.additional_parent_info?.parent_home_telephone_number || ''}
               />
               <span id="parent_two_home_telephone_number_span" style={{ display: 'none' }}>
@@ -462,7 +475,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
             <div>
               <label htmlFor="child_care_provider_street_address" className="form-label"><b>STREET</b>
               </label><br />
-              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"10px"}}
+              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}}
                 id="child_care_provider_street_address"
                 name="child_care_provider_street_address" ></input>
             </div>
@@ -470,7 +483,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
             <div>
               <label htmlFor="child_care_provider_city_address" className="form-label"><b>CITY</b>
               </label><br />
-              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"10px"}}
+              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}}
                 id="child_care_provider_city_address" name="child_care_provider_city_address"></input>
             </div>
 
@@ -483,14 +496,14 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
             <div>
               <label htmlFor="child_care_provider_state_address" className="form-label"><b>STATE</b>
               </label><br />
-              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"10px"}}
+              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}}
                 id="child_care_provider_state_address" name="child_care_provider_state_address"></input>
             </div>
 
             <div>
               <label htmlFor="child_care_provider_zip_address" className="form-label"><b>ZIP</b>
               </label><br />
-              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"10px"}}
+              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}}
                 id="child_care_provider_zip_address" name="child_care_provider_zip_address"
               />
               <span id="child_care_provider_zip_address_span" style={{ display: 'none' }}>
@@ -500,7 +513,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
             <div>
               <label htmlFor="parent_two_business_name" className="form-label"><b>NAME</b>
               </label><br />
-              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"10px"}} id="parent_two_business_name"
+              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}} id="parent_two_business_name"
                 name="parent_two_business_name"></input>
             </div>
 
@@ -508,14 +521,14 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
               <label htmlFor="parent_two_work_hours_from" className="form-label"><b>WORK HOURS
                 FROM</b>
               </label><br />
-              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"10px"}} id="parent_two_work_hours_from"
+              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}} id="parent_two_work_hours_from"
                 name="parent_two_work_hours_from"></input>
             </div>
 
             <div>
               <label htmlFor="parent_two_work_hours_to" className="form-label"><b>WORK HOURS TO</b>
               </label><br />
-              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"10px"}} id="parent_two_work_hours_to"
+              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}} id="parent_two_work_hours_to"
                 name="parent_two_work_hours_to"></input>
             </div>
 
@@ -523,7 +536,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
               <label htmlFor="parent_two_business_telephone_number" className="form-label"><b>TELEPHONE
                 NUMBER</b>
               </label><br />
-              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"10px"}}
+              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}}
                 id="parent_two_business_telephone_number"
                 name="parent_two_business_telephone_number"
               />
@@ -541,14 +554,14 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
             <div>
               <label htmlFor="business_cell_number" className="form-label"><b>CELL NUMBER</b>
               </label><br />
-              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"10px"}} aria-label="Telephone Number"
+              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}} aria-label="Telephone Number"
                 id="business_cell_number" name="business_cell_number"></input>
             </div>
 
             <div>
               <label htmlFor="primary_parent_email" className="form-label"><b>EMAIL ADDRESS</b>
               </label><br />
-              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"10px"}} id="primary_parent_email"
+              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}} id="primary_parent_email"
                 name="primary_parent_email"></input>
             </div>
 
@@ -562,14 +575,14 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
 
               <label htmlFor="child_emergency_contact_name0" className="form-label"><b>NAME</b>
               </label><br />
-              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"10px"}} aria-label="Emergency Name"
+              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}} aria-label="Emergency Name"
                 id="child_emergency_contact_name0" name="child_emergency_contact_name0" defaultValue={initialFormData?.emergency_contact_info[0]?.child_emergency_contact_name || ''}></input>
             </div>
             <div>
               <label htmlFor="child_emergency_contact_relationship0"
                 className="form-label"><b>RELATIONSHIP</b>
               </label><br />
-              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"10px"}}
+              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}}
                 aria-label="Emergency Relationship"
                 id="child_emergency_contact_relationship0"
                 name="child_emergency_contact_relationship0" defaultValue={initialFormData?.emergency_contact_info[0]?.child_emergency_contact_relationship || ''}></input>
@@ -579,7 +592,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
               <label htmlFor="child_emergency_contact_full_address0"
                 className="form-label"><b>STREET</b>
               </label><br />
-              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"10px"}}
+              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}}
                 id="child_emergency_contact_full_address0"
                 name="child_emergency_contact_full_address0" defaultValue={initialFormData?.emergency_contact_info[0]?.child_emergency_contact_full_address || ''}></input>
             </div>
@@ -588,7 +601,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
               <label htmlFor="child_emergency_contact_city_address0"
                 className="form-label"><b>CITY</b>
               </label><br />
-              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"10px"}}
+              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}}
                 id="child_emergency_contact_city_address0"
                 name="child_emergency_contact_city_address0" defaultValue={initialFormData?.emergency_contact_info[0]?.child_emergency_contact_city_address || ''}></input>
             </div>
@@ -626,7 +639,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
               <label htmlFor="child_emergency_contact_telephone_number0"
                 className="form-label"><b>TELEPHONE NUMBER</b>
               </label><br />
-              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"10px"}} aria-label="Emergency Relationship"
+              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}} aria-label="Emergency Relationship"
                 id="child_emergency_contact_telephone_number0"
                 name="child_emergency_contact_telephone_number0"
                 defaultValue={initialFormData?.emergency_contact_info[0]?.child_emergency_contact_telephone_number || ''}
@@ -639,7 +652,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
             <div>
               <label htmlFor="child_emergency_contact_state_address0" className="form-label"><b>STATE</b>
               </label><br />
-              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"10px"}}
+              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}}
                 id="child_emergency_contact_state_address0"
                 name="child_emergency_contact_state_address0" defaultValue={initialFormData?.emergency_contact_info[0]?.child_emergency_contact_state_address || ''}></input>
             </div>
@@ -647,7 +660,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
             <div>
               <label htmlFor="child_emergency_contact_zip_address0" className="form-label"><b>ZIP</b>
               </label><br />
-              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"10px"}} aria-label="emergency_address"
+              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}} aria-label="emergency_address"
                 id="child_emergency_contact_zip_address0"
                 name="child_emergency_contact_zip_address0" defaultValue={initialFormData?.emergency_contact_info[0]?.child_emergency_contact_zip_address || ''}></input>
             </div>
@@ -657,7 +670,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
             <div>
               <label htmlFor="child_emergency_contact_name1" className="form-label"><b>NAME</b>
               </label><br />
-              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"10px"}} aria-label="Emergency Name"
+              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}} aria-label="Emergency Name"
                 id="child_emergency_contact_name1" name="child_emergency_contact_name1" defaultValue={initialFormData?.emergency_contact_info[1]?.child_emergency_contact_name || ''}></input>
             </div>
 
@@ -665,7 +678,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
               <label htmlFor="child_emergency_contact_relationship1"
                 className="form-label"><b>RELATIONSHIP</b>
               </label><br />
-              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"10px"}}
+              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}}
                 aria-label="Emergency Relationship"
                 id="child_emergency_contact_relationship1"
                 name="child_emergency_contact_relationship1" defaultValue={initialFormData?.emergency_contact_info[1]?.child_emergency_contact_relationship || ''}></input>
@@ -675,7 +688,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
               <label htmlFor="child_emergency_contact_full_address1"
                 className="form-label"><b>STREET</b>
               </label><br />
-              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"10px"}}
+              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}}
                 id="child_emergency_contact_full_address1"
                 name="child_emergency_contact_full_address1" defaultValue={initialFormData?.emergency_contact_info[1]?.child_emergency_contact_full_address || ''}></input>
             </div>
@@ -684,7 +697,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
               <label htmlFor="child_emergency_contact_city_address1"
                 className="form-label"><b>CITY</b>
               </label><br />
-              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"10px"}}
+              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}}
                 id="child_emergency_contact_city_address1"
                 name="child_emergency_contact_city_address1" defaultValue={initialFormData?.emergency_contact_info[1]?.child_emergency_contact_city_address || ''}></input>
             </div>
@@ -696,7 +709,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
               <label htmlFor="child_emergency_contact_telephone_number1"
                 className="form-label"><b>TELEPHONE NUMBER</b>
               </label><br />
-              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"10px"}}
+              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}}
                 aria-label="Emergency Relationship"
                 id="child_emergency_contact_telephone_number1"
                 name="child_emergency_contact_telephone_number1"
@@ -708,7 +721,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
               <label htmlFor="child_emergency_contact_state_address1"
                 className="form-label"><b>STATE</b>
               </label><br />
-              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"10px"}}
+              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}}
                 id="child_emergency_contact_state_address1"
                 name="child_emergency_contact_state_address1" defaultValue={initialFormData?.emergency_contact_info[1]?.child_emergency_contact_state_address || ''}></input>
             </div>
@@ -716,7 +729,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
             <div>
               <label htmlFor="child_emergency_contact_zip_address1" className="form-label"><b>ZIP</b>
               </label><br />
-              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"10px"}} aria-label="emergency_address"
+              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}} aria-label="emergency_address"
                 id="child_emergency_contact_zip_address1"
                 name="child_emergency_contact_zip_address1" defaultValue={initialFormData?.emergency_contact_info[1]?.child_emergency_contact_zip_address || ''}></input>
             </div>
@@ -727,14 +740,14 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
             <div>
               <label htmlFor="child_emergency_contact_name2" className="form-label"><b>NAME</b>
               </label><br />
-              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"10px"}} aria-label="Emergency Name"
+              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}} aria-label="Emergency Name"
                 id="child_emergency_contact_name2" name="child_emergency_contact_name2" defaultValue={initialFormData?.emergency_contact_info[2]?.child_emergency_contact_name || ''}></input>
             </div>
             <div>
               <label htmlFor="child_emergency_contact_relationship2"
                 className="form-label"><b>RELATIONSHIP</b>
               </label><br />
-              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"10px"}}
+              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}}
                 aria-label="Emergency Relationship"
                 id="child_emergency_contact_relationship2"
                 name="child_emergency_contact_relationship2" defaultValue={initialFormData?.emergency_contact_info[2]?.child_emergency_contact_relationship || ''}></input>
@@ -744,7 +757,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
               <label htmlFor="child_emergency_contact_full_address2"
                 className="form-label"><b>STREET</b>
               </label><br />
-              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"10px"}}
+              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}}
                 id="child_emergency_contact_full_address2"
                 name="child_emergency_contact_full_address2" defaultValue={initialFormData?.emergency_contact_info[2]?.child_emergency_contact_full_address || ''}></input>
             </div>
@@ -752,7 +765,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
               <label htmlFor="child_emergency_contact_city_address2"
                 className="form-label"><b>CITY</b>
               </label><br />
-              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"10px"}}
+              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}}
                 id="child_emergency_contact_city_address2"
                 name="child_emergency_contact_city_address2" defaultValue={initialFormData?.emergency_contact_info[2]?.child_emergency_contact_city_address || ''}></input>
             </div>
@@ -764,7 +777,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
               <label htmlFor="child_emergency_contact_telephone_number2"
                 className="form-label"><b>TELEPHONE NUMBER</b>
               </label><br />
-              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"10px"}}
+              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}}
                 aria-label="Emergency Relationship"
                 id="child_emergency_contact_telephone_number2"
                 name="child_emergency_contact_telephone_number2"
@@ -779,7 +792,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
               <label htmlFor="child_emergency_contact_state_address2"
                 className="form-label"><b>STATE</b>
               </label><br />
-              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"10px"}}
+              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}}
                 id="child_emergency_contact_state_address2"
                 name="child_emergency_contact_state_address2" defaultValue={initialFormData?.emergency_contact_info[2]?.child_emergency_contact_state_address || ''}></input>
             </div>
@@ -787,7 +800,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
             <div>
               <label htmlFor="child_emergency_contact_zip_address2" className="form-label"><b>ZIP</b>
               </label><br />
-              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"10px"}} aria-label="emergency_address"
+              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}} aria-label="emergency_address"
                 id="child_emergency_contact_zip_address2"
                 name="child_emergency_contact_zip_address2" defaultValue={initialFormData?.emergency_contact_info[2]?.child_emergency_contact_zip_address || ''}></input>
             </div>
@@ -801,7 +814,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
               <label htmlFor="child_care_provider_name" className="form-label"><b>NAME OF MEDICAL CARE
                 PROVIDER</b>
               </label><br />
-              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"10px"}} id="child_care_provider_name"
+              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}} id="child_care_provider_name"
                 name="child_care_provider_name"></input>
             </div>
 
@@ -809,7 +822,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
               <label htmlFor="child_hospital_affiliation" className="form-label"><b>HOSPITAL
                 AFFILIATION</b>
               </label><br />
-              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"10px"}} id="child_hospital_affiliation"
+              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}} id="child_hospital_affiliation"
                 name="child_hospital_affiliation"></input>
             </div>
           </div>
@@ -847,14 +860,14 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
             <div>
               <label htmlFor="child_care_provider_street_address" className="form-label"><b>STREET</b>
               </label><br />
-              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"10px"}}
+              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}}
                 id="child_care_provider_street_address"
                 name="child_care_provider_street_address"></input>
             </div>
             <div>
               <label htmlFor="child_care_provider_city_address" className="form-label"><b>CITY</b>
               </label><br />
-              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"10px"}}
+              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}}
                 id="child_care_provider_city_address" name="child_care_provider_city_address"></input>
             </div>
           </div>
@@ -863,14 +876,14 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
             <div>
               <label htmlFor="child_care_provider_state_address" className="form-label"><b>STATE</b>
               </label><br />
-              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"10px"}}
+              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}}
                 id="child_care_provider_state_address" name="child_care_provider_state_address"></input>
             </div>
 
             <div>
               <label htmlFor="child_care_provider_zip_address" className="form-label"><b>ZIP</b>
               </label>
-              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"10px"}}
+              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}}
                 id="child_care_provider_zip_address" name="child_care_provider_zip_address"
               />
               <span id="child_care_provider_zip_address_span" style={{ display: 'none' }}>
@@ -881,7 +894,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
               <label htmlFor="child_care_provider_telephone_number" className="form-label"><b>TELEPHONE
                 NUMBER</b>
               </label>
-              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"10px"}}
+              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}}
                 id="child_care_provider_telephone_number"
                 name="child_care_provider_telephone_number"
               />
@@ -894,7 +907,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
               <label htmlFor="child_dentist_name" className="form-label"><b>NAME OF CHILD'S
                 DENTIST</b>
               </label><br />
-              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"10px"}} id="child_dentist_name"
+              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}} id="child_dentist_name"
                 name="child_dentist_name"></input>
             </div>
 
@@ -902,7 +915,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
               <label htmlFor="dentist_telephone_number" className="form-label"><b>DENTIST
                 TELEPHONE NUMBER</b>
               </label>
-              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"10px"}} id="dentist_telephone_number"
+              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}} id="dentist_telephone_number"
                 name="dentist_telephone_number"
               />
               <span id="dentist_telephone_number_span" style={{ display: "none" }}>
@@ -913,7 +926,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
               <label htmlFor="allergies_medication_reaction" className="form-label"><b>ALLERGIES
                 (MEDICATION REACTION)</b>
               </label><br />
-              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"10px"}} id="allergies_medication_reaction"
+              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}} id="allergies_medication_reaction"
                 name="allergies_medication_reaction"></input>
             </div>
           </div>
@@ -924,28 +937,28 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
             <div>
               <label htmlFor="dentist_street_address" className="form-label"><b>STREET</b>
               </label><br />
-              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"10px"}} id="dentist_street_address"
+              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}} id="dentist_street_address"
                 name="dentist_street_address"></input>
             </div>
 
             <div>
               <label htmlFor="dentist_city_address" className="form-label"><b>CITY</b>
               </label><br />
-              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"10px"}} id="dentist_city_address"
+              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}} id="dentist_city_address"
                 name="dentist_city_address"></input>
             </div>
 
             <div>
               <label htmlFor="dentist_state_address" className="form-label"><b>STATE</b>
               </label><br />
-              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"10px"}} id="dentist_state_address"
+              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}} id="dentist_state_address"
                 name="dentist_state_address"></input>
             </div>
 
             <div>
               <label htmlFor="dentist_zip_address" className="form-label"><b>ZIP</b>
               </label>
-              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"10px"}} id="dentist_zip_address"
+              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}} id="dentist_zip_address"
                 name="dentist_zip_address"
               />
               <span id="child_care_provider_zip_address_span" style={{ display: 'none' }}>
@@ -958,7 +971,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
               <label htmlFor="special_diabilities" className="form-label"><b>SPECIAL
                 DIABILITIES (IF ANY)</b>
               </label><br />
-              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"10px"}} id="special_diabilities"
+              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}} id="special_diabilities"
                 name="special_diabilities"></input>
             </div>
 
@@ -966,21 +979,21 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
               <label htmlFor="medication" className="form-label"><b>MEDICATION, SPECIAL
                 CONDITIONS NUMBER</b>
               </label><br />
-              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"10px"}} id="medication" name="medication"></input>
+              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}} id="medication" name="medication"></input>
             </div>
 
             <div>
               <label htmlFor="additional_info" className="form-label"><b>ADDITIONAL
                 INFORMATION REGARDING SPECIAL NEEDS</b>
               </label><br />
-              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"10px"}} id="additional_info"
+              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}} id="additional_info"
                 name="additional_info"></input>
             </div>
 
             <div>
               <label htmlFor="policy_number" className="form-label"><b>POLICY NUMBER</b>
               </label><br />
-              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"10px"}} id="policy_number"
+              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}} id="policy_number"
                 name="policy_number"></input>
             </div>
           </div>
@@ -989,7 +1002,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
               <label htmlFor="health_insurance" className="form-label"><b>HEALTH INSURANCE
                 COVERAGE FOR CHILD OR MEDICAL ASSISTANCE BENEFITS</b>
               </label><br />
-              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"10px"}} id="health_insurance"
+              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}} id="health_insurance"
                 name="health_insurance"></input>
             </div>
           </div>
@@ -1029,7 +1042,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
               <label htmlFor="obtaining_emergency_medical_care" className="form-label"><b>OBTAINING
                 EMERGENCY MEDICAL CARE</b>
               </label><br />
-              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"10px"}}
+              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}}
                 id="obtaining_emergency_medical_care"
                 name="obtaining_emergency_medical_care"></input>
             </div>
@@ -1038,7 +1051,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
               <label htmlFor="administration_first_aid_procedures"
                 className="form-label"><b>ADMINISTRATION OF MINOR FIRST-AID
                   PROCEDURES</b></label><br />
-              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"10px"}}
+              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}}
                 id="administration_first_aid_procedures"
                 name="administration_first_aid_procedures"></input>
             </div>
@@ -1068,7 +1081,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
               <label htmlFor="physical_exam_last_date" className="form-label"><b>Date of Last
                 Physical Exam</b>
               </label><br />
-              <input type="date" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"10px"}} id="physical_exam_last_date"
+              <input type="date" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}} id="physical_exam_last_date"
                 name="physical_exam_last_date"
               ></input>
             </div>
@@ -1077,7 +1090,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
               <label htmlFor="dental_exam_last_date" className="form-label"><b>Date of Last
                 Dental Exam</b>
               </label><br />
-              <input type="date" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"10px"}} id="dental_exam_last_date"
+              <input type="date" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}} id="dental_exam_last_date"
                 name="dental_exam_last_date" ></input>
             </div>
 
@@ -1089,13 +1102,13 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
             <div>
               <label htmlFor="allergies" className="form-label"><b>Allergies (food/drug)</b>
               </label><br />
-              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"10px"}} name="allergies" id="allergies" defaultValue={initialFormData?.family_history_allergies || ''}></input>
+              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}} name="allergies" id="allergies" defaultValue={initialFormData?.family_history_allergies || ''}></input>
             </div>
             <div>
               <label htmlFor="bleeding_problems" className="form-label"><b>Bleeding
                 Problems</b>
               </label><br />
-              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"10px"}} name="bleeding_problems"
+              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}} name="bleeding_problems"
                 id="bleeding_problems" defaultValue={initialFormData?.bleeding_problems || ''}></input>
             </div>
 
@@ -1103,26 +1116,26 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
               <label htmlFor="frequent_ear_infections" className="form-label"><b>Frequent Ear
                 Infections</b>
               </label><br />
-              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"10px"}} id="frequent_ear_infections"
+              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}} id="frequent_ear_infections"
                 name="frequent_ear_infections" defaultValue={initialFormData?.frequent_ear_infections || ''}></input>
             </div>
 
             <div>
               <label htmlFor="asthma" className="form-label"><b>Asthma</b>
               </label><br />
-              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"10px"}} id="asthma" name="asthma" defaultValue={initialFormData?.asthma || ''}></input>
+              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}} id="asthma" name="asthma" defaultValue={initialFormData?.asthma || ''}></input>
             </div>
 
             <div>
               <label htmlFor="diabetes" className="form-label"><b>Diabetes</b>
               </label><br />
-              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"10px"}} id="diabetes" name="diabetes" defaultValue={initialFormData?.diabetes || ''}></input>
+              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}} id="diabetes" name="diabetes" defaultValue={initialFormData?.diabetes || ''}></input>
             </div>
 
             <div>
               <label htmlFor="epilepsy" className="form-label"><b>Epilepsy</b>
               </label><br />
-              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"10px"}} id="epilepsy" name="epilepsy" defaultValue={initialFormData?.epilepsy || ''}></input>
+              <input type="text" className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}} id="epilepsy" name="epilepsy" defaultValue={initialFormData?.epilepsy || ''}></input>
             </div>
           </div>
 
@@ -1713,7 +1726,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
                   </label><br />
                   <input
                     type="text"
-                    className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"10px"}}
+                    className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}}
                     id="important_fam_members"
                     name="important_fam_members"
                   />
@@ -1729,7 +1742,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
                   </label><br />
                   <input
                     type="text"
-                    className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"10px"}}
+                    className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}}
                     id="about_family_celebrations"
                     name="about_family_celebrations"
                   />
@@ -1823,7 +1836,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
                 </label>
                 <input
                   type="text"
-                  className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"10px"}}
+                  className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}}
                   name="restricted_diet_reason"
                   id="restricted_diet_reason"
                 />
@@ -1837,7 +1850,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
                 </label>
                 <input
                   type="text"
-                  className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"10px"}}
+                  className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}}
                   id="favorite_foods"
                   name="favorite_foods"
                 />
@@ -1851,7 +1864,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
                 </label>
                 <input
                   type="text"
-                  className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"10px"}}
+                  className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}}
                   name="eat_own_reason"
                   id="eat_own_reason"
                 />
@@ -1872,7 +1885,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
                 </label><br />
                 <input
                   type="text"
-                  className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"10px"}}
+                  className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}}
                   name="reason_for_rest_in_the_middle_day"
                   id="reason_for_rest_in_the_middle_day"
                 />
@@ -1887,7 +1900,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
                 </label><br />
                 <input
                   type="text"
-                  className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"10px"}}
+                  className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}}
                   id="rest_routine"
                   name="rest_routine"
                 />
@@ -1933,7 +1946,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
                 </label><br />
                 <input
                   type="text"
-                  className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"10px"}}
+                  className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}}
                   name="reason_for_toilet_trained"
                   id="reason_for_toilet_trained"
                 />
@@ -1953,7 +1966,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
                 </label><br />
                 <input
                   type="text"
-                  className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"10px"}}
+                  className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}}
                   name="explain_for_existing_illness_allergy"
                   id="explain_for_existing_illness_allergy"
                 />
@@ -1970,7 +1983,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
                 </label><br />
                 <input
                   type="text"
-                  className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"10px"}}
+                  className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}}
                   name="explain_for_functioning_at_age"
                   id="explain_for_functioning_at_age"
                 />
@@ -1984,7 +1997,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
                 </label><br />
                 <input
                   type="text"
-                  className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"10px"}}
+                  className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}}
                   name="explain_for_able_to_walk"
                   id="explain_for_able_to_walk"
                 />
@@ -2001,7 +2014,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
                 </label><br />
                 <input
                   type="text"
-                  className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"10px"}}
+                  className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}}
                   name="explain_for_communicate_their_needs"
                   id="explain_for_communicate_their_needs"
                 />
@@ -2018,7 +2031,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
                 </label><br />
                 <input
                   type="text"
-                  className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"10px"}}
+                  className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}}
                   name="explain_for_any_medication"
                   id="explain_for_any_medication"
                 />
@@ -2040,7 +2053,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
                 </label><br />
                 <input
                   type="text"
-                  className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"10px"}}
+                  className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}}
                   name="explain_for_utilize_special_equipment"
                   id="explain_for_utilize_special_equipment"
                 />
@@ -2057,7 +2070,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
                 </label><br />
                 <input
                   type="text"
-                  className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"10px"}}
+                  className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}}
                   name="explain_for_significant_periods"
                   id="explain_for_significant_periods"
                 />
@@ -2109,7 +2122,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
                 </label>
                 <input
                   type="text"
-                  className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"10px"}}
+                  className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}}
                   name="explain_for_desire_any_accommodations"
                   id="explain_for_desire_any_accommodations"
                 />
@@ -2123,7 +2136,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
                 </label><br />
                 <input
                   type="text"
-                  className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"10px"}}
+                  className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}}
                   id="additional_information"
                   name="additional_information"
                 />
@@ -2281,7 +2294,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
                 <div className="form-group text-center mt-4">
                   <input
                     type="text"
-                    className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"10px"}}
+                    className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}}
                     id="photo_usage_photo_video_permission_form"
                     name="photo_usage_photo_video_permission_form"
                   />
@@ -2965,7 +2978,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
                 </label>
                 <input
                   type="text"
-                  className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"10px"}}
+                  className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}}
                   id="printed_name_social_media_post"
                   name="printed_name_social_media_post"
                   defaultValue={initialFormData?.printed_name_social_media_post || ''}
@@ -2994,7 +3007,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
                   </label>
                   <input
                     type="text"
-                    className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"10px"}}
+                    className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}}
                     id="parent_sign_admission"
                     name="parent_sign_admission"
                     defaultValue={initialFormData?.parent_sign_admission || ''}
@@ -3006,7 +3019,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
                   </label>
                   <input
                     type="date"
-                    className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"10px"}}
+                    className="form-control text-box w-full border-b mt-3 text-[20px] focus:border-transparent" style={{paddingBottom:"20px", lineHeight:"1.5", minHeight:"40px"}}
                     id="parent_sign_date_admission"
                     name="parent_sign_date_admission"
                     defaultValue={initialFormData?.parent_sign_date_admission || ''}
