@@ -910,7 +910,7 @@ const ParentDashboard = () => {
                                   zIndex: -1000
                                 }}>
                                   {/* The admission form sections */}
-                                  <AdmissionSection ref={admissionRef} />
+                                  <AdmissionSection ref={admissionRef} initialFormData={childFormData} />
                                 </div>
 
                                 <button
@@ -961,7 +961,7 @@ const ParentDashboard = () => {
         <div ref={admissionFormRef} id="admission-content" style={{
 
       }}>
-        <AdmissionSection />
+        <AdmissionSection ref={admissionFormRef} initialFormData={childFormData} />
       </div>
           
           
