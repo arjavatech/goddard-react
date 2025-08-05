@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useImperativeHandle, forwardRef, useEffect } from 'react';
 import logo from "/image/gs_logo_branch.png";
-
+import PDFHeader from './PDFHeader';
 const ParentHandbook = forwardRef(({ initialFormData }, ref) => {
     console.log('ParentHandbook - initialFormData:', initialFormData);
 
@@ -63,35 +63,49 @@ const ParentHandbook = forwardRef(({ initialFormData }, ref) => {
       <html>
         <head>
           <title>Goddard Parent Handbook</title>
-          <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" />
+          <script src="https://cdn.tailwindcss.com"></script>
           <style>
-          p, ol li, ul li { font-weight: 500; text-align: justify; }
-            .form-body { border: 2px solid #0F2D52; }
-            .header-border { border-bottom: 2px solid #0F2D52; }
-            .title_bg { background-color: #0F2D52; color: white;  }
-            .logo-style { width: 100%; height: auto; max-width: 100%; object-fit: contain; }
-            .flex { display: flex; }
-            .items-center { align-items: center; }
-            .justify-center { justify-content: center; }
-            .w-\[50\%\] { width: 50% !important; }
-            .h-\[180px\] { height: 180px !important; }
-            .bg-white { background-color: white !important; }
-            .bg-\[\#0f2d52\] { background-color: #0f2d52 !important; }
-            .border-r-2 { border-right: 2px solid #0f2d52 !important; }
-            .border-\[\#0f2d52\] { border-color: #0f2d52 !important; }
-            .px-4 { padding-left: 0.5rem !important; padding-right: 0.5rem !important; }
-            .m-4 { margin: 1rem !important; }
-            .text-white { color: white !important; }
-            .max-h-\[130px\] { max-height: 130px !important; }
-            .max-w-full { max-width: 100% !important; }
-            .object-contain { object-fit: contain !important; }
-            .logo-style { max-width: 85% !important; height: auto !important; object-fit: contain !important; display: block !important; margin: 0 auto !important; }
-            .custom-checkbox { display: none; }
+            .custom-checkbox { display: inline-block !important; width: 12px !important; height: 12px !important; margin-right: 4px !important; }
+            .items-to-bring-section { page-break-inside: avoid !important; }
+            * { -webkit-print-color-adjust: exact !important; color-adjust: exact !important; }
+            p { font-size: 60px !important; line-height: 1.7 !important; margin-bottom: 0.7rem !important; }
+            h1 { font-size: 44px !important; line-height: 1.7 !important; }
+            h2 { font-size: 40px !important; line-height: 1.7 !important; }
+            h3 { font-size: 36px !important; line-height: 1.7 !important; }
+            h4 { font-size: 32px !important; line-height: 1.7 !important; }
+            h5 { font-size: 30px !important; line-height: 1.7 !important; }
+            h6 { font-size: 28px !important; line-height: 1.7 !important; }
+            li { font-size: 30px !important; line-height: 1.7 !important; }
+            span { font-size: 30px !important; }
+            b { font-size: 30px !important; }
+            label { font-size: 30px !important; }
+            .m-5 { margin: 0.2rem !important; padding: 0.3rem !important; border: none !important; }
+            .p-4 { padding: 0.3rem !important; }
+            .h-\[180px\] { height: 60px !important; }
             @media print {
-              .m-5 { margin: 0.5rem !important; }
+              * { -webkit-print-color-adjust: exact !important; color-adjust: exact !important; }
+              @page { margin: 0.3in !important; border: 2px solid #0f2d52 !important; }
+              body { margin: 0 !important; font-size: 8px !important; border: 2px solid #0f2d52 !important; min-height: 100vh !important; }
+              .m-5 { margin: 0.2rem !important; page-break-before: always !important; border: none !important; padding: 0.3rem !important; }
+              .m-5:first-child { page-break-before: auto !important; }
               .card { margin-bottom: 0 !important; }
               .form-body { margin-bottom: 0 !important; }
-              .m-5:not(:first-child) { page-break-before: always !important; }
+              .items-to-bring-section { page-break-inside: avoid !important; }
+              .bg-\[\#0f2d52\] { background-color: #0f2d52 !important; }
+              .text-white { color: white !important; }
+              p { font-size: 18px !important; line-height: 1.5 !important; margin-bottom: 0.5rem !important; }
+              h1 { font-size: 28px !important; line-height: 1.5 !important; }
+              h2 { font-size: 26px !important; line-height: 1.5 !important; }
+              h3 { font-size: 24px !important; line-height: 1.5 !important; }
+              h4 { font-size: 22px !important; line-height: 1.5 !important; }
+              h5 { font-size: 20px !important; line-height: 1.5 !important; }
+              h6 { font-size: 18px !important; line-height: 1.5 !important; }
+              li { font-size: 18px !important; line-height: 1.5 !important; }
+              span { font-size: 18px !important; }
+              b { font-size: 18px !important; }
+              label { font-size: 18px !important; }
+              .h-\[180px\] { height: 60px !important; }
+              .p-4 { padding: 0.3rem !important; }
             }
           </style>
         </head>
@@ -133,31 +147,62 @@ const ParentHandbook = forwardRef(({ initialFormData }, ref) => {
                 return;
             }
 
+            // Load Tailwind CSS for PDF generation and wait for it to load
+            const tailwindLink = document.createElement('link');
+            tailwindLink.rel = 'stylesheet';
+            tailwindLink.href = 'https://cdn.tailwindcss.com';
+            document.head.appendChild(tailwindLink);
+            
+            // Wait for Tailwind CSS to load
+            await new Promise((resolve) => {
+                tailwindLink.onload = resolve;
+                setTimeout(resolve, 1000); // Fallback timeout
+            });
+            
             // Apply exact same CSS styles as print function
             pdfStyle = document.createElement('style');
+            // Add PDF-specific class to content element
+            contentElement.classList.add('pdf-generation');
+            
             pdfStyle.innerHTML = `
-               p, ol li, ul li { font-weight: 500; text-align: justify; }
-            .form-body { border: 2px solid #0F2D52; }
-            .header-border { border-bottom: 2px solid #0F2D52; }
-            .title_bg { background-color: #0F2D52; color: white;  }
-            .logo-style { width: 100%; height: auto; max-width: 100%; object-fit: contain; }
-            .flex { display: flex; }
-            .items-center { align-items: center; }
-            .justify-center { justify-content: center; }
+            .custom-checkbox { display: inline-block !important; width: 20px !important; height: 20px !important; margin-right: 8px !important; }
+            .items-to-bring-section { page-break-inside: avoid !important; }
+            * { -webkit-print-color-adjust: exact !important; color-adjust: exact !important; }
+            .bg-\[\#0f2d52\] { background-color: #0f2d52 !important; }
+            .text-white { color: white !important; }
+            .border-\[\#0f2d52\] { border-color: #0f2d52 !important; }
+            .text-\[\#0f2d52\] { color: #0f2d52 !important; }
+            .m-5 { margin: 0.5rem !important; border: 2px solid #0f2d52 !important; padding: 0.5rem !important; }
+            .border-r-2 { border-right-width: 2px !important; }
+            .border-b-2 { border-bottom-width: 2px !important; }
+            .flex { display: flex !important; }
             .w-\[50\%\] { width: 50% !important; }
             .h-\[180px\] { height: 180px !important; }
-            .bg-white { background-color: white !important; }
-            .bg-\[\#0f2d52\] { background-color: #0f2d52 !important; }
-            .border-r-2 { border-right: 2px solid #0f2d52 !important; }
-            .border-\[\#0f2d52\] { border-color: #0f2d52 !important; }
-            .px-4 { padding-left: 0.5rem !important; padding-right: 0.5rem !important; }
-            .m-4 { margin: 1rem !important; }
-            .text-white { color: white !important; }
-            .max-h-\[130px\] { max-height: 130px !important; }
-            .max-w-full { max-width: 100% !important; }
-            .object-contain { object-fit: contain !important; }
-            .logo-style { max-width: 85% !important; height: auto !important; object-fit: contain !important; display: block !important; margin: 0 auto !important; }
-            .custom-checkbox { display: none; }
+            .items-center { align-items: center !important; }
+            .justify-center { justify-center: center !important; }
+            .px-4 { padding-left: 1rem !important; padding-right: 1rem !important; }
+            .p-4 { padding: 1rem !important; }
+            .text-center { text-align: center !important; }
+            .mb-4 { margin-bottom: 1rem !important; }
+            .mb-2 { margin-bottom: 0.5rem !important; }
+            .mb-3 { margin-bottom: 0.75rem !important; }
+            .mb-5 { margin-bottom: 1.25rem !important; }
+
+           .m-5 { margin: 1rem !important; border: 2px solid #0f2d52 !important; padding: 1.5rem !important; }
+            .p-4 { padding: 2rem !important; }
+            .mb-4 { margin-bottom: 1.5rem !important; }
+            .mb-5 { margin-bottom: 2rem !important; }
+            .pdf-generation p { font-size: 30px !important; line-height: 1.4 !important; }
+            .pdf-generation h1 { font-size: 40px !important; line-height: 1.4 !important; }
+            .pdf-generation h2 { font-size: 38px !important; line-height: 1.4 !important; }
+            .pdf-generation h3 { font-size: 36px !important; line-height: 1.4 !important; }
+            .pdf-generation h4 { font-size: 34px !important; line-height: 1.4 !important; }
+            .pdf-generation h5 { font-size: 32px !important; line-height: 1.4 !important; }
+            .pdf-generation h6 { font-size: 30px !important; line-height: 1.4 !important; }
+            .pdf-generation li { font-size: 30px !important; line-height: 1.4 !important; }
+            .pdf-generation span { font-size: 30px !important; }
+            .pdf-generation b { font-size: 30px !important; }
+            .pdf-generation label { font-size: 30px !important; }
             `;
             document.head.appendChild(pdfStyle);
 
@@ -202,89 +247,99 @@ const ParentHandbook = forwardRef(({ initialFormData }, ref) => {
             });
 
 
-            const textElements = contentElement.querySelectorAll('p, h3, h4, h5, li, span, b, label');
-            textElements.forEach(el => {
-                const computedFontSize = window.getComputedStyle(el).fontSize;
-                elementsToRestore.push({ element: el, property: 'fontSize', originalValue: el.style.fontSize });
-                el.style.fontSize = computedFontSize;
-            });
-            const headingElements = contentElement.querySelectorAll('h1, h2, h3, h4, h5, h6');
-            headingElements.forEach(el => {
-                const computedFontSize = window.getComputedStyle(el).fontSize;
-                elementsToRestore.push({ element: el, property: 'fontSize', originalValue: el.style.fontSize });
-                el.style.fontSize = computedFontSize;
-            });
 
 
 
-            const canvas = await html2canvas(contentElement, {
-                scale: 2,
-                useCORS: true,
-                logging: false,
-                height: contentElement.scrollHeight,
-                width: contentElement.scrollWidth,
-                allowTaint: true,
-                backgroundColor: '#ffffff',
-                removeContainer: false,
-                foreignObjectRendering: false
-            });
 
-
-            const imgData = canvas.toDataURL('image/jpeg', 0.9);
-
+            // Generate PDF with individual sections
             const pdf = new jsPDF('p', 'mm', 'a4');
             const pdfWidth = pdf.internal.pageSize.getWidth();
             const pdfHeight = pdf.internal.pageSize.getHeight();
-            const margins = 10; // பக்க ஓரங்கள் (mm இல்)
-            const borderWidth = 0.5; // Border width in mm
-
-
+            const margins = 15;
+            const borderWidth = 1;
             const imgWidth = pdfWidth - (margins * 2);
-            const imgHeight = (canvas.height * imgWidth) / canvas.width;
             const pageHeight = pdfHeight - (margins * 2);
-
-            let currentY = 0;
-            let pageIndex = 0;
-
-            while (currentY < imgHeight) {
-                if (pageIndex > 0) {
+            
+            // Get all sections with m-5 class (each section with logo/header)
+            const sections = contentElement.querySelectorAll('.m-5');
+            let isFirstPage = true;
+            
+            for (let i = 0; i < sections.length; i++) {
+                const section = sections[i];
+                
+                // Create canvas for individual section
+                const sectionCanvas = await html2canvas(section, {
+                    scale: 0.5,
+                    useCORS: true,
+                    logging: false,
+                    height: section.scrollHeight,
+                    width: section.scrollWidth,
+                    allowTaint: true,
+                    backgroundColor: '#ffffff',
+                    removeContainer: false,
+                    foreignObjectRendering: false
+                });
+                
+                const sectionImgHeight = (sectionCanvas.height * imgWidth) / sectionCanvas.width;
+                
+                // Add new page for each section (except first)
+                if (!isFirstPage) {
                     pdf.addPage();
                 }
-
-                const remainingHeight = imgHeight - currentY;
-                const heightToAdd = Math.min(pageHeight, remainingHeight);
-
-
-                const pageCanvas = document.createElement('canvas');
-                const pageCtx = pageCanvas.getContext('2d');
-                pageCanvas.width = canvas.width;
-                pageCanvas.height = (heightToAdd * canvas.width) / imgWidth;
-
-
-                pageCtx.drawImage(
-                    canvas,
-                    0, (currentY * canvas.width) / imgWidth,
-                    canvas.width, (heightToAdd * canvas.width) / imgWidth,
-                    0, 0,
-                    canvas.width, (heightToAdd * canvas.width) / imgWidth
-                );
-
-                const pageImgData = pageCanvas.toDataURL('image/jpeg', 0.9);
-                pdf.addImage(pageImgData, 'JPEG', margins, margins, imgWidth, heightToAdd);
-
-
-                pdf.setDrawColor(15, 45, 82);
-                pdf.setLineWidth(borderWidth);
-
-                pdf.line(margins, margins, pdfWidth - margins, margins);
-
-                pdf.line(margins, pdfHeight - margins, pdfWidth - margins, pdfHeight - margins);
-
-                pdf.line(pdfWidth - margins, margins, pdfWidth - margins, pdfHeight - margins);
-
-
-                currentY += heightToAdd;
-                pageIndex++;
+                
+                // If section is too tall for one page, split it
+                if (sectionImgHeight > pageHeight) {
+                    let currentY = 0;
+                    let pageInSection = 0;
+                    
+                    while (currentY < sectionImgHeight) {
+                        if (pageInSection > 0) {
+                            pdf.addPage();
+                        }
+                        
+                        const remainingHeight = sectionImgHeight - currentY;
+                        const heightToAdd = Math.min(pageHeight, remainingHeight);
+                        
+                        const pageCanvas = document.createElement('canvas');
+                        const pageCtx = pageCanvas.getContext('2d');
+                        pageCanvas.width = sectionCanvas.width;
+                        pageCanvas.height = (heightToAdd * sectionCanvas.width) / imgWidth;
+                        
+                        pageCtx.drawImage(
+                            sectionCanvas,
+                            0, (currentY * sectionCanvas.width) / imgWidth,
+                            sectionCanvas.width, (heightToAdd * sectionCanvas.width) / imgWidth,
+                            0, 0,
+                            sectionCanvas.width, (heightToAdd * sectionCanvas.width) / imgWidth
+                        );
+                        
+                        const pageImgData = pageCanvas.toDataURL('image/jpeg', 0.9);
+                        pdf.addImage(pageImgData, 'JPEG', margins, margins, imgWidth, heightToAdd);
+                        
+                        // Add page border
+                        pdf.setDrawColor(15, 45, 82);
+                        pdf.setLineWidth(borderWidth);
+                        pdf.rect(margins - borderWidth/2, margins - borderWidth/2, 
+                                pdfWidth - (margins * 2) + borderWidth, 
+                                pdfHeight - (margins * 2) + borderWidth);
+                        
+                        currentY += heightToAdd;
+                        pageInSection++;
+                    }
+                } else {
+                    // Section fits on one page
+                    const sectionImgData = sectionCanvas.toDataURL('image/jpeg', 0.9);
+                    pdf.addImage(sectionImgData, 'JPEG', margins, margins, imgWidth, sectionImgHeight);
+                    
+                    // Add page border
+                    pdf.setDrawColor(15, 45, 82);
+                    pdf.setLineWidth(borderWidth);
+                    pdf.rect(margins - borderWidth/2, margins - borderWidth/2, 
+                            pdfWidth - (margins * 2) + borderWidth, 
+                            pdfHeight - (margins * 2) + borderWidth);
+                }
+                
+                isFirstPage = false;
             }
 
 
@@ -309,10 +364,20 @@ const ParentHandbook = forwardRef(({ initialFormData }, ref) => {
                 item.element.style[item.property] = item.originalValue || '';
             });
 
-            // Remove PDF styles
+            // Remove PDF class and styles
+            if (contentElement) {
+                contentElement.classList.remove('pdf-generation');
+            }
             if (pdfStyle && pdfStyle.parentNode) {
                 pdfStyle.parentNode.removeChild(pdfStyle);
             }
+            // Remove Tailwind link
+            const tailwindLinks = document.querySelectorAll('link[href="https://cdn.tailwindcss.com"]');
+            tailwindLinks.forEach(link => {
+                if (link.parentNode) {
+                    link.parentNode.removeChild(link);
+                }
+            });
             // setLoadingPdf(false);
         }
     }, []);
@@ -327,14 +392,14 @@ const ParentHandbook = forwardRef(({ initialFormData }, ref) => {
             <div className="m-5">
                 <div className="card">
                     <div className="form-body">
-                        <div className="bg-white  text-[#0f2d52] text-black text-[16px]">
+                        <div className="bg-white  text-[#0f2d52] text-[16px]">
                             {/* Page 1 */}
                             <div className="mb-0 ">
                                 <div className=" border-[#0F2D52]">
                                     {/* Top Header Section */}
-                                    <div className="w-full border-b-2 border-[#0f2d52]">
+                                    {/* <div className="w-full border-b-2 border-[#0f2d52]">
                                         <div className="flex w-full h-[180px]">
-                                            {/* Left Side: Logo */}
+                                           
                                             <div className="w-[50%]  flex items-center justify-center bg-white border-r-2 border-[#0f2d52] px-4">
                                                 <img
                                                     src={logo}
@@ -342,14 +407,15 @@ const ParentHandbook = forwardRef(({ initialFormData }, ref) => {
                                                     className="max-h-[130px] max-w-full object-contain logo-style"
                                                 />
                                             </div>
-                                            {/* Right Side: Title */}
+                                           
                                             <div className="w-[50%] bg-[#0f2d52] flex items-center justify-center">
 
                                                 <h3 className="m-4 text-white">Parent Handbook</h3>
 
                                             </div>
                                         </div>
-                                    </div>
+                                    </div> */}
+                                    <PDFHeader logo={logo} heading="Parent Handbook" />
 
                                     {/* Add more sections below if needed */}
 
@@ -363,7 +429,7 @@ const ParentHandbook = forwardRef(({ initialFormData }, ref) => {
                         <div className="p-4">
                             <form id="formContent">
                                 {/* Goddard Parent Handbook */}
-                                <div className="row m-1 mb-4">
+                                <div className="row mb-4">
                                     <h5 className="text-center mb-4">
                                         <b>Welcome to The Goddard School®</b>
                                     </h5>
@@ -405,49 +471,13 @@ const ParentHandbook = forwardRef(({ initialFormData }, ref) => {
                                         and
                                         development.</p>
                                     <p>Many thanks for choosing The Goddard School® located in Redmond, WA.</p>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-
-            <div className="m-5">
-                <div className="card">
-                    <div className="form-body">
-                        <div className="bg-white  text-[#0f2d52] text-black text-[16px]">
-                            <div className="mb-0 ">
-                                <div className=" border-[#0F2D52]">
-                                    <div className="w-full border-b-2 border-[#0f2d52]">
-                                        <div className="flex w-full h-[180px]">
-                                            <div className="w-[50%]  flex items-center justify-center bg-white border-r-2 
-                          border-[#0f2d52] px-4">
-                                                <img
-                                                    src={logo}
-                                                    alt="Goddard Logo"
-                                                    className="max-h-[130px] max-w-full object-contain logo-style"
-                                                />
-                                            </div>
-                                            <div className="w-[50%] bg-[#0f2d52] flex items-center justify-center">
-                                                <h3 className="m-4 text-white">Parent Handbook</h3>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-
-
-                        <div className="p-4">
-                            <div className="row m-1 mb-3">
+                                    <div className="row mb-3">
                                 <p>Sincerely,</p>
                                 <p>Maanu Muthu, Onsite Owner</p>
                                 <i>*The term “parent” is used throughout to represent the primary
                                     individual(s) responsible for the child’s care.</i>
                             </div>
-                            <div className="row m-1 mb-3">
+                            <div className="row mb-3">
                                 <div className="form-group d-flex align-items-center gap-1">
                                     <input
                                         type="checkbox"
@@ -462,7 +492,32 @@ const ParentHandbook = forwardRef(({ initialFormData }, ref) => {
                                     </label>
                                 </div>
                             </div>
-                            <div className="row m-1 mb-3">
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div className="m-5">
+                <div className="card">
+                    <div className="form-body">
+                        <div className="bg-white  text-[#0f2d52]  text-[16px]">
+                            <div className="mb-0 ">
+                                <div className=" border-[#0F2D52]">
+                                    <PDFHeader logo={logo} heading="Parent Handbook" />
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                        <div className="p-4">
+                            
+                            
+{/* second section */}
+                            <div className="row mb-3">
                                 <h5 className="text-center mb-3"><b>Mission Statement</b></h5>
                                 <p>
                                     We are dedicated to giving children a love of learning in a safe and secure environment. Our
@@ -510,21 +565,7 @@ const ParentHandbook = forwardRef(({ initialFormData }, ref) => {
                         <div className="bg-white  text-[#0f2d52] text-black text-[16px]">
                             <div className="mb-0 ">
                                 <div className=" border-[#0F2D52]">
-                                    <div className="w-full border-b-2 border-[#0f2d52]">
-                                        <div className="flex w-full h-[180px]">
-                                            <div className="w-[50%]  flex items-center justify-center bg-white border-r-2 
-                          border-[#0f2d52] px-4">
-                                                <img
-                                                    src={logo}
-                                                    alt="Goddard Logo"
-                                                    className="max-h-[130px] max-w-full object-contain logo-style"
-                                                />
-                                            </div>
-                                            <div className="w-[50%] bg-[#0f2d52] flex items-center justify-center">
-                                                <h3 className="m-4 text-white">Parent Handbook</h3>
-                                            </div>
-                                        </div>
-                                    </div>
+                                   <PDFHeader logo={logo} heading="Parent Handbook" />
                                 </div>
                             </div>
                         </div>
@@ -586,21 +627,7 @@ const ParentHandbook = forwardRef(({ initialFormData }, ref) => {
                         <div className="bg-white  text-[#0f2d52] text-black text-[16px]">
                             <div className="mb-0 ">
                                 <div className=" border-[#0F2D52]">
-                                    <div className="w-full border-b-2 border-[#0f2d52]">
-                                        <div className="flex w-full h-[180px]">
-                                            <div className="w-[50%]  flex items-center justify-center bg-white border-r-2 
-                          border-[#0f2d52] px-4">
-                                                <img
-                                                    src={logo}
-                                                    alt="Goddard Logo"
-                                                    className="max-h-[130px] max-w-full object-contain logo-style"
-                                                />
-                                            </div>
-                                            <div className="w-[50%] bg-[#0f2d52] flex items-center justify-center">
-                                                <h3 className="m-4 text-white">Parent Handbook</h3>
-                                            </div>
-                                        </div>
-                                    </div>
+                                   <PDFHeader logo={logo} heading="Parent Handbook" />
                                 </div>
                             </div>
                         </div>
@@ -674,21 +701,7 @@ const ParentHandbook = forwardRef(({ initialFormData }, ref) => {
                         <div className="bg-white  text-[#0f2d52] text-black text-[16px]">
                             <div className="mb-0 ">
                                 <div className=" border-[#0F2D52]">
-                                    <div className="w-full border-b-2 border-[#0f2d52]">
-                                        <div className="flex w-full h-[180px]">
-                                            <div className="w-[50%]  flex items-center justify-center bg-white border-r-2 
-                          border-[#0f2d52] px-4">
-                                                <img
-                                                    src={logo}
-                                                    alt="Goddard Logo"
-                                                    className="max-h-[130px] max-w-full object-contain logo-style"
-                                                />
-                                            </div>
-                                            <div className="w-[50%] bg-[#0f2d52] flex items-center justify-center">
-                                                <h3 className="m-4 text-white">Parent Handbook</h3>
-                                            </div>
-                                        </div>
-                                    </div>
+                                 <PDFHeader logo={logo} heading="Parent Handbook" />
                                 </div>
                             </div>
                         </div>
@@ -759,21 +772,7 @@ const ParentHandbook = forwardRef(({ initialFormData }, ref) => {
                         <div className="bg-white  text-[#0f2d52] text-black text-[16px]">
                             <div className="mb-0 ">
                                 <div className=" border-[#0F2D52]">
-                                    <div className="w-full border-b-2 border-[#0f2d52]">
-                                        <div className="flex w-full h-[180px]">
-                                            <div className="w-[50%]  flex items-center justify-center bg-white border-r-2 
-                          border-[#0f2d52] px-4">
-                                                <img
-                                                    src={logo}
-                                                    alt="Goddard Logo"
-                                                    className="max-h-[130px] max-w-full object-contain logo-style"
-                                                />
-                                            </div>
-                                            <div className="w-[50%] bg-[#0f2d52] flex items-center justify-center">
-                                                <h3 className="m-4 text-white">Parent Handbook</h3>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    <PDFHeader logo={logo} heading="Parent Handbook" />
                                 </div>
                             </div>
                         </div>
@@ -849,21 +848,7 @@ const ParentHandbook = forwardRef(({ initialFormData }, ref) => {
                         <div className="bg-white  text-[#0f2d52] text-black text-[16px]">
                             <div className="mb-0 ">
                                 <div className=" border-[#0F2D52]">
-                                    <div className="w-full border-b-2 border-[#0f2d52]">
-                                        <div className="flex w-full h-[180px]">
-                                            <div className="w-[50%]  flex items-center justify-center bg-white border-r-2 
-                          border-[#0f2d52] px-4">
-                                                <img
-                                                    src={logo}
-                                                    alt="Goddard Logo"
-                                                    className="max-h-[130px] max-w-full object-contain logo-style"
-                                                />
-                                            </div>
-                                            <div className="w-[50%] bg-[#0f2d52] flex items-center justify-center">
-                                                <h3 className="m-4 text-white">Parent Handbook</h3>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    <PDFHeader logo={logo} heading="Parent Handbook" />
                                 </div>
                             </div>
                         </div>
@@ -931,21 +916,7 @@ const ParentHandbook = forwardRef(({ initialFormData }, ref) => {
                         <div className="bg-white  text-[#0f2d52] text-black text-[16px]">
                             <div className="mb-0 ">
                                 <div className=" border-[#0F2D52]">
-                                    <div className="w-full border-b-2 border-[#0f2d52]">
-                                        <div className="flex w-full h-[180px]">
-                                            <div className="w-[50%]  flex items-center justify-center bg-white border-r-2 
-                          border-[#0f2d52] px-4">
-                                                <img
-                                                    src={logo}
-                                                    alt="Goddard Logo"
-                                                    className="max-h-[130px] max-w-full object-contain logo-style"
-                                                />
-                                            </div>
-                                            <div className="w-[50%] bg-[#0f2d52] flex items-center justify-center">
-                                                <h3 className="m-4 text-white">Parent Handbook</h3>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    <PDFHeader logo={logo} heading="Parent Handbook" />
                                 </div>
                             </div>
                         </div>
@@ -1006,21 +977,7 @@ const ParentHandbook = forwardRef(({ initialFormData }, ref) => {
                         <div className="bg-white  text-[#0f2d52] text-black text-[16px]">
                             <div className="mb-0 ">
                                 <div className=" border-[#0F2D52]">
-                                    <div className="w-full border-b-2 border-[#0f2d52]">
-                                        <div className="flex w-full h-[180px]">
-                                            <div className="w-[50%]  flex items-center justify-center bg-white border-r-2 
-                          border-[#0f2d52] px-4">
-                                                <img
-                                                    src={logo}
-                                                    alt="Goddard Logo"
-                                                    className="max-h-[130px] max-w-full object-contain logo-style"
-                                                />
-                                            </div>
-                                            <div className="w-[50%] bg-[#0f2d52] flex items-center justify-center">
-                                                <h3 className="m-4 text-white">Parent Handbook</h3>
-                                            </div>
-                                        </div>
-                                    </div>
+                                   <PDFHeader logo={logo} heading="Parent Handbook" />
                                 </div>
                             </div>
                         </div>
@@ -1096,21 +1053,7 @@ const ParentHandbook = forwardRef(({ initialFormData }, ref) => {
                         <div className="bg-white  text-[#0f2d52] text-black text-[16px]">
                             <div className="mb-0 ">
                                 <div className=" border-[#0F2D52]">
-                                    <div className="w-full border-b-2 border-[#0f2d52]">
-                                        <div className="flex w-full h-[180px]">
-                                            <div className="w-[50%]  flex items-center justify-center bg-white border-r-2 
-                          border-[#0f2d52] px-4">
-                                                <img
-                                                    src={logo}
-                                                    alt="Goddard Logo"
-                                                    className="max-h-[130px] max-w-full object-contain logo-style"
-                                                />
-                                            </div>
-                                            <div className="w-[50%] bg-[#0f2d52] flex items-center justify-center">
-                                                <h3 className="m-4 text-white">Parent Handbook</h3>
-                                            </div>
-                                        </div>
-                                    </div>
+                                 <PDFHeader logo={logo} heading="Parent Handbook" />
                                 </div>
                             </div>
                         </div>
@@ -1184,21 +1127,7 @@ const ParentHandbook = forwardRef(({ initialFormData }, ref) => {
                         <div className="bg-white  text-[#0f2d52] text-black text-[16px]">
                             <div className="mb-0 ">
                                 <div className=" border-[#0F2D52]">
-                                    <div className="w-full border-b-2 border-[#0f2d52]">
-                                        <div className="flex w-full h-[180px]">
-                                            <div className="w-[50%]  flex items-center justify-center bg-white border-r-2 
-                          border-[#0f2d52] px-4">
-                                                <img
-                                                    src={logo}
-                                                    alt="Goddard Logo"
-                                                    className="max-h-[130px] max-w-full object-contain logo-style"
-                                                />
-                                            </div>
-                                            <div className="w-[50%] bg-[#0f2d52] flex items-center justify-center">
-                                                <h3 className="m-4 text-white">Parent Handbook</h3>
-                                            </div>
-                                        </div>
-                                    </div>
+                                   <PDFHeader logo={logo} heading="Parent Handbook" />
                                 </div>
                             </div>
                         </div>
@@ -1272,21 +1201,7 @@ const ParentHandbook = forwardRef(({ initialFormData }, ref) => {
                         <div className="bg-white  text-[#0f2d52] text-black text-[16px]">
                             <div className="mb-0 ">
                                 <div className=" border-[#0F2D52]">
-                                    <div className="w-full border-b-2 border-[#0f2d52]">
-                                        <div className="flex w-full h-[180px]">
-                                            <div className="w-[50%]  flex items-center justify-center bg-white border-r-2 
-                          border-[#0f2d52] px-4">
-                                                <img
-                                                    src={logo}
-                                                    alt="Goddard Logo"
-                                                    className="max-h-[130px] max-w-full object-contain logo-style"
-                                                />
-                                            </div>
-                                            <div className="w-[50%] bg-[#0f2d52] flex items-center justify-center">
-                                                <h3 className="m-4 text-white">Parent Handbook</h3>
-                                            </div>
-                                        </div>
-                                    </div>
+                                   <PDFHeader logo={logo} heading="Parent Handbook" />
                                 </div>
                             </div>
                         </div>
@@ -1353,21 +1268,7 @@ const ParentHandbook = forwardRef(({ initialFormData }, ref) => {
                         <div className="bg-white  text-[#0f2d52] text-black text-[16px]">
                             <div className="mb-0 ">
                                 <div className=" border-[#0F2D52]">
-                                    <div className="w-full border-b-2 border-[#0f2d52]">
-                                        <div className="flex w-full h-[180px]">
-                                            <div className="w-[50%]  flex items-center justify-center bg-white border-r-2 
-                          border-[#0f2d52] px-4">
-                                                <img
-                                                    src={logo}
-                                                    alt="Goddard Logo"
-                                                    className="max-h-[130px] max-w-full object-contain logo-style"
-                                                />
-                                            </div>
-                                            <div className="w-[50%] bg-[#0f2d52] flex items-center justify-center">
-                                                <h3 className="m-4 text-white">Parent Handbook</h3>
-                                            </div>
-                                        </div>
-                                    </div>
+                                   <PDFHeader logo={logo} heading="Parent Handbook" />
                                 </div>
                             </div>
                         </div>
@@ -1442,21 +1343,7 @@ const ParentHandbook = forwardRef(({ initialFormData }, ref) => {
                         <div className="bg-white  text-[#0f2d52] text-black text-[16px]">
                             <div className="mb-0 ">
                                 <div className=" border-[#0F2D52]">
-                                    <div className="w-full border-b-2 border-[#0f2d52]">
-                                        <div className="flex w-full h-[180px]">
-                                            <div className="w-[50%]  flex items-center justify-center bg-white border-r-2 
-                          border-[#0f2d52] px-4">
-                                                <img
-                                                    src={logo}
-                                                    alt="Goddard Logo"
-                                                    className="max-h-[130px] max-w-full object-contain logo-style"
-                                                />
-                                            </div>
-                                            <div className="w-[50%] bg-[#0f2d52] flex items-center justify-center">
-                                                <h3 className="m-4 text-white">Parent Handbook</h3>
-                                            </div>
-                                        </div>
-                                    </div>
+                                   <PDFHeader logo={logo} heading="Parent Handbook" />
                                 </div>
                             </div>
                         </div>
@@ -1519,21 +1406,7 @@ const ParentHandbook = forwardRef(({ initialFormData }, ref) => {
                         <div className="bg-white  text-[#0f2d52] text-black text-[16px]">
                             <div className="mb-0 ">
                                 <div className=" border-[#0F2D52]">
-                                    <div className="w-full border-b-2 border-[#0f2d52]">
-                                        <div className="flex w-full h-[180px]">
-                                            <div className="w-[50%]  flex items-center justify-center bg-white border-r-2 
-                          border-[#0f2d52] px-4">
-                                                <img
-                                                    src={logo}
-                                                    alt="Goddard Logo"
-                                                    className="max-h-[130px] max-w-full object-contain logo-style"
-                                                />
-                                            </div>
-                                            <div className="w-[50%] bg-[#0f2d52] flex items-center justify-center">
-                                                <h3 className="m-4 text-white">Parent Handbook</h3>
-                                            </div>
-                                        </div>
-                                    </div>
+                                  <PDFHeader logo={logo} heading="Parent Handbook" />
                                 </div>
                             </div>
                         </div>
@@ -1604,21 +1477,7 @@ const ParentHandbook = forwardRef(({ initialFormData }, ref) => {
                         <div className="bg-white  text-[#0f2d52] text-black text-[16px]">
                             <div className="mb-0 ">
                                 <div className=" border-[#0F2D52]">
-                                    <div className="w-full border-b-2 border-[#0f2d52]">
-                                        <div className="flex w-full h-[180px]">
-                                            <div className="w-[50%]  flex items-center justify-center bg-white border-r-2 
-                          border-[#0f2d52] px-4">
-                                                <img
-                                                    src={logo}
-                                                    alt="Goddard Logo"
-                                                    className="max-h-[130px] max-w-full object-contain logo-style"
-                                                />
-                                            </div>
-                                            <div className="w-[50%] bg-[#0f2d52] flex items-center justify-center">
-                                                <h3 className="m-4 text-white">Parent Handbook</h3>
-                                            </div>
-                                        </div>
-                                    </div>
+                                   <PDFHeader logo={logo} heading="Parent Handbook" />
                                 </div>
                             </div>
                         </div>
@@ -1688,27 +1547,13 @@ const ParentHandbook = forwardRef(({ initialFormData }, ref) => {
 
 
 
-            <div className="m-5">
+            <div className="m-5 items-to-bring-section">
                 <div className="card">
                     <div className="form-body">
                         <div className="bg-white  text-[#0f2d52] text-black text-[16px]">
                             <div className="mb-0 ">
                                 <div className=" border-[#0F2D52]">
-                                    <div className="w-full border-b-2 border-[#0f2d52]">
-                                        <div className="flex w-full h-[180px]">
-                                            <div className="w-[50%]  flex items-center justify-center bg-white border-r-2 
-                          border-[#0f2d52] px-4">
-                                                <img
-                                                    src={logo}
-                                                    alt="Goddard Logo"
-                                                    className="max-h-[130px] max-w-full object-contain logo-style"
-                                                />
-                                            </div>
-                                            <div className="w-[50%] bg-[#0f2d52] flex items-center justify-center">
-                                                <h3 className="m-4 text-white">Parent Handbook</h3>
-                                            </div>
-                                        </div>
-                                    </div>
+                                   <PDFHeader logo={logo} heading="Parent Handbook" />
                                 </div>
                             </div>
                         </div>
@@ -1747,7 +1592,7 @@ const ParentHandbook = forwardRef(({ initialFormData }, ref) => {
                                 The parent must provide the following items for each toddler
                                 and/or preschooler:
                             </p>
-                            <ul className="p-5 pt-0 mb-0">
+                            <ul className=" mb-0">
                                 <li>Two full changes of clothing including socks and shoes</li>
                                 <li>Meals must be provided daily in a labeled lunch box</li>
                                 <li>Water cup daily, labeled with first and last name - No bottles/silicone nipples or
@@ -1774,21 +1619,7 @@ const ParentHandbook = forwardRef(({ initialFormData }, ref) => {
                         <div className="bg-white  text-[#0f2d52] text-black text-[16px]">
                             <div className="mb-0 ">
                                 <div className=" border-[#0F2D52]">
-                                    <div className="w-full border-b-2 border-[#0f2d52]">
-                                        <div className="flex w-full h-[180px]">
-                                            <div className="w-[50%]  flex items-center justify-center bg-white border-r-2 
-                          border-[#0f2d52] px-4">
-                                                <img
-                                                    src={logo}
-                                                    alt="Goddard Logo"
-                                                    className="max-h-[130px] max-w-full object-contain logo-style"
-                                                />
-                                            </div>
-                                            <div className="w-[50%] bg-[#0f2d52] flex items-center justify-center">
-                                                <h3 className="m-4 text-white">Parent Handbook</h3>
-                                            </div>
-                                        </div>
-                                    </div>
+                                   <PDFHeader logo={logo} heading="Parent Handbook" />
                                 </div>
                             </div>
                         </div>
@@ -1867,21 +1698,7 @@ const ParentHandbook = forwardRef(({ initialFormData }, ref) => {
                         <div className="bg-white  text-[#0f2d52] text-black text-[16px]">
                             <div className="mb-0 ">
                                 <div className=" border-[#0F2D52]">
-                                    <div className="w-full border-b-2 border-[#0f2d52]">
-                                        <div className="flex w-full h-[180px]">
-                                            <div className="w-[50%]  flex items-center justify-center bg-white border-r-2 
-                          border-[#0f2d52] px-4">
-                                                <img
-                                                    src={logo}
-                                                    alt="Goddard Logo"
-                                                    className="max-h-[130px] max-w-full object-contain logo-style"
-                                                />
-                                            </div>
-                                            <div className="w-[50%] bg-[#0f2d52] flex items-center justify-center">
-                                                <h3 className="m-4 text-white">Parent Handbook</h3>
-                                            </div>
-                                        </div>
-                                    </div>
+                                 <PDFHeader logo={logo} heading="Parent Handbook" />
                                 </div>
                             </div>
                         </div>
@@ -1938,21 +1755,7 @@ const ParentHandbook = forwardRef(({ initialFormData }, ref) => {
                         <div className="bg-white  text-[#0f2d52] text-black text-[16px]">
                             <div className="mb-0 ">
                                 <div className=" border-[#0F2D52]">
-                                    <div className="w-full border-b-2 border-[#0f2d52]">
-                                        <div className="flex w-full h-[180px]">
-                                            <div className="w-[50%]  flex items-center justify-center bg-white border-r-2 
-                          border-[#0f2d52] px-4">
-                                                <img
-                                                    src={logo}
-                                                    alt="Goddard Logo"
-                                                    className="max-h-[130px] max-w-full object-contain logo-style"
-                                                />
-                                            </div>
-                                            <div className="w-[50%] bg-[#0f2d52] flex items-center justify-center">
-                                                <h3 className="m-4 text-white">Parent Handbook</h3>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    <PDFHeader logo={logo} heading="Parent Handbook" />
                                 </div>
                             </div>
                         </div>
@@ -2019,21 +1822,7 @@ const ParentHandbook = forwardRef(({ initialFormData }, ref) => {
                         <div className="bg-white  text-[#0f2d52] text-black text-[16px]">
                             <div className="mb-0 ">
                                 <div className=" border-[#0F2D52]">
-                                    <div className="w-full border-b-2 border-[#0f2d52]">
-                                        <div className="flex w-full h-[180px]">
-                                            <div className="w-[50%]  flex items-center justify-center bg-white border-r-2 
-                          border-[#0f2d52] px-4">
-                                                <img
-                                                    src={logo}
-                                                    alt="Goddard Logo"
-                                                    className="max-h-[130px] max-w-full object-contain logo-style"
-                                                />
-                                            </div>
-                                            <div className="w-[50%] bg-[#0f2d52] flex items-center justify-center">
-                                                <h3 className="m-4 text-white">Parent Handbook</h3>
-                                            </div>
-                                        </div>
-                                    </div>
+                                 <PDFHeader logo={logo} heading="Parent Handbook" />
                                 </div>
                             </div>
                         </div>
@@ -2110,21 +1899,7 @@ const ParentHandbook = forwardRef(({ initialFormData }, ref) => {
                         <div className="bg-white  text-[#0f2d52] text-black text-[16px]">
                             <div className="mb-0 ">
                                 <div className=" border-[#0F2D52]">
-                                    <div className="w-full border-b-2 border-[#0f2d52]">
-                                        <div className="flex w-full h-[180px]">
-                                            <div className="w-[50%]  flex items-center justify-center bg-white border-r-2 
-                          border-[#0f2d52] px-4">
-                                                <img
-                                                    src={logo}
-                                                    alt="Goddard Logo"
-                                                    className="max-h-[130px] max-w-full object-contain logo-style"
-                                                />
-                                            </div>
-                                            <div className="w-[50%] bg-[#0f2d52] flex items-center justify-center">
-                                                <h3 className="m-4 text-white">Parent Handbook</h3>
-                                            </div>
-                                        </div>
-                                    </div>
+                                   <PDFHeader logo={logo} heading="Parent Handbook" />
                                 </div>
                             </div>
                         </div>
@@ -2172,21 +1947,7 @@ const ParentHandbook = forwardRef(({ initialFormData }, ref) => {
                         <div className="bg-white  text-[#0f2d52] text-black text-[16px]">
                             <div className="mb-0 ">
                                 <div className=" border-[#0F2D52]">
-                                    <div className="w-full border-b-2 border-[#0f2d52]">
-                                        <div className="flex w-full h-[180px]">
-                                            <div className="w-[50%]  flex items-center justify-center bg-white border-r-2 
-                          border-[#0f2d52] px-4">
-                                                <img
-                                                    src={logo}
-                                                    alt="Goddard Logo"
-                                                    className="max-h-[130px] max-w-full object-contain logo-style"
-                                                />
-                                            </div>
-                                            <div className="w-[50%] bg-[#0f2d52] flex items-center justify-center">
-                                                <h3 className="m-4 text-white">Parent Handbook</h3>
-                                            </div>
-                                        </div>
-                                    </div>
+                                   <PDFHeader logo={logo} heading="Parent Handbook" />
                                 </div>
                             </div>
                         </div>
@@ -2240,21 +2001,7 @@ const ParentHandbook = forwardRef(({ initialFormData }, ref) => {
                         <div className="bg-white  text-[#0f2d52] text-black text-[16px]">
                             <div className="mb-0 ">
                                 <div className=" border-[#0F2D52]">
-                                    <div className="w-full border-b-2 border-[#0f2d52]">
-                                        <div className="flex w-full h-[180px]">
-                                            <div className="w-[50%]  flex items-center justify-center bg-white border-r-2 
-                          border-[#0f2d52] px-4">
-                                                <img
-                                                    src={logo}
-                                                    alt="Goddard Logo"
-                                                    className="max-h-[130px] max-w-full object-contain logo-style"
-                                                />
-                                            </div>
-                                            <div className="w-[50%] bg-[#0f2d52] flex items-center justify-center">
-                                                <h3 className="m-4 text-white">Parent Handbook</h3>
-                                            </div>
-                                        </div>
-                                    </div>
+                                 <PDFHeader logo={logo} heading="Parent Handbook" />
                                 </div>
                             </div>
                         </div>
@@ -2328,21 +2075,7 @@ const ParentHandbook = forwardRef(({ initialFormData }, ref) => {
                         <div className="bg-white  text-[#0f2d52] text-black text-[16px]">
                             <div className="mb-0 ">
                                 <div className=" border-[#0F2D52]">
-                                    <div className="w-full border-b-2 border-[#0f2d52]">
-                                        <div className="flex w-full h-[180px]">
-                                            <div className="w-[50%]  flex items-center justify-center bg-white border-r-2 
-                          border-[#0f2d52] px-4">
-                                                <img
-                                                    src={logo}
-                                                    alt="Goddard Logo"
-                                                    className="max-h-[130px] max-w-full object-contain logo-style"
-                                                />
-                                            </div>
-                                            <div className="w-[50%] bg-[#0f2d52] flex items-center justify-center">
-                                                <h3 className="m-4 text-white">Parent Handbook</h3>
-                                            </div>
-                                        </div>
-                                    </div>
+                                  <PDFHeader logo={logo} heading="Parent Handbook" />
                                 </div>
                             </div>
                         </div>
@@ -2412,21 +2145,7 @@ const ParentHandbook = forwardRef(({ initialFormData }, ref) => {
                         <div className="bg-white  text-[#0f2d52] text-black text-[16px]">
                             <div className="mb-0 ">
                                 <div className=" border-[#0F2D52]">
-                                    <div className="w-full border-b-2 border-[#0f2d52]">
-                                        <div className="flex w-full h-[180px]">
-                                            <div className="w-[50%]  flex items-center justify-center bg-white border-r-2 
-                          border-[#0f2d52] px-4">
-                                                <img
-                                                    src={logo}
-                                                    alt="Goddard Logo"
-                                                    className="max-h-[130px] max-w-full object-contain logo-style"
-                                                />
-                                            </div>
-                                            <div className="w-[50%] bg-[#0f2d52] flex items-center justify-center">
-                                                <h3 className="m-4 text-white">Parent Handbook</h3>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    <PDFHeader logo={logo} heading="Parent Handbook" />
                                 </div>
                             </div>
                         </div>
@@ -2487,21 +2206,7 @@ const ParentHandbook = forwardRef(({ initialFormData }, ref) => {
                         <div className="bg-white  text-[#0f2d52] text-black text-[16px]">
                             <div className="mb-0 ">
                                 <div className=" border-[#0F2D52]">
-                                    <div className="w-full border-b-2 border-[#0f2d52]">
-                                        <div className="flex w-full h-[180px]">
-                                            <div className="w-[50%]  flex items-center justify-center bg-white border-r-2 
-                          border-[#0f2d52] px-4">
-                                                <img
-                                                    src={logo}
-                                                    alt="Goddard Logo"
-                                                    className="max-h-[130px] max-w-full object-contain logo-style"
-                                                />
-                                            </div>
-                                            <div className="w-[50%] bg-[#0f2d52] flex items-center justify-center">
-                                                <h3 className="m-4 text-white">Parent Handbook</h3>
-                                            </div>
-                                        </div>
-                                    </div>
+                                   <PDFHeader logo={logo} heading="Parent Handbook" />
                                 </div>
                             </div>
                         </div>
@@ -2557,21 +2262,7 @@ const ParentHandbook = forwardRef(({ initialFormData }, ref) => {
                         <div className="bg-white  text-[#0f2d52] text-black text-[16px]">
                             <div className="mb-0 ">
                                 <div className=" border-[#0F2D52]">
-                                    <div className="w-full border-b-2 border-[#0f2d52]">
-                                        <div className="flex w-full h-[180px]">
-                                            <div className="w-[50%]  flex items-center justify-center bg-white border-r-2 
-                          border-[#0f2d52] px-4">
-                                                <img
-                                                    src={logo}
-                                                    alt="Goddard Logo"
-                                                    className="max-h-[130px] max-w-full object-contain logo-style"
-                                                />
-                                            </div>
-                                            <div className="w-[50%] bg-[#0f2d52] flex items-center justify-center">
-                                                <h3 className="m-4 text-white">Parent Handbook</h3>
-                                            </div>
-                                        </div>
-                                    </div>
+                                  <PDFHeader logo={logo} heading="Parent Handbook" />
                                 </div>
                             </div>
                         </div>
@@ -2649,21 +2340,7 @@ const ParentHandbook = forwardRef(({ initialFormData }, ref) => {
                         <div className="bg-white  text-[#0f2d52] text-black text-[16px]">
                             <div className="mb-0 ">
                                 <div className=" border-[#0F2D52]">
-                                    <div className="w-full border-b-2 border-[#0f2d52]">
-                                        <div className="flex w-full h-[180px]">
-                                            <div className="w-[50%]  flex items-center justify-center bg-white border-r-2 
-                          border-[#0f2d52] px-4">
-                                                <img
-                                                    src={logo}
-                                                    alt="Goddard Logo"
-                                                    className="max-h-[130px] max-w-full object-contain logo-style"
-                                                />
-                                            </div>
-                                            <div className="w-[50%] bg-[#0f2d52] flex items-center justify-center">
-                                                <h3 className="m-4 text-white">Parent Handbook</h3>
-                                            </div>
-                                        </div>
-                                    </div>
+                                   <PDFHeader logo={logo} heading="Parent Handbook" />
                                 </div>
                             </div>
                         </div>
@@ -2737,21 +2414,7 @@ const ParentHandbook = forwardRef(({ initialFormData }, ref) => {
                         <div className="bg-white  text-[#0f2d52] text-black text-[16px]">
                             <div className="mb-0 ">
                                 <div className=" border-[#0F2D52]">
-                                    <div className="w-full border-b-2 border-[#0f2d52]">
-                                        <div className="flex w-full h-[180px]">
-                                            <div className="w-[50%]  flex items-center justify-center bg-white border-r-2 
-                          border-[#0f2d52] px-4">
-                                                <img
-                                                    src={logo}
-                                                    alt="Goddard Logo"
-                                                    className="max-h-[130px] max-w-full object-contain logo-style"
-                                                />
-                                            </div>
-                                            <div className="w-[50%] bg-[#0f2d52] flex items-center justify-center">
-                                                <h3 className="m-4 text-white">Parent Handbook</h3>
-                                            </div>
-                                        </div>
-                                    </div>
+                                  <PDFHeader logo={logo} heading="Parent Handbook" />
                                 </div>
                             </div>
                         </div>
@@ -2836,21 +2499,7 @@ const ParentHandbook = forwardRef(({ initialFormData }, ref) => {
                         <div className="bg-white  text-[#0f2d52] text-black text-[16px]">
                             <div className="mb-0 ">
                                 <div className=" border-[#0F2D52]">
-                                    <div className="w-full border-b-2 border-[#0f2d52]">
-                                        <div className="flex w-full h-[180px]">
-                                            <div className="w-[50%]  flex items-center justify-center bg-white border-r-2 
-                          border-[#0f2d52] px-4">
-                                                <img
-                                                    src={logo}
-                                                    alt="Goddard Logo"
-                                                    className="max-h-[130px] max-w-full object-contain logo-style"
-                                                />
-                                            </div>
-                                            <div className="w-[50%] bg-[#0f2d52] flex items-center justify-center">
-                                                <h3 className="m-4 text-white">Parent Handbook</h3>
-                                            </div>
-                                        </div>
-                                    </div>
+                                   <PDFHeader logo={logo} heading="Parent Handbook" />
                                 </div>
                             </div>
                         </div>
@@ -2917,21 +2566,7 @@ const ParentHandbook = forwardRef(({ initialFormData }, ref) => {
                         <div className="bg-white  text-[#0f2d52] text-black text-[16px]">
                             <div className="mb-0 ">
                                 <div className=" border-[#0F2D52]">
-                                    <div className="w-full border-b-2 border-[#0f2d52]">
-                                        <div className="flex w-full h-[180px]">
-                                            <div className="w-[50%]  flex items-center justify-center bg-white border-r-2 
-                          border-[#0f2d52] px-4">
-                                                <img
-                                                    src={logo}
-                                                    alt="Goddard Logo"
-                                                    className="max-h-[130px] max-w-full object-contain logo-style"
-                                                />
-                                            </div>
-                                            <div className="w-[50%] bg-[#0f2d52] flex items-center justify-center">
-                                                <h3 className="m-4 text-white">Parent Handbook</h3>
-                                            </div>
-                                        </div>
-                                    </div>
+                                   <PDFHeader logo={logo} heading="Parent Handbook" />
                                 </div>
                             </div>
                         </div>
@@ -2997,21 +2632,7 @@ const ParentHandbook = forwardRef(({ initialFormData }, ref) => {
                         <div className="bg-white  text-[#0f2d52] text-black text-[16px]">
                             <div className="mb-0 ">
                                 <div className=" border-[#0F2D52]">
-                                    <div className="w-full border-b-2 border-[#0f2d52]">
-                                        <div className="flex w-full h-[180px]">
-                                            <div className="w-[50%]  flex items-center justify-center bg-white border-r-2 
-                          border-[#0f2d52] px-4">
-                                                <img
-                                                    src={logo}
-                                                    alt="Goddard Logo"
-                                                    className="max-h-[130px] max-w-full object-contain logo-style"
-                                                />
-                                            </div>
-                                            <div className="w-[50%] bg-[#0f2d52] flex items-center justify-center">
-                                                <h3 className="m-4 text-white">Parent Handbook</h3>
-                                            </div>
-                                        </div>
-                                    </div>
+                                   <PDFHeader logo={logo} heading="Parent Handbook" />
                                 </div>
                             </div>
                         </div>
@@ -3063,21 +2684,7 @@ const ParentHandbook = forwardRef(({ initialFormData }, ref) => {
                         <div className="bg-white  text-[#0f2d52] text-black text-[16px]">
                             <div className="mb-0 ">
                                 <div className=" border-[#0F2D52]">
-                                    <div className="w-full border-b-2 border-[#0f2d52]">
-                                        <div className="flex w-full h-[180px]">
-                                            <div className="w-[50%]  flex items-center justify-center bg-white border-r-2 
-                          border-[#0f2d52] px-4">
-                                                <img
-                                                    src={logo}
-                                                    alt="Goddard Logo"
-                                                    className="max-h-[130px] max-w-full object-contain logo-style"
-                                                />
-                                            </div>
-                                            <div className="w-[50%] bg-[#0f2d52] flex items-center justify-center">
-                                                <h3 className="m-4 text-white">Parent Handbook</h3>
-                                            </div>
-                                        </div>
-                                    </div>
+                                   <PDFHeader logo={logo} heading="Parent Handbook" />
                                 </div>
                             </div>
                         </div>
@@ -3140,21 +2747,7 @@ const ParentHandbook = forwardRef(({ initialFormData }, ref) => {
                         <div className="bg-white  text-[#0f2d52] text-black text-[16px]">
                             <div className="mb-0 ">
                                 <div className=" border-[#0F2D52]">
-                                    <div className="w-full border-b-2 border-[#0f2d52]">
-                                        <div className="flex w-full h-[180px]">
-                                            <div className="w-[50%]  flex items-center justify-center bg-white border-r-2 
-                          border-[#0f2d52] px-4">
-                                                <img
-                                                    src={logo}
-                                                    alt="Goddard Logo"
-                                                    className="max-h-[130px] max-w-full object-contain logo-style"
-                                                />
-                                            </div>
-                                            <div className="w-[50%] bg-[#0f2d52] flex items-center justify-center">
-                                                <h3 className="m-4 text-white">Parent Handbook</h3>
-                                            </div>
-                                        </div>
-                                    </div>
+                                   <PDFHeader logo={logo} heading="Parent Handbook" />
                                 </div>
                             </div>
                         </div>
