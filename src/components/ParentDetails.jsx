@@ -307,6 +307,7 @@ const ParentDetails = () => {
         <div className="overflow-x-auto">
           <div className="min-w-full">
             <DataTable
+              key={`${selectedStatus}-${data.length}`}
               data={data}
               columns={columns}
               loading={loading}
