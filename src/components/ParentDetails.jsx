@@ -15,6 +15,8 @@ const ParentDetails = () => {
 
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [sendingEmail, setSendingEmail] = useState(false);
+  const [addingChild, setAddingChild] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState('All');
   const { alert, showAlert, closeAlert } = useAlertManager();
   const [showAddChildModal, setShowAddChildModal] = useState(false);
@@ -27,6 +29,17 @@ const ParentDetails = () => {
   useEffect(() => {
     loadData();
   }, []);
+
+  useEffect(() => {
+    if (sendingEmail || addingChild) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [sendingEmail, addingChild]);
 
   const loadData = async (statusFilter = '') => {
     setLoading(true);
@@ -60,6 +73,7 @@ const ParentDetails = () => {
   };
 
   const handleResendEmail = async (email) => {
+    setSendingEmail(true);
     try {
       const response = await fetch(`https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/parent_invite_mail/resend/${email}`, {
         method: 'GET'
@@ -72,6 +86,8 @@ const ParentDetails = () => {
       }
     } catch (error) {
       showAlert('error', 'Email sending failed!');
+    } finally {
+      setSendingEmail(false);
     }
   };
 
@@ -98,6 +114,31 @@ const ParentDetails = () => {
       }
     } catch (error) {
       showAlert('error', 'Failed to update status!');
+    }
+  };
+
+  const handleAddChild = async (childData) => {
+    setAddingChild(true);
+    try {
+      const response = await fetch('https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/child_info/create', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(childData)
+      });
+
+      const result = await response.json();
+      console.log(result);
+
+      if (result.message === "Child information created successfully") {
+        showAlert('success', 'Child information created successfully!');
+      } else {
+        showAlert('error', 'Failed to add child!');
+      }
+    } catch (error) {
+      console.log(error);
+      showAlert('error', 'Something went wrong.');
+    } finally {
+      setAddingChild(false);
     }
   };
 
@@ -274,7 +315,29 @@ const ParentDetails = () => {
       isOpen={showAddChildModal} 
       onClose={() => setShowAddChildModal(false)}
       parentEmail={selectedParentEmail}
+      onAddChild={handleAddChild}
     />
+
+    {/* Loading Modal */}
+    {(sendingEmail || addingChild) && (
+      <div 
+        className="fixed inset-0 z-50 flex items-center justify-center bg-white/30 backdrop-blur-sm px-4 overflow-hidden"
+        onClick={(e) => e.preventDefault()}
+        onWheel={(e) => e.preventDefault()}
+        onTouchMove={(e) => e.preventDefault()}
+        style={{ touchAction: 'none' }}
+      >
+        <div className="bg-white px-6 py-4 rounded-lg shadow-lg flex flex-col items-center">
+          <svg className="animate-spin h-6 w-6 text-blue-600 mb-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
+          </svg>
+          <span className="text-gray-700 text-sm font-medium">
+            {sendingEmail ? 'Sending Email...' : 'Adding Child...'}
+          </span>
+        </div>
+      </div>
+    )}
   
     {/* External CSS and JS (if still needed) */}
     <link href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap4.min.css" rel="stylesheet" />

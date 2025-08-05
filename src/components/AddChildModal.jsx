@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Alert from './Alert';
 
-const AddChildModal = ({ isOpen, onClose, parentEmail }) => {
+const AddChildModal = ({ isOpen, onClose, parentEmail, onAddChild }) => {
   const [formData, setFormData] = useState({
     child_first_name: '',
     child_last_name: '',
@@ -18,6 +18,19 @@ const AddChildModal = ({ isOpen, onClose, parentEmail }) => {
       loadParentInfo();
     }
   }, [isOpen, parentEmail]);
+
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+      // Clear form data when modal closes
+      setFormData({ child_first_name: '', child_last_name: '', class_id: '', parent_id: '' });
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isOpen]);
 
   const loadClassrooms = async () => {
     try {
@@ -52,40 +65,40 @@ const AddChildModal = ({ isOpen, onClose, parentEmail }) => {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!formData.child_first_name || !formData.child_last_name || !formData.class_id) {
-      showAlert('error', 'You have to fill all the fields!');
+  const submitForm = async () => {
+    console.log(formData);
+    const obj = { ...formData };
+    
+    // Validate each field individually
+    if (!obj.child_first_name || obj.child_first_name.trim() === '') {
+      showAlert('error', 'First Name is required!');
+      return;
+    }
+    
+    if (!obj.child_last_name || obj.child_last_name.trim() === '') {
+      showAlert('error', 'Last Name is required!');
+      return;
+    }
+    
+    if (!obj.class_id || obj.class_id === '') {
+      showAlert('error', 'Class Room selection is required!');
+      return;
+    }
+    
+    if (!obj.parent_id || obj.parent_id === '') {
+      showAlert('error', 'Parent information is required!');
       return;
     }
 
-    setLoading(true);
-    try {
-      const submitData = {
-        ...formData,
-        class_id: parseInt(formData.class_id)
-      };
+    // Close modal and let parent handle the API call with loading indicator
+    onClose();
+    obj.class_id = parseInt(obj.class_id);
+    onAddChild(obj);
+  };
 
-      const response = await fetch('https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/child_info/create', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(submitData)
-      });
-
-      const result = await response.json();
-
-      if (result.message === "Child information created successfully") {
-        showAlert('success', 'Child information created successfully!');
-        setFormData({ child_first_name: '', child_last_name: '', class_id: '', parent_id: '' });
-      } else {
-        showAlert('error', 'Failed to add child!');
-      }
-    } catch (error) {
-      // console.error('Error adding child:', error);
-      showAlert('error', 'Something went wrong.');
-    } finally {
-      setLoading(false);
-    }
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    await submitForm();
   };
 
   const showAlert = (type, message) => {
@@ -98,6 +111,7 @@ const AddChildModal = ({ isOpen, onClose, parentEmail }) => {
 
   const closeAlert = () => {
     setAlert({ show: false, type: '', message: '' });
+    setFormData({ child_first_name: '', child_last_name: '', class_id: '', parent_id: '' });
   };
 
   if (!isOpen) return null;
@@ -106,8 +120,21 @@ const AddChildModal = ({ isOpen, onClose, parentEmail }) => {
     <>
       <Alert show={alert.show} type={alert.type} message={alert.message} onClose={closeAlert} />
 
-      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 px-4">
-        <div className="bg-white rounded-lg shadow-xl w-full max-w-2xl mx-auto">
+      <div 
+        className="fixed inset-0 bg-white/30 backdrop-blur-sm flex items-center justify-center z-50 px-4 overflow-hidden"
+        onClick={(e) => {
+          if (e.target === e.currentTarget) {
+            onClose();
+          }
+        }}
+        onWheel={(e) => e.preventDefault()}
+        onTouchMove={(e) => e.preventDefault()}
+        style={{ touchAction: 'none' }}
+      >
+        <div 
+          className="bg-white rounded-lg shadow-xl w-full max-w-2xl mx-auto"
+          onClick={(e) => e.stopPropagation()}
+        >
           {/* Modal Header */}
           <div className="flex justify-between items-center p-4 border-b border-gray-200">
             <h5 className="text-lg font-semibold text-gray-900">Child Basic Information</h5>
@@ -135,6 +162,7 @@ const AddChildModal = ({ isOpen, onClose, parentEmail }) => {
                     value={formData.child_first_name}
                     onChange={handleInputChange}
                     disabled={loading}
+                    required
                     className="w-full border border-gray-400 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-700"
                   />
                 </div>
@@ -150,6 +178,7 @@ const AddChildModal = ({ isOpen, onClose, parentEmail }) => {
                     value={formData.child_last_name}
                     onChange={handleInputChange}
                     disabled={loading}
+                    required
                     className="w-full border border-gray-400 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-700"
                   />
                 </div>
@@ -165,6 +194,7 @@ const AddChildModal = ({ isOpen, onClose, parentEmail }) => {
                     value={formData.class_id}
                     onChange={handleInputChange}
                     disabled={loading}
+                    required
                     className="w-full border border-gray-400 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-700"
                   >
                     <option value="">Select Classroom</option>
@@ -184,6 +214,7 @@ const AddChildModal = ({ isOpen, onClose, parentEmail }) => {
                     type="text"
                     value={parentEmail}
                     disabled
+                    required
                     className="w-full border border-gray-400 rounded-md p-2 bg-gray-100 cursor-not-allowed"
                   />
                   <input type="hidden" name="parent_id" value={formData.parent_id} />
