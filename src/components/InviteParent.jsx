@@ -16,10 +16,22 @@ const InviteParent = () => {
   const [classrooms, setClassrooms] = useState([]);
   const [alert, setAlert] = useState({ show: false, type: '', message: '' });
   const [emailError, setEmailError] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     loadClassroomData();
   }, []);
+
+  useEffect(() => {
+    if (loading) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [loading]);
 
   const loadClassroomData = async () => {
     try {
@@ -70,6 +82,7 @@ const InviteParent = () => {
       return;
     }
 
+    setLoading(true);
     try {
       const response = await fetch('https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/parent_invite_with_mail_trigger/create', {
         method: 'POST',
@@ -97,6 +110,8 @@ const InviteParent = () => {
     } catch (error) {
       // console.error('Error:', error);
       showAlert('error', 'Error!');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -165,6 +180,7 @@ if(!isAuthenticated) {
                 name="child_fname"
                 value={formData.child_fname}
                 onChange={handleInputChange}
+                required
                 className="w-full p-2 mt-1 bg-white border border-gray-400 rounded focus:outline-none focus:ring-2 focus:ring-blue-900 focus:border-blue-900"
               />
             </div>
@@ -179,6 +195,7 @@ if(!isAuthenticated) {
                 name="child_lname"
                 value={formData.child_lname}
                 onChange={handleInputChange}
+                required
                 className="w-full p-2 mt-1 bg-white border border-gray-400 rounded focus:outline-none focus:ring-2 focus:ring-blue-900 focus:border-blue-900"
               />
             </div>
@@ -192,6 +209,7 @@ if(!isAuthenticated) {
                 name="child_classroom_id"
                 value={formData.child_classroom_id}
                 onChange={handleInputChange}
+                required
                 className="w-full p-2 mt-1 bg-white border border-gray-400 rounded focus:outline-none focus:ring-2 focus:ring-blue-900 focus:border-blue-900"
               >
                 <option value="">Select Classroom</option>
@@ -221,6 +239,7 @@ if(!isAuthenticated) {
                 name="parent_name"
                 value={formData.parent_name}
                 onChange={handleInputChange}
+                required
                 className="w-full p-2 mt-1 bg-white border border-gray-400 rounded focus:outline-none focus:ring-2 focus:ring-blue-900 focus:border-blue-900"
               />
             </div>
@@ -235,6 +254,7 @@ if(!isAuthenticated) {
                 name="invite_email"
                 value={formData.invite_email}
                 onChange={handleInputChange}
+                required
                 className="w-full p-2 mt-1 bg-white border border-gray-400 rounded focus:outline-none focus:ring-2 focus:ring-blue-900 focus:border-blue-900"
               />
               {emailError && (
@@ -249,13 +269,13 @@ if(!isAuthenticated) {
           <div className="mt-8 flex flex-col sm:flex-row justify-center items-center gap-4">
             <a
               href="/parent-details"
-              className="bg-blue-100 text-blue-900 border border-blue-900 px-6 py-3 rounded font-semibold hover:opacity-60 transition duration-200 w-full sm:w-auto text-center"
+              className="bg-blue-100 text-[#0F2D52] border border-[#0F2D52] px-6 py-3 rounded font-semibold hover:opacity-60 transition duration-200 w-full sm:w-auto text-center"
             >
               Cancel
             </a>
             <button
               type="submit"
-              className="bg-blue-900 text-white px-6 py-3 rounded font-semibold hover:opacity-70 transition duration-200 w-full sm:w-auto"
+              className="bg-[#0F2D52] text-white px-6 py-3 rounded font-semibold hover:opacity-70 transition duration-200 w-full sm:w-auto"
             >
               Send
             </button>
@@ -264,6 +284,25 @@ if(!isAuthenticated) {
       </div>
     </div>
   </div>
+
+  {/* Loading Modal */}
+  {loading && (
+    <div 
+      className="fixed inset-0 z-50 flex items-center justify-center bg-white/30 backdrop-blur-sm px-4 overflow-hidden"
+      onClick={(e) => e.preventDefault()}
+      onWheel={(e) => e.preventDefault()}
+      onTouchMove={(e) => e.preventDefault()}
+      style={{ touchAction: 'none' }}
+    >
+      <div className="bg-white px-6 py-4 rounded-lg shadow-lg flex flex-col items-center">
+        <svg className="animate-spin h-6 w-6 text-blue-600 mb-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
+        </svg>
+        <span className="text-gray-700 text-sm font-medium">Sending Invitation...</span>
+      </div>
+    </div>
+  )}
 </div>
 
   );

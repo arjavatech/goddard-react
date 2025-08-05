@@ -280,7 +280,7 @@ const ParentDetails = () => {
         <div className="flex justify-center mb-6 md:justify-start">
           <a
             href="/invite-parent"
-            className="bg-[#002e4d] text-white px-4 py-2 rounded-md hover:bg-blue-700 transition duration-200"
+            className="bg-[#002e4d] text-white px-4 py-2 rounded-md transition duration-200"
           >
             Invite Parent
           </a>
