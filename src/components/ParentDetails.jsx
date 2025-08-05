@@ -3,6 +3,7 @@ import { useAuth } from '../hooks/useAuth';
 import DataTable from './DataTable';
 import Header from './Header';
 import AddChildModal from './AddChildModal';
+import StatusUpdateModal from './StatusUpdateModal';
 import StatusSelect from './common/StatusSelect';
 import { useAlertManager } from './common/AlertManager';
 import { exportToExcel, exportToCSVFromData } from './common/ExcelExport';
@@ -17,10 +18,13 @@ const ParentDetails = () => {
   const [loading, setLoading] = useState(false);
   const [sendingEmail, setSendingEmail] = useState(false);
   const [addingChild, setAddingChild] = useState(false);
+  const [updatingStatus, setUpdatingStatus] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState('All');
   const { alert, showAlert, closeAlert } = useAlertManager();
   const [showAddChildModal, setShowAddChildModal] = useState(false);
+  const [showStatusUpdateModal, setShowStatusUpdateModal] = useState(false);
   const [selectedParentEmail, setSelectedParentEmail] = useState('');
+  const [selectedParentForStatus, setSelectedParentForStatus] = useState(null);
   const { isAuthenticated, signOut } = useAuth();
 
   // Inside your functional component
@@ -31,7 +35,7 @@ const ParentDetails = () => {
   }, []);
 
   useEffect(() => {
-    if (sendingEmail || addingChild) {
+    if (sendingEmail || addingChild || updatingStatus) {
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = 'unset';
@@ -39,7 +43,7 @@ const ParentDetails = () => {
     return () => {
       document.body.style.overflow = 'unset';
     };
-  }, [sendingEmail, addingChild]);
+  }, [sendingEmail, addingChild, updatingStatus]);
 
   const loadData = async (statusFilter = '') => {
     setLoading(true);
@@ -92,12 +96,7 @@ const ParentDetails = () => {
   };
 
   const handleStatusUpdate = async (parentId, newStatus) => {
-    const confirmed = window.confirm("Are you sure?");
-    if (!confirmed) {
-      window.location.reload();
-      return;
-    }
-
+    setUpdatingStatus(true);
     try {
       const response = await fetch(`https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/update_parent_info_status/${parentId}`, {
         method: 'PUT',
@@ -108,13 +107,21 @@ const ParentDetails = () => {
       const result = await response.json();
       if (result.message?.includes('updated successfully')) {
         showAlert('success', 'Parent Status Updated!');
-        loadData(selectedStatus);
+        // Refresh the table data to reflect the status change
+        await loadData(selectedStatus);
       } else {
         showAlert('error', 'Failed to update status!');
       }
     } catch (error) {
       showAlert('error', 'Failed to update status!');
+    } finally {
+      setUpdatingStatus(false);
     }
+  };
+
+  const openStatusUpdateModal = (parent, newStatus) => {
+    setSelectedParentForStatus({ ...parent, newStatus });
+    setShowStatusUpdateModal(true);
   };
 
   const handleAddChild = async (childData) => {
@@ -204,7 +211,7 @@ const ParentDetails = () => {
           <select
             className="w-full p-2 border border-blue-900 rounded bg-white appearance-none pr-8"
             value={row.status === 'Active' ? '1' : '2'}
-            onChange={(e) => handleStatusUpdate(row.parent_id, e.target.value)}
+            onChange={(e) => openStatusUpdateModal(row, e.target.value)}
           >
             <option value="1">Active</option>
             <option value="2">Archive</option>
@@ -318,8 +325,16 @@ const ParentDetails = () => {
       onAddChild={handleAddChild}
     />
 
+    {/* Status Update Modal */}
+    <StatusUpdateModal 
+      isOpen={showStatusUpdateModal} 
+      onClose={() => setShowStatusUpdateModal(false)}
+      parentData={selectedParentForStatus}
+      onUpdateStatus={handleStatusUpdate}
+    />
+
     {/* Loading Modal */}
-    {(sendingEmail || addingChild) && (
+    {(sendingEmail || addingChild || updatingStatus) && (
       <div 
         className="fixed inset-0 z-50 flex items-center justify-center bg-white/30 backdrop-blur-sm px-4 overflow-hidden"
         onClick={(e) => e.preventDefault()}
@@ -333,7 +348,7 @@ const ParentDetails = () => {
             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
           </svg>
           <span className="text-gray-700 text-sm font-medium">
-            {sendingEmail ? 'Sending Email...' : 'Adding Child...'}
+            {sendingEmail ? 'Sending Email...' : addingChild ? 'Adding Child...' : 'Updating Status...'}
           </span>
         </div>
       </div>
