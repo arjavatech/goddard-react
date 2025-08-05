@@ -45,11 +45,19 @@ const ParentDashboard = () => {
   const enrollFormRef = useRef();
 
 
-  const handleDownload1 = async () => {
+  const handleDownload1 = async (mode) => {
 
     try {
       console.log("function")
-      await admissionRef.current?.handleDownload2();
+      if (mode == "download") {
+        await admissionRef.current?.handleDownload2();
+      }
+      else {
+        console.log("print funtion start")
+        await admissionRef.current?.handlePrint2();
+        console.log("print funtion end")
+      }
+
       console.log("function end")
     } catch (error) {
       console.error("Error in download:", error);
@@ -59,34 +67,56 @@ const ParentDashboard = () => {
     }
   };
 
+
+
   // Function to handle the download button click
-  const handleDownload2 = async () => {
+  const handleDownload2 = async (mode) => {
     try {
+      if (mode == "download") {
+        await achFormRef.current?.handleDownload2();
+      }
+      else {
+        await achFormRef.current?.handlePrint2();
+      }
       // Call the handleGeneratePdf method directly on the ACHForm component via its ref
-      await achFormRef.current?.handleGeneratePdf(); 
+
     } catch (error) {
       console.error("Error in download:", error);
-      
-    } 
+
+    }
   };
 
-   const handleDownload3 = async () => {
+  const handleDownload3 = async (mode) => {
     try {
       // Call the handleGeneratePdf method directly on the ACHForm component via its ref
-      await phbFormRef.current?.generatePdf(); 
+      if (mode == "download") {
+        await phbFormRef.current?.generatePdf();
+      }
+      else {
+        await phbFormRef.current?.handlePrint2();
+      }
+
     } catch (error) {
       console.error("Error in download:", error);
-      
-    } 
+
+    }
   };
 
-  const handleDownload4 = async () => {
+  const handleDownload4 = async (mode) => {
     try {
-      await enrollFormRef.current?.generatePdf(); 
+      console.log("enrollment form")
+      if (mode == "download") {
+        console.log("enrollment form pdf")
+        await enrollFormRef.current?.generatePdf();
+      }
+      else{
+        await enrollFormRef.current?.generatePrint()
+      }
+
     } catch (error) {
       console.error("Error in download:", error);
-      
-    } 
+
+    }
   };
 
   useEffect(() => {
@@ -441,7 +471,7 @@ const ParentDashboard = () => {
             addMultiPage(content).then(() => {
               console.log('PDF generated successfully, saving...');
               console.log(formName);
-            console.log("----------------------------")
+              console.log("----------------------------")
               pdf.save(`${formName}.pdf`);
 
               // Restore original font sizes
@@ -501,7 +531,7 @@ const ParentDashboard = () => {
 
         doc.html(hiddenDiv, {
           callback: function () {
-            
+
             doc.save(`${formName}.pdf`);
             document.body.removeChild(hiddenDiv);
           },
@@ -518,73 +548,73 @@ const ParentDashboard = () => {
   };
 
   // Handle print functionality
-  const handlePrint = async (formName, url) => {
-    console.log('Print button clicked for:', formName, 'URL:', url);
+  // const handlePrint = async (formName, url) => {
+  //   console.log('Print button clicked for:', formName, 'URL:', url);
 
-    const formRef = getFormRef(formName);
-    if (formRef) {
-      console.log(`Processing ${formName} print from PDF component...`);
-      // Handle PDF form print directly from component
-      const content = formRef.current;
-      if (!content) {
-        console.error(`${formName} content not found for printing`);
-        return;
-      }
+  //   const formRef = getFormRef(formName);
+  //   if (formRef) {
+  //     console.log(`Processing ${formName} print from PDF component...`);
+  //     // Handle PDF form print directly from component
+  //     const content = formRef.current;
+  //     if (!content) {
+  //       console.error(`${formName} content not found for printing`);
+  //       return;
+  //     }
 
-      console.log(`${formName} content found, opening print window...`);
-      const printWindow = window.open('', '_blank');
-      printWindow.document.write(`
-        <html>
-          <head>
-            <title>Goddard ${formName.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}</title>
-            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" />
-            <style>
-            p, ol li, ul li { font-weight: 500; text-align: justify; }
-              .form-body { border: 2px solid #0F2D52; }
-              .header-border { border-bottom: 2px solid #0F2D52; }
-              .title_bg { background-color: #0F2D52; color: white;  }
-              .logo-style { display: flex; align-items: center; justify-content: center; }
-              .custom-checkbox { display: none; }
-            </style>
-          </head>
-          <body>
-            ${content.innerHTML}
-          </body>
-        </html>
-      `);
-      printWindow.document.close();
-      printWindow.focus();
-      setTimeout(() => {
-        console.log('Triggering print dialog...');
-        printWindow.print();
-        printWindow.close();
-        console.log('Print completed successfully');
-      }, 500);
-      return;
-    }
+  //     console.log(`${formName} content found, opening print window...`);
+  //     const printWindow = window.open('', '_blank');
+  //     printWindow.document.write(`
+  //       <html>
+  //         <head>
+  //           <title>Goddard ${formName.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}</title>
+  //           <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" />
+  //           <style>
+  //           p, ol li, ul li { font-weight: 500; text-align: justify; }
+  //             .form-body { border: 2px solid #0F2D52; }
+  //             .header-border { border-bottom: 2px solid #0F2D52; }
+  //             .title_bg { background-color: #0F2D52; color: white;  }
+  //             .logo-style { display: flex; align-items: center; justify-content: center; }
+  //             .custom-checkbox { display: none; }
+  //           </style>
+  //         </head>
+  //         <body>
+  //           ${content.innerHTML}
+  //         </body>
+  //       </html>
+  //     `);
+  //     printWindow.document.close();
+  //     printWindow.focus();
+  //     setTimeout(() => {
+  //       console.log('Triggering print dialog...');
+  //       printWindow.print();
+  //       printWindow.close();
+  //       console.log('Print completed successfully');
+  //     }, 500);
+  //     return;
+  //   }
 
-    // For other forms, use the existing HTML file approach
-    console.log('Processing regular form print for:', formName);
-    try {
-      const response = await fetch(url);
-      const text = await response.text();
+  //   // For other forms, use the existing HTML file approach
+  //   console.log('Processing regular form print for:', formName);
+  //   try {
+  //     const response = await fetch(url);
+  //     const text = await response.text();
 
-      const printWindow = window.open('', '', 'height=1400,width=1500');
-      printWindow.document.write('<html><head><title>Print Form</title>');
-      printWindow.document.write('</head><body>');
-      printWindow.document.write(text);
-      printWindow.document.write('</body></html>');
-      printWindow.document.close();
+  //     const printWindow = window.open('', '', 'height=1400,width=1500');
+  //     printWindow.document.write('<html><head><title>Print Form</title>');
+  //     printWindow.document.write('</head><body>');
+  //     printWindow.document.write(text);
+  //     printWindow.document.write('</body></html>');
+  //     printWindow.document.close();
 
-      printWindow.onload = function () {
-        printWindow.focus();
-        printWindow.print();
-        printWindow.close();
-      };
-    } catch (error) {
-      console.error('Error printing form:', error);
-    }
-  };
+  //     printWindow.onload = function () {
+  //       printWindow.focus();
+  //       printWindow.print();
+  //       printWindow.close();
+  //     };
+  //   } catch (error) {
+  //     console.error('Error printing form:', error);
+  //   }
+  // };
 
   // Get form URLs for download/print (now all forms use direct component approach)
   const getFormUrls = (formName) => {
@@ -873,22 +903,18 @@ const ParentDashboard = () => {
                                     e.preventDefault();
                                     e.stopPropagation();
                                     if (formName == 'admission_form') {
-                                      handleDownload1();
+                                      handleDownload1("download");
                                     }
-                                    else if(formName == 'authorization_form')
-                                    {
-                                      handleDownload2();
+                                    else if (formName == 'authorization_form') {
+                                      handleDownload2("download");
                                     }
-                                    else if(formName == 'parent_handbook')
-                                    {
-                                      handleDownload3();
+                                    else if (formName == 'parent_handbook') {
+                                      handleDownload3("download");
                                     }
-                                    else if(formName == 'enrollment_form' || formName == 'enrollment_agreement')
-                                    {
-                                      handleDownload4();
+                                    else if (formName == 'enrollment_form' || formName == 'enrollment_agreement') {
+                                      handleDownload4("download");
                                     }
-                                    else
-                                    {
+                                    else {
                                       console.log('Unknown form name:', formName);
                                       handleDownload4(); // Default to enrollment download
                                     }
@@ -920,7 +946,22 @@ const ParentDashboard = () => {
                                     e.stopPropagation();
                                     console.log('Print button clicked - immediate log');
 
-                                    handlePrint(row.formname, urls.print);
+                                    if (formName == 'admission_form') {
+                                      handleDownload1("print");
+                                    }
+                                    else if (formName == 'authorization_form') {
+                                      handleDownload2("print");
+                                    }
+                                    else if (formName == 'parent_handbook') {
+                                      handleDownload3("print");
+                                    }
+                                    else if (formName == 'enrollment_form' || formName == 'enrollment_agreement') {
+                                      handleDownload4("print");
+                                    }
+                                    else {
+                                      console.log('Unknown form name:', formName);
+                                      handleDownload4(); // Default to enrollment download
+                                    }
                                   }}
                                   title="Print"
                                 >
@@ -947,7 +988,7 @@ const ParentDashboard = () => {
           </div>
         </div>
       </div>
-      
+
       <div style={{
         position: 'fixed',
         left: '-100vw',
@@ -960,60 +1001,60 @@ const ParentDashboard = () => {
       }}>
         <div ref={admissionFormRef} id="admission-content" style={{
 
-      }}>
-        <AdmissionSection ref={admissionFormRef} initialFormData={childFormData} />
-      </div>
-          
-          
+        }}>
+          <AdmissionSection ref={admissionFormRef} initialFormData={childFormData} />
+        </div>
+
+
         <ParentHandbook ref={phbFormRef} initialFormData={childFormData ? (() => {
           console.log('ParentDashboard - ParentHandbook sample checkbox values:');
           console.log('welcome_goddard_agreement:', childFormData.welcome_goddard_agreement);
           console.log('finalword_agreement:', childFormData.finalword_agreement);
           return {
-          welcome_goddard_agreement: childFormData.welcome_goddard_agreement || '',
-          mission_statement_agreement: childFormData.mission_statement_agreement || '',
-          general_information_agreement: childFormData.general_information_agreement || '',
-          medical_care_provider_agreement: childFormData.medical_care_provider_agreement || '',
-          parent_access_agreement: childFormData.parent_access_agreement || '',
-          release_of_children_agreement: childFormData.release_of_children_agreement || '',
-          registration_fees_agreement: childFormData.registration_fees_agreement || '',
-          outside_engagements_agreement: childFormData.outside_engagements_agreement || '',
-          health_policies_agreement: childFormData.health_policies_agreement || '',
-          medication_procedures_agreement: childFormData.medication_procedures_agreement || '',
-          bring_to_school_agreement: childFormData.bring_to_school_agreement || '',
-          rest_time_agreement: childFormData.rest_time_agreement || '',
-          training_philosophy_agreement: childFormData.training_philosophy_agreement || '',
-          affiliation_policy_agreement: childFormData.affiliation_policy_agreement || '',
-          security_issue_agreement: childFormData.security_issue_agreement || '',
-          expulsion_policy_agreement: childFormData.expulsion_policy_agreement || '',
-          addressing_individual_child_agreement: childFormData.addressing_individual_child_agreement || '',
-          finalword_agreement: childFormData.finalword_agreement || '',
-          parent_sign_handbook: childFormData.parent_sign_handbook || '',
-          parent_sign_date_handbook: childFormData.parent_sign_date_handbook || '',
-          admin_sign_handbook: childFormData.admin_sign_handbook || '',
-          admin_sign_date_handbook: childFormData.admin_sign_date_handbook || '',
-          handbook_pointer: childFormData.handbook_pointer || ''
+            welcome_goddard_agreement: childFormData.welcome_goddard_agreement || '',
+            mission_statement_agreement: childFormData.mission_statement_agreement || '',
+            general_information_agreement: childFormData.general_information_agreement || '',
+            medical_care_provider_agreement: childFormData.medical_care_provider_agreement || '',
+            parent_access_agreement: childFormData.parent_access_agreement || '',
+            release_of_children_agreement: childFormData.release_of_children_agreement || '',
+            registration_fees_agreement: childFormData.registration_fees_agreement || '',
+            outside_engagements_agreement: childFormData.outside_engagements_agreement || '',
+            health_policies_agreement: childFormData.health_policies_agreement || '',
+            medication_procedures_agreement: childFormData.medication_procedures_agreement || '',
+            bring_to_school_agreement: childFormData.bring_to_school_agreement || '',
+            rest_time_agreement: childFormData.rest_time_agreement || '',
+            training_philosophy_agreement: childFormData.training_philosophy_agreement || '',
+            affiliation_policy_agreement: childFormData.affiliation_policy_agreement || '',
+            security_issue_agreement: childFormData.security_issue_agreement || '',
+            expulsion_policy_agreement: childFormData.expulsion_policy_agreement || '',
+            addressing_individual_child_agreement: childFormData.addressing_individual_child_agreement || '',
+            finalword_agreement: childFormData.finalword_agreement || '',
+            parent_sign_handbook: childFormData.parent_sign_handbook || '',
+            parent_sign_date_handbook: childFormData.parent_sign_date_handbook || '',
+            admin_sign_handbook: childFormData.admin_sign_handbook || '',
+            admin_sign_date_handbook: childFormData.admin_sign_date_handbook || '',
+            handbook_pointer: childFormData.handbook_pointer || ''
           };
         })() : null} />
 
 
-       <ACHForm ref={achFormRef} initialFormData={childFormData ? {
-                bank_routing: childFormData.bank_routing || '',
-                bank_account: childFormData.bank_account || '',
-                driver_license: childFormData.driver_license || '',
-                state: childFormData.state || '',
-                i: childFormData.i || '',
-                parent_sign_ach: childFormData.parent_sign_ach || '',
-                parent_sign_date_ach: childFormData.parent_sign_date_ach || '',
-                admin_sign_ach: childFormData.admin_sign_ach || '',
-                admin_sign_date_ach: childFormData.admin_sign_date_ach || ''
-              } : null}/>
+        <ACHForm ref={achFormRef} initialFormData={childFormData ? {
+          bank_routing: childFormData.bank_routing || '',
+          bank_account: childFormData.bank_account || '',
+          driver_license: childFormData.driver_license || '',
+          state: childFormData.state || '',
+          i: childFormData.i || '',
+          parent_sign_ach: childFormData.parent_sign_ach || '',
+          parent_sign_date_ach: childFormData.parent_sign_date_ach || '',
+          admin_sign_ach: childFormData.admin_sign_ach || '',
+          admin_sign_date_ach: childFormData.admin_sign_date_ach || ''
+        } : null} />
 
-        
-          <EnrollmentAgreementPDF ref={enrollFormRef} initialFormData={childFormData ? (() => {
-            console.log('ParentDashboard - childFormData.full_day:', childFormData.full_day);
-            console.log('ParentDashboard - childFormData.half_day:', childFormData.half_day);
-            const formData = {
+
+        <EnrollmentAgreementPDF ref={enrollFormRef} initialFormData={childFormData ? (() => {
+          console.log('ParentDashboard - childFormData.full_day:', childFormData.full_day);
+          console.log('ParentDashboard - childFormData.half_day:', childFormData.half_day);
+          const formData = {
             point_one_field_one: childFormData.point_one_field_one || '',
             point_one_field_three: childFormData.point_one_field_three || '',
             point_two_initial_here: childFormData.point_two_initial_here || '',
@@ -1044,11 +1085,11 @@ const ParentDashboard = () => {
             preferred_home_addr: childFormData.preferred_home_addr || '',
             parent_sign_enroll: childFormData.parent_sign_enroll || '',
             parent_sign_date_enroll: childFormData.parent_sign_date_enroll || ''
-            };
-            console.log('ParentDashboard - transformed formData.full_day:', formData.full_day);
-            console.log('ParentDashboard - transformed formData.half_day:', formData.half_day);
-            return formData;
-          })() : null} />
+          };
+          console.log('ParentDashboard - transformed formData.full_day:', formData.full_day);
+          console.log('ParentDashboard - transformed formData.half_day:', formData.half_day);
+          return formData;
+        })() : null} />
       </div>
     </div>
   );

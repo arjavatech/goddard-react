@@ -1,0 +1,129 @@
+/* A4 Print Styles - Two Sections Per Page */
+@media print {
+  @page {
+    size: A4;
+    margin: 20mm;
+  }
+
+  body {
+    font-family: Arial, sans-serif;
+    font-size: 12pt;
+    line-height: 1.4;
+  }
+
+  .pdf-section {
+    page-break-inside: avoid;
+    height: calc(50vh - 40px);
+    padding: 15px;
+    border: 1px solid #ccc;
+    margin-bottom: 20px;
+    background: white;
+  }
+
+  .pdf-section:nth-child(odd) {
+    page-break-after: avoid;
+  }
+
+  .pdf-section:nth-child(even) {
+    page-break-after: always;
+  }
+
+  .form-row {
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+  }
+
+  .form-row label {
+    width: 150px;
+    font-weight: bold;
+    margin-right: 10px;
+  }
+
+  .form-row input {
+    flex: 1;
+    padding: 5px;
+    border: none;
+    border-bottom: 1px solid #000;
+    background: transparent;
+  }
+
+  .checkbox-section,
+  .radio-section {
+    margin: 10px 0;
+  }
+
+  .checkbox-section label,
+  .radio-section label {
+    display: flex;
+    align-items: center;
+    margin: 5px 0;
+  }
+
+  .checkbox-section input,
+  .radio-section input {
+    margin-right: 8px;
+  }
+}
+
+/* Screen styles */
+.admission-form {
+  max-width: 210mm;
+  margin: 0 auto;
+  background: white;
+}
+
+.pdf-section {
+  min-height: 300px;
+  padding: 20px;
+  border: 1px solid #ddd;
+  margin-bottom: 20px;
+  background: white;
+}
+
+.pdf-section h2 {
+  margin-top: 0;
+  color: #333;
+  border-bottom: 2px solid #007bff;
+  padding-bottom: 10px;
+}
+
+.form-row {
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+}
+
+.form-row label {
+  width: 150px;
+  font-weight: bold;
+  margin-right: 10px;
+}
+
+.form-row input {
+  flex: 1;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.checkbox-section,
+.radio-section {
+  margin: 15px 0;
+  padding: 15px;
+  background: #f8f9fa;
+  border-radius: 4px;
+}
+
+.checkbox-section label,
+.radio-section label {
+  display: flex;
+  align-items: center;
+  margin: 8px 0;
+  cursor: pointer;
+}
+
+.checkbox-section input,
+.radio-section input {
+  margin-right: 8px;
+}

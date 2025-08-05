@@ -27,10 +27,10 @@ const EnrollmentAgreementForm = forwardRef(({ initialFormData }, ref) => {
         if (initialFormData) {
             const fullDayValue = isChecked(initialFormData.full_day);
             const halfDayValue = isChecked(initialFormData.half_day);
-            
+
             console.log('Setting fullDayChecked to:', fullDayValue);
             console.log('Setting halfDayChecked to:', halfDayValue);
-            
+
             setFullDayChecked(fullDayValue);
             setHalfDayChecked(halfDayValue);
         }
@@ -79,9 +79,68 @@ const EnrollmentAgreementForm = forwardRef(({ initialFormData }, ref) => {
         });
     };
 
+
+    const handlePrint = useCallback(() => {
+        try {
+            const content = document.getElementById("enrollment-agreement-content");
+
+            if (!content) {
+                console.error('Error: The element with ID "enrollment-agreement-content" was not found.');
+                return;
+            }
+
+            // Clone the content to avoid modifying the original
+            const printContent = content.cloneNode(true);
+
+            // Apply inline styles for better print rendering (optional)
+            const style = `
+            <style>
+                body {
+                    font-family: Arial, sans-serif;
+                    margin: 20px;
+                    color: #000;
+                }
+                .underline-input, .text-box, input[type="text"], input[type="date"] {
+                    border-bottom: 2px solid #000 !important;
+                    padding: 2px 0;
+                }
+                @page {
+                    margin: 20mm;
+                }
+            </style>
+        `;
+
+            // Create a new print window
+            const printWindow = window.open('', '', 'width=900,height=650');
+
+            printWindow.document.open();
+            printWindow.document.write(`
+            <html>
+                <head>
+                    <title>Print Enrollment Agreement</title>
+                    ${style}
+                </head>
+                <body>
+                    ${printContent.outerHTML}
+                </body>
+            </html>
+        `);
+            printWindow.document.close();
+
+            // Wait for the content to load and then print
+            printWindow.onload = () => {
+                printWindow.focus();
+                printWindow.print();
+                printWindow.close();
+            };
+
+        } catch (error) {
+            console.error('Error during print process:', error);
+        }
+    }, []);
+
+
     const handleGeneratePdf = useCallback(async () => {
-        // setLoadingPdf(true);
-        // setPdfError(null);
 
         const elementsToRestore = [];
         const inputStylesToRestore = [];
@@ -105,7 +164,7 @@ const EnrollmentAgreementForm = forwardRef(({ initialFormData }, ref) => {
             console.log('Content element found:', content);
 
 
-            
+
 
 
             const replaceOKLCHColors = (element) => {
@@ -242,7 +301,7 @@ const EnrollmentAgreementForm = forwardRef(({ initialFormData }, ref) => {
             // setPdfError('Failed to generate PDF. Please try again.');
         } finally {
 
-           
+
             inputStylesToRestore.forEach(item => {
                 item.element.style.borderBottom = item.originalBorderBottom || '';
                 item.element.style.borderColor = item.originalBorderColor || '';
@@ -259,7 +318,8 @@ const EnrollmentAgreementForm = forwardRef(({ initialFormData }, ref) => {
     }, []);
 
     useImperativeHandle(ref, () => ({
-        generatePdf: handleGeneratePdf
+        generatePdf: handleGeneratePdf,
+        generatePint: handlePrint
     }));
 
     return (
@@ -755,22 +815,22 @@ const EnrollmentAgreementForm = forwardRef(({ initialFormData }, ref) => {
                         <div className="p-3 sm:p-5">
                             <div className="flex flex-wrap -mx-2">
                                 <div className="w-full sm:w-1/2 px-2 mb-4 flex items-center gap-2">
-                                    <input 
-                                        type="checkbox" 
-                                        className="custom-checkbox h-4 w-4 sm:h-5 sm:w-5 appearance-none bg-white border-2 border-gray-700 rounded-md cursor-pointer outline-none transition-all duration-300 ease-in-out checked:bg-[#0F2D52] checked:border-[#0F2D52] checked:after:content-['✓'] checked:after:text-white checked:after:absolute checked:after:top-1/2 checked:after:left-1/2 checked:after:-translate-x-1/2 checked:after:-translate-y-1/2 checked:after:opacity-100 after:opacity-0 after:transition-opacity after:duration-1000 after:ease-in-out" 
-                                        id="full_day" 
-                                        name="full_day" 
+                                    <input
+                                        type="checkbox"
+                                        className="custom-checkbox h-4 w-4 sm:h-5 sm:w-5 appearance-none bg-white border-2 border-gray-700 rounded-md cursor-pointer outline-none transition-all duration-300 ease-in-out checked:bg-[#0F2D52] checked:border-[#0F2D52] checked:after:content-['✓'] checked:after:text-white checked:after:absolute checked:after:top-1/2 checked:after:left-1/2 checked:after:-translate-x-1/2 checked:after:-translate-y-1/2 checked:after:opacity-100 after:opacity-0 after:transition-opacity after:duration-1000 after:ease-in-out"
+                                        id="full_day"
+                                        name="full_day"
                                         checked={fullDayChecked}
                                         onChange={(e) => setFullDayChecked(e.target.checked)}
                                     />
                                     <label className="text-sm sm:text-base" htmlFor="full_day">
                                         <span><b>Full-Day</b></span>
                                     </label>
-                                    <input 
-                                        type="checkbox" 
-                                        className="custom-checkbox h-4 w-4 sm:h-5 sm:w-5 appearance-none bg-white border-2 border-gray-700 rounded-md cursor-pointer outline-none transition-all duration-300 ease-in-out checked:bg-[#0F2D52] checked:border-[#0F2D52] checked:after:content-['✓'] checked:after:text-white checked:after:absolute checked:after:top-1/2 checked:after:left-1/2 checked:after:-translate-x-1/2 checked:after:-translate-y-1/2 checked:after:opacity-100 after:opacity-0 after:transition-opacity after:duration-1000 after:ease-in-out" 
-                                        id="half_day" 
-                                        name="half_day" 
+                                    <input
+                                        type="checkbox"
+                                        className="custom-checkbox h-4 w-4 sm:h-5 sm:w-5 appearance-none bg-white border-2 border-gray-700 rounded-md cursor-pointer outline-none transition-all duration-300 ease-in-out checked:bg-[#0F2D52] checked:border-[#0F2D52] checked:after:content-['✓'] checked:after:text-white checked:after:absolute checked:after:top-1/2 checked:after:left-1/2 checked:after:-translate-x-1/2 checked:after:-translate-y-1/2 checked:after:opacity-100 after:opacity-0 after:transition-opacity after:duration-1000 after:ease-in-out"
+                                        id="half_day"
+                                        name="half_day"
                                         checked={halfDayChecked}
                                         onChange={(e) => setHalfDayChecked(e.target.checked)}
                                     />

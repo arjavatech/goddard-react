@@ -1,6 +1,5 @@
 import React, { useState, useCallback, useImperativeHandle, forwardRef, useEffect } from 'react';
 import logo from "/image/gs_logo_branch.png";
-import '../../css/all_forms.css'
 
 const ParentHandbook = forwardRef(({ initialFormData }, ref) => {
     console.log('ParentHandbook - initialFormData:', initialFormData);
@@ -55,13 +54,68 @@ const ParentHandbook = forwardRef(({ initialFormData }, ref) => {
         });
     };
 
+
+    // Handle printing functionality
+    const handlePrint = () => {
+        const content = document.getElementById("parent-handbook-content");;
+        const printWindow = window.open('', '_blank');
+        printWindow.document.write(`
+      <html>
+        <head>
+          <title>Goddard Parent Handbook</title>
+          <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" />
+          <style>
+          p, ol li, ul li { font-weight: 500; text-align: justify; }
+            .form-body { border: 2px solid #0F2D52; }
+            .header-border { border-bottom: 2px solid #0F2D52; }
+            .title_bg { background-color: #0F2D52; color: white;  }
+            .logo-style { width: 100%; height: auto; max-width: 100%; object-fit: contain; }
+            .flex { display: flex; }
+            .items-center { align-items: center; }
+            .justify-center { justify-content: center; }
+            .w-\[50\%\] { width: 50% !important; }
+            .h-\[180px\] { height: 180px !important; }
+            .bg-white { background-color: white !important; }
+            .bg-\[\#0f2d52\] { background-color: #0f2d52 !important; }
+            .border-r-2 { border-right: 2px solid #0f2d52 !important; }
+            .border-\[\#0f2d52\] { border-color: #0f2d52 !important; }
+            .px-4 { padding-left: 0.5rem !important; padding-right: 0.5rem !important; }
+            .m-4 { margin: 1rem !important; }
+            .text-white { color: white !important; }
+            .max-h-\[130px\] { max-height: 130px !important; }
+            .max-w-full { max-width: 100% !important; }
+            .object-contain { object-fit: contain !important; }
+            .logo-style { max-width: 85% !important; height: auto !important; object-fit: contain !important; display: block !important; margin: 0 auto !important; }
+            .custom-checkbox { display: none; }
+            @media print {
+              .m-5 { margin: 0.5rem !important; }
+              .card { margin-bottom: 0 !important; }
+              .form-body { margin-bottom: 0 !important; }
+              .m-5:not(:first-child) { page-break-before: always !important; }
+            }
+          </style>
+        </head>
+        <body>
+          ${content.innerHTML}
+        </body>
+      </html>
+    `);
+        printWindow.document.close();
+        printWindow.focus();
+        setTimeout(() => {
+            printWindow.print();
+            printWindow.close();
+        }, 750);
+    };
+
     const handleGeneratePdf = useCallback(async () => {
         // setLoadingPdf(true);
         // setPdfError(null);
-
         const elementsToRestore = [];
         const inputStylesToRestore = [];
         const checkboxStylesToRestore = [];
+        let pdfStyle = null;
+        let contentElement = null;
 
         try {
             await Promise.all([
@@ -71,13 +125,41 @@ const ParentHandbook = forwardRef(({ initialFormData }, ref) => {
             console.log('PDF libraries loaded successfully');
 
             const { jsPDF } = window.jspdf;
-            const content = document.getElementById("parent-handbook-content");
+            contentElement = document.getElementById("parent-handbook-content");
 
-            if (!content) {
+            if (!contentElement) {
                 console.error('Error: The element with ID "parent-handbook-content" was not found.');
                 // setPdfError('Failed to capture form content for PDF. Element not found.');
                 return;
             }
+
+            // Apply exact same CSS styles as print function
+            pdfStyle = document.createElement('style');
+            pdfStyle.innerHTML = `
+               p, ol li, ul li { font-weight: 500; text-align: justify; }
+            .form-body { border: 2px solid #0F2D52; }
+            .header-border { border-bottom: 2px solid #0F2D52; }
+            .title_bg { background-color: #0F2D52; color: white;  }
+            .logo-style { width: 100%; height: auto; max-width: 100%; object-fit: contain; }
+            .flex { display: flex; }
+            .items-center { align-items: center; }
+            .justify-center { justify-content: center; }
+            .w-\[50\%\] { width: 50% !important; }
+            .h-\[180px\] { height: 180px !important; }
+            .bg-white { background-color: white !important; }
+            .bg-\[\#0f2d52\] { background-color: #0f2d52 !important; }
+            .border-r-2 { border-right: 2px solid #0f2d52 !important; }
+            .border-\[\#0f2d52\] { border-color: #0f2d52 !important; }
+            .px-4 { padding-left: 0.5rem !important; padding-right: 0.5rem !important; }
+            .m-4 { margin: 1rem !important; }
+            .text-white { color: white !important; }
+            .max-h-\[130px\] { max-height: 130px !important; }
+            .max-w-full { max-width: 100% !important; }
+            .object-contain { object-fit: contain !important; }
+            .logo-style { max-width: 85% !important; height: auto !important; object-fit: contain !important; display: block !important; margin: 0 auto !important; }
+            .custom-checkbox { display: none; }
+            `;
+            document.head.appendChild(pdfStyle);
 
             const replaceOKLCHColors = (element) => {
                 const allElements = element.querySelectorAll('*');
@@ -97,10 +179,12 @@ const ParentHandbook = forwardRef(({ initialFormData }, ref) => {
                     });
                 });
             };
-            replaceOKLCHColors(content);
+            replaceOKLCHColors(contentElement);
 
 
-            const inputs = content.querySelectorAll('.underline-input, .text-box, input[type="text"], input[type="date"]');
+
+
+            const inputs = contentElement.querySelectorAll('.underline-input, .text-box, input[type="text"], input[type="date"]');
             inputs.forEach((input) => {
                 inputStylesToRestore.push({
                     element: input,
@@ -118,13 +202,13 @@ const ParentHandbook = forwardRef(({ initialFormData }, ref) => {
             });
 
 
-            const textElements = content.querySelectorAll('p, h3, h4, h5, li, span, b, label');
+            const textElements = contentElement.querySelectorAll('p, h3, h4, h5, li, span, b, label');
             textElements.forEach(el => {
                 const computedFontSize = window.getComputedStyle(el).fontSize;
                 elementsToRestore.push({ element: el, property: 'fontSize', originalValue: el.style.fontSize });
                 el.style.fontSize = computedFontSize;
             });
-            const headingElements = content.querySelectorAll('h1, h2, h3, h4, h5, h6');
+            const headingElements = contentElement.querySelectorAll('h1, h2, h3, h4, h5, h6');
             headingElements.forEach(el => {
                 const computedFontSize = window.getComputedStyle(el).fontSize;
                 elementsToRestore.push({ element: el, property: 'fontSize', originalValue: el.style.fontSize });
@@ -133,12 +217,12 @@ const ParentHandbook = forwardRef(({ initialFormData }, ref) => {
 
 
 
-            const canvas = await html2canvas(content, {
+            const canvas = await html2canvas(contentElement, {
                 scale: 2,
                 useCORS: true,
                 logging: false,
-                height: content.scrollHeight,
-                width: content.scrollWidth,
+                height: contentElement.scrollHeight,
+                width: contentElement.scrollWidth,
                 allowTaint: true,
                 backgroundColor: '#ffffff',
                 removeContainer: false,
@@ -213,7 +297,7 @@ const ParentHandbook = forwardRef(({ initialFormData }, ref) => {
             // setPdfError('Failed to generate PDF. Please try again.');
         } finally {
 
-           
+
             inputStylesToRestore.forEach(item => {
                 item.element.style.borderBottom = item.originalBorderBottom || '';
                 item.element.style.borderColor = item.originalBorderColor || '';
@@ -225,547 +309,20 @@ const ParentHandbook = forwardRef(({ initialFormData }, ref) => {
                 item.element.style[item.property] = item.originalValue || '';
             });
 
+            // Remove PDF styles
+            if (pdfStyle && pdfStyle.parentNode) {
+                pdfStyle.parentNode.removeChild(pdfStyle);
+            }
             // setLoadingPdf(false);
         }
     }, []);
 
     useImperativeHandle(ref, () => ({
-        generatePdf: handleGeneratePdf
+        generatePdf: handleGeneratePdf,
+        handlePrint2: handlePrint,
     }));
 
     return (
-        // <div className="bg-white mx-auto text-[#0f2d52] text-[14px] sm:text-[15px] md:text-[16px] lg:text-[17px] xl:text-[18px] p-4 sm:p-6 md:p-8 lg:p-10 text-black">
-
-        //     <div id="enrollment-content">
-        //         <div className="mb-8 ">
-        //             <div className=" border-[#0F2D52]">
-        //                 <div className="w-full border-b-2 border-[#0f2d52]">
-        //                     <div className="flex flex-col sm:flex-row w-full h-auto sm:h-[180px]">
-        //                         <div className="w-full sm:w-[50%] flex items-center justify-center bg-white border-b-2 sm:border-b-0 sm:border-r-2 border-[#0f2d52] p-4 sm:p-4">
-        //                             <img
-        //                                 src={logo}
-        //                                 alt="Goddard Logo"
-        //                                 className="h-20 sm:h-24 md:h-28 object-contain"
-        //                             />
-        //                         </div>
-
-        //                         {/* Right Side: Title */}
-        //                         <div className="w-full sm:w-[50%] bg-[#0f2d52] flex items-center justify-center p-4">
-        //                             <span className="text-white text-xl sm:text-xl md:text-2xl font-bold tracking-wide text-center">
-        //                                 Enrollment Agreement
-        //                             </span>
-        //                         </div>
-        //                     </div>
-        //                 </div>
-
-        //                 <div className="p-2 sm:p-4 md:p-6">
-        //                     <form id="formContent">
-        //                         <div className="mx-1 mb-4">
-        //                             <div className="container mx-auto p-0 text-sm sm:text-base">
-        //                                 <ol className="list-decimal pt-5 sm:pt-10">
-        //                                     <li style={{ paddingLeft: "25px" }} className="pb-2 sm:pb-4 pt-2 sm:pt-4 font-medium text-justify">
-        //                                         This Enrollment Agreement (the “Agreement”), effective (today’s date)
-        //                                         <input
-        //                                             id="point_one_field_one"
-        //                                             name="point_one_field_one"
-        //                                             type="text"
-        //                                             className="form-control text-box border-b-2 max-w-[150px] border-[#0F2D52] rounded-none w-full md:w-[30%] inline-block focus:border-[#0F2D52] focus:shadow-[0_0_8px_rgba(15,45,82,0.6)] text-sm sm:text-base"
-        //                                         />{' '}
-        //                                         is between Cool Kidz LLC dba The Goddard School, an independent franchisee operating The Goddard School® located at 4200 228th Ave NE, Redmond, WA pursuant to a license from Goddard Systems, Inc., and
-        //                                         <input
-        //                                             id="point_one_field_three"
-        //                                             name="point_one_field_three"
-        //                                             type="text"
-        //                                             className="form-control text-box border-b-2 border-[#0F2D52] rounded-none w-full md:w-[30%] inline-block focus:border-[#0F2D52] focus:shadow-[0_0_8px_rgba(15,45,82,0.6)] text-sm sm:text-base"
-        //                                         />{' '}
-        //                                         (“Parents”).
-        //                                     </li>
-        //                                 </ol>
-        //                                 <br className="my-2" /><br className="my-2" /><br className="my-2" />
-        //                                 <span className="block mb-6 sm:mb-[50px] font-roboto text-right mr-2.5" id="initial">
-        //                                     <b className="text-sm sm:text-[15px] md:text-base">Initial here &nbsp;</b>
-        //                                     <input
-        //                                         id="point_two_initial_here"
-        //                                         name="point_two_initial_here"
-        //                                         type="text"
-        //                                         className="form-control text-box border-b-2 border-[#0F2D52] relative top-[10px] rounded-none w-48 sm:w-54 md:w-[30%] inline-block text-transparent caret-transparent placeholder-transparent focus:outline-none focus:border-[#0F2D52] focus:shadow-[0_0_8px_rgba(15,45,82,0.6)] text-sm sm:text-base"
-        //                                         placeholder="."
-        //                                     />
-        //                                 </span>
-
-        //                                 <ol className="list-decimal pl-5" start="2">
-        //                                     <li style={{ paddingLeft: "25px" }} className="pb-2 sm:pb-4 pt-2 sm:pt-4 font-medium text-justify">
-        //                                         The School’s non-refundable registration fee of $300 shall be paid annually in March and at the time of initial application. The fee is $300 for each child.
-        //                                     </li>
-        //                                 </ol>
-        //                                 <br className="my-2" /><br className="my-2" /><br className="my-2" />
-        //                                 <span className="block mb-6 sm:mb-[50px] font-roboto text-right mr-2.5" id="initial">
-        //                                     <b className="text-sm sm:text-[15px] md:text-base">Initial here &nbsp;</b>
-        //                                     <input
-        //                                         id="point_three_initial_here"
-        //                                         name="point_three_initial_here"
-        //                                         type="text"
-        //                                         className="form-control text-box border-b-2 border-[#0F2D52] relative top-[10px] rounded-none w-48 sm:w-54 md:w-[30%] inline-block text-transparent caret-transparent placeholder-transparent focus:outline-none focus:border-[#0F2D52] focus:shadow-[0_0_8px_rgba(15,45,82,0.6)] text-sm sm:text-base"
-        //                                         placeholder="."
-        //                                     />
-        //                                 </span>
-        //                                 <ol className="list-decimal pl-5" start="3">
-        //                                     <li style={{ paddingLeft: "25px" }} className="pb-2 sm:pb-4 pt-2 sm:pt-4 font-medium text-justify">
-        //                                         New Family Enrollment - One full month tuition and non-refundable registration fee are due at time of enrollment, along with this signed agreement. If the deposit is not paid, a place for your child cannot be guaranteed. The first month’s tuition is 100% refundable 90 days before the Goddard approved start date and non-refundable thereafter.
-        //                                     </li>
-        //                                 </ol>
-        //                                 <br className="my-2" /><br className="my-2" /><br className="my-2" />
-        //                                 <span className="block mb-6 sm:mb-[50px] font-roboto text-right mr-2.5" id="initial">
-        //                                     <b className="text-sm sm:text-[15px] md:text-base">Initial here &nbsp;</b>
-        //                                     <input
-        //                                         id="point_four_initial_here"
-        //                                         name="point_four_initial_here"
-        //                                         type="text"
-        //                                         className="form-control text-box border-b-2 border-[#0F2D52] relative top-[10px] rounded-none w-48 sm:w-54 md:w-[30%] inline-block text-transparent caret-transparent placeholder-transparent focus:outline-none focus:border-[#0F2D52] focus:shadow-[0_0_8px_rgba(15,45,82,0.6)] text-sm sm:text-base"
-        //                                         placeholder="."
-        //                                     />
-        //                                 </span>
-        //                                 <ol className="list-decimal pl-5" start="4">
-        //                                     <li style={{ paddingLeft: "25px" }} className="pb-2 sm:pb-4 pt-2 sm:pt-4 font-medium text-justify">
-        //                                         Wait-listed Families - For being on our waitlist only the Registration fee is necessary, and it is fully refundable if we are unable to provide you with classroom placement for your desired start date.
-        //                                     </li>
-        //                                 </ol>
-        //                                 <br className="my-2" /><br className="my-2" /><br className="my-2" />
-        //                                 <span className="block mb-6 sm:mb-[50px] font-roboto text-right mr-2.5" id="initial">
-        //                                     <b className="text-sm sm:text-[15px] md:text-base">Initial here &nbsp;</b>
-        //                                     <input
-        //                                         id="point_five_initial_here"
-        //                                         name="point_five_initial_here"
-        //                                         type="text"
-        //                                         className="form-control text-box border-b-2 border-[#0F2D52] relative top-[10px] rounded-none w-48 sm:w-54 md:w-[30%] inline-block text-transparent caret-transparent placeholder-transparent focus:outline-none focus:border-[#0F2D52] focus:shadow-[0_0_8px_rgba(15,45,82,0.6)] text-sm sm:text-base"
-        //                                         placeholder="."
-        //                                     />
-        //                                 </span>
-        //                                 <ol className="list-decimal pl-5" start="5">
-        //                                     <li style={{ paddingLeft: "25px" }} className="pb-2 sm:pb-4 pt-2 sm:pt-4 font-medium text-justify">
-        //                                         Monthly tuition is due on or before the 1<sup>st</sup> of each month. A $50 late fee shall be charged for any monthly tuition payments received after the 1st of the month. A fee of $75 will be charged for checks returned by the school's bank. If monthly tuition fees (including any applicable late fees) are not received at the School by the 15th of the month, the child will not be readmitted to the program. If the School is compelled to take legal action for tuition payments, Parents agree to pay the School’s reasonable attorneys’ fees and costs incurred.
-        //                                     </li>
-        //                                 </ol>
-        //                                 <br className="my-2" /><br className="my-2" /><br className="my-2" />
-        //                                 <span className="block mb-6 sm:mb-[50px] font-roboto text-right mr-2.5" id="initial">
-        //                                     <b className="text-sm sm:text-[15px] md:text-base">Initial here &nbsp;</b>
-        //                                     <input
-        //                                         id="point_six_initial_here"
-        //                                         name="point_six_initial_here"
-        //                                         type="text"
-        //                                         className="form-control text-box border-b-2 border-[#0F2D52] relative top-[10px] rounded-none w-48 sm:w-54 md:w-[30%] inline-block text-transparent caret-transparent placeholder-transparent focus:outline-none focus:border-[#0F2D52] focus:shadow-[0_0_8px_rgba(15,45,82,0.6)] text-sm sm:text-base"
-        //                                         placeholder="."
-        //                                     />
-        //                                 </span>
-        //                                 <ol className="list-decimal pl-5" start="6">
-        //                                     <li style={{ paddingLeft: "25px" }} className="pb-2 sm:pb-4 pt-2 sm:pt-4 font-medium text-justify">
-        //                                         At the time of registration, tuition is quoted for the current rate of the classroom. Tuition is subject to change at the discretion of the school. You will receive notification of any proposed change.
-        //                                     </li>
-        //                                 </ol>
-        //                                 <br className="my-2" /><br className="my-2" /><br className="my-2" />
-        //                                 <span className="block mb-6 sm:mb-[50px] font-roboto text-right mr-2.5" id="initial">
-        //                                     <b className="text-sm sm:text-[15px] md:text-base">Initial here &nbsp;</b>
-        //                                     <input
-        //                                         id="point_seven_initial_here"
-        //                                         name="point_seven_initial_here"
-        //                                         type="text"
-        //                                         className="form-control text-box border-b-2 border-[#0F2D52] relative top-[10px] rounded-none w-48 sm:w-54 md:w-[30%] inline-block text-transparent caret-transparent placeholder-transparent focus:outline-none focus:border-[#0F2D52] focus:shadow-[0_0_8px_rgba(15,45,82,0.6)] text-sm sm:text-base"
-        //                                         placeholder="."
-        //                                     />
-        //                                 </span>
-        //                                 <ol className="list-decimal pl-5" start="7">
-        //                                     <li style={{ paddingLeft: "25px" }} className="pb-2 sm:pb-4 pt-2 sm:pt-4 font-medium text-justify">
-        //                                         Monthly tuition fees are non-refundable regardless of holidays, illness, vacation, inclement weather days or School closures resulting from causes beyond the reasonable control of the School or its management including, but not limited to pandemics, government order, public health crisis, fire, floods, civil commotions, strikes, lockouts or other labor disturbances, “Acts of God” or acts, omissions, or delays in acting by any governmental authority. The School and its management will use reasonable efforts to avoid unscheduled closures and will resume operation as soon as feasible. The School will make reasonable efforts to open in inclement weather; however, the School may choose to close at the discretion of the School’s owner. Parents will be notified of any school closures via electronic communication.
-        //                                     </li>
-        //                                 </ol>
-        //                                 <br className="my-2" /><br className="my-2" />
-        //                                 <span className="block mb-6 sm:mb-[50px] font-roboto text-right mr-2.5" id="initial">
-        //                                     <b className="text-sm sm:text-[15px] md:text-base">Initial here &nbsp;</b>
-        //                                     <input
-        //                                         id="point_eight_initial_here"
-        //                                         name="point_eight_initial_here"
-        //                                         type="text"
-        //                                         className="form-control text-box border-b-2 border-[#0F2D52] relative top-[10px] rounded-none w-48 sm:w-54 md:w-[30%] inline-block text-transparent caret-transparent placeholder-transparent focus:outline-none focus:border-[#0F2D52] focus:shadow-[0_0_8px_rgba(15,45,82,0.6)] text-sm sm:text-base"
-        //                                         placeholder="."
-        //                                     />
-        //                                 </span>
-
-        //                                 <ol className="list-decimal pl-5" start="8">
-        //                                     <li style={{ paddingLeft: "25px" }} className="pb-2 sm:pb-4 pt-2 sm:pt-4 font-medium text-justify">This School is closed on the following days:</li>
-        //                                 </ol>
-        //                                 {/* Adjusted Table Section for better responsiveness at 886px */}
-        //                                 <div className="flex flex-col md:flex-row pt-5 px-0 sm:px-4 justify-around"> {/* Added justify-around */}
-        //                                     <div className="w-full md:w-1/2 lg:w-[48%] p-0 md:pr-2 lg:pr-4 overflow-x-auto mb-4 md:mb-0"> {/* Adjusted widths and padding */}
-        //                                         <table className="w-full border-collapse min-w-[320px] md:min-w-0"> {/* Min-width for small screens */}
-        //                                             <thead>
-        //                                                 <tr>
-        //                                                     <th className="text-left py-2 text-sm sm:text-base w-1/3">Leave Dates</th> {/* Set explicit width */}
-        //                                                     <th className="text-left py-2 text-sm sm:text-base w-2/3">Leave Reasons</th> {/* Set explicit width */}
-        //                                                 </tr>
-        //                                             </thead>
-        //                                             <tbody>
-        //                                                 {holidayData2025.map((holiday, index) => (
-        //                                                     <tr key={index}>
-        //                                                         <td className="text-left p-2 text-xs sm:text-sm">{holiday.date}</td>
-        //                                                         <td className="text-left p-2 text-xs sm:text-sm">{holiday.reason}</td>
-        //                                                     </tr>
-        //                                                 ))}
-        //                                             </tbody>
-        //                                         </table>
-        //                                     </div>
-
-        //                                     <div className="w-full md:w-1/2 lg:w-[48%] p-0 md:pl-2 lg:pl-4 mt-4 md:mt-0 overflow-x-auto"> {/* Adjusted widths and padding */}
-        //                                         <table className="w-full border-collapse min-w-[320px] md:min-w-0"> {/* Min-width for small screens */}
-        //                                             <thead>
-        //                                                 <tr>
-        //                                                     <th className="text-left py-2 text-sm sm:text-base w-1/3">Leave Dates</th> {/* Set explicit width */}
-        //                                                     <th className="text-left py-2 text-sm sm:text-base w-2/3">Leave Reasons</th> {/* Set explicit width */}
-        //                                                 </tr>
-        //                                             </thead>
-        //                                             <tbody>
-        //                                                 {holidayData2026.map((holiday, index) => (
-        //                                                     <tr key={index}>
-        //                                                         <td className="text-left p-2 text-xs sm:text-sm">{holiday.date}</td>
-        //                                                         <td className="text-left p-2 text-xs sm:text-sm">{holiday.reason}</td>
-        //                                                     </tr>
-        //                                                 ))}
-        //                                             </tbody>
-        //                                         </table>
-        //                                     </div>
-        //                                 </div>
-
-        //                                 <p style={{ paddingLeft: "23px" }} className="font-medium text-justify text-sm sm:text-base mt-4">
-        //                                     *We reserve the right to adjust hours and closures depending on the needs of the school. We will provide at least 24 hours’notice of changes, should anything be necessary.
-        //                                 </p>
-        //                                 <br className="my-2" /><br className="my-2" /><br className="my-2" />
-        //                                 <span className="block mb-6 sm:mb-[50px] font-roboto text-right mr-2.5" id="initial">
-        //                                     <b className="text-sm sm:text-[15px] md:text-base">Initial here &nbsp;</b>
-        //                                     <input
-        //                                         id="point_nine_initial_here"
-        //                                         name="point_nine_initial_here"
-        //                                         type="text"
-        //                                         className="form-control text-box border-b-2 border-[#0F2D52] relative top-[10px] rounded-none w-48 sm:w-54 md:w-[30%] inline-block text-transparent caret-transparent placeholder-transparent focus:outline-none focus:border-[#0F2D52] focus:shadow-[0_0_8px_rgba(15,45,82,0.6)] text-sm sm:text-base"
-        //                                         placeholder="."
-        //                                     />
-        //                                 </span>
-        //                             </div>
-        //                         </div>
-        //                     </form>
-        //                 </div>
-        //             </div>
-        //         </div>
-
-        //         {/* Page 2 */}
-        //         <div className="pages mt-8"> {/* Added margin-top for separation */}
-        //             <div className=" border-[#0F2D52]"> {/* Keep this for screen display */}
-        //                 <div className="w-full border-b-2 border-[#0f2d52]">
-        //                     <div className="flex flex-col sm:flex-row w-full h-auto sm:h-[180px]">
-        //                         {/* Left Side: Logo */}
-        //                         <div className="w-full sm:w-[50%] flex items-center justify-center bg-white border-b-2 sm:border-b-0 sm:border-r-2 border-[#0f2d52] p-4">
-        //                             <img
-        //                                 src={logo}
-        //                                 alt="Goddard Logo"
-        //                                 className="h-20 sm:h-24 md:h-28 object-contain"
-        //                             />
-        //                         </div>
-
-        //                         {/* Right Side: Title */}
-        //                         <div className="w-full sm:w-[50%] bg-[#0f2d52] flex items-center justify-center p-4">
-        //                             <span className="text-white text-xl sm:text-xl md:text-2xl font-bold tracking-wide text-center">
-        //                                 Enrollment Agreement
-        //                             </span>
-        //                         </div>
-        //                     </div>
-        //                 </div>
-        //                 <div className="p-3 sm:p-5">
-        //                     <div className="mx-1 mb-4">
-        //                         <div className="container mx-auto p-0 text-sm sm:text-base">
-        //                             <ol className="list-decimal pl-5 pt-5 sm:pt-10" start="9">
-        //                                 <li style={{ paddingLeft: "25px" }} className="pb-2 sm:pb-4 pt-2 sm:pt-4 font-medium text-justify">
-        //                                     The Goddard School is a year-round program. Tuition is payable for all 12 months unless withdrawing from enrollment.
-        //                                 </li>
-        //                             </ol>
-
-        //                             <span className="block mb-6 sm:mb-[50px] font-roboto pt-5 sm:pt-10 text-right mr-2.5" id="initial">
-        //                                 <b className="text-sm sm:text-[15px] md:text-base">Initial here &nbsp;</b>
-        //                                 <input
-        //                                     id="point_ten_initial_here"
-        //                                     name="point_ten_initial_here"
-        //                                     type="text"
-        //                                     className="form-control text-box border-b-2 border-[#0F2D52] relative top-[10px] rounded-none w-48 sm:w-54 md:w-[30%] inline-block text-transparent caret-transparent placeholder-transparent focus:outline-none focus:border-[#0F2D52] focus:shadow-[0_0_8px_rgba(15,45,82,0.6)] text-sm sm:text-base"
-        //                                     placeholder="."
-        //                                 />
-        //                             </span>
-        //                             <ol className="list-decimal pl-5" start="10">
-        //                                 <li style={{ paddingLeft: "25px" }} className="pb-2 sm:pb-4 pt-2 sm:pt-4 font-medium text-justify">
-        //                                     The School will open at 7:00am and close at 6:00pm (from September), however modified school hours may apply in case of any unforeseen circumstances. A fee will be charged for any child not picked up before the School’s regular closing time. Full day student late fees begin at 6:01pm. Half Day student late fees begin at 12:46pm. This charge shall be $35 per child for the first 5 minutes and an additional $25 per child per 5-minute period thereafter. Fees for late pick-up are added to tuition; if not paid, the child will not be readmitted to the program. Consistent lateness will be cause for the child’s dismissal from the School. Arrival time at school should be no later than 10am without prior approval or notification.
-        //                                 </li>
-        //                             </ol>
-        //                             <br className="my-2" /><br className="my-2" />
-        //                             <span className="block mb-6 sm:mb-[50px] font-roboto text-right mr-2.5" id="initial">
-        //                                 <b className="text-sm sm:text-[15px] md:text-base">Initial here &nbsp;</b>
-        //                                 <input
-        //                                     id="point_eleven_initial_here"
-        //                                     name="point_eleven_initial_here"
-        //                                     type="text"
-        //                                     className="form-control text-box border-b-2 border-[#0F2D52] relative top-[10px] rounded-none w-48 sm:w-54 md:w-[30%] inline-block text-transparent caret-transparent placeholder-transparent focus:outline-none focus:border-[#0F2D52] focus:shadow-[0_0_8px_rgba(15,45,82,0.6)] text-sm sm:text-base"
-        //                                     placeholder="."
-        //                                 />
-        //                             </span>
-        //                             <ol className="list-decimal pl-5" start="11">
-        //                                 <li style={{ paddingLeft: "25px" }} className="pb-2 sm:pb-4 pt-2 sm:pt-4 font-medium text-justify">
-        //                                     Our School limits each students day to a maximum of 10 hours. If this 10-hour limit is exceeded a fee of $50 will be charged.
-        //                                 </li>
-        //                             </ol>
-        //                             <br className="my-2" /><br className="my-2" />
-        //                             <span className="block mb-6 sm:mb-[50px] font-roboto text-right mr-2.5" id="initial">
-        //                                 <b className="text-sm sm:text-[15px] md:text-base">Initial here &nbsp;</b>
-        //                                 <input
-        //                                     id="point_twelven_initial_here"
-        //                                     name="point_twelven_initial_here"
-        //                                     type="text"
-        //                                     className="form-control text-box border-b-2 border-[#0F2D52] relative top-[10px] rounded-none w-48 sm:w-54 md:w-[30%] inline-block text-transparent caret-transparent placeholder-transparent focus:outline-none focus:border-[#0F2D52] focus:shadow-[0_0_8px_rgba(15,45,82,0.6)] text-sm sm:text-base"
-        //                                     placeholder="."
-        //                                 />
-        //                             </span>
-        //                             <ol className="list-decimal pl-5" start="12">
-        //                                 <li style={{ paddingLeft: "25px" }} className="pb-2 sm:pb-4 pt-2 sm:pt-4 font-medium text-justify">
-        //                                     For children over the age of one year, the School requires a minimum of 30-day written notice of withdrawal, and for infants, a minimum of 60-day written notice. Furthermore, the last day must be the end of the month. If no advance notice of withdrawal is provided, the regular tuition fee for that term will be charged.
-        //                                 </li>
-        //                             </ol>
-        //                             <br className="my-2" /><br className="my-2" />
-        //                             <span className="block mb-6 sm:mb-[50px] font-roboto text-right mr-2.5" id="initial">
-        //                                 <b className="text-sm sm:text-[15px] md:text-base">Initial here &nbsp;</b>
-        //                                 <input
-        //                                     id="point_thirteen_initial_here"
-        //                                     name="point_thirteen_initial_here"
-        //                                     type="text"
-        //                                     className="form-control text-box border-b-2 border-[#0F2D52] relative top-[10px] rounded-none w-48 sm:w-54 md:w-[30%] inline-block text-transparent caret-transparent placeholder-transparent focus:outline-none focus:border-[#0F2D52] focus:shadow-[0_0_8px_rgba(15,45,82,0.6)] text-sm sm:text-base"
-        //                                     placeholder="."
-        //                                 />
-        //                             </span>
-        //                             <ol className="list-decimal pl-5" start="13">
-        //                                 <li style={{ paddingLeft: "25px" }} className="pb-2 sm:pb-4 pt-2 sm:pt-4 font-medium text-justify">
-        //                                     The School reserves the right to deny, cancel, sever, or suspend a child’s enrollment at any time if the School, in its sole discretion, deems such action to be in the best interest of the child or the School. This should be recorded in an email and in such an event, any unused tuition will be refunded, and no notice period required.
-        //                                 </li>
-        //                             </ol>
-        //                             <br className="my-2" /><br className="my-2" />
-        //                             <span className="block mb-6 sm:mb-[50px] font-roboto text-right mr-2.5" id="initial">
-        //                                 <b className="text-sm sm:text-[15px] md:text-base">Initial here &nbsp;</b>
-        //                                 <input
-        //                                     id="point_fourteen_initial_here"
-        //                                     name="point_fourteen_initial_here"
-        //                                     type="text"
-        //                                     className="form-control text-box border-b-2 border-[#0F2D52] relative top-[10px] rounded-none w-48 sm:w-54 md:w-[30%] inline-block text-transparent caret-transparent placeholder-transparent focus:outline-none focus:border-[#0F2D52] focus:shadow-[0_0_8px_rgba(15,45,82,0.6)] text-sm sm:text-base"
-        //                                     placeholder="."
-        //                                 />
-        //                             </span>
-        //                             <ol className="list-decimal pl-5" start="14">
-        //                                 <li style={{ paddingLeft: "25px" }} className="pb-2 sm:pb-4 pt-2 sm:pt-4 font-medium text-justify">
-        //                                     Children may not attend School while ill. Children who become ill at school must be picked up immediately – refer to the Parent Handbook health policy and King County Department of Health requirements. If the child will be absent, the absence should be reported to the School by 9 am.
-        //                                 </li>
-        //                             </ol>
-        //                             <br className="my-2" /><br className="my-2" />
-        //                             <span className="block mb-6 sm:mb-[50px] font-roboto text-right mr-2.5" id="initial">
-        //                                 <b className="text-sm sm:text-[15px] md:text-base">Initial here &nbsp;</b>
-        //                                 <input
-        //                                     id="point_fifteen_initial_here"
-        //                                     name="point_fifteen_initial_here"
-        //                                     type="text"
-        //                                     className="form-control text-box border-b-2 border-[#0F2D52] relative top-[10px] rounded-none w-48 sm:w-54 md:w-[30%] inline-block text-transparent caret-transparent placeholder-transparent focus:outline-none focus:border-[#0F2D52] focus:shadow-[0_0_8px_rgba(15,45,82,0.6)] text-sm sm:text-base"
-        //                                     placeholder="."
-        //                                 />
-        //                             </span><br />
-        //                             <ol className="list-decimal pl-5" start="15">
-        //                                 <li style={{ paddingLeft: "25px" }} className="pb-2 sm:pb-4 pt-2 sm:pt-4 font-medium text-justify">
-        //                                     Each child in our childcare facility will be required to have current and up to date immunizations throughout their time in our facility.
-        //                                 </li>
-        //                             </ol>
-        //                             <br className="my-2" /><br className="my-2" /><br className="my-2" />
-        //                             <span className="block mb-6 sm:mb-[50px] font-roboto text-right mr-2.5" id="initial">
-        //                                 <b className="text-sm sm:text-[15px] md:text-base">Initial here &nbsp;</b>
-        //                                 <input
-        //                                     id="point_sixteen_initial_here"
-        //                                     name="point_sixteen_initial_here"
-        //                                     type="text"
-        //                                     className="form-control text-box border-b-2 border-[#0F2D52] relative top-[10px] rounded-none w-48 sm:w-54 md:w-[30%] inline-block text-transparent caret-transparent placeholder-transparent focus:outline-none focus:border-[#0F2D52] focus:shadow-[0_0_8px_rgba(15,45,82,0.6)] text-sm sm:text-base"
-        //                                     placeholder="."
-        //                                 />
-        //                             </span>
-        //                             <ol className="list-decimal pl-5" start="16">
-        //                                 <li style={{ paddingLeft: "25px" }} className="pb-2 sm:pb-4 pt-2 sm:pt-4 font-medium text-justify">
-        //                                     If your student has an allergy, asthma or a medical condition that requires medication, we are required to meet state licensing standards regarding the medication and paperwork. All paperwork MUST be complete prior to enrollment. This includes maintaining unexpired medications and paperwork while enrolled at The Goddard School.
-        //                                 </li>
-        //                             </ol>
-        //                             <br className="my-2" /><br className="my-2" /><br className="my-2" />
-        //                             <span className="block mb-6 sm:mb-[50px] font-roboto text-right mr-2.5" id="initial">
-        //                                 <b className="text-sm sm:text-[15px] md:text-base">Initial here &nbsp;</b>
-        //                                 <input
-        //                                     id="point_seventeen_initial_here"
-        //                                     name="point_seventeen_initial_here"
-        //                                     type="text"
-        //                                     className="form-control text-box border-b-2 border-[#0F2D52] relative top-[10px] rounded-none w-48 sm:w-54 md:w-[30%] inline-block text-transparent caret-transparent placeholder-transparent focus:outline-none focus:border-[#0F2D52] focus:shadow-[0_0_8px_rgba(15,45,82,0.6)] text-sm sm:text-base"
-        //                                     placeholder="."
-        //                                 />
-        //                             </span>
-        //                             <ol className="list-decimal pl-5" start="17">
-        //                                 <li style={{ paddingLeft: "25px" }} className="pb-2 sm:pb-4 pt-2 sm:pt-4 font-medium text-justify">
-        //                                     Parents acknowledge and agree that representatives of the School’s franchisor, Goddard Systems, Inc. (“GSI”) will have access to information in children’s files as part of GSI’s Quality Assurance reviews and otherwise.
-        //                                 </li>
-        //                             </ol>
-        //                             <br className="my-2" /><br className="my-2" />
-        //                             <span className="block mb-6 sm:mb-[50px] font-roboto text-right mr-2.5" id="initial">
-        //                                 <b className="text-sm sm:text-[15px] md:text-base">Initial here &nbsp;</b>
-        //                                 <input
-        //                                     id="point_eighteen_initial_here"
-        //                                     name="point_eighteen_initial_here"
-        //                                     type="text"
-        //                                     className="form-control text-box border-b-2 border-[#0F2D52] relative top-[10px] rounded-none w-48 sm:w-54 md:w-[30%] inline-block text-transparent caret-transparent placeholder-transparent focus:outline-none focus:border-[#0F2D52] focus:shadow-[0_0_8px_rgba(15,45,82,0.6)] text-sm sm:text-base"
-        //                                     placeholder="."
-        //                                 />
-        //                             </span>
-        //                             <ol className="list-decimal pl-5" start="18">
-        //                                 <li style={{ paddingLeft: "25px" }} className="pb-2 sm:pb-4 pt-2 sm:pt-4 font-medium text-justify">
-        //                                     The School’s employees are its most important assets. If Parents hire an employee of the School or a former employee (within 6 months of his/her employment at the School) for at least 20 hours per week, Parents agree to pay the School a placement fee of $10,000, payable upon hiring.
-        //                                 </li>
-        //                             </ol>
-        //                             <br className="my-2" /><br className="my-2" /><br className="my-2" />
-        //                             <span className="block mb-6 sm:mb-[50px] font-roboto text-right mr-2.5" id="initial">
-        //                                 <b className="text-sm sm:text-[15px] md:text-base">Initial here &nbsp;</b>
-        //                                 <input
-        //                                     id="point_ninteen_initial_here"
-        //                                     name="point_ninteen_initial_here"
-        //                                     type="text"
-        //                                     className="form-control text-box border-b-2 border-[#0F2D52] relative top-[10px] rounded-none w-48 sm:w-54 md:w-[30%] inline-block text-transparent caret-transparent placeholder-transparent focus:outline-none focus:border-[#0F2D52] focus:shadow-[0_0_8px_rgba(15,45,82,0.6)] text-sm sm:text-base"
-        //                                     placeholder="."
-        //                                 />
-        //                             </span>
-        //                             <ol className="list-decimal pl-5" start="19">
-        //                                 <li style={{ paddingLeft: "25px" }} className="pb-2 sm:pb-4 pt-2 sm:pt-4 font-medium text-justify">
-        //                                     Parents agree that Outside Engagements are not for the benefit or convenience of the School, its owners or GSI, and Parents hereby irrevocably release and discharge the School, GSI, and their respective present or former owners, employees, officers, directors, agents, parents, subsidiaries, affiliates, heirs, successors and assigns, in their individual and corporate capacities from all claims, demands, liabilities, actions or causes of action whatsoever, arising in law or equity, whether known or unknown, which Parents have, may have or claim to have at any time in the future against the Releases based in whole or in part on, arising out of or related to any Outside Engagements.
-        //                                 </li>
-        //                             </ol>
-        //                             <br className="my-2" />
-        //                             <p className="font-medium pl-5 text-justify text-sm sm:text-base">
-        //                                 The undersigned Parents have received an executed copy of this Agreement and a copy of the Parent Handbook, which includes the school policies and health policy referenced in paragraph 14 and 15. Parents acknowledge that this Agreement is by and between Parents and Cool Kidz LLC d/b/a The Goddard School; GSI is not a party to this Agreement. The undersigned Parents understand the terms of this Agreement and agree to be bound by them.
-        //                             </p>
-        //                             <div className="flex flex-wrap mt-5 pl-0 sm:pl-5 -mx-2">
-        //                                 <div className="w-full sm:w-1/2 px-2 mb-4">
-        //                                     <div className="mb-4">
-        //                                         <label htmlFor="child_first_name" className="block text-sm sm:text-base font-bold mb-1">
-        //                                             Child’s Name
-        //                                         </label>
-        //                                         <input type="text" className="w-full border-b-2 border-[#0F2D52] rounded-none focus:outline-none focus:border-[#0F2D52] focus:shadow-[0_0_8px_rgba(15,45,82,0.6)] p-2 text-sm sm:text-base" id="child_first_name" name="child_first_name" />
-        //                                     </div>
-        //                                 </div>
-        //                                 <div className="w-full sm:w-1/2 px-2 mb-4">
-        //                                     <div className="mb-4">
-        //                                         <label htmlFor="dob" className="block text-sm sm:text-base font-bold mb-1">
-        //                                             Date of Birth
-        //                                         </label>
-        //                                         <input type="date" className="w-full border-b-2 border-[#0F2D52] rounded-none focus:outline-none focus:border-[#0F2D52] focus:shadow-[0_0_8px_rgba(15,45,82,0.6)] p-2 text-sm sm:text-base" id="dob" name="dob" />
-        //                                     </div>
-        //                                 </div>
-        //                                 <div className="w-full sm:w-1/2 px-2 mb-4">
-        //                                     <div className="mb-4">
-        //                                         <label htmlFor="preferred_start_date" className="block text-sm sm:text-base font-bold mb-1">
-        //                                             Preferred Start Date
-        //                                         </label>
-        //                                         <input type="date" className="w-full border-b-2 border-[#0F2D52] rounded-none focus:outline-none focus:border-[#0F2D52] focus:shadow-[0_0_8px_rgba(15,45,82,0.6)] p-2 text-sm sm:text-base" id="preferred_start_date" name="preferred_start_date" />
-        //                                     </div>
-        //                                 </div>
-        //                             </div>
-        //                         </div>
-        //                     </div>
-        //                 </div>
-        //             </div>
-        //             <br />
-        //         </div>
-        //         {/* Page 3 - (This was the last section of the HTML, repeated header) */}
-        //         <div className="pages mt-8"> {/* Added margin-top for separation */}
-        //             <div className=" border-[#0F2D52]">
-        //                 <div className="w-full border-b-2 border-[#0f2d52]">
-        //                     <div className="flex flex-col sm:flex-row w-full h-auto sm:h-[180px]">
-        //                         {/* Left Side: Logo */}
-        //                         <div className="w-full sm:w-[50%] flex items-center justify-center bg-white border-b-2 sm:border-b-0 sm:border-r-2 border-[#0f2d52] p-4">
-        //                             <img
-        //                                 src={logo}
-        //                                 alt="Goddard Logo"
-        //                                 className="h-20 sm:h-24 md:h-28 object-contain"
-        //                             />
-        //                         </div>
-
-        //                         {/* Right Side: Title */}
-        //                         <div className="w-full sm:w-[50%] bg-[#0f2d52] flex items-center justify-center p-4">
-        //                             <span className="text-white text-xl sm:text-xl md:text-2xl font-bold tracking-wide text-center">
-        //                                 Enrollment Agreement
-        //                             </span>
-        //                         </div>
-        //                     </div>
-        //                 </div>
-        //                 <div className="p-3 sm:p-5">
-        //                     <div className="flex flex-wrap -mx-2">
-        //                         <div className="w-full sm:w-1/2 px-2 mb-4 flex items-center gap-2">
-        //                             <input type="checkbox" className="custom-checkbox h-4 w-4 sm:h-5 sm:w-5 appearance-none bg-white  border-gray-700 rounded-md cursor-pointer outline-none transition-all duration-300 ease-in-out checked:bg-[#0F2D52] checked:border-[#0F2D52] checked:after:content-['✓'] checked:after:text-white checked:after:absolute checked:after:top-1/2 checked:after:left-1/2 checked:after:-translate-x-1/2 checked:after:-translate-y-1/2 checked:after:opacity-100 after:opacity-0 after:transition-opacity after:duration-1000 after:ease-in-out" id="full_day" name="full_day" />
-        //                             <label className="text-sm sm:text-base" htmlFor="full_day">
-        //                                 <span><b>Full-Day</b></span>
-        //                             </label>
-        //                             <input type="checkbox" className="custom-checkbox h-4 w-4 sm:h-5 sm:w-5 appearance-none bg-white  border-gray-700 rounded-md cursor-pointer outline-none transition-all duration-300 ease-in-out checked:bg-[#0F2D52] checked:border-[#0F2D52] checked:after:content-['✓'] checked:after:text-white checked:after:absolute checked:after:top-1/2 checked:after:left-1/2 checked:after:-translate-x-1/2 checked:after:-translate-y-1/2 checked:after:opacity-100 after:opacity-0 after:transition-opacity after:duration-1000 after:ease-in-out" id="half_day" name="half_day" />
-        //                             <label className="text-sm sm:text-base" htmlFor="half_day">
-        //                                 <span><b>Half-Day</b></span>
-        //                             </label>
-        //                         </div>
-        //                         <div className="w-full sm:w-1/2 px-2 mb-4">
-        //                             <div className="mb-4">
-        //                                 <label htmlFor="preferred_schedule" className="block text-sm sm:text-base font-bold mb-1">
-        //                                     Preferred Schedule
-        //                                 </label>
-        //                                 <input type="text" className="w-full border-b-2 border-[#0F2D52] rounded-none focus:outline-none focus:border-[#0F2D52] focus:shadow-[0_0_8px_rgba(15,45,82,0.6)] p-2 text-sm sm:text-base" id="preferred_schedule" name="preferred_schedule" />
-        //                             </div>
-        //                         </div>
-        //                         <div className="w-full sm:w-1/2 px-2 mb-4">
-        //                             <div className="mb-4">
-        //                                 <label htmlFor="primary_parent_email" className="block text-sm sm:text-base font-bold mb-1">
-        //                                     Email
-        //                                 </label>
-        //                                 <input type="email" className="w-full border-b-2 border-[#0F2D52] rounded-none focus:outline-none focus:border-[#0F2D52] focus:shadow-[0_0_8px_rgba(15,45,82,0.6)] p-2 text-sm sm:text-base" id="primary_parent_email" name="primary_parent_email" />
-        //                             </div>
-        //                         </div>
-        //                         <div className="w-full sm:w-1/2 px-2 mb-4">
-        //                             <div className="mb-4">
-        //                                 <label htmlFor="preferred_home_addr" className="block text-sm sm:text-base font-bold mb-1">
-        //                                     Home Address
-        //                                 </label>
-        //                                 <input type="text" className="w-full border-b-2 border-[#0F2D52] rounded-none focus:outline-none focus:border-[#0F2D52] focus:shadow-[0_0_8px_rgba(15,45,82,0.6)] p-2 text-sm sm:text-base" id="preferred_home_addr" name="preferred_home_addr" />
-        //                             </div>
-        //                         </div>
-        //                     </div>
-        //                     <br />
-        //                     <h4 className="text-center mb-2 text-lg sm:text-xl font-bold">Parent Agreement</h4>
-        //                     <div className="flex flex-wrap -mx-2">
-        //                         <div className="w-full sm:w-1/2 px-2 mb-4">
-        //                             <div className="mb-4">
-        //                                 <label htmlFor="parent_sign_enroll" className="block text-sm sm:text-base font-bold mb-1">
-        //                                     Parent Signature
-        //                                 </label>
-        //                                 <input type="text" className="w-full border-b-2 border-[#0F2D52] rounded-none focus:outline-none focus:border-[#0F2D52] focus:shadow-[0_0_8px_rgba(15,45,82,0.6)] p-2 text-sm sm:text-base" id="parent_sign_enroll" name="parent_sign_enroll" />
-        //                             </div>
-        //                         </div>
-        //                         <div className="w-full sm:w-1/2 px-2 mb-4">
-        //                             <div className="mb-4">
-        //                                 <label htmlFor="parent_sign_date_enroll" className="block text-sm sm:text-base font-bold mb-1">
-        //                                     Date
-        //                                 </label>
-        //                                 <input type="date" className="w-full border-b-2 border-[#0F2D52] rounded-none focus:outline-none focus:border-[#0F2D52] focus:shadow-[0_0_8px_rgba(15,45,82,0.6)] p-2 text-sm sm:text-base" id="parent_sign_date_enroll" name="parent_sign_date_enroll" /* onClick={() => dateValidation('parent_sign_date_enroll')} */ />
-        //                             </div>
-        //                         </div>
-        //                     </div>
-        //                 </div>
-        //             </div>
-        //         </div>
-        //     </div>
-        // </div>
-
         <div id="parent-handbook-content">
             <div className="m-5">
                 <div className="card">
@@ -782,7 +339,7 @@ const ParentHandbook = forwardRef(({ initialFormData }, ref) => {
                                                 <img
                                                     src={logo}
                                                     alt="Goddard Logo"
-                                                    className="max-h-[130px] max-w-full object-contain"
+                                                    className="max-h-[130px] max-w-full object-contain logo-style"
                                                 />
                                             </div>
                                             {/* Right Side: Title */}
@@ -869,7 +426,7 @@ const ParentHandbook = forwardRef(({ initialFormData }, ref) => {
                                                 <img
                                                     src={logo}
                                                     alt="Goddard Logo"
-                                                    className="max-h-[130px] max-w-full object-contain"
+                                                    className="max-h-[130px] max-w-full object-contain logo-style"
                                                 />
                                             </div>
                                             <div className="w-[50%] bg-[#0f2d52] flex items-center justify-center">
@@ -892,13 +449,13 @@ const ParentHandbook = forwardRef(({ initialFormData }, ref) => {
                             </div>
                             <div className="row m-1 mb-3">
                                 <div className="form-group d-flex align-items-center gap-1">
-                                    <input 
-                                        type="checkbox" 
-                                        className="input-checkbox custom-checkbox" 
+                                    <input
+                                        type="checkbox"
+                                        className="input-checkbox custom-checkbox"
                                         id="welcome_goddard_agreement"
-                                        name="welcome_goddard_agreement" 
+                                        name="welcome_goddard_agreement"
                                         checked={checkboxStates.welcome_goddard_agreement}
-                                        onChange={(e) => setCheckboxStates(prev => ({...prev, welcome_goddard_agreement: e.target.checked}))}
+                                        onChange={(e) => setCheckboxStates(prev => ({ ...prev, welcome_goddard_agreement: e.target.checked }))}
                                     />
                                     <label className="form-check-label" htmlFor="welcome_goddard_agreement">
                                         <span><b>I agree all the above information.</b></span>
@@ -960,7 +517,7 @@ const ParentHandbook = forwardRef(({ initialFormData }, ref) => {
                                                 <img
                                                     src={logo}
                                                     alt="Goddard Logo"
-                                                    className="max-h-[130px] max-w-full object-contain"
+                                                    className="max-h-[130px] max-w-full object-contain logo-style"
                                                 />
                                             </div>
                                             <div className="w-[50%] bg-[#0f2d52] flex items-center justify-center">
@@ -1036,7 +593,7 @@ const ParentHandbook = forwardRef(({ initialFormData }, ref) => {
                                                 <img
                                                     src={logo}
                                                     alt="Goddard Logo"
-                                                    className="max-h-[130px] max-w-full object-contain"
+                                                    className="max-h-[130px] max-w-full object-contain logo-style"
                                                 />
                                             </div>
                                             <div className="w-[50%] bg-[#0f2d52] flex items-center justify-center">
@@ -1085,13 +642,13 @@ const ParentHandbook = forwardRef(({ initialFormData }, ref) => {
                         </div>
                         <div className="row m-1 mb-4">
                             <div className="form-group d-flex align-items-center gap-1">
-                                <input 
-                                    type="checkbox" 
-                                    className="input-checkbox custom-checkbox" 
+                                <input
+                                    type="checkbox"
+                                    className="input-checkbox custom-checkbox"
                                     id="mission_statement_agreement"
-                                    name="mission_statement_agreement" 
+                                    name="mission_statement_agreement"
                                     checked={checkboxStates.mission_statement_agreement}
-                                    onChange={(e) => setCheckboxStates(prev => ({...prev, mission_statement_agreement: e.target.checked}))}
+                                    onChange={(e) => setCheckboxStates(prev => ({ ...prev, mission_statement_agreement: e.target.checked }))}
                                 />
                                 <label className="form-check-label" htmlFor="mission_statement_agreement">
                                     <span><b>I agree all the above information.</b></span>
@@ -1124,7 +681,7 @@ const ParentHandbook = forwardRef(({ initialFormData }, ref) => {
                                                 <img
                                                     src={logo}
                                                     alt="Goddard Logo"
-                                                    className="max-h-[130px] max-w-full object-contain"
+                                                    className="max-h-[130px] max-w-full object-contain logo-style"
                                                 />
                                             </div>
                                             <div className="w-[50%] bg-[#0f2d52] flex items-center justify-center">
@@ -1152,13 +709,13 @@ const ParentHandbook = forwardRef(({ initialFormData }, ref) => {
                             </div>
                             <div className="row m-1 mb-5">
                                 <div className="form-group d-flex align-items-center gap-1">
-                                    <input 
-                                        type="checkbox" 
-                                        className="input-checkbox custom-checkbox" 
+                                    <input
+                                        type="checkbox"
+                                        className="input-checkbox custom-checkbox"
                                         id="general_information_agreement"
-                                        name="general_information_agreement" 
+                                        name="general_information_agreement"
                                         checked={checkboxStates.general_information_agreement}
-                                        onChange={(e) => setCheckboxStates(prev => ({...prev, general_information_agreement: e.target.checked}))}
+                                        onChange={(e) => setCheckboxStates(prev => ({ ...prev, general_information_agreement: e.target.checked }))}
                                     />
                                     <label className="form-check-label" htmlFor="general_information_agreement">
                                         <span><b>I agree all the above information.</b></span>
@@ -1209,7 +766,7 @@ const ParentHandbook = forwardRef(({ initialFormData }, ref) => {
                                                 <img
                                                     src={logo}
                                                     alt="Goddard Logo"
-                                                    className="max-h-[130px] max-w-full object-contain"
+                                                    className="max-h-[130px] max-w-full object-contain logo-style"
                                                 />
                                             </div>
                                             <div className="w-[50%] bg-[#0f2d52] flex items-center justify-center">
@@ -1238,13 +795,13 @@ const ParentHandbook = forwardRef(({ initialFormData }, ref) => {
                             </div>
                             <div className="row m-1 mb-2">
                                 <div className="form-group d-flex align-items-center gap-1">
-                                    <input 
-                                        type="checkbox" 
-                                        className="input-checkbox custom-checkbox" 
+                                    <input
+                                        type="checkbox"
+                                        className="input-checkbox custom-checkbox"
                                         id="medical_care_provider_agreement"
-                                        name="medical_care_provider_agreement" 
+                                        name="medical_care_provider_agreement"
                                         checked={checkboxStates.medical_care_provider_agreement}
-                                        onChange={(e) => setCheckboxStates(prev => ({...prev, medical_care_provider_agreement: e.target.checked}))}
+                                        onChange={(e) => setCheckboxStates(prev => ({ ...prev, medical_care_provider_agreement: e.target.checked }))}
                                     />
                                     <label className="form-check-label" htmlFor="medical_care_provider_agreement">
                                         <span><b>I agree all the above information.</b></span>
@@ -1299,7 +856,7 @@ const ParentHandbook = forwardRef(({ initialFormData }, ref) => {
                                                 <img
                                                     src={logo}
                                                     alt="Goddard Logo"
-                                                    className="max-h-[130px] max-w-full object-contain"
+                                                    className="max-h-[130px] max-w-full object-contain logo-style"
                                                 />
                                             </div>
                                             <div className="w-[50%] bg-[#0f2d52] flex items-center justify-center">
@@ -1350,13 +907,13 @@ const ParentHandbook = forwardRef(({ initialFormData }, ref) => {
                             </div>
                             <div className="row m-1 mb-2">
                                 <div className="form-group d-flex align-items-center gap-1">
-                                    <input 
-                                        type="checkbox" 
-                                        className="input-checkbox custom-checkbox" 
+                                    <input
+                                        type="checkbox"
+                                        className="input-checkbox custom-checkbox"
                                         id="parent_access_agreement"
-                                        name="parent_access_agreement" 
+                                        name="parent_access_agreement"
                                         checked={checkboxStates.parent_access_agreement}
-                                        onChange={(e) => setCheckboxStates(prev => ({...prev, parent_access_agreement: e.target.checked}))}
+                                        onChange={(e) => setCheckboxStates(prev => ({ ...prev, parent_access_agreement: e.target.checked }))}
                                     />
                                     <label className="form-check-label" htmlFor="parent_access_agreement">
                                         <span><b>I agree all the above information.</b></span>
@@ -1381,7 +938,7 @@ const ParentHandbook = forwardRef(({ initialFormData }, ref) => {
                                                 <img
                                                     src={logo}
                                                     alt="Goddard Logo"
-                                                    className="max-h-[130px] max-w-full object-contain"
+                                                    className="max-h-[130px] max-w-full object-contain logo-style"
                                                 />
                                             </div>
                                             <div className="w-[50%] bg-[#0f2d52] flex items-center justify-center">
@@ -1456,7 +1013,7 @@ const ParentHandbook = forwardRef(({ initialFormData }, ref) => {
                                                 <img
                                                     src={logo}
                                                     alt="Goddard Logo"
-                                                    className="max-h-[130px] max-w-full object-contain"
+                                                    className="max-h-[130px] max-w-full object-contain logo-style"
                                                 />
                                             </div>
                                             <div className="w-[50%] bg-[#0f2d52] flex items-center justify-center">
@@ -1477,13 +1034,13 @@ const ParentHandbook = forwardRef(({ initialFormData }, ref) => {
                             </p>
                             <div className="row m-1 mb-1">
                                 <div className="form-group d-flex align-items-center gap-1">
-                                    <input 
-                                        type="checkbox" 
-                                        className="input-checkbox custom-checkbox" 
+                                    <input
+                                        type="checkbox"
+                                        className="input-checkbox custom-checkbox"
                                         id="release_of_children_agreement"
-                                        name="release_of_children_agreement" 
+                                        name="release_of_children_agreement"
                                         checked={checkboxStates.release_of_children_agreement}
-                                        onChange={(e) => setCheckboxStates(prev => ({...prev, release_of_children_agreement: e.target.checked}))}
+                                        onChange={(e) => setCheckboxStates(prev => ({ ...prev, release_of_children_agreement: e.target.checked }))}
                                     />
                                     <label className="form-check-label" htmlFor="release_of_children_agreement">
                                         <span><b>I agree all the above information.</b></span>
@@ -1546,7 +1103,7 @@ const ParentHandbook = forwardRef(({ initialFormData }, ref) => {
                                                 <img
                                                     src={logo}
                                                     alt="Goddard Logo"
-                                                    className="max-h-[130px] max-w-full object-contain"
+                                                    className="max-h-[130px] max-w-full object-contain logo-style"
                                                 />
                                             </div>
                                             <div className="w-[50%] bg-[#0f2d52] flex items-center justify-center">
@@ -1591,13 +1148,13 @@ const ParentHandbook = forwardRef(({ initialFormData }, ref) => {
                             </div>
                             <div className="row m-1 mb-4">
                                 <div className="form-group d-flex align-items-center gap-1">
-                                    <input 
-                                        type="checkbox" 
-                                        className="input-checkbox custom-checkbox" 
+                                    <input
+                                        type="checkbox"
+                                        className="input-checkbox custom-checkbox"
                                         id="registration_fees_agreement"
-                                        name="registration_fees_agreement" 
+                                        name="registration_fees_agreement"
                                         checked={checkboxStates.registration_fees_agreement}
-                                        onChange={(e) => setCheckboxStates(prev => ({...prev, registration_fees_agreement: e.target.checked}))}
+                                        onChange={(e) => setCheckboxStates(prev => ({ ...prev, registration_fees_agreement: e.target.checked }))}
                                     />
                                     <label className="form-check-label" htmlFor="registration_fees_agreement">
                                         <span><b>I agree all the above information.</b></span>
@@ -1634,7 +1191,7 @@ const ParentHandbook = forwardRef(({ initialFormData }, ref) => {
                                                 <img
                                                     src={logo}
                                                     alt="Goddard Logo"
-                                                    className="max-h-[130px] max-w-full object-contain"
+                                                    className="max-h-[130px] max-w-full object-contain logo-style"
                                                 />
                                             </div>
                                             <div className="w-[50%] bg-[#0f2d52] flex items-center justify-center">
@@ -1666,13 +1223,13 @@ const ParentHandbook = forwardRef(({ initialFormData }, ref) => {
                             </p>
                             <div className="row m-1 mb-2">
                                 <div className="form-group d-flex align-items-center gap-1">
-                                    <input 
-                                        type="checkbox" 
-                                        className="input-checkbox custom-checkbox" 
+                                    <input
+                                        type="checkbox"
+                                        className="input-checkbox custom-checkbox"
                                         id="outside_engagements_agreement"
-                                        name="outside_engagements_agreement" 
+                                        name="outside_engagements_agreement"
                                         checked={checkboxStates.outside_engagements_agreement}
-                                        onChange={(e) => setCheckboxStates(prev => ({...prev, outside_engagements_agreement: e.target.checked}))}
+                                        onChange={(e) => setCheckboxStates(prev => ({ ...prev, outside_engagements_agreement: e.target.checked }))}
                                     />
                                     <label className="form-check-label" htmlFor="outside_engagements_agreement">
                                         <span><b>I agree all the above information.</b></span>
@@ -1722,7 +1279,7 @@ const ParentHandbook = forwardRef(({ initialFormData }, ref) => {
                                                 <img
                                                     src={logo}
                                                     alt="Goddard Logo"
-                                                    className="max-h-[130px] max-w-full object-contain"
+                                                    className="max-h-[130px] max-w-full object-contain logo-style"
                                                 />
                                             </div>
                                             <div className="w-[50%] bg-[#0f2d52] flex items-center justify-center">
@@ -1803,7 +1360,7 @@ const ParentHandbook = forwardRef(({ initialFormData }, ref) => {
                                                 <img
                                                     src={logo}
                                                     alt="Goddard Logo"
-                                                    className="max-h-[130px] max-w-full object-contain"
+                                                    className="max-h-[130px] max-w-full object-contain logo-style"
                                                 />
                                             </div>
                                             <div className="w-[50%] bg-[#0f2d52] flex items-center justify-center">
@@ -1892,7 +1449,7 @@ const ParentHandbook = forwardRef(({ initialFormData }, ref) => {
                                                 <img
                                                     src={logo}
                                                     alt="Goddard Logo"
-                                                    className="max-h-[130px] max-w-full object-contain"
+                                                    className="max-h-[130px] max-w-full object-contain logo-style"
                                                 />
                                             </div>
                                             <div className="w-[50%] bg-[#0f2d52] flex items-center justify-center">
@@ -1916,13 +1473,13 @@ const ParentHandbook = forwardRef(({ initialFormData }, ref) => {
                             </p>
                             <div className="row m-1">
                                 <div className="form-group d-flex align-items-center gap-1">
-                                    <input 
-                                        type="checkbox" 
-                                        className="input-checkbox custom-checkbox" 
+                                    <input
+                                        type="checkbox"
+                                        className="input-checkbox custom-checkbox"
                                         id="health_policies_agreement"
-                                        name="health_policies_agreement" 
+                                        name="health_policies_agreement"
                                         checked={checkboxStates.health_policies_agreement}
-                                        onChange={(e) => setCheckboxStates(prev => ({...prev, health_policies_agreement: e.target.checked}))}
+                                        onChange={(e) => setCheckboxStates(prev => ({ ...prev, health_policies_agreement: e.target.checked }))}
                                     />
                                     <label className="form-check-label" htmlFor="health_policies_agreement">
                                         <span><b>I agree all the above information.</b></span>
@@ -1969,7 +1526,7 @@ const ParentHandbook = forwardRef(({ initialFormData }, ref) => {
                                                 <img
                                                     src={logo}
                                                     alt="Goddard Logo"
-                                                    className="max-h-[130px] max-w-full object-contain"
+                                                    className="max-h-[130px] max-w-full object-contain logo-style"
                                                 />
                                             </div>
                                             <div className="w-[50%] bg-[#0f2d52] flex items-center justify-center">
@@ -2054,7 +1611,7 @@ const ParentHandbook = forwardRef(({ initialFormData }, ref) => {
                                                 <img
                                                     src={logo}
                                                     alt="Goddard Logo"
-                                                    className="max-h-[130px] max-w-full object-contain"
+                                                    className="max-h-[130px] max-w-full object-contain logo-style"
                                                 />
                                             </div>
                                             <div className="w-[50%] bg-[#0f2d52] flex items-center justify-center">
@@ -2089,13 +1646,13 @@ const ParentHandbook = forwardRef(({ initialFormData }, ref) => {
                             </p>
                             <div className="row m-1 mb-2">
                                 <div className="form-group d-flex align-items-center gap-1">
-                                    <input 
-                                        type="checkbox" 
-                                        className="input-checkbox custom-checkbox" 
+                                    <input
+                                        type="checkbox"
+                                        className="input-checkbox custom-checkbox"
                                         id="medication_procedures_agreement"
-                                        name="medication_procedures_agreement" 
+                                        name="medication_procedures_agreement"
                                         checked={checkboxStates.medication_procedures_agreement}
-                                        onChange={(e) => setCheckboxStates(prev => ({...prev, medication_procedures_agreement: e.target.checked}))}
+                                        onChange={(e) => setCheckboxStates(prev => ({ ...prev, medication_procedures_agreement: e.target.checked }))}
                                     />
                                     <label className="form-check-label" htmlFor="medication_procedures_agreement">
                                         <span><b>I agree all the above information.</b></span>
@@ -2144,7 +1701,7 @@ const ParentHandbook = forwardRef(({ initialFormData }, ref) => {
                                                 <img
                                                     src={logo}
                                                     alt="Goddard Logo"
-                                                    className="max-h-[130px] max-w-full object-contain"
+                                                    className="max-h-[130px] max-w-full object-contain logo-style"
                                                 />
                                             </div>
                                             <div className="w-[50%] bg-[#0f2d52] flex items-center justify-center">
@@ -2224,7 +1781,7 @@ const ParentHandbook = forwardRef(({ initialFormData }, ref) => {
                                                 <img
                                                     src={logo}
                                                     alt="Goddard Logo"
-                                                    className="max-h-[130px] max-w-full object-contain"
+                                                    className="max-h-[130px] max-w-full object-contain logo-style"
                                                 />
                                             </div>
                                             <div className="w-[50%] bg-[#0f2d52] flex items-center justify-center">
@@ -2255,13 +1812,13 @@ const ParentHandbook = forwardRef(({ initialFormData }, ref) => {
                             </div>
                             <div className="row m-1 mb-4">
                                 <div className="form-group d-flex align-items-center gap-1">
-                                    <input 
-                                        type="checkbox" 
-                                        className="input-checkbox custom-checkbox" 
+                                    <input
+                                        type="checkbox"
+                                        className="input-checkbox custom-checkbox"
                                         id="bring_to_school_agreement"
-                                        name="bring_to_school_agreement" 
+                                        name="bring_to_school_agreement"
                                         checked={checkboxStates.bring_to_school_agreement}
-                                        onChange={(e) => setCheckboxStates(prev => ({...prev, bring_to_school_agreement: e.target.checked}))}
+                                        onChange={(e) => setCheckboxStates(prev => ({ ...prev, bring_to_school_agreement: e.target.checked }))}
                                     />
                                     <label className="form-check-label" htmlFor="bring_to_school_agreement">
                                         <span><b>I agree all the above information.</b></span>
@@ -2317,7 +1874,7 @@ const ParentHandbook = forwardRef(({ initialFormData }, ref) => {
                                                 <img
                                                     src={logo}
                                                     alt="Goddard Logo"
-                                                    className="max-h-[130px] max-w-full object-contain"
+                                                    className="max-h-[130px] max-w-full object-contain logo-style"
                                                 />
                                             </div>
                                             <div className="w-[50%] bg-[#0f2d52] flex items-center justify-center">
@@ -2388,7 +1945,7 @@ const ParentHandbook = forwardRef(({ initialFormData }, ref) => {
                                                 <img
                                                     src={logo}
                                                     alt="Goddard Logo"
-                                                    className="max-h-[130px] max-w-full object-contain"
+                                                    className="max-h-[130px] max-w-full object-contain logo-style"
                                                 />
                                             </div>
                                             <div className="w-[50%] bg-[#0f2d52] flex items-center justify-center">
@@ -2469,7 +2026,7 @@ const ParentHandbook = forwardRef(({ initialFormData }, ref) => {
                                                 <img
                                                     src={logo}
                                                     alt="Goddard Logo"
-                                                    className="max-h-[130px] max-w-full object-contain"
+                                                    className="max-h-[130px] max-w-full object-contain logo-style"
                                                 />
                                             </div>
                                             <div className="w-[50%] bg-[#0f2d52] flex items-center justify-center">
@@ -2494,13 +2051,13 @@ const ParentHandbook = forwardRef(({ initialFormData }, ref) => {
                             </p>
                             <div className="row m-1">
                                 <div className="form-group d-flex align-items-center gap-1">
-                                    <input 
-                                        type="checkbox" 
-                                        className="input-checkbox custom-checkbox" 
+                                    <input
+                                        type="checkbox"
+                                        className="input-checkbox custom-checkbox"
                                         id="rest_time_agreement"
-                                        name="rest_time_agreement" 
+                                        name="rest_time_agreement"
                                         checked={checkboxStates.rest_time_agreement}
-                                        onChange={(e) => setCheckboxStates(prev => ({...prev, rest_time_agreement: e.target.checked}))}
+                                        onChange={(e) => setCheckboxStates(prev => ({ ...prev, rest_time_agreement: e.target.checked }))}
                                     />
                                     <label className="form-check-label" htmlFor="rest_time_agreement">
                                         <span><b>I agree all the above information.</b></span>
@@ -2560,7 +2117,7 @@ const ParentHandbook = forwardRef(({ initialFormData }, ref) => {
                                                 <img
                                                     src={logo}
                                                     alt="Goddard Logo"
-                                                    className="max-h-[130px] max-w-full object-contain"
+                                                    className="max-h-[130px] max-w-full object-contain logo-style"
                                                 />
                                             </div>
                                             <div className="w-[50%] bg-[#0f2d52] flex items-center justify-center">
@@ -2622,7 +2179,7 @@ const ParentHandbook = forwardRef(({ initialFormData }, ref) => {
                                                 <img
                                                     src={logo}
                                                     alt="Goddard Logo"
-                                                    className="max-h-[130px] max-w-full object-contain"
+                                                    className="max-h-[130px] max-w-full object-contain logo-style"
                                                 />
                                             </div>
                                             <div className="w-[50%] bg-[#0f2d52] flex items-center justify-center">
@@ -2690,7 +2247,7 @@ const ParentHandbook = forwardRef(({ initialFormData }, ref) => {
                                                 <img
                                                     src={logo}
                                                     alt="Goddard Logo"
-                                                    className="max-h-[130px] max-w-full object-contain"
+                                                    className="max-h-[130px] max-w-full object-contain logo-style"
                                                 />
                                             </div>
                                             <div className="w-[50%] bg-[#0f2d52] flex items-center justify-center">
@@ -2732,14 +2289,14 @@ const ParentHandbook = forwardRef(({ initialFormData }, ref) => {
                                 </p>
                                 <div className="row m-1 mb-3">
                                     <div className="form-group d-flex align-items-center gap-1">
-                                        <input 
-                                        type="checkbox" 
-                                        className="input-checkbox custom-checkbox" 
-                                        id="training_philosophy_agreement"
-                                            name="training_philosophy_agreement" 
-                                        checked={checkboxStates.training_philosophy_agreement}
-                                        onChange={(e) => setCheckboxStates(prev => ({...prev, training_philosophy_agreement: e.target.checked}))}
-                                    />
+                                        <input
+                                            type="checkbox"
+                                            className="input-checkbox custom-checkbox"
+                                            id="training_philosophy_agreement"
+                                            name="training_philosophy_agreement"
+                                            checked={checkboxStates.training_philosophy_agreement}
+                                            onChange={(e) => setCheckboxStates(prev => ({ ...prev, training_philosophy_agreement: e.target.checked }))}
+                                        />
                                         <label className="form-check-label" htmlFor="training_philosophy_agreement">
                                             <span><b>I agree all the above information.</b></span>
                                         </label>
@@ -2778,7 +2335,7 @@ const ParentHandbook = forwardRef(({ initialFormData }, ref) => {
                                                 <img
                                                     src={logo}
                                                     alt="Goddard Logo"
-                                                    className="max-h-[130px] max-w-full object-contain"
+                                                    className="max-h-[130px] max-w-full object-contain logo-style"
                                                 />
                                             </div>
                                             <div className="w-[50%] bg-[#0f2d52] flex items-center justify-center">
@@ -2828,14 +2385,14 @@ const ParentHandbook = forwardRef(({ initialFormData }, ref) => {
                                 </p>
                                 <div className="row m-1 mb-2">
                                     <div className="form-group d-flex align-items-center gap-1">
-                                        <input 
-                                        type="checkbox" 
-                                        className="input-checkbox custom-checkbox" 
-                                        id="affiliation_policy_agreement"
-                                            name="affiliation_policy_agreement" 
-                                        checked={checkboxStates.affiliation_policy_agreement}
-                                        onChange={(e) => setCheckboxStates(prev => ({...prev, affiliation_policy_agreement: e.target.checked}))}
-                                    />
+                                        <input
+                                            type="checkbox"
+                                            className="input-checkbox custom-checkbox"
+                                            id="affiliation_policy_agreement"
+                                            name="affiliation_policy_agreement"
+                                            checked={checkboxStates.affiliation_policy_agreement}
+                                            onChange={(e) => setCheckboxStates(prev => ({ ...prev, affiliation_policy_agreement: e.target.checked }))}
+                                        />
                                         <label className="form-check-label" htmlFor="affiliation_policy_agreement">
                                             <span><b>I agree all the above information.</b></span>
                                         </label>
@@ -2862,7 +2419,7 @@ const ParentHandbook = forwardRef(({ initialFormData }, ref) => {
                                                 <img
                                                     src={logo}
                                                     alt="Goddard Logo"
-                                                    className="max-h-[130px] max-w-full object-contain"
+                                                    className="max-h-[130px] max-w-full object-contain logo-style"
                                                 />
                                             </div>
                                             <div className="w-[50%] bg-[#0f2d52] flex items-center justify-center">
@@ -2923,6 +2480,7 @@ const ParentHandbook = forwardRef(({ initialFormData }, ref) => {
                     </div>
                 </div>
             </div>
+
             <div className="m-5">
                 <div className="card">
                     <div className="form-body">
@@ -2936,7 +2494,7 @@ const ParentHandbook = forwardRef(({ initialFormData }, ref) => {
                                                 <img
                                                     src={logo}
                                                     alt="Goddard Logo"
-                                                    className="max-h-[130px] max-w-full object-contain"
+                                                    className="max-h-[130px] max-w-full object-contain logo-style"
                                                 />
                                             </div>
                                             <div className="w-[50%] bg-[#0f2d52] flex items-center justify-center">
@@ -3006,7 +2564,7 @@ const ParentHandbook = forwardRef(({ initialFormData }, ref) => {
                                                 <img
                                                     src={logo}
                                                     alt="Goddard Logo"
-                                                    className="max-h-[130px] max-w-full object-contain"
+                                                    className="max-h-[130px] max-w-full object-contain logo-style"
                                                 />
                                             </div>
                                             <div className="w-[50%] bg-[#0f2d52] flex items-center justify-center">
@@ -3034,13 +2592,13 @@ const ParentHandbook = forwardRef(({ initialFormData }, ref) => {
                             </div>
                             <div className="row m-1 mb-2">
                                 <div className="form-group d-flex align-items-center gap-1">
-                                    <input 
-                                        type="checkbox" 
-                                        className="input-checkbox custom-checkbox" 
+                                    <input
+                                        type="checkbox"
+                                        className="input-checkbox custom-checkbox"
                                         id="security_issue_agreement"
-                                        name="security_issue_agreement" 
+                                        name="security_issue_agreement"
                                         checked={checkboxStates.security_issue_agreement}
-                                        onChange={(e) => setCheckboxStates(prev => ({...prev, security_issue_agreement: e.target.checked}))}
+                                        onChange={(e) => setCheckboxStates(prev => ({ ...prev, security_issue_agreement: e.target.checked }))}
                                     />
                                     <label className="form-check-label" htmlFor="security_issue_agreement">
                                         <span><b>I agree all the above information.</b></span>
@@ -3098,7 +2656,7 @@ const ParentHandbook = forwardRef(({ initialFormData }, ref) => {
                                                 <img
                                                     src={logo}
                                                     alt="Goddard Logo"
-                                                    className="max-h-[130px] max-w-full object-contain"
+                                                    className="max-h-[130px] max-w-full object-contain logo-style"
                                                 />
                                             </div>
                                             <div className="w-[50%] bg-[#0f2d52] flex items-center justify-center">
@@ -3186,7 +2744,7 @@ const ParentHandbook = forwardRef(({ initialFormData }, ref) => {
                                                 <img
                                                     src={logo}
                                                     alt="Goddard Logo"
-                                                    className="max-h-[130px] max-w-full object-contain"
+                                                    className="max-h-[130px] max-w-full object-contain logo-style"
                                                 />
                                             </div>
                                             <div className="w-[50%] bg-[#0f2d52] flex items-center justify-center">
@@ -3215,14 +2773,14 @@ const ParentHandbook = forwardRef(({ initialFormData }, ref) => {
                                 </ul>
                                 <div className="row m-1 mb-2">
                                     <div className="form-group d-flex align-items-center gap-1">
-                                        <input 
-                                        type="checkbox" 
-                                        className="input-checkbox custom-checkbox" 
-                                        id="expulsion_policy_agreement"
-                                            name="expulsion_policy_agreement" 
-                                        checked={checkboxStates.expulsion_policy_agreement}
-                                        onChange={(e) => setCheckboxStates(prev => ({...prev, expulsion_policy_agreement: e.target.checked}))}
-                                    />
+                                        <input
+                                            type="checkbox"
+                                            className="input-checkbox custom-checkbox"
+                                            id="expulsion_policy_agreement"
+                                            name="expulsion_policy_agreement"
+                                            checked={checkboxStates.expulsion_policy_agreement}
+                                            onChange={(e) => setCheckboxStates(prev => ({ ...prev, expulsion_policy_agreement: e.target.checked }))}
+                                        />
                                         <label className="form-check-label" htmlFor="expulsion_policy_agreement">
                                             <span><b>I agree all the above information.</b></span>
                                         </label>
@@ -3285,7 +2843,7 @@ const ParentHandbook = forwardRef(({ initialFormData }, ref) => {
                                                 <img
                                                     src={logo}
                                                     alt="Goddard Logo"
-                                                    className="max-h-[130px] max-w-full object-contain"
+                                                    className="max-h-[130px] max-w-full object-contain logo-style"
                                                 />
                                             </div>
                                             <div className="w-[50%] bg-[#0f2d52] flex items-center justify-center">
@@ -3366,7 +2924,7 @@ const ParentHandbook = forwardRef(({ initialFormData }, ref) => {
                                                 <img
                                                     src={logo}
                                                     alt="Goddard Logo"
-                                                    className="max-h-[130px] max-w-full object-contain"
+                                                    className="max-h-[130px] max-w-full object-contain logo-style"
                                                 />
                                             </div>
                                             <div className="w-[50%] bg-[#0f2d52] flex items-center justify-center">
@@ -3403,9 +2961,9 @@ const ParentHandbook = forwardRef(({ initialFormData }, ref) => {
                         <div className="row m-1 mb-2">
                             <div className="form-group d-flex align-items-center gap-1">
                                 <input type="checkbox" className="input-checkbox custom-checkbox" id="addressing_individual_child_agreement"
-                                    name="addressing_individual_child_agreement" 
+                                    name="addressing_individual_child_agreement"
                                     checked={checkboxStates.addressing_individual_child_agreement}
-                                    onChange={(e) => setCheckboxStates(prev => ({...prev, addressing_individual_child_agreement: e.target.checked}))}
+                                    onChange={(e) => setCheckboxStates(prev => ({ ...prev, addressing_individual_child_agreement: e.target.checked }))}
                                 />
                                 <label className="form-check-label" htmlFor="addressing_individual_child_agreement">
                                     <span><b>I agree all the above information.</b></span>
@@ -3446,7 +3004,7 @@ const ParentHandbook = forwardRef(({ initialFormData }, ref) => {
                                                 <img
                                                     src={logo}
                                                     alt="Goddard Logo"
-                                                    className="max-h-[130px] max-w-full object-contain"
+                                                    className="max-h-[130px] max-w-full object-contain logo-style"
                                                 />
                                             </div>
                                             <div className="w-[50%] bg-[#0f2d52] flex items-center justify-center">
@@ -3512,7 +3070,7 @@ const ParentHandbook = forwardRef(({ initialFormData }, ref) => {
                                                 <img
                                                     src={logo}
                                                     alt="Goddard Logo"
-                                                    className="max-h-[130px] max-w-full object-contain"
+                                                    className="max-h-[130px] max-w-full object-contain logo-style"
                                                 />
                                             </div>
                                             <div className="w-[50%] bg-[#0f2d52] flex items-center justify-center">
@@ -3589,7 +3147,7 @@ const ParentHandbook = forwardRef(({ initialFormData }, ref) => {
                                                 <img
                                                     src={logo}
                                                     alt="Goddard Logo"
-                                                    className="max-h-[130px] max-w-full object-contain"
+                                                    className="max-h-[130px] max-w-full object-contain logo-style"
                                                 />
                                             </div>
                                             <div className="w-[50%] bg-[#0f2d52] flex items-center justify-center">
@@ -3641,13 +3199,13 @@ const ParentHandbook = forwardRef(({ initialFormData }, ref) => {
                             <h4 className="text-center">Parent Agreement</h4>
                             <div className="row m-1 mb-4">
                                 <div className="form-group d-flex align-items-center gap-1">
-                                    <input 
-                                        type="checkbox" 
-                                        className="input-checkbox custom-checkbox" 
+                                    <input
+                                        type="checkbox"
+                                        className="input-checkbox custom-checkbox"
                                         id="finalword_agreement"
-                                        name="finalword_agreement" 
+                                        name="finalword_agreement"
                                         checked={checkboxStates.finalword_agreement}
-                                        onChange={(e) => setCheckboxStates(prev => ({...prev, finalword_agreement: e.target.checked}))}
+                                        onChange={(e) => setCheckboxStates(prev => ({ ...prev, finalword_agreement: e.target.checked }))}
                                     />
                                     <label className="form-check-label" htmlFor="finalword_agreement">
                                         <span><b>I agree all the above information.</b></span>

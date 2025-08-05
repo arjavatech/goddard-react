@@ -1,5 +1,6 @@
     /* src/index.css or src/App.css */
     @import "tailwindcss";
+    @import "./print.css";
 
     .text-goddard-blue {
       color: #002e4d;
@@ -26,9 +27,6 @@
       outline: none;
     }
 
-    .form-control {
-      padding-bottom: 20px !important;
-    }
 
 
     .underline-input:focus,
