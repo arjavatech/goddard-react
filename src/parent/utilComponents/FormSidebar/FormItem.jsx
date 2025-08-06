@@ -1,7 +1,6 @@
 import React from 'react';
 
 const FormItem = ({ item, sectionKey, formStatus, onItemClick,isSelected }) => {
-console.log(formStatus)
   const getItemKey = () => {
     if (item.toLowerCase().includes("ach")) return "authorization_ach";
     if (item.toLowerCase().includes("signature")) {
@@ -52,27 +51,60 @@ console.log(formStatus)
 
   
 
-  // Debug: Log authorization items for troubleshooting
-  if (sectionKey) {
-    console.log("formStatus[itemKey]", formStatus[itemKey])
-    const isCompleted = formStatus[itemKey]?.completed === true;
-    const imageSrc = isCompleted ? "/image/tick.png" : "/image/circle-with.png";
-    console.log(`Authorization FormItem - Item: "${item}", Key: "${itemKey}", Status:`, formStatus[itemKey], 'Completed:', formStatus[itemKey]?.completed, 'Will show image:', imageSrc);
-  }
-  if (sectionKey === "parentHandbook") {
-    const isCompleted = formStatus[itemKey]?.completed === true;
-    const imageSrc = isCompleted ? "/image/tick.png" : "/image/circle-with.png";
-    console.log(`Parent Handbook FormItem - Item: "${item}", Key: "${itemKey}", Status:`, formStatus[itemKey], 'Completed:', formStatus[itemKey]?.completed, 'Will show image:', imageSrc);
-  }
 
   
 
+  // Check if parent signature prerequisites are complete
+  const areParentSignaturePrerequisitesComplete = () => {
+    if (!item.toLowerCase().includes('parent signature')) {
+      return true; // Not a parent signature, no restriction needed
+    }
+
+    switch (sectionKey) {
+      case 'authorization':
+        // Parent signature requires ACH to be complete
+        return formStatus['authorization_ach']?.completed === true;
+        
+      case 'enrollment':
+        // Parent signature requires Agreement to be complete
+        return formStatus['enrollment_agreement']?.completed === true;
+        
+      case 'parentHandbook':
+        // Parent signature requires Policy to be complete
+        return formStatus['parenthandbook_policy']?.completed === true;
+        
+      case 'admission':
+        // Parent signature requires all admission form items to be complete
+        const admissionItems = [
+          'admission_childinformation',
+          'admission_childandfamilyhistory', 
+          'admission_immunization',
+          'admission_child_profile',
+          'admission_childpickup_password',
+          'admission_photo_permission',
+          'admission_security',
+          'admission_medical_transportation',
+          'admission_health_policies',
+          'admission_outside_engagements',
+          'admission_social_media'
+        ];
+        return admissionItems.every(itemKey => formStatus[itemKey]?.completed === true);
+        
+      default:
+        return true;
+    }
+  };
+
   const handleItemClick = () => {
-    // Check if user is NOT admin and trying to access Admin Signature
     const loggedInEmail = localStorage.getItem('logged_in_email');
+    
+    // Check if user is NOT admin and trying to access Admin Signature
     if (loggedInEmail !== 'goddard01arjava@gmail.com' && item.toLowerCase().includes('admin signature')) {
-      // Don't allow non-admin users to click on Admin Signature sections
-      console.log('Non-admin user cannot access Admin Signature section');
+      return;
+    }
+    
+    // Check if parent signature prerequisites are complete
+    if (item.toLowerCase().includes('parent signature') && !areParentSignaturePrerequisitesComplete()) {
       return;
     }
     
@@ -81,34 +113,48 @@ console.log(formStatus)
     }
   };
 
-  // Check if current user is NOT admin and this is an Admin Signature item
+  // Check restrictions
   const loggedInEmail = localStorage.getItem('logged_in_email');
   const isAdminRestricted = loggedInEmail !== 'goddard01arjava@gmail.com' && item.toLowerCase().includes('admin signature');
+  const isParentSignatureRestricted = item.toLowerCase().includes('parent signature') && !areParentSignaturePrerequisitesComplete();
+  
+  
 
   return (
-    <div 
-    className={`flex justify-between items-center px-3 py-1 border-b-2 border-[#0F2D52] last:border-none ${
-      isSelected ? "bg-[#0F2D52] text-white" : "bg-[#E2F1FF]"
-    } ${
-      isAdminRestricted 
-        ? "opacity-50 cursor-not-allowed bg-gray-200" 
-        : "hover:bg-[#0F2D52] hover:text-white cursor-pointer"
-    }`}
-    onClick={handleItemClick}
-    title={isAdminRestricted ? "Only admin users can access Admin Signature sections" : ""}
-  >
-      <span>{item}</span>
-      <img
-        src={
-          formStatus[itemKey]?.completed === true ? "/image/tick.png" : "/image/circle-with.png"
-        }
-        alt={
-          formStatus[itemKey]?.completed === true ? "Completed" : 
-          formStatus[itemKey] === undefined ? `Debug - Status Unknown for ${itemKey}` : 
-          "Incomplete"
-        }
-        className="w-5 h-5"
-      />
+    <div className="relative group">
+      <div 
+      className={`flex justify-between items-center px-3 py-1 border-b-2 border-[#0F2D52] last:border-none ${
+        isSelected ? "bg-[#0F2D52] text-white" : "bg-[#E2F1FF]"
+      } ${
+        isAdminRestricted 
+          ? "opacity-50 cursor-not-allowed bg-gray-200" 
+          : "hover:bg-[#0F2D52] hover:text-white cursor-pointer"
+      }`}
+      onClick={handleItemClick}
+      title={
+        isAdminRestricted ? "Only admin users can access Admin Signature sections" : ""
+      }
+    >
+        <span>{item}</span>
+        <img
+          src={
+            formStatus[itemKey]?.completed === true ? "/image/tick.png" : "/image/circle-with.png"
+          }
+          alt={
+            formStatus[itemKey]?.completed === true ? "Completed" : 
+            formStatus[itemKey] === undefined ? `Debug - Status Unknown for ${itemKey}` : 
+            "Incomplete"
+          }
+          className="w-5 h-5"
+        />
+      </div>
+      
+      {/* Red tooltip for parent signature restrictions - shows on hover */}
+      {isParentSignatureRestricted && (
+        <div className="absolute top-full left-0 right-0 z-10 bg-red-600 text-white text-xs px-2 py-1 rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+          You have to fill the missing fields.
+        </div>
+      )}
     </div>
   );
 };
