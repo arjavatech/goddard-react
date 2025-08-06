@@ -19,7 +19,7 @@ const StatusSelect = ({
           value={value}
           onChange={(e) => onChange(e.target.value)}
         >
-          <option className="text-gray-500"value="" disabled>{placeholder}</option>
+          <option value="" disabled>{placeholder}</option>
           {options.map(option => (
             <option key={option.value} value={option.value}>
               {option.label}

@@ -230,7 +230,7 @@ const ParentDetails = () => {
         <div className="flex gap-2">
           <button
             className={`px-3 py-2 rounded text-white ${
-              row.invite_status === 'Active' ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-900 hover:opacity-80'
+              row.invite_status === 'Active' ? 'bg-gray-400 cursor-not-allowed' : 'bg-[#002e4d] hover:opacity-80'
             }`}
             onClick={() => handleResendEmail(row.invite_email)}
             disabled={row.invite_status === 'Active'}
@@ -239,7 +239,7 @@ const ParentDetails = () => {
           </button>
           <button
             className={`px-3 py-2 rounded text-white ${
-              row.invite_status === 'Inactive' ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-900 hover:opacity-80'
+              row.invite_status === 'Inactive' ? 'bg-gray-400 cursor-not-allowed' : 'bg-[#002e4d] hover:opacity-80'
             }`}
             onClick={() => {
               setSelectedParentEmail(row.invite_email);

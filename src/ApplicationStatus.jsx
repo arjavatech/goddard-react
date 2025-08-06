@@ -20,12 +20,8 @@ const ApplicationStatus = () => {
   const [selectedForm, setSelectedForm] = useState('');
   const { alert, showAlert, closeAlert } = useAlertManager();
 
-  
-
-// Inside your functional React component
 const navigate = useNavigate();
 
-  // Get class ID from URL
   const urlParams = new URLSearchParams(window.location.search);
   const classID = urlParams.get('id') || '';
 
@@ -43,7 +39,7 @@ const navigate = useNavigate();
       const data = await response.json();
    
       const classroomOptions = [
-        { value: '', label: 'All', dataValue: '' },
+        { value: 'all', label: 'All', dataValue: 'all' },
         ...data.filter(item => item.class_name && item.class_name !== undefined)
           .map(item => ({
             value: item.class_id,
@@ -67,7 +63,7 @@ const navigate = useNavigate();
       const response = await fetch('https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/all_form_info/getall');
       const data = await response.json();
       const formOptions = [
-        { value: '', label: 'All' },
+        { value: 'all', label: 'All' },
         ...data.filter(item => item.main_topic && item.main_topic !== undefined)
           .map(item => ({
             value: item.form_id,
@@ -79,29 +75,69 @@ const navigate = useNavigate();
     }
   };
 
-  const loadData = async (url = null, classroomFilter = null) => {
+  const loadData = async (formFilter = null, classroomFilter = null) => {
     setLoading(true);
+    
     try {
-      let apiUrl = url;
-     
-      if (!apiUrl) {
-        apiUrl = classID 
-       
-          ? `https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/class_based_all_child_details/${classID}`
-          : 'https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/admission_child_personal/all_child_status';
+      let apiUrl;
+      
+      // Determine API URL based on filters - matching JavaScript logic
+      const isFormAll = formFilter === 'all' || !formFilter;
+      const isClassroomAll = classroomFilter === 'all' || !classroomFilter;
+      
+      if (isFormAll && isClassroomAll) {
+        // Both are 'all' or empty - get all data
+        if (classID) {
+          apiUrl = `https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/class_based_all_child_details/${classID}`;
+        } else {
+          apiUrl = 'https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/admission_child_personal/all_child_status';
+        }
+      } else if (isFormAll && !isClassroomAll) {
+        // Only classroom filter selected
+        apiUrl = `https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/class_based_all_child_details/${classroomFilter}`;
+      } else if (!isFormAll && isClassroomAll) {
+        // Only form filter selected
+        apiUrl = `https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/form_based_all_child_details/${formFilter}`;
+      } else {
+        // Both filters have specific values - use form API and filter by classroom
+        apiUrl = `https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/form_based_all_child_details/${formFilter}`;
       }
+      
       const response = await fetch(apiUrl);
       let responseData = await response.json();
 
-      // Apply filters
+      // Apply filtering based on your JavaScript logic
       if (!apiUrl.includes('class_based_all_child_details')) {
-        if (classroomFilter) {
-          responseData = responseData.filter(row => row.class_name === classroomFilter);
-        } else {
+        // For non-class-based APIs, apply filtering
+        if (!isClassroomAll && !isFormAll) {
+          // Both form and classroom selected - filter form results by classroom name
+          const selectedClassroom = classrooms.find(c => c.value == classroomFilter);
+          const classroomName = selectedClassroom?.dataValue;
+          
+          if (classroomName && classroomName !== 'all') {
+            responseData = responseData.filter(row => {
+              return row.class_name === classroomName;
+            });
+          }
+        } else if (!isClassroomAll && isFormAll) {
+          // Only classroom selected - filter by classroom name
+          const selectedClassroom = classrooms.find(c => c.value == classroomFilter);
+          const classroomName = selectedClassroom?.dataValue;
+          
+          if (classroomName && classroomName !== 'all') {
+            responseData = responseData.filter(row => {
+              return row.class_name === classroomName;
+            });
+          }
+        } else if (isFormAll && isClassroomAll) {
+          // Both are 'all' - apply default filtering
           responseData = responseData.filter(row => 
             row.class_name !== 'Archive' && row.class_name !== 'Unassigned'
           );
         }
+        // If only form is selected (!isFormAll && isClassroomAll), no additional filtering needed
+      } else {
+        // For class-based APIs, return data as-is
       }
 
       setData(responseData);
@@ -113,32 +149,15 @@ const navigate = useNavigate();
   };
 
   const handleClassroomChange = (value) => {
+    setSelectedForm(selectedForm);
     setSelectedClassroom(value);
-    const selectedOption = classrooms.find(c => c.value === value);
-    const classroomDataValue = selectedOption?.dataValue || '';
-    
-    if (!selectedForm) {
-      if (!value) {
-        loadData('https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/admission_child_personal/all_child_status');
-      } else {
-        loadData(`https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/class_based_all_child_details/${value}`);
-      }
-    } else if (selectedForm && !classroomDataValue) {
-      loadData(`https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/form_based_all_child_details/${selectedForm}`);
-    } else {
-      loadData(`https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/form_based_all_child_details/${selectedForm}`, classroomDataValue);
-    }
+    loadData(selectedForm, value);
   };
 
   const handleFormChange = (value) => {
     setSelectedForm(value);
-    setSelectedClassroom('');
-    
-    if (!value) {
-      loadData('https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/admission_child_personal/all_child_status');
-    } else {
-      loadData(`https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/form_based_all_child_details/${value}`);
-    }
+    setSelectedClassroom(selectedClassroom);
+    loadData(value, selectedClassroom);
   };
 
   const getClassroomValue = (className) => {
@@ -221,8 +240,10 @@ const navigate = useNavigate();
       title: 'Action',
       render: (value, row) => (
         <a
-          className="bg-[#002e4d] text-white px-2 py-1 sm:px-3 sm:py-2 rounded text-decoration-none hover:opacity-80 text-xs sm:text-sm whitespace-nowrap"
-          href={`mailto:${row.primary_email}?cc=${row.additional_parent_email}`}
+          className="bg-[#002e4d] text-white px-2 py-1 sm:px-3 sm:py-2 rounded text-xs sm:text-sm whitespace-nowrap opacity-50 cursor-not-allowed"
+          href="#"
+          onClick={(e) => e.preventDefault()}
+          style={{ pointerEvents: 'none' }}
         >
           Send Email
         </a>
