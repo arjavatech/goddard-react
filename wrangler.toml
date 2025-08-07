@@ -1,0 +1,9 @@
+ame = "goddard-react"
+account_id = "a9ba45ec6645828f4aa8150c91468b68"
+compatibility_date = "2025-08-06"
+
+[build]
+command = "npm run build"
+
+[assets]
+directory = "./dist"

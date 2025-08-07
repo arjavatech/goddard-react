@@ -2,7 +2,6 @@
 import React, { useRef, forwardRef, useImperativeHandle, useState, useEffect } from "react";
 import { jsPDF } from "jspdf";
 import html2canvas from "html2canvas";
-import logo from "/image/gs_logo_branch.png";
 import "./index.css";
 import PDFHeader from "./PDFHeader";
 

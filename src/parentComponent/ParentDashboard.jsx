@@ -50,11 +50,11 @@ const ParentDashboard = () => {
     try {
       console.log("function")
       if (mode == "download") {
-        await admissionRef.current?.handleDownload2();
+        await admissionRef.current?.generateDownload();
       }
       else {
         console.log("print funtion start")
-        await admissionRef.current?.handlePrint2();
+        await admissionRef.current?.generatePrint();
         console.log("print funtion end")
       }
 
@@ -90,10 +90,10 @@ const ParentDashboard = () => {
     try {
       // Call the handleGeneratePdf method directly on the ACHForm component via its ref
       if (mode == "download") {
-        await phbFormRef.current?.generatePdf();
+        await phbFormRef.current?.generateDownload();
       }
       else {
-        await phbFormRef.current?.handlePrint2();
+        await phbFormRef.current?.generatePrint();
       }
 
     } catch (error) {
@@ -109,8 +109,8 @@ const ParentDashboard = () => {
         console.log("enrollment form pdf")
         await enrollFormRef.current?.generatePdf();
       }
-      else{
-        await enrollFormRef.current?.generatePrint()
+      else {
+        await enrollFormRef.current?.print()
       }
 
     } catch (error) {
