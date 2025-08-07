@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
 
-import Parent_details from './parent_details';
+import Parent_details from './Parent_details';
 import Child_details from './Child_details';
 import Additional_Parent_details from './AdditionalParentDetails';
 import EmergencyContact from './EmergencyContact';
