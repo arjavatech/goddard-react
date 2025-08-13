@@ -119,6 +119,47 @@ const ParentDashboard = () => {
     }
   };
 
+  const handleAuthorizationFormAPI = async () => {
+    try {
+      console.log("Authorization form API call started");
+      
+      // Prepare the request body with form data
+      const requestBody = {
+        bank_routing: childFormData?.bank_routing || "",
+        bank_account: childFormData?.bank_account || "", 
+        driver_license: childFormData?.driver_license || "",
+        state: childFormData?.state || "",
+        authorized_name: childFormData?.i || "",
+        parent_signature: childFormData?.parent_sign_ach || "",
+        signature_date: childFormData?.parent_sign_date_ach || ""
+      };
+
+      console.log("Request body:", requestBody);
+
+      const response = await fetch('https://27nssk4mg6.execute-api.ap-south-1.amazonaws.com/test/generate-authorization-pdf', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestBody)
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const result = await response.json();
+      console.log("API response:", result);
+      
+      // Handle the response (you might want to show a success message or download the PDF)
+      alert("Authorization form PDF generated successfully!");
+      
+    } catch (error) {
+      console.error("Error in authorization form API call:", error);
+      alert("Failed to generate authorization form PDF. Please try again.");
+    }
+  };
+
   useEffect(() => {
     if (isAuthenticated) {
       checkParentAuthentication();
@@ -469,9 +510,6 @@ const ParentDashboard = () => {
 
             // Process content with multi-page support
             addMultiPage(content).then(() => {
-              console.log('PDF generated successfully, saving...');
-              console.log(formName);
-              console.log("----------------------------")
               pdf.save(`${formName}.pdf`);
 
               // Restore original font sizes
@@ -546,75 +584,6 @@ const ParentDashboard = () => {
       console.error('Error downloading form:', error);
     }
   };
-
-  // Handle print functionality
-  // const handlePrint = async (formName, url) => {
-  //   console.log('Print button clicked for:', formName, 'URL:', url);
-
-  //   const formRef = getFormRef(formName);
-  //   if (formRef) {
-  //     console.log(`Processing ${formName} print from PDF component...`);
-  //     // Handle PDF form print directly from component
-  //     const content = formRef.current;
-  //     if (!content) {
-  //       console.error(`${formName} content not found for printing`);
-  //       return;
-  //     }
-
-  //     console.log(`${formName} content found, opening print window...`);
-  //     const printWindow = window.open('', '_blank');
-  //     printWindow.document.write(`
-  //       <html>
-  //         <head>
-  //           <title>Goddard ${formName.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}</title>
-  //           <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" />
-  //           <style>
-  //           p, ol li, ul li { font-weight: 500; text-align: justify; }
-  //             .form-body { border: 2px solid #0F2D52; }
-  //             .header-border { border-bottom: 2px solid #0F2D52; }
-  //             .title_bg { background-color: #0F2D52; color: white;  }
-  //             .logo-style { display: flex; align-items: center; justify-content: center; }
-  //             .custom-checkbox { display: none; }
-  //           </style>
-  //         </head>
-  //         <body>
-  //           ${content.innerHTML}
-  //         </body>
-  //       </html>
-  //     `);
-  //     printWindow.document.close();
-  //     printWindow.focus();
-  //     setTimeout(() => {
-  //       console.log('Triggering print dialog...');
-  //       printWindow.print();
-  //       printWindow.close();
-  //       console.log('Print completed successfully');
-  //     }, 500);
-  //     return;
-  //   }
-
-  //   // For other forms, use the existing HTML file approach
-  //   console.log('Processing regular form print for:', formName);
-  //   try {
-  //     const response = await fetch(url);
-  //     const text = await response.text();
-
-  //     const printWindow = window.open('', '', 'height=1400,width=1500');
-  //     printWindow.document.write('<html><head><title>Print Form</title>');
-  //     printWindow.document.write('</head><body>');
-  //     printWindow.document.write(text);
-  //     printWindow.document.write('</body></html>');
-  //     printWindow.document.close();
-
-  //     printWindow.onload = function () {
-  //       printWindow.focus();
-  //       printWindow.print();
-  //       printWindow.close();
-  //     };
-  //   } catch (error) {
-  //     console.error('Error printing form:', error);
-  //   }
-  // };
 
   // Get form URLs for download/print (now all forms use direct component approach)
   const getFormUrls = (formName) => {
@@ -906,7 +875,7 @@ const ParentDashboard = () => {
                                       handleDownload1("download");
                                     }
                                     else if (formName == 'authorization_form') {
-                                      handleDownload2("download");
+                                      handleAuthorizationFormAPI();
                                     }
                                     else if (formName == 'parent_handbook') {
                                       handleDownload3("download");
