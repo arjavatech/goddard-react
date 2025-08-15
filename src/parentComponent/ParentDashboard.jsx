@@ -360,6 +360,277 @@ const ParentDashboard = () => {
     }
   };
 
+  const handleAdmissionFormAPI = async () => {
+    try {
+      console.log("Admission form API call started");
+      
+      // Get current child name from children array
+      const currentChild = children.find(child => child.child_id === activeChildId);
+      const childName = currentChild ? `${currentChild.child_first_name} ${currentChild.child_last_name || ''}`.trim() : '';
+      
+      // Get parent names from childFormData
+      const parentNames = childFormData?.parent_name || childFormData?.primary_parent_name || '';
+      
+      // Prepare the request body with form data
+      const requestBody = {
+        // Child Information
+        child_first_name: childFormData?.child_first_name || "",
+        child_last_name: childFormData?.child_last_name || "",
+        nick_name: childFormData?.nick_name || "",
+        dob: childFormData?.dob || "",
+        primary_language: childFormData?.primary_language || "",
+        gender: childFormData?.gender === 1 ? "Male" : childFormData?.gender === 2 ? "Female" : (childFormData?.gender || ""),
+        school_age_child_school: childFormData?.school_age_child_school || "",
+
+        // Primary Parent/Guardian
+        parent_name: childFormData?.primary_parent_info?.parent_name || "",
+        do_relevant_custody_papers_apply: childFormData?.primary_parent_info?.do_relevant_custody_papers_apply === 1 ? "Yes" : childFormData?.primary_parent_info?.do_relevant_custody_papers_apply === 2 ? "No" : (childFormData?.primary_parent_info?.do_relevant_custody_papers_apply || ""),
+        parent_street_address: childFormData?.primary_parent_info?.parent_street_address || "",
+        parent_city_address: childFormData?.primary_parent_info?.parent_city_address || "",
+        parent_state_address: childFormData?.primary_parent_info?.parent_state_address || "",
+        parent_zip_address: childFormData?.primary_parent_info?.parent_zip_address || "",
+        business_name: childFormData?.primary_parent_info?.parent_business_name || "",
+        work_hours_from: childFormData?.primary_parent_info?.parent_work_hours_from || "",
+        work_hours_to: childFormData?.primary_parent_info?.parent_work_hours_to || "",
+        business_telephone_number: childFormData?.primary_parent_info?.parent_business_telephone_number || "",
+        business_cell_number: childFormData?.primary_parent_info?.parent_business_cell_number || "",
+        primary_parent_email: childFormData?.primary_parent_email || "",
+        home_telephone_number: childFormData?.primary_parent_info?.parent_home_telephone_number || "",
+
+        // Second Parent/Guardian
+        parent_two_name: childFormData?.additional_parent_info?.parent_two_name || "",
+        parent_two_home_telephone_number: childFormData?.additional_parent_info?.parent_two_home_telephone_number || "",
+        parent_two_street_address: childFormData?.additional_parent_info?.parent_two_street_address || "",
+        parent_two_city_address: childFormData?.additional_parent_info?.parent_two_city_address || "",
+        parent_two_state_address: childFormData?.additional_parent_info?.parent_two_state_address || "",
+        parent_two_zip_address: childFormData?.additional_parent_info?.parent_two_zip_address || "",
+        parent_two_business_name: childFormData?.additional_parent_info?.parent_two_business_name || "",
+        parent_two_work_hours_from: childFormData?.additional_parent_info?.parent_two_work_hours_from || "",
+        parent_two_work_hours_to: childFormData?.additional_parent_info?.parent_two_work_hours_to || "",
+        parent_two_business_telephone_number: childFormData?.additional_parent_info?.parent_two_business_telephone_number || "",
+        parent_two_business_cell_number: childFormData?.additional_parent_info?.parent_two_business_cell_number || "",
+        parent_email: childFormData?.additional_parent_info?.parent_email || "",
+
+        // Emergency Contacts (3 contacts)
+        child_emergency_contact_name0: childFormData?.emergency_contact_info?.[0]?.child_emergency_contact_name || "",
+        child_emergency_contact_relationship0: childFormData?.emergency_contact_info?.[0]?.child_emergency_contact_relationship || "",
+        child_emergency_contact_full_address0: childFormData?.emergency_contact_info?.[0]?.child_emergency_contact_full_address || "",
+        child_emergency_contact_city_address0: childFormData?.emergency_contact_info?.[0]?.child_emergency_contact_city_address || "",
+        child_emergency_contact_state_address0: childFormData?.emergency_contact_info?.[0]?.child_emergency_contact_state_address || "",
+        child_emergency_contact_zip_address0: childFormData?.emergency_contact_info?.[0]?.child_emergency_contact_zip_address || "",
+        child_emergency_contact_telephone_number0: childFormData?.emergency_contact_info?.[0]?.child_emergency_contact_telephone_number || "",
+
+        child_emergency_contact_name1: childFormData?.emergency_contact_info?.[1]?.child_emergency_contact_name || "",
+        child_emergency_contact_relationship1: childFormData?.emergency_contact_info?.[1]?.child_emergency_contact_relationship || "",
+        child_emergency_contact_full_address1: childFormData?.emergency_contact_info?.[1]?.child_emergency_contact_full_address || "",
+        child_emergency_contact_city_address1: childFormData?.emergency_contact_info?.[1]?.child_emergency_contact_city_address || "",
+        child_emergency_contact_state_address1: childFormData?.emergency_contact_info?.[1]?.child_emergency_contact_state_address || "",
+        child_emergency_contact_zip_address1: childFormData?.emergency_contact_info?.[1]?.child_emergency_contact_zip_address || "",
+        child_emergency_contact_telephone_number1: childFormData?.emergency_contact_info?.[1]?.child_emergency_contact_telephone_number || "",
+
+        child_emergency_contact_name2: childFormData?.emergency_contact_info?.[2]?.child_emergency_contact_name || "",
+        child_emergency_contact_relationship2: childFormData?.emergency_contact_info?.[2]?.child_emergency_contact_relationship || "",
+        child_emergency_contact_full_address2: childFormData?.emergency_contact_info?.[2]?.child_emergency_contact_full_address || "",
+        child_emergency_contact_city_address2: childFormData?.emergency_contact_info?.[2]?.child_emergency_contact_city_address || "",
+        child_emergency_contact_state_address2: childFormData?.emergency_contact_info?.[2]?.child_emergency_contact_state_address || "",
+        child_emergency_contact_zip_address2: childFormData?.emergency_contact_info?.[2]?.child_emergency_contact_zip_address || "",
+        child_emergency_contact_telephone_number2: childFormData?.emergency_contact_info?.[2]?.child_emergency_contact_telephone_number || "",
+
+        // Healthcare Provider
+        child_care_provider_name: childFormData?.child_care_provider_info?.child_care_provider_name || "",
+        child_hospital_affiliation: childFormData?.child_care_provider_info?.child_hospital_affiliation || "",
+        child_care_provider_street_address: childFormData?.child_care_provider_info?.child_care_provider_street_address || "",
+        child_care_provider_city_address: childFormData?.child_care_provider_info?.child_care_provider_city_address || "",
+        child_care_provider_state_address: childFormData?.child_care_provider_info?.child_care_provider_state_address || "",
+        child_care_provider_zip_address: childFormData?.child_care_provider_info?.child_care_provider_zip_address || "",
+        child_care_provider_telephone_number: childFormData?.child_care_provider_info?.child_care_provider_telephone_number || "",
+
+        // Dental Information
+        child_dentist_name: childFormData?.child_dentist_name || "",
+        dentist_telephone_number: childFormData?.dentist_telephone_number || "",
+        dentist_street_address: childFormData?.dentist_street_address || "",
+        dentist_city_address: childFormData?.dentist_city_address || "",
+        dentist_state_address: childFormData?.dentist_state_address || "",
+        dentist_zip_address: childFormData?.dentist_zip_address || "",
+
+        // Medical Information
+        allergies_medication_reaction: childFormData?.allergies_medication_reaction || "",
+        special_disabilities: childFormData?.special_disabilities || "",
+        medication: childFormData?.medication || "",
+        additional_info: childFormData?.additional_info || "",
+        policy_number: childFormData?.policy_number || "",
+        health_insurance: childFormData?.health_insurance || "",
+        obtaining_emergency_medical_care: childFormData?.obtaining_emergency_medical_care || "",
+        administration_first_aid_procedures: childFormData?.administration_first_aid_procedures || "",
+        agree_all_above_information_is_correct: childFormData?.agree_all_above_information_is_correct === 'on' || childFormData?.agree_all_above_information_is_correct === 1 ? true : false,
+        physical_exam_last_date: childFormData?.physical_exam_last_date || "",
+        dental_exam_last_date: childFormData?.dental_exam_last_date || "",
+
+        // Medical History
+        allergies: childFormData?.allergies || "",
+        bleeding_problems: childFormData?.bleeding_problems || "",
+        frequent_ear_infections: childFormData?.frequent_ear_infections || "",
+        asthma: childFormData?.asthma || "",
+        diabetes: childFormData?.diabetes || "",
+        epilepsy: childFormData?.epilepsy || "",
+        frequent_illnesses: childFormData?.frequent_illnesses || "",
+        hearing_problems: childFormData?.hearing_problems || "",
+        high_fevers: childFormData?.high_fevers || "",
+        hospitalization: childFormData?.hospitalization || "",
+        rheumatic_fever: childFormData?.rheumatic_fever || "",
+        seizures_convulsions: childFormData?.seizures_convulsions || "",
+        serious_injuries_accidents: childFormData?.serious_injuries_accidents || "",
+        surgeries: childFormData?.surgeries || "",
+        vision_problems: childFormData?.vision_problems || "",
+        medical_other: childFormData?.medical_other || "",
+
+        // Birth Information
+        illness_during_pregnancy: childFormData?.illness_during_pregnancy || "",
+        condition_of_newborn: childFormData?.condition_of_newborn || "",
+        birth_weight_lbs: childFormData?.birth_weight_lbs ? String(childFormData.birth_weight_lbs) : "",
+        birth_weight_oz: childFormData?.birth_weight_oz ? String(childFormData.birth_weight_oz) : "",
+        duration_of_pregnancy: childFormData?.duration_of_pregnancy || "",
+        complications: childFormData?.complications || "",
+        bottle_fed: childFormData?.bottle_fed === 1 ? "Yes" : childFormData?.bottle_fed === 2 ? "No" : (childFormData?.bottle_fed || ""),
+        breast_fed: childFormData?.breast_fed === 1 ? "Yes" : childFormData?.breast_fed === 2 ? "No" : (childFormData?.breast_fed || ""),
+
+        // Family Information
+        other_siblings_name: childFormData?.other_siblings_name || "",
+        other_siblings_age: childFormData?.other_siblings_age ? String(childFormData.other_siblings_age) : "",
+        family_history_allergies: childFormData?.family_history_allergies || "",
+        family_history_heart_problems: childFormData?.family_history_heart_problems || "",
+        family_history_tuberculosis: childFormData?.family_history_tuberculosis || "",
+        family_history_asthma: childFormData?.family_history_asthma || "",
+        family_history_vision_problems: childFormData?.family_history_vision_problems || "",
+        family_history_diabetes: childFormData?.family_history_diabetes || "",
+        family_history_high_blood_pressure: childFormData?.family_history_high_blood_pressure || "",
+        family_history_hyperactivity: childFormData?.family_history_hyperactivity || "",
+        no_illnesses_for_this_child: childFormData?.no_illnesses_for_this_child || "",
+        family_history_epilepsy: childFormData?.family_history_epilepsy || "",
+
+        // Social Development
+        age_group_friends: childFormData?.age_group_friends || "",
+        neighborhood_friends: childFormData?.neighborhood_friends || "",
+        relationship_with_mother: childFormData?.relationship_with_mother || "",
+        relationship_with_father: childFormData?.relationship_with_father || "",
+        relationship_with_siblings: childFormData?.relationship_with_siblings || "",
+        relationship_with_extended_family: childFormData?.relationship_with_extended_family || "",
+        fears_conflicts: childFormData?.fears_conflicts || "",
+        child_response_frustration: childFormData?.child_response_frustration || "",
+
+        // Daily Activities
+        favorite_activities: childFormData?.favorite_activities || "",
+        last_five_years_moved: childFormData?.last_five_years_moved || "",
+        things_used_at_home: childFormData?.things_used_at_home || "",
+        hours_of_television_daily: childFormData?.hours_of_television_daily || "",
+        language_used_at_home: childFormData?.language_used_at_home || "",
+        changes_at_home_situation: childFormData?.changes_at_home_situation || "",
+        educational_expectations_of_child: childFormData?.educational_expectations_of_child || "",
+        agree_all_above_info_is_correct: childFormData?.agree_all_above_info_is_correct === 'on' || childFormData?.agree_all_above_info_is_correct === 1 ? true : false,
+
+        // School Information
+        do_you_agree_this_immunization_instructions: childFormData?.do_you_agree_this_immunization_instructions === 'on' || childFormData?.do_you_agree_this_immunization_instructions === 1 ? true : false,
+        important_fam_members: childFormData?.important_fam_members || "",
+        about_family_celebrations: childFormData?.about_family_celebrations || "",
+        reason_for_childcare_before: childFormData?.reason_for_childcare_before ? String(childFormData.reason_for_childcare_before) : "",
+        what_child_interests: childFormData?.what_child_interests || "",
+        drop_off_time: childFormData?.drop_off_time || "",
+        pick_up_time: childFormData?.pick_up_time || "",
+
+        // Dietary Information
+        restricted_diet_reason: childFormData?.restricted_diet_reason || "",
+        favorite_foods: childFormData?.favorite_foods || "",
+        eat_own_reason: childFormData?.eat_own_reason || "",
+        reason_for_rest_in_the_middle_day: childFormData?.reason_for_rest_in_the_middle_day || "",
+        rest_routine: childFormData?.rest_routine || "",
+
+        // Special Needs
+        reason_for_toilet_trained: childFormData?.reason_for_toilet_trained || "",
+        explain_for_existing_illness_allergy: childFormData?.explain_for_existing_illness_allergy || "",
+        explain_for_functioning_at_age: childFormData?.explain_for_functioning_at_age || "",
+        explain_for_able_to_walk: childFormData?.explain_for_able_to_walk || "",
+        explain_for_communicate_their_needs: childFormData?.explain_for_communicate_their_needs || "",
+        explain_for_any_medication: childFormData?.explain_for_any_medication || "",
+        explain_for_utilize_special_equipment: childFormData?.explain_for_utilize_special_equipment || "",
+        explain_for_significant_periods: childFormData?.explain_for_significant_periods || "",
+        explain_for_desire_any_accommodations: childFormData?.explain_for_desire_any_accommodations || "",
+        additional_information: childFormData?.additional_information || "",
+
+        // Agreements and Forms
+        do_you_agree_this: childFormData?.do_you_agree_this === 'on' || childFormData?.do_you_agree_this === 1 ? true : false,
+        child_password_pick_up_password_form: childFormData?.child_password_pick_up_password_form || "",
+        do_you_agree_this_pick_up_password_form: childFormData?.do_you_agree_this_pick_up_password_form === 'on' || childFormData?.do_you_agree_this_pick_up_password_form === 1 ? true : false,
+        photo_usage_photo_video_permission_form: childFormData?.photo_usage_photo_video_permission_form || "",
+        photo_permission_agree_group_photos_electronic: childFormData?.photo_permission_agree_group_photos_electronic || "",
+        do_you_agree_this_photo_video_permission_form: childFormData?.do_you_agree_this_photo_video_permission_form === 'on' || childFormData?.do_you_agree_this_photo_video_permission_form === 1 ? true : false,
+        security_release_policy_form: childFormData?.security_release_policy_form || "",
+        med_technicians_med_transportation_waiver: childFormData?.med_technicians_med_transportation_waiver || "",
+        medical_transportation_waiver: childFormData?.medical_transportation_waiver === 'on' || childFormData?.medical_transportation_waiver === 1 ? true : false,
+        do_you_agree_this_health_policies: childFormData?.do_you_agree_this_health_policies === 'on' || childFormData?.do_you_agree_this_health_policies === 1 ? true : false,
+        parent_sign_outside_waiver: childFormData?.parent_sign_outside_waiver || "",
+
+        // Social Media
+        approve_social_media_post: childFormData?.approve_social_media_post === 1 ? "Yes" : childFormData?.approve_social_media_post === 2 ? "No" : (childFormData?.approve_social_media_post || ""),
+        printed_name_social_media_post: childFormData?.printed_name_social_media_post || "",
+        do_you_agree_this_social_media_post: childFormData?.do_you_agree_this_social_media_post === 'on' || childFormData?.do_you_agree_this_social_media_post === 1 ? true : false,
+
+        // Final Signature
+        parent_sign_admission: childFormData?.parent_sign_admission || "",
+        parent_sign_date_admission: childFormData?.parent_sign_date_admission || "",
+
+        // Original signature fields for compatibility
+        parent_signature: childFormData?.parent_sign_admission || "",
+        signature_date: childFormData?.parent_sign_date_admission || ""
+      };
+
+      console.log("Request body:", requestBody);
+
+      const response = await fetch('https://27nssk4mg6.execute-api.ap-south-1.amazonaws.com/test/generate-admission-pdf', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestBody)
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const result = await response.json();
+      console.log("API response:", result);
+      
+      // Check if the response has base64 encoded PDF
+      if (result.isBase64Encoded && result.body) {
+        // Decode base64 to binary
+        const binaryString = atob(result.body);
+        const bytes = new Uint8Array(binaryString.length);
+        for (let i = 0; i < binaryString.length; i++) {
+          bytes[i] = binaryString.charCodeAt(i);
+        }
+        
+        // Create blob and download
+        const blob = new Blob([bytes], { type: 'application/pdf' });
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = 'admission_form.pdf';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+        
+        console.log("Admission form PDF downloaded successfully");
+      } else {
+        alert("Admission form PDF generated successfully!");
+      }
+      
+    } catch (error) {
+      console.error("Error in admission form API call:", error);
+      alert("Failed to generate admission form PDF. Please try again.");
+    }
+  };
+
   useEffect(() => {
     if (isAuthenticated) {
       checkParentAuthentication();
@@ -1072,7 +1343,7 @@ const ParentDashboard = () => {
                                     e.preventDefault();
                                     e.stopPropagation();
                                     if (formName == 'admission_form') {
-                                      handleDownload1("download");
+                                      handleAdmissionFormAPI();
                                     }
                                     else if (formName == 'authorization_form') {
                                       handleAuthorizationFormAPI();
