@@ -194,6 +194,88 @@ const ParentDashboard = () => {
     }
   };
 
+  const handleAuthorizationFormPrintAPI = async () => {
+    console.log("=== handleAuthorizationFormPrintAPI function called ===");
+    console.log("Loading should already be true, current state:", isDownloading);
+    
+    try {
+      // For now, we'll use the same API as download but handle the response differently for printing
+      // In the future, you might want to create a separate print API endpoint
+      
+      // Prepare the request body with form data
+      const requestBody = {
+        bank_routing: childFormData?.bank_routing || "",
+        bank_account: childFormData?.bank_account || "", 
+        driver_license: childFormData?.driver_license || "",
+        state: childFormData?.state || "",
+        authorized_name: childFormData?.i || "",
+        parent_signature: childFormData?.parent_sign_ach || "",
+        signature_date: childFormData?.parent_sign_date_ach || ""
+      };
+
+      console.log("Request body:", requestBody);
+
+      const response = await fetch('https://27nssk4mg6.execute-api.ap-south-1.amazonaws.com/test/generate-authorization-pdf', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestBody)
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const result = await response.json();
+      console.log("API response:", result);
+      
+      // Check if the response has base64 encoded PDF
+      if (result.isBase64Encoded && result.body) {
+        // Decode base64 to binary
+        const binaryString = atob(result.body);
+        const bytes = new Uint8Array(binaryString.length);
+        for (let i = 0; i < binaryString.length; i++) {
+          bytes[i] = binaryString.charCodeAt(i);
+        }
+        
+        // Create blob and open print dialog instead of downloading
+        const blob = new Blob([bytes], { type: 'application/pdf' });
+        const url = window.URL.createObjectURL(blob);
+        
+        // Open in new window and trigger print
+        const printWindow = window.open(url, '_blank');
+        if (printWindow) {
+          printWindow.onload = () => {
+            printWindow.print();
+          };
+        }
+        
+        // Clean up the object URL after a delay
+        setTimeout(() => {
+          window.URL.revokeObjectURL(url);
+        }, 1000);
+        
+        console.log("Authorization form opened for printing successfully");
+      } else {
+        alert("Authorization form generated successfully for printing!");
+      }
+      
+      // Ensure loading modal shows for at least 1 second
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+    } catch (error) {
+      console.error("Error in authorization form print API call:", error);
+      alert("Failed to generate authorization form for printing. Please try again.");
+      
+      // Ensure loading modal shows for at least 1 second even on error
+      await new Promise(resolve => setTimeout(resolve, 1000));
+    } finally {
+      setIsDownloading(false); // Stop loading
+      console.log("Loading state set to:", false);
+    }
+  };
+
   const handleParentHandbookAPI = async () => {
     console.log("=== handleParentHandbookAPI function called ===");
     console.log("Loading should already be true, current state:", isDownloading);
@@ -667,6 +749,363 @@ const ParentDashboard = () => {
     } catch (error) {
       console.error("Error in admission form API call:", error);
       alert("Failed to generate admission form PDF. Please try again.");
+      
+      // Ensure loading modal shows for at least 1 second even on error
+      await new Promise(resolve => setTimeout(resolve, 1000));
+    } finally {
+      setIsDownloading(false); // Stop loading
+      console.log("Loading state set to:", false);
+    }
+  };
+
+  const handleEnrollmentAgreementPrintAPI = async () => {
+    console.log("=== handleEnrollmentAgreementPrintAPI function called ===");
+    console.log("Loading should already be true, current state:", isDownloading);
+    
+    try {
+      // Get current child name from children array
+      const currentChild = children.find(child => child.child_id === activeChildId);
+      const childName = currentChild ? `${currentChild.child_first_name} ${currentChild.child_last_name || ''}`.trim() : '';
+      
+      // Get parent names from childFormData
+      const parentNames = childFormData?.parent_name || childFormData?.primary_parent_name || '';
+      
+      // Prepare the request body with form data (same as download)
+      const requestBody = {
+        effective_date: childFormData?.point_one_field_three || "",
+        parent_names: parentNames,
+        child_name: childName,
+        child_dob: childFormData?.dob || "",
+        preferred_start_date: childFormData?.preferred_start_date || "",
+        preferred_schedule: childFormData?.preferred_schedule || "",
+        parent_email: childFormData?.primary_parent_email || "",
+        home_address: childFormData?.preferred_home_addr || "",
+        parent_signature: childFormData?.parent_sign_enroll || "",
+        signature_date: childFormData?.parent_sign_date_enroll || "",
+        
+        full_day: childFormData?.full_day === 'on' || childFormData?.full_day === true || false,
+        half_day: childFormData?.half_day === 'on' || childFormData?.half_day === true || false,
+        
+        initial_2: childFormData?.point_two_initial_here || "",
+        initial_3: childFormData?.point_three_initial_here || "",
+        initial_4: childFormData?.point_four_initial_here || "",
+        initial_5: childFormData?.point_five_initial_here || "",
+        initial_6: childFormData?.point_six_initial_here || "",
+        initial_7: childFormData?.point_seven_initial_here || "",
+        initial_8: childFormData?.point_eight_initial_here || "",
+        initial_9: childFormData?.point_nine_initial_here || "",
+        initial_10: childFormData?.point_ten_initial_here || "",
+        initial_11: childFormData?.point_eleven_initial_here || "",
+        initial_12: childFormData?.point_twelve_initial_here || "",
+        initial_13: childFormData?.point_thirteen_initial_here || "",
+        initial_14: childFormData?.point_fourteen_initial_here || "",
+        initial_15: childFormData?.point_fifteen_initial_here || "",
+        initial_16: childFormData?.point_sixteen_initial_here || "",
+        initial_17: childFormData?.point_seventeen_initial_here || "",
+        initial_18: childFormData?.point_eighteen_initial_here || "",
+        initial_19: childFormData?.point_ninteen_initial_here || ""
+      };
+
+      console.log("Request body:", requestBody);
+
+      const response = await fetch('https://27nssk4mg6.execute-api.ap-south-1.amazonaws.com/test/generate-pdf', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestBody)
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const result = await response.json();
+      console.log("API response:", result);
+      
+      // Check if the response has base64 encoded PDF
+      if (result.isBase64Encoded && result.body) {
+        // Decode base64 to binary
+        const binaryString = atob(result.body);
+        const bytes = new Uint8Array(binaryString.length);
+        for (let i = 0; i < binaryString.length; i++) {
+          bytes[i] = binaryString.charCodeAt(i);
+        }
+        
+        // Create blob and open print dialog instead of downloading
+        const blob = new Blob([bytes], { type: 'application/pdf' });
+        const url = window.URL.createObjectURL(blob);
+        
+        // Open in new window and trigger print
+        const printWindow = window.open(url, '_blank');
+        if (printWindow) {
+          printWindow.onload = () => {
+            printWindow.print();
+          };
+        }
+        
+        // Clean up the object URL after a delay
+        setTimeout(() => {
+          window.URL.revokeObjectURL(url);
+        }, 1000);
+        
+        console.log("Enrollment agreement opened for printing successfully");
+      } else {
+        alert("Enrollment agreement generated successfully for printing!");
+      }
+      
+      // Ensure loading modal shows for at least 1 second
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+    } catch (error) {
+      console.error("Error in enrollment agreement print API call:", error);
+      alert("Failed to generate enrollment agreement for printing. Please try again.");
+      
+      // Ensure loading modal shows for at least 1 second even on error
+      await new Promise(resolve => setTimeout(resolve, 1000));
+    } finally {
+      setIsDownloading(false); // Stop loading
+      console.log("Loading state set to:", false);
+    }
+  };
+
+  const handleParentHandbookPrintAPI = async () => {
+    console.log("=== handleParentHandbookPrintAPI function called ===");
+    console.log("Loading should already be true, current state:", isDownloading);
+    
+    try {
+      // Prepare the request body with the required format (same as download)
+      const requestBody = {
+        welcome_goddard_agreement: childFormData?.welcome_goddard_agreement === 'on' ? true : false,
+        mission_statement_agreement: childFormData?.mission_statement_agreement === 'on' ? true : false,
+        general_information_agreement: childFormData?.general_information_agreement === 'on' ? true : false,
+        parent_access_agreement: childFormData?.parent_access_agreement === 'on' ? true : false,
+        release_of_children_agreement: childFormData?.release_of_children_agreement === 'on' ? true : false,
+        registration_fees_agreement: childFormData?.registration_fees_agreement === 'on' ? true : false,
+        outside_engagements_agreement: childFormData?.outside_engagements_agreement === 'on' ? true : false,
+        health_policies_agreement: childFormData?.health_policies_agreement === 'on' ? true : false,
+        medication_procedures_agreement: childFormData?.medication_procedures_agreement === 'on' ? true : false,
+        rest_time_agreement: childFormData?.rest_time_agreement === 'on' ? true : false,
+        training_philosophy_agreement: childFormData?.training_philosophy_agreement === 'on' ? true : false,
+        bring_to_school_agreement: childFormData?.bring_to_school_agreement === 'on' ? true : false,
+        affiliation_policy_agreement: childFormData?.affiliation_policy_agreement === 'on' ? true : false,
+        emergency_procedures_agreement: childFormData?.emergency_procedures_agreement === 'on' ? true : false,
+        expulsion_policy_agreement: childFormData?.expulsion_policy_agreement === 'on' ? true : false,
+        addressing_individual_child_agreement: childFormData?.addressing_individual_child_agreement === 'on' ? true : false,
+        security_issue_agreement: childFormData?.security_issue_agreement === 'on' ? true : false,
+        finalword_agreement: childFormData?.finalword_agreement === 'on' ? true : false,
+        parent_signature: childFormData?.parent_sign_handbook || "Sarah Johnson",
+        signature_date: childFormData?.parent_sign_date_handbook || "2025-08-14"
+      };
+
+      console.log("Request body:", requestBody);
+
+      const response = await fetch('https://27nssk4mg6.execute-api.ap-south-1.amazonaws.com/test/generate-handbook-pdf', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestBody)
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const result = await response.json();
+      console.log("API response:", result);
+      
+      // Check if the response has base64 encoded PDF
+      if (result.isBase64Encoded && result.body) {
+        // Decode base64 to binary
+        const binaryString = atob(result.body);
+        const bytes = new Uint8Array(binaryString.length);
+        for (let i = 0; i < binaryString.length; i++) {
+          bytes[i] = binaryString.charCodeAt(i);
+        }
+        
+        // Create blob and open print dialog instead of downloading
+        const blob = new Blob([bytes], { type: 'application/pdf' });
+        const url = window.URL.createObjectURL(blob);
+        
+        // Open in new window and trigger print
+        const printWindow = window.open(url, '_blank');
+        if (printWindow) {
+          printWindow.onload = () => {
+            printWindow.print();
+          };
+        }
+        
+        // Clean up the object URL after a delay
+        setTimeout(() => {
+          window.URL.revokeObjectURL(url);
+        }, 1000);
+        
+        console.log("Parent handbook opened for printing successfully");
+      } else {
+        alert("Parent handbook generated successfully for printing!");
+      }
+      
+      // Ensure loading modal shows for at least 1 second
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+    } catch (error) {
+      console.error("Error in parent handbook print API call:", error);
+      alert("Failed to generate parent handbook for printing. Please try again.");
+      
+      // Ensure loading modal shows for at least 1 second even on error
+      await new Promise(resolve => setTimeout(resolve, 1000));
+    } finally {
+      setIsDownloading(false); // Stop loading
+      console.log("Loading state set to:", false);
+    }
+  };
+
+  const handleAdmissionFormPrintAPI = async () => {
+    console.log("=== handleAdmissionFormPrintAPI function called ===");
+    console.log("Loading should already be true, current state:", isDownloading);
+    
+    try {
+      // Get current child name from children array
+      const currentChild = children.find(child => child.child_id === activeChildId);
+      const childName = currentChild ? `${currentChild.child_first_name} ${currentChild.child_last_name || ''}`.trim() : '';
+      
+      // Get parent names from childFormData
+      const parentNames = childFormData?.parent_name || childFormData?.primary_parent_name || '';
+      
+      // Prepare the request body with form data (same as download)
+      const requestBody = {
+        // Child Information
+        child_first_name: childFormData?.child_first_name || "",
+        child_last_name: childFormData?.child_last_name || "",
+        nick_name: childFormData?.nick_name || "",
+        dob: childFormData?.dob || "",
+        primary_language: childFormData?.primary_language || "",
+        gender: childFormData?.gender === 1 ? "Male" : childFormData?.gender === 2 ? "Female" : (childFormData?.gender || ""),
+        school_age_child_school: childFormData?.school_age_child_school || "",
+
+        // Primary Parent/Guardian
+        parent_name: childFormData?.primary_parent_info?.parent_name || "",
+        do_relevant_custody_papers_apply: childFormData?.primary_parent_info?.do_relevant_custody_papers_apply === 1 ? "Yes" : childFormData?.primary_parent_info?.do_relevant_custody_papers_apply === 2 ? "No" : (childFormData?.primary_parent_info?.do_relevant_custody_papers_apply || ""),
+        parent_street_address: childFormData?.primary_parent_info?.parent_street_address || "",
+        parent_city_address: childFormData?.primary_parent_info?.parent_city_address || "",
+        parent_state_address: childFormData?.primary_parent_info?.parent_state_address || "",
+        parent_zip_address: childFormData?.primary_parent_info?.parent_zip_address || "",
+        business_name: childFormData?.primary_parent_info?.parent_business_name || "",
+        work_hours_from: childFormData?.primary_parent_info?.parent_work_hours_from || "",
+        work_hours_to: childFormData?.primary_parent_info?.parent_work_hours_to || "",
+        business_telephone_number: childFormData?.primary_parent_info?.parent_business_telephone_number || "",
+        business_cell_number: childFormData?.primary_parent_info?.parent_business_cell_number || "",
+        primary_parent_email: childFormData?.primary_parent_email || "",
+        home_telephone_number: childFormData?.primary_parent_info?.parent_home_telephone_number || "",
+
+        // Second Parent/Guardian
+        parent_two_name: childFormData?.additional_parent_info?.parent_two_name || "",
+        parent_two_home_telephone_number: childFormData?.additional_parent_info?.parent_two_home_telephone_number || "",
+        parent_two_street_address: childFormData?.additional_parent_info?.parent_two_street_address || "",
+        parent_two_city_address: childFormData?.additional_parent_info?.parent_two_city_address || "",
+        parent_two_state_address: childFormData?.additional_parent_info?.parent_two_state_address || "",
+        parent_two_zip_address: childFormData?.additional_parent_info?.parent_two_zip_address || "",
+        parent_two_business_name: childFormData?.additional_parent_info?.parent_two_business_name || "",
+        parent_two_work_hours_from: childFormData?.additional_parent_info?.parent_two_work_hours_from || "",
+        parent_two_work_hours_to: childFormData?.additional_parent_info?.parent_two_work_hours_to || "",
+        parent_two_business_telephone_number: childFormData?.additional_parent_info?.parent_two_business_telephone_number || "",
+        parent_two_business_cell_number: childFormData?.additional_parent_info?.parent_two_business_cell_number || "",
+        parent_email: childFormData?.additional_parent_info?.parent_email || "",
+
+        // Emergency Contacts (3 contacts)
+        child_emergency_contact_name0: childFormData?.emergency_contact_info?.[0]?.child_emergency_contact_name || "",
+        child_emergency_contact_relationship0: childFormData?.emergency_contact_info?.[0]?.child_emergency_contact_relationship || "",
+        child_emergency_contact_full_address0: childFormData?.emergency_contact_info?.[0]?.child_emergency_contact_full_address || "",
+        child_emergency_contact_city_address0: childFormData?.emergency_contact_info?.[0]?.child_emergency_contact_city_address || "",
+        child_emergency_contact_state_address0: childFormData?.emergency_contact_info?.[0]?.child_emergency_contact_state_address || "",
+        child_emergency_contact_zip_address0: childFormData?.emergency_contact_info?.[0]?.child_emergency_contact_zip_address || "",
+        child_emergency_contact_telephone_number0: childFormData?.emergency_contact_info?.[0]?.child_emergency_contact_telephone_number || "",
+
+        child_emergency_contact_name1: childFormData?.emergency_contact_info?.[1]?.child_emergency_contact_name || "",
+        child_emergency_contact_relationship1: childFormData?.emergency_contact_info?.[1]?.child_emergency_contact_relationship || "",
+        child_emergency_contact_full_address1: childFormData?.emergency_contact_info?.[1]?.child_emergency_contact_full_address || "",
+        child_emergency_contact_city_address1: childFormData?.emergency_contact_info?.[1]?.child_emergency_contact_city_address || "",
+        child_emergency_contact_state_address1: childFormData?.emergency_contact_info?.[1]?.child_emergency_contact_state_address || "",
+        child_emergency_contact_zip_address1: childFormData?.emergency_contact_info?.[1]?.child_emergency_contact_zip_address || "",
+        child_emergency_contact_telephone_number1: childFormData?.emergency_contact_info?.[1]?.child_emergency_contact_telephone_number || "",
+
+        child_emergency_contact_name2: childFormData?.emergency_contact_info?.[2]?.child_emergency_contact_name || "",
+        child_emergency_contact_relationship2: childFormData?.emergency_contact_info?.[2]?.child_emergency_contact_relationship || "",
+        child_emergency_contact_full_address2: childFormData?.emergency_contact_info?.[2]?.child_emergency_contact_full_address || "",
+        child_emergency_contact_city_address2: childFormData?.emergency_contact_info?.[2]?.child_emergency_contact_city_address || "",
+        child_emergency_contact_state_address2: childFormData?.emergency_contact_info?.[2]?.child_emergency_contact_state_address || "",
+        child_emergency_contact_zip_address2: childFormData?.emergency_contact_info?.[2]?.child_emergency_contact_zip_address || "",
+        child_emergency_contact_telephone_number2: childFormData?.emergency_contact_info?.[2]?.child_emergency_contact_telephone_number || "",
+
+        // Healthcare Provider
+        child_care_provider_name: childFormData?.child_care_provider_info?.child_care_provider_name || "",
+        child_hospital_affiliation: childFormData?.child_care_provider_info?.child_hospital_affiliation || "",
+        child_care_provider_street_address: childFormData?.child_care_provider_info?.child_care_provider_street_address || "",
+        child_care_provider_city_address: childFormData?.child_care_provider_info?.child_care_provider_city_address || "",
+        child_care_provider_state_address: childFormData?.child_care_provider_info?.child_care_provider_state_address || "",
+        child_care_provider_zip_address: childFormData?.child_care_provider_info?.child_care_provider_zip_address || "",
+        child_care_provider_telephone_number: childFormData?.child_care_provider_info?.child_care_provider_telephone_number || "",
+
+        // Additional fields for completeness
+        parent_signature: childFormData?.parent_sign_admission || "",
+        signature_date: childFormData?.parent_sign_date_admission || ""
+      };
+
+      console.log("Request body:", requestBody);
+
+      const response = await fetch('https://27nssk4mg6.execute-api.ap-south-1.amazonaws.com/test/generate-admission-pdf', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestBody)
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const result = await response.json();
+      console.log("API response:", result);
+      
+      // Check if the response has base64 encoded PDF
+      if (result.isBase64Encoded && result.body) {
+        // Decode base64 to binary
+        const binaryString = atob(result.body);
+        const bytes = new Uint8Array(binaryString.length);
+        for (let i = 0; i < binaryString.length; i++) {
+          bytes[i] = binaryString.charCodeAt(i);
+        }
+        
+        // Create blob and open print dialog instead of downloading
+        const blob = new Blob([bytes], { type: 'application/pdf' });
+        const url = window.URL.createObjectURL(blob);
+        
+        // Open in new window and trigger print
+        const printWindow = window.open(url, '_blank');
+        if (printWindow) {
+          printWindow.onload = () => {
+            printWindow.print();
+          };
+        }
+        
+        // Clean up the object URL after a delay
+        setTimeout(() => {
+          window.URL.revokeObjectURL(url);
+        }, 1000);
+        
+        console.log("Admission form opened for printing successfully");
+      } else {
+        alert("Admission form generated successfully for printing!");
+      }
+      
+      // Ensure loading modal shows for at least 1 second
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+    } catch (error) {
+      console.error("Error in admission form print API call:", error);
+      alert("Failed to generate admission form for printing. Please try again.");
       
       // Ensure loading modal shows for at least 1 second even on error
       await new Promise(resolve => setTimeout(resolve, 1000));
@@ -1458,16 +1897,32 @@ const ParentDashboard = () => {
                                     console.log('Print button clicked - immediate log');
 
                                     if (formName == 'admission_form') {
-                                      handleDownload1("print");
+                                      console.log("Print button clicked for admission_form");
+                                      setIsDownloading(true);
+                                      setTimeout(() => {
+                                        handleAdmissionFormPrintAPI();
+                                      }, 100);
                                     }
                                     else if (formName == 'authorization_form') {
-                                      handleDownload2("print");
+                                      console.log("Print button clicked for authorization_form");
+                                      setIsDownloading(true);
+                                      setTimeout(() => {
+                                        handleAuthorizationFormPrintAPI();
+                                      }, 100);
                                     }
                                     else if (formName == 'parent_handbook') {
-                                      handleDownload3("print");
+                                      console.log("Print button clicked for parent_handbook");
+                                      setIsDownloading(true);
+                                      setTimeout(() => {
+                                        handleParentHandbookPrintAPI();
+                                      }, 100);
                                     }
                                     else if (formName == 'enrollment_form' || formName == 'enrollment_agreement') {
-                                      handleDownload4("print");
+                                      console.log("Print button clicked for enrollment_form");
+                                      setIsDownloading(true);
+                                      setTimeout(() => {
+                                        handleEnrollmentAgreementPrintAPI();
+                                      }, 100);
                                     }
                                     else {
                                       console.log('Unknown form name:', formName);
@@ -1545,7 +2000,7 @@ const ParentDashboard = () => {
               color: '#666',
               fontSize: '14px'
             }}>
-              Generating your PDF. Please wait...
+              Processing your request. Please wait...
             </p>
           </div>
         </div>
