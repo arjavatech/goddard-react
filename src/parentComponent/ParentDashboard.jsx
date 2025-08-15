@@ -31,6 +31,7 @@ const ParentDashboard = () => {
   const [formStatus, setFormStatus] = useState({}); // Track form completion status
   const [selectedSubForm, setSelectedSubForm] = useState(null); // Track selected sub-form
   const [childFormData, setChildFormData] = useState(null); // Store child form data from API
+  const [isDownloading, setIsDownloading] = useState(false); // Loading state for downloads
   const handbookContentRef = useRef(null); // Ref for ParentHandbook content
   const admissionFormRef = useRef(null); // Ref for AdmissionForm content
   const authorizationFormRef = useRef(null); // Ref for AuthorizationForm content
@@ -120,8 +121,10 @@ const ParentDashboard = () => {
   };
 
   const handleAuthorizationFormAPI = async () => {
+    console.log("=== handleAuthorizationFormAPI function called ===");
+    console.log("Loading should already be true, current state:", isDownloading);
+    
     try {
-      console.log("Authorization form API call started");
       
       // Prepare the request body with form data
       const requestBody = {
@@ -171,20 +174,31 @@ const ParentDashboard = () => {
         document.body.removeChild(link);
         window.URL.revokeObjectURL(url);
         
-        console.log("PDF downloaded successfully");
+        console.log("Authorization form PDF downloaded successfully");
       } else {
         alert("Authorization form PDF generated successfully!");
       }
       
+      // Ensure loading modal shows for at least 1 second
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
     } catch (error) {
       console.error("Error in authorization form API call:", error);
       alert("Failed to generate authorization form PDF. Please try again.");
+      
+      // Ensure loading modal shows for at least 1 second even on error
+      await new Promise(resolve => setTimeout(resolve, 1000));
+    } finally {
+      setIsDownloading(false); // Stop loading
+      console.log("Loading state set to:", false);
     }
   };
 
   const handleParentHandbookAPI = async () => {
+    console.log("=== handleParentHandbookAPI function called ===");
+    console.log("Loading should already be true, current state:", isDownloading);
+    
     try {
-      console.log("Parent handbook API call started");
       
       // Get current child name from children array
       const currentChild = children.find(child => child.child_id === activeChildId);
@@ -259,15 +273,26 @@ const ParentDashboard = () => {
         alert("Parent handbook PDF generated successfully!");
       }
       
+      // Ensure loading modal shows for at least 1 second
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
     } catch (error) {
       console.error("Error in parent handbook API call:", error);
       alert("Failed to generate parent handbook PDF. Please try again.");
+      
+      // Ensure loading modal shows for at least 1 second even on error
+      await new Promise(resolve => setTimeout(resolve, 1000));
+    } finally {
+      setIsDownloading(false); // Stop loading
+      console.log("Loading state set to:", false);
     }
   };
 
   const handleEnrollmentAgreementAPI = async () => {
+    console.log("=== handleEnrollmentAgreementAPI function called ===");
+    console.log("Loading should already be true, current state:", isDownloading);
+    
     try {
-      console.log("Enrollment agreement API call started");
       
       // Get current child name from children array
       const currentChild = children.find(child => child.child_id === activeChildId);
@@ -354,15 +379,26 @@ const ParentDashboard = () => {
         alert("Enrollment agreement PDF generated successfully!");
       }
       
+      // Ensure loading modal shows for at least 1 second
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
     } catch (error) {
       console.error("Error in enrollment agreement API call:", error);
       alert("Failed to generate enrollment agreement PDF. Please try again.");
+      
+      // Ensure loading modal shows for at least 1 second even on error
+      await new Promise(resolve => setTimeout(resolve, 1000));
+    } finally {
+      setIsDownloading(false); // Stop loading
+      console.log("Loading state set to:", false);
     }
   };
 
   const handleAdmissionFormAPI = async () => {
+    console.log("=== handleAdmissionFormAPI function called ===");
+    console.log("Loading should already be true, current state:", isDownloading);
+    
     try {
-      console.log("Admission form API call started");
       
       // Get current child name from children array
       const currentChild = children.find(child => child.child_id === activeChildId);
@@ -625,9 +661,18 @@ const ParentDashboard = () => {
         alert("Admission form PDF generated successfully!");
       }
       
+      // Ensure loading modal shows for at least 1 second
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
     } catch (error) {
       console.error("Error in admission form API call:", error);
       alert("Failed to generate admission form PDF. Please try again.");
+      
+      // Ensure loading modal shows for at least 1 second even on error
+      await new Promise(resolve => setTimeout(resolve, 1000));
+    } finally {
+      setIsDownloading(false); // Stop loading
+      console.log("Loading state set to:", false);
     }
   };
 
@@ -1207,7 +1252,16 @@ const ParentDashboard = () => {
   }
 
   return (
-    <div className="min-h-screen bg-white">
+    <>
+      {/* Add spinner animation CSS */}
+      <style jsx>{`
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+      `}</style>
+      
+      <div className="min-h-screen bg-white">
       {/* Navigation Bar */}
       <Header onSignOut={signOut}></Header>
 
@@ -1343,16 +1397,33 @@ const ParentDashboard = () => {
                                     e.preventDefault();
                                     e.stopPropagation();
                                     if (formName == 'admission_form') {
-                                      handleAdmissionFormAPI();
+                                      console.log("Download button clicked for admission_form");
+                                      // Set loading immediately and use setTimeout to handle async
+                                      setIsDownloading(true);
+                                      setTimeout(() => {
+                                        handleAdmissionFormAPI();
+                                      }, 100);
                                     }
                                     else if (formName == 'authorization_form') {
-                                      handleAuthorizationFormAPI();
+                                      console.log("Download button clicked for authorization_form");
+                                      setIsDownloading(true);
+                                      setTimeout(() => {
+                                        handleAuthorizationFormAPI();
+                                      }, 100);
                                     }
                                     else if (formName == 'parent_handbook') {
-                                      handleParentHandbookAPI();
+                                      console.log("Download button clicked for parent_handbook");
+                                      setIsDownloading(true);
+                                      setTimeout(() => {
+                                        handleParentHandbookAPI();
+                                      }, 100);
                                     }
                                     else if (formName == 'enrollment_form' || formName == 'enrollment_agreement') {
-                                      handleEnrollmentAgreementAPI();
+                                      console.log("Download button clicked for enrollment_form");
+                                      setIsDownloading(true);
+                                      setTimeout(() => {
+                                        handleEnrollmentAgreementAPI();
+                                      }, 100);
                                     }
                                     else {
                                       console.log('Unknown form name:', formName);
@@ -1428,6 +1499,57 @@ const ParentDashboard = () => {
           </div>
         </div>
       </div>
+
+      
+      {/* Loading Modal */}
+      {isDownloading && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          backgroundColor: 'rgba(0, 0, 0, 0.8)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 99999
+        }}>
+          <div style={{
+            backgroundColor: 'white',
+            borderRadius: '10px',
+            padding: '40px',
+            textAlign: 'center',
+            boxShadow: '0 4px 20px rgba(0, 0, 0, 0.3)',
+            minWidth: '300px'
+          }}>
+            <div style={{
+              width: '40px',
+              height: '40px',
+              border: '4px solid #f3f3f3',
+              borderTop: '4px solid #0F2D52',
+              borderRadius: '50%',
+              animation: 'spin 1s linear infinite',
+              margin: '0 auto 20px auto'
+            }}></div>
+            <h3 style={{
+              margin: '0 0 10px 0',
+              color: '#0F2D52',
+              fontSize: '18px',
+              fontWeight: 'bold'
+            }}>
+              Processing...
+            </h3>
+            <p style={{
+              margin: 0,
+              color: '#666',
+              fontSize: '14px'
+            }}>
+              Generating your PDF. Please wait...
+            </p>
+          </div>
+        </div>
+      )}
 
       <div style={{
         position: 'fixed',
@@ -1532,6 +1654,7 @@ const ParentDashboard = () => {
         })() : null} />
       </div>
     </div>
+    </>
   );
 };
 
