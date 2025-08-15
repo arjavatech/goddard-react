@@ -180,7 +180,7 @@ const ParentHandbook = forwardRef(({ initialFormData }, ref) => {
 
           @page {
             size: A4;
-            margin: 0.5in;
+            margin: 0.5in 0.5in 1in 0.5in;
           }
 
           @media print {

@@ -264,7 +264,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
           
           @media print {
             @page {
-              margin: 0.3in 0.5in 0.5in 0.2in;
+              margin: 0.3in 0.5in 1in 0.2in;
               size: A4;
             }
             

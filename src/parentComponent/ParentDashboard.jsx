@@ -151,12 +151,212 @@ const ParentDashboard = () => {
       const result = await response.json();
       console.log("API response:", result);
       
-      // Handle the response (you might want to show a success message or download the PDF)
-      alert("Authorization form PDF generated successfully!");
+      // Check if the response has base64 encoded PDF
+      if (result.isBase64Encoded && result.body) {
+        // Decode base64 to binary
+        const binaryString = atob(result.body);
+        const bytes = new Uint8Array(binaryString.length);
+        for (let i = 0; i < binaryString.length; i++) {
+          bytes[i] = binaryString.charCodeAt(i);
+        }
+        
+        // Create blob and download
+        const blob = new Blob([bytes], { type: 'application/pdf' });
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = 'authorization_form.pdf';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+        
+        console.log("PDF downloaded successfully");
+      } else {
+        alert("Authorization form PDF generated successfully!");
+      }
       
     } catch (error) {
       console.error("Error in authorization form API call:", error);
       alert("Failed to generate authorization form PDF. Please try again.");
+    }
+  };
+
+  const handleParentHandbookAPI = async () => {
+    try {
+      console.log("Parent handbook API call started");
+      
+      // Get current child name from children array
+      const currentChild = children.find(child => child.child_id === activeChildId);
+      const childName = currentChild ? `${currentChild.child_first_name} ${currentChild.child_last_name || ''}`.trim() : '';
+      
+      // Get parent names from childFormData
+      const parentNames = childFormData?.parent_name || childFormData?.primary_parent_name || '';
+      
+      // Prepare the request body with the required format
+      const requestBody = {
+        welcome_goddard_agreement: childFormData?.welcome_goddard_agreement === 'on' ? true : false,
+        mission_statement_agreement: childFormData?.mission_statement_agreement === 'on' ? true : false,
+        general_information_agreement: childFormData?.general_information_agreement === 'on' ? true : false,
+        parent_access_agreement: childFormData?.parent_access_agreement === 'on' ? true : false,
+        release_of_children_agreement: childFormData?.release_of_children_agreement === 'on' ? true : false,
+        registration_fees_agreement: childFormData?.registration_fees_agreement === 'on' ? true : false,
+        outside_engagements_agreement: childFormData?.outside_engagements_agreement === 'on' ? true : false,
+        health_policies_agreement: childFormData?.health_policies_agreement === 'on' ? true : false,
+        medication_procedures_agreement: childFormData?.medication_procedures_agreement === 'on' ? true : false,
+        rest_time_agreement: childFormData?.rest_time_agreement === 'on' ? true : false,
+        training_philosophy_agreement: childFormData?.training_philosophy_agreement === 'on' ? true : false,
+        bring_to_school_agreement: childFormData?.bring_to_school_agreement === 'on' ? true : false,
+        affiliation_policy_agreement: childFormData?.affiliation_policy_agreement === 'on' ? true : false,
+        emergency_procedures_agreement: childFormData?.emergency_procedures_agreement === 'on' ? true : false,
+        expulsion_policy_agreement: childFormData?.expulsion_policy_agreement === 'on' ? true : false,
+        addressing_individual_child_agreement: childFormData?.addressing_individual_child_agreement === 'on' ? true : false,
+        security_issue_agreement: childFormData?.security_issue_agreement === 'on' ? true : false,
+        finalword_agreement: childFormData?.finalword_agreement === 'on' ? true : false,
+        parent_signature: childFormData?.parent_sign_handbook || "Sarah Johnson",
+        signature_date: childFormData?.parent_sign_date_handbook || "2025-08-14"
+      };
+
+      console.log("Request body:", requestBody);
+
+      const response = await fetch('https://27nssk4mg6.execute-api.ap-south-1.amazonaws.com/test/generate-handbook-pdf', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestBody)
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const result = await response.json();
+      console.log("API response:", result);
+      
+      // Check if the response has base64 encoded PDF
+      if (result.isBase64Encoded && result.body) {
+        // Decode base64 to binary
+        const binaryString = atob(result.body);
+        const bytes = new Uint8Array(binaryString.length);
+        for (let i = 0; i < binaryString.length; i++) {
+          bytes[i] = binaryString.charCodeAt(i);
+        }
+        
+        // Create blob and download
+        const blob = new Blob([bytes], { type: 'application/pdf' });
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = 'parent_handbook.pdf';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+        
+        console.log("Parent handbook PDF downloaded successfully");
+      } else {
+        alert("Parent handbook PDF generated successfully!");
+      }
+      
+    } catch (error) {
+      console.error("Error in parent handbook API call:", error);
+      alert("Failed to generate parent handbook PDF. Please try again.");
+    }
+  };
+
+  const handleEnrollmentAgreementAPI = async () => {
+    try {
+      console.log("Enrollment agreement API call started");
+      
+      // Get current child name from children array
+      const currentChild = children.find(child => child.child_id === activeChildId);
+      const childName = currentChild ? `${currentChild.child_first_name} ${currentChild.child_last_name || ''}`.trim() : '';
+      
+      // Get parent names from childFormData
+      const parentNames = childFormData?.parent_name || childFormData?.primary_parent_name || '';
+      
+      // Prepare the request body with form data
+      const requestBody = {
+        effective_date: childFormData?.point_one_field_three || "",
+        parent_names: parentNames,
+        child_name: childName,
+        child_dob: childFormData?.dob || "",
+        preferred_start_date: childFormData?.preferred_start_date || "",
+        preferred_schedule: childFormData?.preferred_schedule || "",
+        parent_email: childFormData?.primary_parent_email || "",
+        home_address: childFormData?.preferred_home_addr || "",
+        parent_signature: childFormData?.parent_sign_enroll || "",
+        signature_date: childFormData?.parent_sign_date_enroll || "",
+        
+        full_day: childFormData?.full_day === 'on' || childFormData?.full_day === true || false,
+        half_day: childFormData?.half_day === 'on' || childFormData?.half_day === true || false,
+        
+        initial_2: childFormData?.point_two_initial_here || "",
+        initial_3: childFormData?.point_three_initial_here || "",
+        initial_4: childFormData?.point_four_initial_here || "",
+        initial_5: childFormData?.point_five_initial_here || "",
+        initial_6: childFormData?.point_six_initial_here || "",
+        initial_7: childFormData?.point_seven_initial_here || "",
+        initial_8: childFormData?.point_eight_initial_here || "",
+        initial_9: childFormData?.point_nine_initial_here || "",
+        initial_10: childFormData?.point_ten_initial_here || "",
+        initial_11: childFormData?.point_eleven_initial_here || "",
+        initial_12: childFormData?.point_twelve_initial_here || "",
+        initial_13: childFormData?.point_thirteen_initial_here || "",
+        initial_14: childFormData?.point_fourteen_initial_here || "",
+        initial_15: childFormData?.point_fifteen_initial_here || "",
+        initial_16: childFormData?.point_sixteen_initial_here || "",
+        initial_17: childFormData?.point_seventeen_initial_here || "",
+        initial_18: childFormData?.point_eighteen_initial_here || "",
+        initial_19: childFormData?.point_ninteen_initial_here || ""
+      };
+
+      console.log("Request body:", requestBody);
+
+      const response = await fetch('https://27nssk4mg6.execute-api.ap-south-1.amazonaws.com/test/generate-pdf', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestBody)
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const result = await response.json();
+      console.log("API response:", result);
+      
+      // Check if the response has base64 encoded PDF
+      if (result.isBase64Encoded && result.body) {
+        // Decode base64 to binary
+        const binaryString = atob(result.body);
+        const bytes = new Uint8Array(binaryString.length);
+        for (let i = 0; i < binaryString.length; i++) {
+          bytes[i] = binaryString.charCodeAt(i);
+        }
+        
+        // Create blob and download
+        const blob = new Blob([bytes], { type: 'application/pdf' });
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = 'enrollment_agreement.pdf';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+        
+        console.log("Enrollment agreement PDF downloaded successfully");
+      } else {
+        alert("Enrollment agreement PDF generated successfully!");
+      }
+      
+    } catch (error) {
+      console.error("Error in enrollment agreement API call:", error);
+      alert("Failed to generate enrollment agreement PDF. Please try again.");
     }
   };
 
@@ -878,10 +1078,10 @@ const ParentDashboard = () => {
                                       handleAuthorizationFormAPI();
                                     }
                                     else if (formName == 'parent_handbook') {
-                                      handleDownload3("download");
+                                      handleParentHandbookAPI();
                                     }
                                     else if (formName == 'enrollment_form' || formName == 'enrollment_agreement') {
-                                      handleDownload4("download");
+                                      handleEnrollmentAgreementAPI();
                                     }
                                     else {
                                       console.log('Unknown form name:', formName);
