@@ -153,6 +153,13 @@ const AuthorizationForm = ({ selectedSubForm = null, initialFormData = null, chi
       // Prepare the complete form data for API call including child_id
       const saveData = {
         child_id: childId,
+        bank_routing: formData.bank_routing,
+        bank_account: formData.bank_account.toString(),
+        driver_license: formData.driver_license,
+        state: formData.state,
+        i: formData.i,
+        parent_sign_ach: formData.parent_sign_ach,
+        parent_sign_date_ach: formData.parent_sign_date_ach,
         admin_sign_ach: formData.admin_sign_ach,
         admin_sign_date_ach: epochValue
       };

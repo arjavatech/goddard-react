@@ -120,71 +120,251 @@ const ParentDashboard = () => {
     }
   };
 
+  // Function to download form from S3 for Lynnwood school
+  const downloadFromS3 = async (formName) => {
+    try {
+      const school_name = "lynnwood"; // Hardcoded as per requirement  
+      const child_id = activeChildId; // Use activeChildId instead of childFormData?.id
+      
+      if (!child_id) {
+        console.error("Child ID not found");
+        alert("Child ID not found. Please select a child and try again.");
+        return;
+      }
+
+      // Map form names to API endpoint format
+      const formMapping = {
+        'authorization_form': 'authorization_form',
+        'parent_handbook': 'parent_handbook', 
+        'enrollment_agreement': 'enrollment_agreement',
+        'admission_form': 'admission_form'
+      };
+
+      const item = formMapping[formName];
+      if (!item) {
+        console.error("Unknown form name:", formName);
+        alert("Unknown form type. Please try again.");
+        return;
+      }
+
+      // Use the existing API endpoint to get file metadata
+      const apiUrl = `https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/get-s3-file/${school_name}/${child_id}/${item}`;
+      
+      const response = await fetch(apiUrl);
+      if (!response.ok) {
+        throw new Error(`API error: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      
+      // Verify file exists
+      if (!data.s3_location || !data.filename) {
+        alert("File not found. Please contact support.");
+        return;
+      }
+
+      // Check if we have a working download URL
+      if (data.download_url) {
+        console.log(`Found download URL with ${data.download_url.includes('X-Amz-Algorithm=AWS4-HMAC-SHA256') ? 'AWS4 signature (good!)' : 'old signature'}`);
+        
+        try {
+          // Try to download the file using the corrected URL
+          const response = await fetch(data.download_url, {
+            method: 'GET',
+            mode: 'cors',
+            credentials: 'omit'
+          });
+          
+          if (response.ok) {
+            const blob = await response.blob();
+            console.log(`Successfully fetched file: ${blob.size} bytes`);
+            
+            // Create download link
+            const link = document.createElement("a");
+            link.href = window.URL.createObjectURL(blob);
+            link.download = data.filename;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            window.URL.revokeObjectURL(link.href);
+            
+            console.log(`${formName} downloaded successfully: ${data.filename} (${Math.round(data.file_size / 1024)} KB)`);
+          } else {
+            throw new Error(`Download failed: ${response.status} ${response.statusText}`);
+          }
+        } catch (downloadError) {
+          console.error("Download error:", downloadError);
+          
+          // If it's a CORS error, try alternative download method
+          if (downloadError.name === 'TypeError' || downloadError.message.includes('CORS')) {
+            console.log("CORS error detected, trying direct URL method...");
+            
+            try {
+              // Method 1: Direct window location (bypasses CORS for downloads)
+              window.location.href = data.download_url;
+              console.log(`${formName} download initiated via window.location`);
+              
+            } catch (locationError) {
+              // Method 2: Hidden iframe approach
+              console.log("Window.location failed, trying iframe...");
+              const iframe = document.createElement('iframe');
+              iframe.style.display = 'none';
+              iframe.style.position = 'absolute';
+              iframe.style.left = '-9999px';
+              iframe.src = data.download_url;
+              document.body.appendChild(iframe);
+              
+              setTimeout(() => {
+                if (document.body.contains(iframe)) {
+                  document.body.removeChild(iframe);
+                }
+              }, 5000);
+              
+              console.log(`${formName} download initiated via iframe`);
+            }
+          } else {
+            // Other types of errors
+            const fileSize = data.file_size ? `${Math.round(data.file_size / 1024)} KB` : 'Unknown size';
+            alert(`Download failed for ${data.filename} (${fileSize})\n\nError: ${downloadError.message}\n\nPlease try again or contact support.`);
+          }
+        }
+      } else {
+        alert("Download URL not available. Please contact support.");
+      }
+      
+    } catch (error) {
+      console.error(`Error accessing ${formName}:`, error);
+      alert(`Unable to access file. Please try again later.\n\nError: ${error.message}`);
+    }
+  };
+
+  // Function to print form from S3 for Lynnwood school (same logic as download but for print)
+  const printFromS3 = async (formName) => {
+    try {
+      const school_name = "lynnwood"; // Hardcoded as per requirement  
+      const child_id = activeChildId; // Use activeChildId instead of childFormData?.id
+      
+      if (!child_id) {
+        console.error("Child ID not found");
+        alert("Child ID not found. Please select a child and try again.");
+        return;
+      }
+
+      // Map form names to API endpoint format
+      const formMapping = {
+        'authorization_form': 'authorization_form',
+        'parent_handbook': 'parent_handbook', 
+        'enrollment_agreement': 'enrollment_agreement',
+        'admission_form': 'admission_form'
+      };
+
+      const item = formMapping[formName];
+      if (!item) {
+        console.error("Unknown form name:", formName);
+        alert("Unknown form type. Please try again.");
+        return;
+      }
+
+      // Use the existing API endpoint to get file metadata
+      const apiUrl = `https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/get-s3-file/${school_name}/${child_id}/${item}`;
+      
+      const response = await fetch(apiUrl);
+      if (!response.ok) {
+        throw new Error(`API error: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      
+      // Verify file exists
+      if (!data.s3_location || !data.filename) {
+        alert("File not found. Please contact support.");
+        return;
+      }
+
+      // Check if we have a working download URL
+      if (data.download_url) {
+        console.log(`Found print URL with ${data.download_url.includes('X-Amz-Algorithm=AWS4-HMAC-SHA256') ? 'AWS4 signature (good!)' : 'old signature'}`);
+        
+        try {
+          // Try to fetch the file for printing
+          const response = await fetch(data.download_url, {
+            method: 'GET',
+            mode: 'cors',
+            credentials: 'omit'
+          });
+          
+          if (response.ok) {
+            const blob = await response.blob();
+            console.log(`Successfully fetched file for printing: ${blob.size} bytes`);
+            
+            // Create blob URL and open print dialog
+            const blobUrl = window.URL.createObjectURL(blob);
+            
+            // Open in new window for printing
+            const printWindow = window.open(blobUrl, '_blank');
+            if (printWindow) {
+              printWindow.onload = () => {
+                setTimeout(() => {
+                  printWindow.print();
+                }, 500);
+              };
+              
+              // Clean up blob URL after delay
+              setTimeout(() => {
+                window.URL.revokeObjectURL(blobUrl);
+              }, 5000);
+            }
+            
+            console.log(`${formName} opened for printing: ${data.filename} (${Math.round(data.file_size / 1024)} KB)`);
+          } else {
+            throw new Error(`Print fetch failed: ${response.status} ${response.statusText}`);
+          }
+        } catch (printError) {
+          console.error("Print error:", printError);
+          
+          // If it's a CORS error, try alternative print method
+          if (printError.name === 'TypeError' || printError.message.includes('CORS')) {
+            console.log("CORS error detected, trying direct print method...");
+            
+            // Direct window.open for print (bypasses CORS)
+            const printWindow = window.open(data.download_url, '_blank');
+            if (printWindow) {
+              printWindow.onload = () => {
+                setTimeout(() => {
+                  printWindow.print();
+                }, 500);
+              };
+            }
+            
+            console.log(`${formName} print initiated via direct URL`);
+          } else {
+            // Other types of errors
+            const fileSize = data.file_size ? `${Math.round(data.file_size / 1024)} KB` : 'Unknown size';
+            alert(`Print failed for ${data.filename} (${fileSize})\n\nError: ${printError.message}\n\nPlease try again or contact support.`);
+          }
+        }
+      } else {
+        alert("Print URL not available. Please contact support.");
+      }
+      
+    } catch (error) {
+      console.error(`Error printing ${formName}:`, error);
+      alert(`Unable to print file. Please try again later.\n\nError: ${error.message}`);
+    }
+  };
+
   const handleAuthorizationFormAPI = async () => {
     console.log("=== handleAuthorizationFormAPI function called ===");
     console.log("Loading should already be true, current state:", isDownloading);
     
     try {
-      
-      // Prepare the request body with form data
-      const requestBody = {
-        bank_routing: childFormData?.bank_routing || "",
-        bank_account: childFormData?.bank_account || "", 
-        driver_license: childFormData?.driver_license || "",
-        state: childFormData?.state || "",
-        authorized_name: childFormData?.i || "",
-        parent_signature: childFormData?.parent_sign_ach || "",
-        signature_date: childFormData?.parent_sign_date_ach || ""
-      };
-
-      console.log("Request body:", requestBody);
-
-      const response = await fetch('https://27nssk4mg6.execute-api.ap-south-1.amazonaws.com/test/generate-authorization-pdf', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(requestBody)
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const result = await response.json();
-      console.log("API response:", result);
-      
-      // Check if the response has base64 encoded PDF
-      if (result.isBase64Encoded && result.body) {
-        // Decode base64 to binary
-        const binaryString = atob(result.body);
-        const bytes = new Uint8Array(binaryString.length);
-        for (let i = 0; i < binaryString.length; i++) {
-          bytes[i] = binaryString.charCodeAt(i);
-        }
-        
-        // Create blob and download
-        const blob = new Blob([bytes], { type: 'application/pdf' });
-        const url = window.URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = 'authorization_form.pdf';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        window.URL.revokeObjectURL(url);
-        
-        console.log("Authorization form PDF downloaded successfully");
-      } else {
-        alert("Authorization form PDF generated successfully!");
-      }
+      await downloadFromS3('authorization_form');
       
       // Ensure loading modal shows for at least 1 second
       await new Promise(resolve => setTimeout(resolve, 1000));
       
     } catch (error) {
-      console.error("Error in authorization form API call:", error);
-      alert("Failed to generate authorization form PDF. Please try again.");
+      console.error("Error in authorization form download:", error);
       
       // Ensure loading modal shows for at least 1 second even on error
       await new Promise(resolve => setTimeout(resolve, 1000));
@@ -279,88 +459,17 @@ const ParentDashboard = () => {
   const handleParentHandbookAPI = async () => {
     console.log("=== handleParentHandbookAPI function called ===");
     console.log("Loading should already be true, current state:", isDownloading);
+    console.log("activeChildId:", activeChildId);
+    console.log("childFormData available:", !!childFormData);
     
     try {
-      
-      // Get current child name from children array
-      const currentChild = children.find(child => child.child_id === activeChildId);
-      const childName = currentChild ? `${currentChild.child_first_name} ${currentChild.child_last_name || ''}`.trim() : '';
-      
-      // Get parent names from childFormData
-      const parentNames = childFormData?.parent_name || childFormData?.primary_parent_name || '';
-      
-      // Prepare the request body with the required format
-      const requestBody = {
-        welcome_goddard_agreement: childFormData?.welcome_goddard_agreement === 'on' ? true : false,
-        mission_statement_agreement: childFormData?.mission_statement_agreement === 'on' ? true : false,
-        general_information_agreement: childFormData?.general_information_agreement === 'on' ? true : false,
-        parent_access_agreement: childFormData?.parent_access_agreement === 'on' ? true : false,
-        release_of_children_agreement: childFormData?.release_of_children_agreement === 'on' ? true : false,
-        registration_fees_agreement: childFormData?.registration_fees_agreement === 'on' ? true : false,
-        outside_engagements_agreement: childFormData?.outside_engagements_agreement === 'on' ? true : false,
-        health_policies_agreement: childFormData?.health_policies_agreement === 'on' ? true : false,
-        medication_procedures_agreement: childFormData?.medication_procedures_agreement === 'on' ? true : false,
-        rest_time_agreement: childFormData?.rest_time_agreement === 'on' ? true : false,
-        training_philosophy_agreement: childFormData?.training_philosophy_agreement === 'on' ? true : false,
-        bring_to_school_agreement: childFormData?.bring_to_school_agreement === 'on' ? true : false,
-        affiliation_policy_agreement: childFormData?.affiliation_policy_agreement === 'on' ? true : false,
-        emergency_procedures_agreement: childFormData?.emergency_procedures_agreement === 'on' ? true : false,
-        expulsion_policy_agreement: childFormData?.expulsion_policy_agreement === 'on' ? true : false,
-        addressing_individual_child_agreement: childFormData?.addressing_individual_child_agreement === 'on' ? true : false,
-        security_issue_agreement: childFormData?.security_issue_agreement === 'on' ? true : false,
-        finalword_agreement: childFormData?.finalword_agreement === 'on' ? true : false,
-        parent_signature: childFormData?.parent_sign_handbook || "Sarah Johnson",
-        signature_date: childFormData?.parent_sign_date_handbook || "2025-08-14"
-      };
-
-      console.log("Request body:", requestBody);
-
-      const response = await fetch('https://27nssk4mg6.execute-api.ap-south-1.amazonaws.com/test/generate-handbook-pdf', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(requestBody)
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const result = await response.json();
-      console.log("API response:", result);
-      
-      // Check if the response has base64 encoded PDF
-      if (result.isBase64Encoded && result.body) {
-        // Decode base64 to binary
-        const binaryString = atob(result.body);
-        const bytes = new Uint8Array(binaryString.length);
-        for (let i = 0; i < binaryString.length; i++) {
-          bytes[i] = binaryString.charCodeAt(i);
-        }
-        
-        // Create blob and download
-        const blob = new Blob([bytes], { type: 'application/pdf' });
-        const url = window.URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = 'parent_handbook.pdf';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        window.URL.revokeObjectURL(url);
-        
-        console.log("Parent handbook PDF downloaded successfully");
-      } else {
-        alert("Parent handbook PDF generated successfully!");
-      }
+      await downloadFromS3('parent_handbook');
       
       // Ensure loading modal shows for at least 1 second
       await new Promise(resolve => setTimeout(resolve, 1000));
       
     } catch (error) {
-      console.error("Error in parent handbook API call:", error);
-      alert("Failed to generate parent handbook PDF. Please try again.");
+      console.error("Error in parent handbook download:", error);
       
       // Ensure loading modal shows for at least 1 second even on error
       await new Promise(resolve => setTimeout(resolve, 1000));
@@ -375,98 +484,13 @@ const ParentDashboard = () => {
     console.log("Loading should already be true, current state:", isDownloading);
     
     try {
-      
-      // Get current child name from children array
-      const currentChild = children.find(child => child.child_id === activeChildId);
-      const childName = currentChild ? `${currentChild.child_first_name} ${currentChild.child_last_name || ''}`.trim() : '';
-      
-      // Get parent names from childFormData
-      const parentNames = childFormData?.parent_name || childFormData?.primary_parent_name || '';
-      
-      // Prepare the request body with form data
-      const requestBody = {
-        effective_date: childFormData?.point_one_field_three || "",
-        parent_names: parentNames,
-        child_name: childName,
-        child_dob: childFormData?.dob || "",
-        preferred_start_date: childFormData?.preferred_start_date || "",
-        preferred_schedule: childFormData?.preferred_schedule || "",
-        parent_email: childFormData?.primary_parent_email || "",
-        home_address: childFormData?.preferred_home_addr || "",
-        parent_signature: childFormData?.parent_sign_enroll || "",
-        signature_date: childFormData?.parent_sign_date_enroll || "",
-        
-        full_day: childFormData?.full_day === 'on' || childFormData?.full_day === true || false,
-        half_day: childFormData?.half_day === 'on' || childFormData?.half_day === true || false,
-        
-        initial_2: childFormData?.point_two_initial_here || "",
-        initial_3: childFormData?.point_three_initial_here || "",
-        initial_4: childFormData?.point_four_initial_here || "",
-        initial_5: childFormData?.point_five_initial_here || "",
-        initial_6: childFormData?.point_six_initial_here || "",
-        initial_7: childFormData?.point_seven_initial_here || "",
-        initial_8: childFormData?.point_eight_initial_here || "",
-        initial_9: childFormData?.point_nine_initial_here || "",
-        initial_10: childFormData?.point_ten_initial_here || "",
-        initial_11: childFormData?.point_eleven_initial_here || "",
-        initial_12: childFormData?.point_twelve_initial_here || "",
-        initial_13: childFormData?.point_thirteen_initial_here || "",
-        initial_14: childFormData?.point_fourteen_initial_here || "",
-        initial_15: childFormData?.point_fifteen_initial_here || "",
-        initial_16: childFormData?.point_sixteen_initial_here || "",
-        initial_17: childFormData?.point_seventeen_initial_here || "",
-        initial_18: childFormData?.point_eighteen_initial_here || "",
-        initial_19: childFormData?.point_ninteen_initial_here || ""
-      };
-
-      console.log("Request body:", requestBody);
-
-      const response = await fetch('https://27nssk4mg6.execute-api.ap-south-1.amazonaws.com/test/generate-pdf', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(requestBody)
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const result = await response.json();
-      console.log("API response:", result);
-      
-      // Check if the response has base64 encoded PDF
-      if (result.isBase64Encoded && result.body) {
-        // Decode base64 to binary
-        const binaryString = atob(result.body);
-        const bytes = new Uint8Array(binaryString.length);
-        for (let i = 0; i < binaryString.length; i++) {
-          bytes[i] = binaryString.charCodeAt(i);
-        }
-        
-        // Create blob and download
-        const blob = new Blob([bytes], { type: 'application/pdf' });
-        const url = window.URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = 'enrollment_agreement.pdf';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        window.URL.revokeObjectURL(url);
-        
-        console.log("Enrollment agreement PDF downloaded successfully");
-      } else {
-        alert("Enrollment agreement PDF generated successfully!");
-      }
+      await downloadFromS3('enrollment_agreement');
       
       // Ensure loading modal shows for at least 1 second
       await new Promise(resolve => setTimeout(resolve, 1000));
       
     } catch (error) {
-      console.error("Error in enrollment agreement API call:", error);
-      alert("Failed to generate enrollment agreement PDF. Please try again.");
+      console.error("Error in enrollment agreement download:", error);
       
       // Ensure loading modal shows for at least 1 second even on error
       await new Promise(resolve => setTimeout(resolve, 1000));
@@ -481,274 +505,13 @@ const ParentDashboard = () => {
     console.log("Loading should already be true, current state:", isDownloading);
     
     try {
-      
-      // Get current child name from children array
-      const currentChild = children.find(child => child.child_id === activeChildId);
-      const childName = currentChild ? `${currentChild.child_first_name} ${currentChild.child_last_name || ''}`.trim() : '';
-      
-      // Get parent names from childFormData
-      const parentNames = childFormData?.parent_name || childFormData?.primary_parent_name || '';
-      
-      // Prepare the request body with form data
-      const requestBody = {
-        // Child Information
-        child_first_name: childFormData?.child_first_name || "",
-        child_last_name: childFormData?.child_last_name || "",
-        nick_name: childFormData?.nick_name || "",
-        dob: childFormData?.dob || "",
-        primary_language: childFormData?.primary_language || "",
-        gender: childFormData?.gender === 1 ? "Male" : childFormData?.gender === 2 ? "Female" : (childFormData?.gender || ""),
-        school_age_child_school: childFormData?.school_age_child_school || "",
-
-        // Primary Parent/Guardian
-        parent_name: childFormData?.primary_parent_info?.parent_name || "",
-        do_relevant_custody_papers_apply: childFormData?.primary_parent_info?.do_relevant_custody_papers_apply === 1 ? "Yes" : childFormData?.primary_parent_info?.do_relevant_custody_papers_apply === 2 ? "No" : (childFormData?.primary_parent_info?.do_relevant_custody_papers_apply || ""),
-        parent_street_address: childFormData?.primary_parent_info?.parent_street_address || "",
-        parent_city_address: childFormData?.primary_parent_info?.parent_city_address || "",
-        parent_state_address: childFormData?.primary_parent_info?.parent_state_address || "",
-        parent_zip_address: childFormData?.primary_parent_info?.parent_zip_address || "",
-        business_name: childFormData?.primary_parent_info?.parent_business_name || "",
-        work_hours_from: childFormData?.primary_parent_info?.parent_work_hours_from || "",
-        work_hours_to: childFormData?.primary_parent_info?.parent_work_hours_to || "",
-        business_telephone_number: childFormData?.primary_parent_info?.parent_business_telephone_number || "",
-        business_cell_number: childFormData?.primary_parent_info?.parent_business_cell_number || "",
-        primary_parent_email: childFormData?.primary_parent_email || "",
-        home_telephone_number: childFormData?.primary_parent_info?.parent_home_telephone_number || "",
-
-        // Second Parent/Guardian
-        parent_two_name: childFormData?.additional_parent_info?.parent_two_name || "",
-        parent_two_home_telephone_number: childFormData?.additional_parent_info?.parent_two_home_telephone_number || "",
-        parent_two_street_address: childFormData?.additional_parent_info?.parent_two_street_address || "",
-        parent_two_city_address: childFormData?.additional_parent_info?.parent_two_city_address || "",
-        parent_two_state_address: childFormData?.additional_parent_info?.parent_two_state_address || "",
-        parent_two_zip_address: childFormData?.additional_parent_info?.parent_two_zip_address || "",
-        parent_two_business_name: childFormData?.additional_parent_info?.parent_two_business_name || "",
-        parent_two_work_hours_from: childFormData?.additional_parent_info?.parent_two_work_hours_from || "",
-        parent_two_work_hours_to: childFormData?.additional_parent_info?.parent_two_work_hours_to || "",
-        parent_two_business_telephone_number: childFormData?.additional_parent_info?.parent_two_business_telephone_number || "",
-        parent_two_business_cell_number: childFormData?.additional_parent_info?.parent_two_business_cell_number || "",
-        parent_email: childFormData?.additional_parent_info?.parent_email || "",
-
-        // Emergency Contacts (3 contacts)
-        child_emergency_contact_name0: childFormData?.emergency_contact_info?.[0]?.child_emergency_contact_name || "",
-        child_emergency_contact_relationship0: childFormData?.emergency_contact_info?.[0]?.child_emergency_contact_relationship || "",
-        child_emergency_contact_full_address0: childFormData?.emergency_contact_info?.[0]?.child_emergency_contact_full_address || "",
-        child_emergency_contact_city_address0: childFormData?.emergency_contact_info?.[0]?.child_emergency_contact_city_address || "",
-        child_emergency_contact_state_address0: childFormData?.emergency_contact_info?.[0]?.child_emergency_contact_state_address || "",
-        child_emergency_contact_zip_address0: childFormData?.emergency_contact_info?.[0]?.child_emergency_contact_zip_address || "",
-        child_emergency_contact_telephone_number0: childFormData?.emergency_contact_info?.[0]?.child_emergency_contact_telephone_number || "",
-
-        child_emergency_contact_name1: childFormData?.emergency_contact_info?.[1]?.child_emergency_contact_name || "",
-        child_emergency_contact_relationship1: childFormData?.emergency_contact_info?.[1]?.child_emergency_contact_relationship || "",
-        child_emergency_contact_full_address1: childFormData?.emergency_contact_info?.[1]?.child_emergency_contact_full_address || "",
-        child_emergency_contact_city_address1: childFormData?.emergency_contact_info?.[1]?.child_emergency_contact_city_address || "",
-        child_emergency_contact_state_address1: childFormData?.emergency_contact_info?.[1]?.child_emergency_contact_state_address || "",
-        child_emergency_contact_zip_address1: childFormData?.emergency_contact_info?.[1]?.child_emergency_contact_zip_address || "",
-        child_emergency_contact_telephone_number1: childFormData?.emergency_contact_info?.[1]?.child_emergency_contact_telephone_number || "",
-
-        child_emergency_contact_name2: childFormData?.emergency_contact_info?.[2]?.child_emergency_contact_name || "",
-        child_emergency_contact_relationship2: childFormData?.emergency_contact_info?.[2]?.child_emergency_contact_relationship || "",
-        child_emergency_contact_full_address2: childFormData?.emergency_contact_info?.[2]?.child_emergency_contact_full_address || "",
-        child_emergency_contact_city_address2: childFormData?.emergency_contact_info?.[2]?.child_emergency_contact_city_address || "",
-        child_emergency_contact_state_address2: childFormData?.emergency_contact_info?.[2]?.child_emergency_contact_state_address || "",
-        child_emergency_contact_zip_address2: childFormData?.emergency_contact_info?.[2]?.child_emergency_contact_zip_address || "",
-        child_emergency_contact_telephone_number2: childFormData?.emergency_contact_info?.[2]?.child_emergency_contact_telephone_number || "",
-
-        // Healthcare Provider
-        child_care_provider_name: childFormData?.child_care_provider_info?.child_care_provider_name || "",
-        child_hospital_affiliation: childFormData?.child_care_provider_info?.child_hospital_affiliation || "",
-        child_care_provider_street_address: childFormData?.child_care_provider_info?.child_care_provider_street_address || "",
-        child_care_provider_city_address: childFormData?.child_care_provider_info?.child_care_provider_city_address || "",
-        child_care_provider_state_address: childFormData?.child_care_provider_info?.child_care_provider_state_address || "",
-        child_care_provider_zip_address: childFormData?.child_care_provider_info?.child_care_provider_zip_address || "",
-        child_care_provider_telephone_number: childFormData?.child_care_provider_info?.child_care_provider_telephone_number || "",
-
-        // Dental Information
-        child_dentist_name: childFormData?.child_dentist_name || "",
-        dentist_telephone_number: childFormData?.dentist_telephone_number || "",
-        dentist_street_address: childFormData?.dentist_street_address || "",
-        dentist_city_address: childFormData?.dentist_city_address || "",
-        dentist_state_address: childFormData?.dentist_state_address || "",
-        dentist_zip_address: childFormData?.dentist_zip_address || "",
-
-        // Medical Information
-        allergies_medication_reaction: childFormData?.allergies_medication_reaction || "",
-        special_disabilities: childFormData?.special_disabilities || "",
-        medication: childFormData?.medication || "",
-        additional_info: childFormData?.additional_info || "",
-        policy_number: childFormData?.policy_number || "",
-        health_insurance: childFormData?.health_insurance || "",
-        obtaining_emergency_medical_care: childFormData?.obtaining_emergency_medical_care || "",
-        administration_first_aid_procedures: childFormData?.administration_first_aid_procedures || "",
-        agree_all_above_information_is_correct: childFormData?.agree_all_above_information_is_correct === 'on' || childFormData?.agree_all_above_information_is_correct === 1 ? true : false,
-        physical_exam_last_date: childFormData?.physical_exam_last_date || "",
-        dental_exam_last_date: childFormData?.dental_exam_last_date || "",
-
-        // Medical History
-        allergies: childFormData?.allergies || "",
-        bleeding_problems: childFormData?.bleeding_problems || "",
-        frequent_ear_infections: childFormData?.frequent_ear_infections || "",
-        asthma: childFormData?.asthma || "",
-        diabetes: childFormData?.diabetes || "",
-        epilepsy: childFormData?.epilepsy || "",
-        frequent_illnesses: childFormData?.frequent_illnesses || "",
-        hearing_problems: childFormData?.hearing_problems || "",
-        high_fevers: childFormData?.high_fevers || "",
-        hospitalization: childFormData?.hospitalization || "",
-        rheumatic_fever: childFormData?.rheumatic_fever || "",
-        seizures_convulsions: childFormData?.seizures_convulsions || "",
-        serious_injuries_accidents: childFormData?.serious_injuries_accidents || "",
-        surgeries: childFormData?.surgeries || "",
-        vision_problems: childFormData?.vision_problems || "",
-        medical_other: childFormData?.medical_other || "",
-
-        // Birth Information
-        illness_during_pregnancy: childFormData?.illness_during_pregnancy || "",
-        condition_of_newborn: childFormData?.condition_of_newborn || "",
-        birth_weight_lbs: childFormData?.birth_weight_lbs ? String(childFormData.birth_weight_lbs) : "",
-        birth_weight_oz: childFormData?.birth_weight_oz ? String(childFormData.birth_weight_oz) : "",
-        duration_of_pregnancy: childFormData?.duration_of_pregnancy || "",
-        complications: childFormData?.complications || "",
-        bottle_fed: childFormData?.bottle_fed === 1 ? "Yes" : childFormData?.bottle_fed === 2 ? "No" : (childFormData?.bottle_fed || ""),
-        breast_fed: childFormData?.breast_fed === 1 ? "Yes" : childFormData?.breast_fed === 2 ? "No" : (childFormData?.breast_fed || ""),
-
-        // Family Information
-        other_siblings_name: childFormData?.other_siblings_name || "",
-        other_siblings_age: childFormData?.other_siblings_age ? String(childFormData.other_siblings_age) : "",
-        family_history_allergies: childFormData?.family_history_allergies || "",
-        family_history_heart_problems: childFormData?.family_history_heart_problems || "",
-        family_history_tuberculosis: childFormData?.family_history_tuberculosis || "",
-        family_history_asthma: childFormData?.family_history_asthma || "",
-        family_history_vision_problems: childFormData?.family_history_vision_problems || "",
-        family_history_diabetes: childFormData?.family_history_diabetes || "",
-        family_history_high_blood_pressure: childFormData?.family_history_high_blood_pressure || "",
-        family_history_hyperactivity: childFormData?.family_history_hyperactivity || "",
-        no_illnesses_for_this_child: childFormData?.no_illnesses_for_this_child || "",
-        family_history_epilepsy: childFormData?.family_history_epilepsy || "",
-
-        // Social Development
-        age_group_friends: childFormData?.age_group_friends || "",
-        neighborhood_friends: childFormData?.neighborhood_friends || "",
-        relationship_with_mother: childFormData?.relationship_with_mother || "",
-        relationship_with_father: childFormData?.relationship_with_father || "",
-        relationship_with_siblings: childFormData?.relationship_with_siblings || "",
-        relationship_with_extended_family: childFormData?.relationship_with_extended_family || "",
-        fears_conflicts: childFormData?.fears_conflicts || "",
-        child_response_frustration: childFormData?.child_response_frustration || "",
-
-        // Daily Activities
-        favorite_activities: childFormData?.favorite_activities || "",
-        last_five_years_moved: childFormData?.last_five_years_moved || "",
-        things_used_at_home: childFormData?.things_used_at_home || "",
-        hours_of_television_daily: childFormData?.hours_of_television_daily || "",
-        language_used_at_home: childFormData?.language_used_at_home || "",
-        changes_at_home_situation: childFormData?.changes_at_home_situation || "",
-        educational_expectations_of_child: childFormData?.educational_expectations_of_child || "",
-        agree_all_above_info_is_correct: childFormData?.agree_all_above_info_is_correct === 'on' || childFormData?.agree_all_above_info_is_correct === 1 ? true : false,
-
-        // School Information
-        do_you_agree_this_immunization_instructions: childFormData?.do_you_agree_this_immunization_instructions === 'on' || childFormData?.do_you_agree_this_immunization_instructions === 1 ? true : false,
-        important_fam_members: childFormData?.important_fam_members || "",
-        about_family_celebrations: childFormData?.about_family_celebrations || "",
-        reason_for_childcare_before: childFormData?.reason_for_childcare_before ? String(childFormData.reason_for_childcare_before) : "",
-        what_child_interests: childFormData?.what_child_interests || "",
-        drop_off_time: childFormData?.drop_off_time || "",
-        pick_up_time: childFormData?.pick_up_time || "",
-
-        // Dietary Information
-        restricted_diet_reason: childFormData?.restricted_diet_reason || "",
-        favorite_foods: childFormData?.favorite_foods || "",
-        eat_own_reason: childFormData?.eat_own_reason || "",
-        reason_for_rest_in_the_middle_day: childFormData?.reason_for_rest_in_the_middle_day || "",
-        rest_routine: childFormData?.rest_routine || "",
-
-        // Special Needs
-        reason_for_toilet_trained: childFormData?.reason_for_toilet_trained || "",
-        explain_for_existing_illness_allergy: childFormData?.explain_for_existing_illness_allergy || "",
-        explain_for_functioning_at_age: childFormData?.explain_for_functioning_at_age || "",
-        explain_for_able_to_walk: childFormData?.explain_for_able_to_walk || "",
-        explain_for_communicate_their_needs: childFormData?.explain_for_communicate_their_needs || "",
-        explain_for_any_medication: childFormData?.explain_for_any_medication || "",
-        explain_for_utilize_special_equipment: childFormData?.explain_for_utilize_special_equipment || "",
-        explain_for_significant_periods: childFormData?.explain_for_significant_periods || "",
-        explain_for_desire_any_accommodations: childFormData?.explain_for_desire_any_accommodations || "",
-        additional_information: childFormData?.additional_information || "",
-
-        // Agreements and Forms
-        do_you_agree_this: childFormData?.do_you_agree_this === 'on' || childFormData?.do_you_agree_this === 1 ? true : false,
-        child_password_pick_up_password_form: childFormData?.child_password_pick_up_password_form || "",
-        do_you_agree_this_pick_up_password_form: childFormData?.do_you_agree_this_pick_up_password_form === 'on' || childFormData?.do_you_agree_this_pick_up_password_form === 1 ? true : false,
-        photo_usage_photo_video_permission_form: childFormData?.photo_usage_photo_video_permission_form || "",
-        photo_permission_agree_group_photos_electronic: childFormData?.photo_permission_agree_group_photos_electronic || "",
-        do_you_agree_this_photo_video_permission_form: childFormData?.do_you_agree_this_photo_video_permission_form === 'on' || childFormData?.do_you_agree_this_photo_video_permission_form === 1 ? true : false,
-        security_release_policy_form: childFormData?.security_release_policy_form || "",
-        med_technicians_med_transportation_waiver: childFormData?.med_technicians_med_transportation_waiver || "",
-        medical_transportation_waiver: childFormData?.medical_transportation_waiver === 'on' || childFormData?.medical_transportation_waiver === 1 ? true : false,
-        do_you_agree_this_health_policies: childFormData?.do_you_agree_this_health_policies === 'on' || childFormData?.do_you_agree_this_health_policies === 1 ? true : false,
-        parent_sign_outside_waiver: childFormData?.parent_sign_outside_waiver || "",
-
-        // Social Media
-        approve_social_media_post: childFormData?.approve_social_media_post === 1 ? "Yes" : childFormData?.approve_social_media_post === 2 ? "No" : (childFormData?.approve_social_media_post || ""),
-        printed_name_social_media_post: childFormData?.printed_name_social_media_post || "",
-        do_you_agree_this_social_media_post: childFormData?.do_you_agree_this_social_media_post === 'on' || childFormData?.do_you_agree_this_social_media_post === 1 ? true : false,
-
-        // Final Signature
-        parent_sign_admission: childFormData?.parent_sign_admission || "",
-        parent_sign_date_admission: childFormData?.parent_sign_date_admission || "",
-
-        // Original signature fields for compatibility
-        parent_signature: childFormData?.parent_sign_admission || "",
-        signature_date: childFormData?.parent_sign_date_admission || ""
-      };
-
-      console.log("Request body:", requestBody);
-
-      const response = await fetch('https://27nssk4mg6.execute-api.ap-south-1.amazonaws.com/test/generate-admission-pdf', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(requestBody)
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const result = await response.json();
-      console.log("API response:", result);
-      
-      // Check if the response has base64 encoded PDF
-      if (result.isBase64Encoded && result.body) {
-        // Decode base64 to binary
-        const binaryString = atob(result.body);
-        const bytes = new Uint8Array(binaryString.length);
-        for (let i = 0; i < binaryString.length; i++) {
-          bytes[i] = binaryString.charCodeAt(i);
-        }
-        
-        // Create blob and download
-        const blob = new Blob([bytes], { type: 'application/pdf' });
-        const url = window.URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = 'admission_form.pdf';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        window.URL.revokeObjectURL(url);
-        
-        console.log("Admission form PDF downloaded successfully");
-      } else {
-        alert("Admission form PDF generated successfully!");
-      }
+      await downloadFromS3('admission_form');
       
       // Ensure loading modal shows for at least 1 second
       await new Promise(resolve => setTimeout(resolve, 1000));
       
     } catch (error) {
-      console.error("Error in admission form API call:", error);
-      alert("Failed to generate admission form PDF. Please try again.");
+      console.error("Error in admission form download:", error);
       
       // Ensure loading modal shows for at least 1 second even on error
       await new Promise(resolve => setTimeout(resolve, 1000));
@@ -1900,33 +1663,37 @@ const ParentDashboard = () => {
                                       console.log("Print button clicked for admission_form");
                                       setIsDownloading(true);
                                       setTimeout(() => {
-                                        handleAdmissionFormPrintAPI();
+                                        printFromS3('admission_form');
+                                        setIsDownloading(false);
                                       }, 100);
                                     }
                                     else if (formName == 'authorization_form') {
                                       console.log("Print button clicked for authorization_form");
                                       setIsDownloading(true);
                                       setTimeout(() => {
-                                        handleAuthorizationFormPrintAPI();
+                                        printFromS3('authorization_form');
+                                        setIsDownloading(false);
                                       }, 100);
                                     }
                                     else if (formName == 'parent_handbook') {
                                       console.log("Print button clicked for parent_handbook");
                                       setIsDownloading(true);
                                       setTimeout(() => {
-                                        handleParentHandbookPrintAPI();
+                                        printFromS3('parent_handbook');
+                                        setIsDownloading(false);
                                       }, 100);
                                     }
                                     else if (formName == 'enrollment_form' || formName == 'enrollment_agreement') {
                                       console.log("Print button clicked for enrollment_form");
                                       setIsDownloading(true);
                                       setTimeout(() => {
-                                        handleEnrollmentAgreementPrintAPI();
+                                        printFromS3('enrollment_agreement');
+                                        setIsDownloading(false);
                                       }, 100);
                                     }
                                     else {
                                       console.log('Unknown form name:', formName);
-                                      handleDownload4(); // Default to enrollment download
+                                      setIsDownloading(false);
                                     }
                                   }}
                                   title="Print"

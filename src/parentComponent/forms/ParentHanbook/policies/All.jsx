@@ -172,7 +172,27 @@ const handleSubmit = async (type) => {
       // Prepare the complete form data for API call including child_id
       const saveData = {
         child_id: childId,
-        admin_sign_handbook: formData.admin_sign_handbook,
+          welcome_goddard_agreement: formData.welcome_goddard_agreement,
+          mission_statement_agreement: formData.mission_statement_agreement,
+          general_information_agreement: formData.general_information_agreement,
+          medical_care_provider_agreement: formData.medical_care_provider_agreement,
+          parent_access_agreement: formData.parent_access_agreement,
+          release_of_children_agreement: formData.release_of_children_agreement,
+          registration_fees_agreement: formData.registration_fees_agreement,
+          outside_engagements_agreement: formData.outside_engagements_agreement,
+          health_policies_agreement: formData.health_policies_agreement,
+          medication_procedures_agreement: formData.medication_procedures_agreement,
+          bring_to_school_agreement: formData.bring_to_school_agreement,
+          rest_time_agreement: formData.rest_time_agreement,
+          training_philosophy_agreement: formData.training_philosophy_agreement,
+          affiliation_policy_agreement: formData.affiliation_policy_agreement,
+          security_issue_agreement: formData.security_issue_agreement,
+          expulsion_policy_agreement: formData.expulsion_policy_agreement,
+          addressing_individual_child_agreement: formData.addressing_individual_child_agreement,
+          finalword_agreement: formData.finalword_agreement,
+         parent_sign_handbook: formData.parent_sign_handbook,
+        parent_sign_date_handbook: formData.parent_sign_date_handbook,
+          admin_sign_handbook: formData.admin_sign_handbook,
         admin_sign_date_handbook: epochValue
       };
 
