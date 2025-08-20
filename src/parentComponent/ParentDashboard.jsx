@@ -121,7 +121,7 @@ const ParentDashboard = () => {
   };
 
   // Function to download form from S3 for Lynnwood school
-  const downloadFromS3 = async (formName) => {
+  const downloadFromS3 = async (formName, isPrint) => {
     try {
       const school_name = "lynnwood"; // Hardcoded as per requirement  
       const child_id = activeChildId; // Use activeChildId instead of childFormData?.id
@@ -148,7 +148,7 @@ const ParentDashboard = () => {
       }
 
       // Use the existing API endpoint to get file metadata
-      const apiUrl = `https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/get-s3-file/${school_name}/${child_id}/${item}`;
+      const apiUrl = `https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/get-s3-file/${school_name}/${child_id}/${item}/${isPrint}`;
       
       const response = await fetch(apiUrl);
       if (!response.ok) {
@@ -239,7 +239,7 @@ const ParentDashboard = () => {
   };
 
   // Function to print form from S3 for Lynnwood school (same logic as download but for print)
-  const printFromS3 = async (formName) => {
+  const printFromS3 = async (formName, isPrint) => {
     try {
       const school_name = "lynnwood"; // Hardcoded as per requirement  
       const child_id = activeChildId; // Use activeChildId instead of childFormData?.id
@@ -266,7 +266,7 @@ const ParentDashboard = () => {
       }
 
       // Use the existing API endpoint to get file metadata
-      const apiUrl = `https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/get-s3-file/${school_name}/${child_id}/${item}`;
+      const apiUrl = `https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/get-s3-file/${school_name}/${child_id}/${item}/${isPrint}`;
       
       const response = await fetch(apiUrl);
       if (!response.ok) {
@@ -300,19 +300,42 @@ const ParentDashboard = () => {
             // Create blob URL and open print dialog
             const blobUrl = window.URL.createObjectURL(blob);
             
-            // Open in new window for printing
-            const printWindow = window.open(blobUrl, '_blank');
+            console.log("Opening print window with blob URL:", blobUrl);
+            
+            // Open in new window for printing - with explicit window features
+            const printWindow = window.open(blobUrl, '_blank', 'width=800,height=600,scrollbars=yes,resizable=yes');
+            
             if (printWindow) {
-              printWindow.onload = () => {
-                setTimeout(() => {
-                  printWindow.print();
-                }, 500);
+              console.log("Print window opened successfully");
+              
+              // Handle both onload and fallback timing
+              let printTriggered = false;
+              
+              const triggerPrint = () => {
+                if (!printTriggered) {
+                  printTriggered = true;
+                  console.log("Triggering print dialog");
+                  try {
+                    printWindow.print();
+                  } catch (e) {
+                    console.error("Print dialog error:", e);
+                  }
+                }
               };
+              
+              // Try onload first
+              printWindow.onload = triggerPrint;
+              
+              // Fallback timeout in case onload doesn't fire
+              setTimeout(triggerPrint, 1000);
               
               // Clean up blob URL after delay
               setTimeout(() => {
                 window.URL.revokeObjectURL(blobUrl);
-              }, 5000);
+              }, 10000);
+            } else {
+              console.error("Failed to open print window - may be blocked by popup blocker");
+              alert("Print window was blocked. Please allow popups for this site and try again.");
             }
             
             console.log(`${formName} opened for printing: ${data.filename} (${Math.round(data.file_size / 1024)} KB)`);
@@ -326,14 +349,32 @@ const ParentDashboard = () => {
           if (printError.name === 'TypeError' || printError.message.includes('CORS')) {
             console.log("CORS error detected, trying direct print method...");
             
-            // Direct window.open for print (bypasses CORS)
-            const printWindow = window.open(data.download_url, '_blank');
+            // Direct window.open for print (bypasses CORS) with explicit window features
+            const printWindow = window.open(data.download_url, '_blank', 'width=800,height=600,scrollbars=yes,resizable=yes');
+            
             if (printWindow) {
-              printWindow.onload = () => {
-                setTimeout(() => {
-                  printWindow.print();
-                }, 500);
+              console.log("Direct print window opened successfully");
+              
+              // Handle print trigger with fallback
+              let printTriggered = false;
+              
+              const triggerPrint = () => {
+                if (!printTriggered) {
+                  printTriggered = true;
+                  console.log("Triggering direct print dialog");
+                  try {
+                    printWindow.print();
+                  } catch (e) {
+                    console.error("Direct print dialog error:", e);
+                  }
+                }
               };
+              
+              printWindow.onload = triggerPrint;
+              setTimeout(triggerPrint, 1000);
+            } else {
+              console.error("Failed to open direct print window - may be blocked by popup blocker");
+              alert("Print window was blocked. Please allow popups for this site and try again.");
             }
             
             console.log(`${formName} print initiated via direct URL`);
@@ -358,7 +399,7 @@ const ParentDashboard = () => {
     console.log("Loading should already be true, current state:", isDownloading);
     
     try {
-      await downloadFromS3('authorization_form');
+      await downloadFromS3('authorization_form', false);
       
       // Ensure loading modal shows for at least 1 second
       await new Promise(resolve => setTimeout(resolve, 1000));
@@ -463,7 +504,7 @@ const ParentDashboard = () => {
     console.log("childFormData available:", !!childFormData);
     
     try {
-      await downloadFromS3('parent_handbook');
+      await downloadFromS3('parent_handbook', false);
       
       // Ensure loading modal shows for at least 1 second
       await new Promise(resolve => setTimeout(resolve, 1000));
@@ -484,7 +525,7 @@ const ParentDashboard = () => {
     console.log("Loading should already be true, current state:", isDownloading);
     
     try {
-      await downloadFromS3('enrollment_agreement');
+      await downloadFromS3('enrollment_agreement', false);
       
       // Ensure loading modal shows for at least 1 second
       await new Promise(resolve => setTimeout(resolve, 1000));
@@ -505,7 +546,7 @@ const ParentDashboard = () => {
     console.log("Loading should already be true, current state:", isDownloading);
     
     try {
-      await downloadFromS3('admission_form');
+      await downloadFromS3('admission_form', false);
       
       // Ensure loading modal shows for at least 1 second
       await new Promise(resolve => setTimeout(resolve, 1000));
@@ -1663,7 +1704,7 @@ const ParentDashboard = () => {
                                       console.log("Print button clicked for admission_form");
                                       setIsDownloading(true);
                                       setTimeout(() => {
-                                        printFromS3('admission_form');
+                                        printFromS3('admission_form', true);
                                         setIsDownloading(false);
                                       }, 100);
                                     }
@@ -1671,7 +1712,7 @@ const ParentDashboard = () => {
                                       console.log("Print button clicked for authorization_form");
                                       setIsDownloading(true);
                                       setTimeout(() => {
-                                        printFromS3('authorization_form');
+                                        printFromS3('authorization_form', true);
                                         setIsDownloading(false);
                                       }, 100);
                                     }
@@ -1679,7 +1720,7 @@ const ParentDashboard = () => {
                                       console.log("Print button clicked for parent_handbook");
                                       setIsDownloading(true);
                                       setTimeout(() => {
-                                        printFromS3('parent_handbook');
+                                        printFromS3('parent_handbook', true);
                                         setIsDownloading(false);
                                       }, 100);
                                     }
@@ -1687,7 +1728,7 @@ const ParentDashboard = () => {
                                       console.log("Print button clicked for enrollment_form");
                                       setIsDownloading(true);
                                       setTimeout(() => {
-                                        printFromS3('enrollment_agreement');
+                                        printFromS3('enrollment_agreement', true);
                                         setIsDownloading(false);
                                       }, 100);
                                     }
