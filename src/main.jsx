@@ -10,7 +10,7 @@ import { Toaster } from '@/components/ui/sonner'
 import ParentDashboard from './parentComponent/ParentDashboard.jsx'
 import InviteParentNew from './InviteParentNew.jsx'
 import ParentDetailsNew from './ParentDetailsNew.jsx'
-import FormsRepository from './components/FormsRepository.jsx'
+import FormsRepositoryNew from './FormsRepositoryNew.jsx'
 
 
 
@@ -24,7 +24,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         <Route path="/application-status" element={<ApplicationStatusNew />} />
         <Route path="/parent-details" element={<ParentDetailsNew></ParentDetailsNew>} />
         <Route path="/invite-parent" element={<InviteParentNew></InviteParentNew>} />
-        <Route path="/forms-repository" element={<FormsRepository />} />
+        <Route path="/forms-repository" element={<FormsRepositoryNew />} />
 
         <Route path="/login" element={<LoginNew></LoginNew>} />
       </Routes>
