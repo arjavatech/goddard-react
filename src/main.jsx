@@ -4,7 +4,8 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import AdminDashboard from './AdminDashboard.jsx'
 import ApplicationStatus from './ApplicationStatus.jsx'
 import './index.css'
-import Login from './components/Login.jsx'
+import LoginNew from './components/LoginNew.jsx'
+import { Toaster } from '@/components/ui/sonner'
 // import ParentDashboard from './parent/Components/ParentDashboard.jsx'
 import ParentDashboard from './parentComponent/ParentDashboard.jsx'
 import InviteParent from './components/InviteParent.jsx'
@@ -17,7 +18,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <Router>
       <Routes>
-        <Route path="/" element={<Login />} />
+        <Route path="/" element={<LoginNew />} />
         <Route path="/parent-dashboard" element={<ParentDashboard />} />
         <Route path="/admin-dashboard" element={<AdminDashboard />} />
         <Route path="/application-status" element={<ApplicationStatus />} />
@@ -25,8 +26,9 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         <Route path="/invite-parent" element={<InviteParent></InviteParent>} />
         <Route path="/forms-repository" element={<FormsRepository />} />
 
-        <Route path="/login" element={<Login></Login>} />
+        <Route path="/login" element={<LoginNew></LoginNew>} />
       </Routes>
+      <Toaster />
     </Router>
   </React.StrictMode>,
 )
