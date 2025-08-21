@@ -25,7 +25,7 @@ import FormSidebar from '../parent/utilComponents/FormSidebar/FormSidebar';
 import { formSections } from '../parent/utilComponents/FormSidebar/formSections';
 import AuthorizationForm from './forms/AuthorizationFormNew';
 import ParentHandbbok from './forms/ParentHanbook/policies/All';
-import EnrollmentForm from './forms/EnrollmentForm';
+import EnrollmentForm from './forms/EnrollmentFormNew';
 import AdmissionForm from './forms/AdmissionForm/AdmissionFormNew';
 import ParentHandbook from './pdf_forms/ParentHandbook';
 import AdmissionSection from './pdf_forms/AdmissionForm';
