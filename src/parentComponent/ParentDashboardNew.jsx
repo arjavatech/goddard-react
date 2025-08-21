@@ -23,7 +23,7 @@ import DataTable from '../components/DataTable';
 import { useAuth } from '../hooks/useAuth';
 import FormSidebar from '../parent/utilComponents/FormSidebar/FormSidebar';
 import { formSections } from '../parent/utilComponents/FormSidebar/formSections';
-import AuthorizationForm from './forms/AuthorizationForm';
+import AuthorizationForm from './forms/AuthorizationFormNew';
 import ParentHandbbok from './forms/ParentHanbook/policies/All';
 import EnrollmentForm from './forms/EnrollmentForm';
 import AdmissionForm from './forms/AdmissionForm/AdmissionFormNew';
