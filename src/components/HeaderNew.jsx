@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Separator } from '@/components/ui/separator';
-import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { LogOut, Home, User } from 'lucide-react';
+import { LogOut, User } from 'lucide-react';
 import SidebarNew from './SidebarNew';
 import { toast } from 'sonner';
 
@@ -24,16 +22,6 @@ function HeaderNew({ onSignOut, sidebar, component }) {
     setShowSignOutModal(false);
   };
 
-  const getPageTitle = () => {
-    const pageMap = {
-      'Dashboard': 'Admin Dashboard',
-      'Application Status': 'Application Status',
-      'ParentDetails': 'Parent Details',
-      'InviteParent': 'Invite Parent',
-      'ClassroomFormManage': 'Forms Repository'
-    };
-    return pageMap[component] || 'Admin Portal';
-  };
 
   return (
     <>
@@ -41,21 +29,9 @@ function HeaderNew({ onSignOut, sidebar, component }) {
       <header className="bg-white shadow-md border-b sticky top-0 z-40">
         {/* Desktop / Tablet View */}
         <div className="hidden sm:flex items-center justify-between px-4 sm:px-6 lg:px-8 py-3">
-          {/* Left Section - Sidebar + Page Info */}
-          <div className="flex items-center gap-4">
+          {/* Left Section - Sidebar */}
+          <div className="flex items-center">
             {sidebar && <SidebarNew activeItem={component} />}
-            
-            <div className="flex items-center gap-2">
-              <Separator orientation="vertical" className="h-6" />
-              <div className="flex flex-col">
-                <h1 className="text-sm font-semibold text-[#0F2D52]">
-                  {getPageTitle()}
-                </h1>
-                <Badge variant="outline" className="text-xs w-fit">
-                  The Goddard School
-                </Badge>
-              </div>
-            </div>
           </div>
 
           {/* Center - Logo */}
@@ -75,11 +51,7 @@ function HeaderNew({ onSignOut, sidebar, component }) {
 
           {/* Right Section - Sign Out */}
           {onSignOut && (
-            <div className="flex items-center gap-3">
-              <div className="hidden lg:flex flex-col text-right">
-                <span className="text-sm text-gray-600">Admin Portal</span>
-                <span className="text-xs text-gray-500">Signed In</span>
-              </div>
+            <div className="flex items-center">
               <Button
                 variant="outline"
                 size="sm"
@@ -111,20 +83,8 @@ function HeaderNew({ onSignOut, sidebar, component }) {
 
           {/* Bottom Row - Navigation + Sign Out */}
           <div className="flex items-center justify-between px-4 py-3">
-            <div className="flex items-center gap-3">
+            <div className="flex items-center">
               {sidebar && <SidebarNew activeItem={component} />}
-              
-              <div className="flex items-center gap-2">
-                <Home className="h-4 w-4 text-[#0F2D52]" />
-                <div>
-                  <h1 className="text-sm font-semibold text-[#0F2D52] leading-tight">
-                    {getPageTitle()}
-                  </h1>
-                  <Badge variant="outline" className="text-xs">
-                    Admin
-                  </Badge>
-                </div>
-              </div>
             </div>
 
             {onSignOut && (
