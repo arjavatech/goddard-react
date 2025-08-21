@@ -137,7 +137,7 @@ const ParentDashboard = () => {
         return;
       }
 
-      const apiUrl = `https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/get-s3-file/${school_name}/${child_id}/${item}`;
+      const apiUrl = `https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/get-s3-file/${school_name}/${child_id}/${item}/${false}`;
       
       const response = await fetch(apiUrl);
       if (!response.ok) {
@@ -229,7 +229,7 @@ const ParentDashboard = () => {
         return;
       }
 
-      const apiUrl = `https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/get-s3-file/${school_name}/${child_id}/${item}`;
+      const apiUrl = `https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/get-s3-file/${school_name}/${child_id}/${item}/${true}`;
       
       const response = await fetch(apiUrl);
       if (!response.ok) {
