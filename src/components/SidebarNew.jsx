@@ -8,8 +8,7 @@ import {
   FileText, 
   Users, 
   FolderOpen,
-  UserPlus,
-  X
+  UserPlus
 } from 'lucide-react';
 import { toast } from 'sonner';
 
