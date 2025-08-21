@@ -18,7 +18,7 @@ import {
   Search
 } from 'lucide-react';
 import { toast, Toaster } from 'sonner';
-import Header from '../components/Header';
+import HeaderNew from '../components/HeaderNew';
 import DataTable from '../components/DataTable';
 import { useAuth } from '../hooks/useAuth';
 import FormSidebar from '../parent/utilComponents/FormSidebar/FormSidebar';
@@ -692,7 +692,7 @@ const ParentDashboard = () => {
       <Toaster richColors position="top-center" />
       
       {/* Navigation Bar */}
-      <Header onSignOut={signOut} />
+      <HeaderNew onSignOut={signOut} sidebar={false} />
 
       {/* Welcome Section */}
       <div className="bg-white border-b">

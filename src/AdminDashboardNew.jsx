@@ -6,7 +6,7 @@ import { FileText, Users, Settings, ChevronRight, Activity } from 'lucide-react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import Header from './components/Header';
+import HeaderNew from './components/HeaderNew';
 
 const AdminDashboardNew = () => {
   const { isAuthenticated, signOut } = useAuth();
@@ -80,7 +80,7 @@ const AdminDashboardNew = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Header onSignOut={signOut} />
+      <HeaderNew onSignOut={signOut} sidebar={true} component="Dashboard" />
       
       <div className="container mx-auto px-4 py-8">
         {/* Header Section */}

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from './hooks/useAuth';
-import Header from './components/Header';
+import HeaderNew from './components/HeaderNew';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './components/ui/card';
 import { Button } from './components/ui/button';
 import { Input } from './components/ui/input';
@@ -125,7 +125,7 @@ const InviteParentNew = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Header onSignOut={signOut} sidebar={true} component="InviteParent" />
+      <HeaderNew onSignOut={signOut} sidebar={true} component="InviteParent" />
       
       <div className="container mx-auto pt-6 px-4 sm:px-6 lg:px-8 space-y-6">
         {/* Page Header */}

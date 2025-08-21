@@ -11,7 +11,7 @@ import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Skeleton } from '@/components/ui/skeleton';
-import Header from './components/Header';
+import HeaderNew from './components/HeaderNew';
 import { exportToCSVFromData } from './components/common/ExcelExport';
 
 const ApplicationStatusNew = () => {
@@ -250,7 +250,7 @@ const ApplicationStatusNew = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Header onSignOut={signOut} sidebar={true} component="Application Status" />
+      <HeaderNew onSignOut={signOut} sidebar={true} component="Application Status" />
       
       <div className="container mx-auto px-4 py-6">
         {/* Header Section */}
