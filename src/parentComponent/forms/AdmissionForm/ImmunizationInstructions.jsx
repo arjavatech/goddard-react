@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './ImmunizationInstructions.css'; // assuming you have this CSS
+import { api_base_url, school_id } from '@/utils/const';
 
 const ImmunizationInstructions = ({ initialFormData = null , childId}) => {
   const [isChecked, setIsChecked] = useState(false);
@@ -12,7 +13,7 @@ const ImmunizationInstructions = ({ initialFormData = null , childId}) => {
     }
 
     try {
-      const response = await fetch(`https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/admission_segment/${childId}`, {
+      const response = await fetch(`${api_base_url}/admission_segment/${school_id}/${childId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

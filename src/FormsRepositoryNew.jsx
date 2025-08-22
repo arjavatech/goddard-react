@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { api_base_url, school_id, updated_by } from './utils/const';
 import { useAuth } from './hooks/useAuth';
 import HeaderNew from './components/HeaderNew';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './components/ui/card';
@@ -85,7 +86,7 @@ const FormsRepositoryNew = () => {
   const loadClassroomData = async () => {
     setIsLoadingClassrooms(true);
     try {
-      const response = await fetch('https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/child_count_with_class_name');
+      const response = await fetch(`${api_base_url}/child_count_with_class_name/${school_id}`);
       const data = await response.json();
       setClassrooms(data || []);
     } catch (error) {
@@ -105,10 +106,10 @@ const FormsRepositoryNew = () => {
 
     setIsAddingClassroom(true);
     try {
-      const response = await fetch('https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/class_details/create', {
+      const response = await fetch(`${api_base_url}/class_details`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ class_name: newClassroomName.trim() })
+        body: JSON.stringify({ class_name: newClassroomName.trim(), school_id: school_id })
       });
 
       const result = await response.json();
@@ -135,10 +136,12 @@ const FormsRepositoryNew = () => {
 
     setIsEditingClassroom(true);
     try {
-      const response = await fetch(`https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/class_details/update/${editingClassroom.class_id}`, {
+      const response = await fetch(`${api_base_url}/class_details`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ class_name: editClassroomName.trim() })
+        body: JSON.stringify({ school_id: school_id,
+          class_id: editingClassroom.class_id,
+           class_name: editClassroomName.trim() })
       });
 
       const result = await response.json();
@@ -162,7 +165,7 @@ const FormsRepositoryNew = () => {
   const handleDeleteClassroom = async () => {
     setIsDeletingClassroom(true);
     try {
-      const response = await fetch(`https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/class_details/delete/${deletingClassroom.class_id}`, {
+      const response = await fetch(`${api_base_url}/class_details/${school_id}/${deletingClassroom.class_id}/${updated_by}`, {
         method: 'DELETE'
       });
 

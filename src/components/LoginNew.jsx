@@ -16,6 +16,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { loginFunction } from '../utils/login';
 import Header from './Header';
 import ForgotPasswordModal from './ForgotPasswordModal';
+import { api_base_url, school_id } from '../utils/const';
 
 // Form validation schema
 const loginSchema = z.object({

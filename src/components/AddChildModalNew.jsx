@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import Alert from './Alert';
+import { api_base_url, school_id } from '../utils/const';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -37,7 +39,7 @@ const AddChildModalNew = ({ isOpen, onClose, parentEmail, onAddChild }) => {
   const loadClassrooms = async () => {
     setLoadingClassrooms(true);
     try {
-      const response = await fetch('https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/class_details/getall');
+      const response = await fetch(`${api_base_url}/class_details/${school_id}`);
       const data = await response.json();
       const classroomOptions = data.filter(item => item.class_name)
         .map(item => ({
@@ -55,7 +57,7 @@ const AddChildModalNew = ({ isOpen, onClose, parentEmail, onAddChild }) => {
 
   const loadParentInfo = async () => {
     try {
-      const response = await fetch('https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/parent_info/getall');
+      const response = await fetch(`${api_base_url}/parent_info/${school_id}`);
       const data = await response.json();
       const parent = data.find(p => p.parent_email === parentEmail);
       if (parent) {

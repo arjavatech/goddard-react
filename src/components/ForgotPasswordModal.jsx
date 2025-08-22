@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Alert from './Alert';
-
+import { api_base_url, school_id } from '@/utils/const';
 const ForgotPasswordModal = ({ isOpen, onClose }) => {
   const [email, setEmail] = useState('');
   const [emailError, setEmailError] = useState(false);
@@ -38,7 +38,7 @@ const ForgotPasswordModal = ({ isOpen, onClose }) => {
 
     setLoading(true);
     try {
-      const response = await fetch(`https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/forget_password_mail_trigger/${email}`, {
+      const response = await fetch(`${api_base_url}/forget_password_mail_trigger/${school_id}/${email}`, {
         method: 'GET'
       });
 

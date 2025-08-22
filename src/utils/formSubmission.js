@@ -1,3 +1,5 @@
+import { api_base_url, school_id } from "./const";
+
 // Form submission functions from all_form.js
 export const submitForm = (editID, number) => {
   const form = document.getElementById("childInfoAdmission");
@@ -75,7 +77,7 @@ export const submitForm = (editID, number) => {
       }
     }
   };
-  xhr.open("PUT", `https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/admission_segment/${child_id_val}`);
+  xhr.open("PUT", `${api_base_url}/admission_segment/${school_id}/${child_id_val}`);
   xhr.setRequestHeader("Content-Type", "application/json");
   xhr.send(JSON.stringify(outputobject));
 };
@@ -124,7 +126,7 @@ export const authorizationSubmitForm = (editID, number) => {
       }
     }
   };
-  xhr.open("PUT", `https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/authorization_form/update/${child_id_val}`);
+  xhr.open("PUT", `${api_base_url}/authorization_form/${school_id}/${child_id_val}`);
   xhr.setRequestHeader("Content-Type", "application/json");
   xhr.send(JSON.stringify(outputobject));
 };
@@ -173,7 +175,7 @@ export const enrollmentSubmitForm = (editID, number) => {
       }
     }
   };
-  xhr.open("PUT", `https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/enrollment_form/update/${child_id_val}`);
+  xhr.open("PUT", `${api_base_url}/enrollment_form/${school_id}/${child_id_val}`);
   xhr.setRequestHeader("Content-Type", "application/json");
   xhr.send(JSON.stringify(outputobject));
 };

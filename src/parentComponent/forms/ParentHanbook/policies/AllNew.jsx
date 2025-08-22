@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { api_base_url, school_id } from '@/utils/const';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -212,7 +213,7 @@ const ParentHandbookNew = ({ selectedSubForm = null, initialFormData = null, chi
     }
 
     try {
-      const response = await fetch(`https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/parent_handbook/update/${childId}`, {
+      const response = await fetch(`${api_base_url}/parent_handbook/${school_id}/${childId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -275,7 +276,7 @@ const ParentHandbookNew = ({ selectedSubForm = null, initialFormData = null, chi
         ...Object.fromEntries(
           policySections.map(section => [section.key, formData[section.key]])
         ),
-        handbook_pointer: formData.handbook_pointer
+        handbook_pointer: parseInt(formData.handbook_pointer)
       };
 
       await updateParentHandbookData(saveData);
@@ -318,7 +319,7 @@ const ParentHandbookNew = ({ selectedSubForm = null, initialFormData = null, chi
           ...Object.fromEntries(
             policySections.map(section => [section.key, formData[section.key]])
           ),
-          handbook_pointer: formData.handbook_pointer,
+          handbook_pointer: parseInt(formData.handbook_pointer),
           parent_sign_handbook: formData.parent_sign_handbook,
           parent_sign_date_handbook: formData.parent_sign_date_handbook,
           admin_sign_handbook: formData.admin_sign_handbook,

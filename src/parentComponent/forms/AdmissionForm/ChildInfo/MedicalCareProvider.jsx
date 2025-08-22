@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { FormInput } from './InputComponent';
 import { DownIcon,UpIcon } from '../../../../components/common/Arrows';
+import { api_base_url, school_id } from '@/utils/const';
+
 const MedicalCareProvider = ({ openSection, setOpenSection, initialFormData, charProviderData, handleInputChange, childId }) => {
     
     const [formData, setFormData] = useState({
@@ -50,26 +52,26 @@ const MedicalCareProvider = ({ openSection, setOpenSection, initialFormData, cha
           if (initialFormData) {
             setFormData(prevState => ({
               child_id: childId,
-                    child_care_provider_id: charProviderData.child_care_provider_id,
-                    child_care_provider_name: charProviderData.child_care_provider_name,
-                    child_hospital_affiliation: charProviderData.child_hospital_affiliation,
-                    child_care_provider_zip_address: charProviderData.child_care_provider_zip_address,
-                    child_care_provider_city_address: charProviderData.child_care_provider_city_address,
-                    child_care_provider_state_address: charProviderData.child_care_provider_state_address,
-                    child_care_provider_street_address: charProviderData.child_care_provider_street_address,
-                    child_care_provider_telephone_number: charProviderData.child_care_provider_telephone_number,
-                    child_dentist_name: initialFormData.child_dentist_name,
-                    dentist_telephone_number: initialFormData.dentist_telephone_number,
-                    dentist_street_address: initialFormData.dentist_street_address,
-                    dentist_city_address: initialFormData.dentist_city_address,
-                    dentist_state_address: initialFormData.dentist_state_address,
-                    dentist_zip_address: initialFormData.dentist_zip_address,
-                    special_diabilities: initialFormData.special_diabilities,
-                    allergies_medication_reaction: initialFormData.allergies_medication_reaction,
-                    additional_info: initialFormData.additional_info,
-                    medication: initialFormData.medication,
-                    health_insurance: initialFormData.health_insurance,
-                    policy_number: initialFormData.policy_number
+child_care_provider_id: charProviderData ? charProviderData.child_care_provider_id : null,
+child_care_provider_name: charProviderData ? charProviderData.child_care_provider_name  : null,
+child_hospital_affiliation: charProviderData ? charProviderData.child_hospital_affiliation : null,
+child_care_provider_zip_address: charProviderData ? charProviderData.child_care_provider_zip_address : null,
+child_care_provider_city_address: charProviderData ? charProviderData.child_care_provider_city_address : null,
+child_care_provider_state_address: charProviderData ? charProviderData.child_care_provider_state_address : null,
+child_care_provider_street_address: charProviderData ? charProviderData.child_care_provider_street_address : null,
+child_care_provider_telephone_number: charProviderData ? charProviderData.child_care_provider_telephone_number : null,
+child_dentist_name: initialFormData.child_dentist_name,
+dentist_telephone_number: initialFormData.dentist_telephone_number,
+dentist_street_address: initialFormData.dentist_street_address,
+dentist_city_address: initialFormData.dentist_city_address,
+dentist_state_address: initialFormData.dentist_state_address,
+dentist_zip_address: initialFormData.dentist_zip_address,
+special_diabilities: initialFormData.special_diabilities,
+allergies_medication_reaction: initialFormData.allergies_medication_reaction,
+additional_info: initialFormData.additional_info,
+medication: initialFormData.medication,
+health_insurance: initialFormData.health_insurance,
+policy_number: initialFormData.policy_number,
             }));
           }
         }, [initialFormData]);
@@ -84,7 +86,7 @@ const MedicalCareProvider = ({ openSection, setOpenSection, initialFormData, cha
               }
       
               try {
-                  const response = await fetch(`https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/admission_segment/${childId}`, {
+                  const response = await fetch(`${api_base_url}/admission_segment/${school_id}/${childId}`, {
                       method: 'PUT',
                       headers: {
                           'Content-Type': 'application/json',

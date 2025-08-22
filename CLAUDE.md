@@ -65,7 +65,7 @@ The application has two main user flows:
 ### API Integration
 
 The application connects to AWS API Gateway endpoints:
-- Base URL: `https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test`
+- Base URL: `https://hfj4ckons6.execute-api.ap-south-1.amazonaws.com/dev`
 - Key endpoints:
   - `/admission_child_personal/` - Parent and child data management
   - `/child_all_form_details/` - Detailed form data operations

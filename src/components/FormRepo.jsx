@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import SearchableSelect from './SearchableSelect';
+import { api_base_url, school_id } from '@/utils/const';
 
 const FormRepo = ({ onAlert }) => {
   const [formType, setFormType] = useState([]);
@@ -18,7 +19,7 @@ const FormRepo = ({ onAlert }) => {
 
   const loadActiveForms = async () => {
     try {
-      const response = await fetch('https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/get_all_form_details');
+      const response = await fetch(`${api_base_url}/get_all_form_details/${school_id}`);
       const data = await response.json();
       
       if (data.active) {
@@ -35,7 +36,7 @@ const FormRepo = ({ onAlert }) => {
 
   const loadClassroomNames = async () => {
     try {
-      const response = await fetch('https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/child_count_with_class_name');
+      const response = await fetch(`${api_base_url}/child_count_with_class_name/${school_id}`);
       const data = await response.json();
       setClassrooms(data);
     } catch (error) {
@@ -57,7 +58,7 @@ const FormRepo = ({ onAlert }) => {
     }
 
     try {
-      const response = await fetch('https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/get_all_form_details');
+      const response = await fetch(`${api_base_url}/get_all_form_details/${school_id}`);
       const data = await response.json();
       
       let filteredForms = [];
@@ -83,7 +84,7 @@ const FormRepo = ({ onAlert }) => {
     }
 
     try {
-      const response = await fetch('https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/class_wise_child_details');
+      const response = await fetch(`${api_base_url}/class_wise_child_details/${school_id}`);
       const data = await response.json();
       
       let filteredChildren = [];
@@ -113,7 +114,7 @@ const FormRepo = ({ onAlert }) => {
     }
 
     try {
-      const response = await fetch('https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/update_form_repo_state', {
+      const response = await fetch(`${api_base_url}/update_form_repo_state/${school_id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -148,13 +149,13 @@ const FormRepo = ({ onAlert }) => {
       let url, body;
       
       if (selectedChildren.length === 0) {
-        url = 'https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/class_repo_update';
+        url = `${api_base_url}/class_repo_update/${school_id}`;
         body = JSON.stringify({
           form_ids: selectedActiveForms.map(f => f.id),
           class_ids: selectedClassrooms
         });
       } else {
-        url = 'https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/student_repo_update';
+        url = `${api_base_url}/student_repo_update/${school_id}`;
         body = JSON.stringify({
           form_ids: selectedActiveForms.map(f => f.id),
           child_ids: selectedChildren

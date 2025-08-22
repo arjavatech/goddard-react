@@ -31,7 +31,7 @@ const adminSign = ({ initialFormData = null, formData, childId, editID, onAlert 
     }
 
     try {
-      const response = await fetch(`https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/admission_segment/${childId}`, {
+      const response = await fetch(`${api_base_url}/admission_segment/${school_id}/${childId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import DataTable from './DataTable';
+import { api_base_url, school_id } from '@/utils/const';
 import { exportToExcel, exportToCSVFromData } from './common/ExcelExport';
+import { school_id } from '@/utils/const';
 
 const ClassroomRepo = ({ onAlert }) => {
   const [classroomName, setClassroomName] = useState('');
@@ -20,7 +22,7 @@ const ClassroomRepo = ({ onAlert }) => {
   const loadClassroomData = async () => {
     setLoading(true);
     try {
-      const response = await fetch('https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/child_count_with_class_name');
+      const response = await fetch(`${api_base_url}/child_count_with_class_name/${school_id}`);
       const data = await response.json();
       setClassroomData(data);
     } catch (error) {
@@ -40,7 +42,7 @@ const ClassroomRepo = ({ onAlert }) => {
     }
 
     try {
-      const url = 'https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/class_details/create';
+      const url = `${api_base_url}/class_details/${school_id}`;
       const method = 'POST';
       const body = JSON.stringify({ class_name: classroomName });
 
@@ -100,7 +102,7 @@ const ClassroomRepo = ({ onAlert }) => {
     document.body.style.overflow = 'unset';
     
     try {
-      const url = `https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/class_details/update/${classroomToUpdate.class_id}`;
+      const url = `${api_base_url}/class_details/${school_id}/${classroomToUpdate.class_id}`;
       const response = await fetch(url, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
@@ -139,8 +141,8 @@ const ClassroomRepo = ({ onAlert }) => {
     document.body.style.overflow = 'unset';
 
     try {
-      const response = await fetch(`https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/class_details/delete/${classroomToDelete.class_id}`, {
-        method: 'PUT',
+      const response = await fetch(`${api_base_url}/class_details/${school_id}/${classroomToDelete.class_id}`, {
+        method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ class_id: classroomToDelete.class_id })
       });

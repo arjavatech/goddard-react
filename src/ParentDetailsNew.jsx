@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { api_base_url, school_id, updated_by } from './utils/const';
 import { useAuth } from './hooks/useAuth';
 import HeaderNew from './components/HeaderNew';
 import { Card, CardContent, CardHeader, CardTitle } from './components/ui/card';
@@ -87,7 +88,7 @@ const ParentDetailsNew = () => {
   const loadData = async (statusFilter = '') => {
     setLoading(true);
     try {
-      const response = await fetch('https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/parent_invite_status/getall');
+      const response = await fetch(`${api_base_url}/parent_invite_status/getall/${school_id}`);
       const result = await response.json();
       
       let responseData = [];
@@ -120,7 +121,7 @@ const ParentDetailsNew = () => {
   const handleResendEmail = async (email) => {
     setSendingEmail(true);
     try {
-      const response = await fetch(`https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/parent_invite_mail/resend/${email}`, {
+      const response = await fetch(`${api_base_url}/parent_invite_mail/resend/${school_id}/${email}/${updated_by}`, {
         method: 'GET'
       });
       
@@ -139,7 +140,7 @@ const ParentDetailsNew = () => {
   const handleStatusUpdate = async (parentId, newStatus) => {
     setUpdatingStatus(true);
     try {
-      const response = await fetch(`https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/update_parent_info_status/${parentId}`, {
+      const response = await fetch(`${api_base_url}/update_parent_info_status/${school_id}/${parentId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status: newStatus })
@@ -168,7 +169,7 @@ const ParentDetailsNew = () => {
   const handleAddChild = async (childData) => {
     setAddingChild(true);
     try {
-      const response = await fetch('https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/child_info/create', {
+      const response = await fetch(`${api_base_url}/child_info/create`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(childData)

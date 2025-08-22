@@ -21,6 +21,7 @@ import {
   Edit3
 } from 'lucide-react';
 import { toast, Toaster } from 'sonner';
+import { api_base_url, school_id } from '@/utils/const';
 
 const EnrollmentFormNew = ({ selectedSubForm = null, initialFormData = null, childId = null }) => {
   const [activeTab, setActiveTab] = useState(selectedSubForm ? getTabFromSubForm(selectedSubForm) : 'terms');
@@ -82,7 +83,7 @@ const EnrollmentFormNew = ({ selectedSubForm = null, initialFormData = null, chi
     }
 
     try {
-      const response = await fetch(`https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/enrollment_form/update/${childId}`, {
+      const response = await fetch(`${api_base_url}/enrollment_form/update/${school_id}/${childId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

@@ -1,5 +1,8 @@
 import React from 'react';
 import{ useState, useEffect } from 'react';
+import FormInput from '../../../components/FormInput';
+import FormLabel from '../../../components/FormLabel';
+import { api_base_url, school_id } from '@/utils/const';
 
 const EnrollmentForm = ({ selectedSubForm = null, initialFormData = null, childId = null }) => {
   
@@ -11,7 +14,7 @@ const EnrollmentForm = ({ selectedSubForm = null, initialFormData = null, childI
     }
 
     try {
-      const response = await fetch(`https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/enrollment_form/update/${childId}`, {
+      const response = await fetch(`${api_base_url}/enrollment_form/update/${school_id}/${childId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

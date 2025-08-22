@@ -1,10 +1,10 @@
 // API service for form-related operations
-const API_BASE_URL = 'https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test';
+import { api_base_url, school_id } from "@/utils/const";
 
 export const formService = {
   // Get parent and children data
   async getParentData(email) {
-    const response = await fetch(`${API_BASE_URL}/admission_child_personal/parent_email/${email}`);
+    const response = await fetch(`${api_base_url}/admission_child_personal/parent_email/${email}`);
     if (!response.ok) {
       throw new Error('Failed to fetch parent data');
     }
@@ -13,7 +13,7 @@ export const formService = {
 
   // Get completed forms for a specific child and year
   async getCompletedForms(childId, year) {
-    const response = await fetch(`${API_BASE_URL}/admission_child_personal/completed_form_status_year/${childId}/${year}`);
+    const response = await fetch(`${api_base_url}/admission_child_personal/completed_form_status_year/${school_id}/${childId}/${year}`);
     if (!response.ok) {
       throw new Error('Failed to fetch completed forms');
     }
@@ -22,7 +22,7 @@ export const formService = {
 
   // Get detailed form data for a child
   async getFormDetails(childId) {
-    const response = await fetch(`${API_BASE_URL}/child_all_form_details/fetch/${childId}`);
+    const response = await fetch(`${api_base_url}/child_all_form_details/${school_id}/${childId}`);
     if (!response.ok) {
       throw new Error('Failed to fetch form details');
     }
@@ -31,7 +31,7 @@ export const formService = {
 
   // Save form data
   async saveFormData(childId, formData, formType) {
-    const response = await fetch(`${API_BASE_URL}/child_all_form_details/update/${childId}`, {
+    const response = await fetch(`${api_base_url}/child_all_form_details/${school_id}/${childId}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -50,7 +50,7 @@ export const formService = {
 
   // Submit completed form
   async submitCompletedForm(childId, formName) {
-    const response = await fetch(`${API_BASE_URL}/admission_child_personal/completed_form_status`, {
+    const response = await fetch(`${api_base_url}/admission_child_personal/completed_form_status/${school_id}/${childId}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

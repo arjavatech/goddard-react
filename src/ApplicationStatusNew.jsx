@@ -13,6 +13,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Skeleton } from '@/components/ui/skeleton';
 import HeaderNew from './components/HeaderNew';
 import { exportToCSVFromData } from './components/common/ExcelExport';
+import { school_id } from './utils/const';
 
 const ApplicationStatusNew = () => {
   const { isAuthenticated, signOut } = useAuth();
@@ -46,7 +47,7 @@ const ApplicationStatusNew = () => {
 
   const loadClassrooms = async () => {
     try {
-      const response = await fetch('https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/class_details/getall');
+      const response = await fetch(`${api_base_url}/class_details/${school_id}`);
       const data = await response.json();
       
       const classroomOptions = [
@@ -71,7 +72,7 @@ const ApplicationStatusNew = () => {
 
   const loadForms = async () => {
     try {
-      const response = await fetch('https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/all_form_info/getall');
+      const response = await fetch(`${api_base_url}/class_form_repositary/getall`);
       const data = await response.json();
       const formOptions = [
         { value: 'all', label: 'All Forms' },
@@ -97,16 +98,16 @@ const ApplicationStatusNew = () => {
       
       if (isFormAll && isClassroomAll) {
         if (classID) {
-          apiUrl = `https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/class_based_all_child_details/${classID}`;
+          apiUrl = `${api_base_url}/class_based_all_child_details/${school_id}/${classID}`;
         } else {
-          apiUrl = 'https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/admission_child_personal/all_child_status';
+          apiUrl = `${api_base_url}/admission_child_personal/all_child_status/${school_id}`;
         }
       } else if (isFormAll && !isClassroomAll) {
-        apiUrl = `https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/class_based_all_child_details/${classroomFilter}`;
+        apiUrl = `${api_base_url}/class_based_all_child_details/${school_id}/${classroomFilter}`;
       } else if (!isFormAll && isClassroomAll) {
-        apiUrl = `https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/form_based_all_child_details/${formFilter}`;
+        apiUrl = `${api_base_url}/form_based_all_child_details/${school_id}/${formFilter}`;
       } else {
-        apiUrl = `https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/form_based_all_child_details/${formFilter}`;
+        apiUrl = `${api_base_url}/form_based_all_child_details/${school_id}/${formFilter}`;
       }
       
       const response = await fetch(apiUrl);

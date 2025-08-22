@@ -650,7 +650,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
                                 <PDFFormInput
                                     id="child_emergency_contact_name0"
                                     name="child_emergency_contact_name0"
-                                    defaultValue={initialFormData?.emergency_contact_info[0]?.child_emergency_contact_name || ''}
+                                    defaultValue={Array.isArray(initialFormData?.emergency_contact_info) && initialFormData?.emergency_contact_info[0]?.child_emergency_contact_name || ''}
                                 />
                             </div>
                             <div>
@@ -660,7 +660,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
                                 <PDFFormInput
                                     id="child_emergency_contact_relationship0"
                                     name="child_emergency_contact_relationship0"
-                                    defaultValue={initialFormData?.emergency_contact_info[0]?.child_emergency_contact_relationship || ''}
+                                    defaultValue={Array.isArray(initialFormData?.emergency_contact_info) && initialFormData?.emergency_contact_info[0]?.child_emergency_contact_relationship || ''}
                                 />
                             </div>
 
@@ -671,7 +671,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
                                 <PDFFormInput
                                     id="child_emergency_contact_full_address0"
                                     name="child_emergency_contact_full_address0"
-                                    defaultValue={initialFormData?.emergency_contact_info[0]?.child_emergency_contact_full_address || ''}
+                                    defaultValue={Array.isArray(initialFormData?.emergency_contact_info) && initialFormData?.emergency_contact_info[0]?.child_emergency_contact_full_address || ''}
                                 />
                             </div>
 
@@ -682,7 +682,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
                                 <PDFFormInput
                                     id="child_emergency_contact_city_address0"
                                     name="child_emergency_contact_city_address0"
-                                    defaultValue={initialFormData?.emergency_contact_info[0]?.child_emergency_contact_city_address || ''}
+                                    defaultValue={Array.isArray(initialFormData?.emergency_contact_info) && initialFormData?.emergency_contact_info[0]?.child_emergency_contact_city_address || ''}
                                 />
                             </div>
                         </div>
@@ -703,7 +703,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
                                 <PDFFormInput
                                     id="child_emergency_contact_telephone_number0"
                                     name="child_emergency_contact_telephone_number0"
-                                    defaultValue={initialFormData?.emergency_contact_info[0]?.child_emergency_contact_telephone_number || ''}
+                                    defaultValue={Array.isArray(initialFormData?.emergency_contact_info) && initialFormData?.emergency_contact_info[0]?.child_emergency_contact_telephone_number || ''}
                                 />
                                 <span id="child_emergency_contact_telephone_number_span"
                                     style={{ display: 'none' }}>
@@ -716,7 +716,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
                                 <PDFFormInput
                                     id="child_emergency_contact_state_address0"
                                     name="child_emergency_contact_state_address0"
-                                    defaultValue={initialFormData?.emergency_contact_info[0]?.child_emergency_contact_state_address || ''}
+                                    defaultValue={Array.isArray(initialFormData?.emergency_contact_info) && initialFormData?.emergency_contact_info[0]?.child_emergency_contact_state_address || ''}
                                 />
                             </div>
 
@@ -726,7 +726,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
                                 <PDFFormInput
                                     id="child_emergency_contact_zip_address0"
                                     name="child_emergency_contact_zip_address0"
-                                    defaultValue={initialFormData?.emergency_contact_info[0]?.child_emergency_contact_zip_address || ''}
+                                    defaultValue={Array.isArray(initialFormData?.emergency_contact_info) && initialFormData?.emergency_contact_info[0]?.child_emergency_contact_zip_address || ''}
                                 />
                             </div>
                         </div>
@@ -738,7 +738,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
                                 <PDFFormInput
                                     id="child_emergency_contact_name1"
                                     name="child_emergency_contact_name1"
-                                    defaultValue={initialFormData?.emergency_contact_info[1]?.child_emergency_contact_name || ''}
+                                    defaultValue={Array.isArray(initialFormData?.emergency_contact_info) && initialFormData?.emergency_contact_info[1]?.child_emergency_contact_name || ''}
                                 />
                             </div>
 
@@ -749,7 +749,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
                                 <PDFFormInput
                                     id="child_emergency_contact_relationship1"
                                     name="child_emergency_contact_relationship1"
-                                    defaultValue={initialFormData?.emergency_contact_info[1]?.child_emergency_contact_relationship || ''}
+                                    defaultValue={Array.isArray(initialFormData?.emergency_contact_info) && initialFormData?.emergency_contact_info[1]?.child_emergency_contact_relationship || ''}
                                 />
                             </div>
 
@@ -760,7 +760,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
                                 <PDFFormInput
                                     id="child_emergency_contact_full_address1"
                                     name="child_emergency_contact_full_address1"
-                                    defaultValue={initialFormData?.emergency_contact_info[1]?.child_emergency_contact_full_address || ''}
+                                    defaultValue={Array.isArray(initialFormData?.emergency_contact_info) && initialFormData?.emergency_contact_info[1]?.child_emergency_contact_full_address || ''}
                                 />
                             </div>
 
@@ -771,7 +771,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
                                 <PDFFormInput
                                     id="child_emergency_contact_city_address1"
                                     name="child_emergency_contact_city_address1"
-                                    defaultValue={initialFormData?.emergency_contact_info[1]?.child_emergency_contact_city_address || ''}
+                                    defaultValue={Array.isArray(initialFormData?.emergency_contact_info) && initialFormData?.emergency_contact_info[1]?.child_emergency_contact_city_address || ''}
                                 />
                             </div>
                         </div>
@@ -785,7 +785,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
                                 <PDFFormInput
                                     id="child_emergency_contact_telephone_number1"
                                     name="child_emergency_contact_telephone_number1"
-                                    defaultValue={initialFormData?.emergency_contact_info[1]?.child_emergency_contact_telephone_number || ''}
+                                    defaultValue={Array.isArray(initialFormData?.emergency_contact_info) && initialFormData?.emergency_contact_info[1]?.child_emergency_contact_telephone_number || ''}
                                 />
                             </div>
 
@@ -796,7 +796,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
                                 <PDFFormInput
                                     id="child_emergency_contact_state_address1"
                                     name="child_emergency_contact_state_address1"
-                                    defaultValue={initialFormData?.emergency_contact_info[1]?.child_emergency_contact_state_address || ''}
+                                    defaultValue={Array.isArray(initialFormData?.emergency_contact_info) && initialFormData?.emergency_contact_info[1]?.child_emergency_contact_state_address || ''}
                                 />
                             </div>
 
@@ -806,7 +806,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
                                 <PDFFormInput
                                     id="child_emergency_contact_zip_address1"
                                     name="child_emergency_contact_zip_address1"
-                                    defaultValue={initialFormData?.emergency_contact_info[1]?.child_emergency_contact_zip_address || ''}
+                                    defaultValue={Array.isArray(initialFormData?.emergency_contact_info) && initialFormData?.emergency_contact_info[1]?.child_emergency_contact_zip_address || ''}
                                 />
                             </div>
                         </div>
@@ -819,7 +819,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
                                 <PDFFormInput
                                     id="child_emergency_contact_name2"
                                     name="child_emergency_contact_name2"
-                                    defaultValue={initialFormData?.emergency_contact_info[2]?.child_emergency_contact_name || ''}
+                                    defaultValue={Array.isArray(initialFormData?.emergency_contact_info) && initialFormData?.emergency_contact_info[2]?.child_emergency_contact_name || ''}
                                 />
                             </div>
                             <div>
@@ -829,7 +829,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
                                 <PDFFormInput
                                     id="child_emergency_contact_relationship2"
                                     name="child_emergency_contact_relationship2"
-                                    defaultValue={initialFormData?.emergency_contact_info[2]?.child_emergency_contact_relationship || ''}
+                                    defaultValue={Array.isArray(initialFormData?.emergency_contact_info) && initialFormData?.emergency_contact_info[2]?.child_emergency_contact_relationship || ''}
                                 />
                             </div>
 
@@ -840,7 +840,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
                                 <PDFFormInput
                                     id="child_emergency_contact_full_address2"
                                     name="child_emergency_contact_full_address2"
-                                    defaultValue={initialFormData?.emergency_contact_info[2]?.child_emergency_contact_full_address || ''}
+                                    defaultValue={Array.isArray(initialFormData?.emergency_contact_info) && initialFormData?.emergency_contact_info[2]?.child_emergency_contact_full_address || ''}
                                 />
                             </div>
                             <div>
@@ -850,7 +850,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
                                 <PDFFormInput
                                     id="child_emergency_contact_city_address2"
                                     name="child_emergency_contact_city_address2"
-                                    defaultValue={initialFormData?.emergency_contact_info[2]?.child_emergency_contact_city_address || ''}
+                                    defaultValue={Array.isArray(initialFormData?.emergency_contact_info) && initialFormData?.emergency_contact_info[2]?.child_emergency_contact_city_address || ''}
                                 />
                             </div>
                         </div>
@@ -864,7 +864,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
                                 <PDFFormInput
                                     id="child_emergency_contact_telephone_number2"
                                     name="child_emergency_contact_telephone_number2"
-                                    defaultValue={initialFormData?.emergency_contact_info[2]?.child_emergency_contact_telephone_number || ''}
+                                    defaultValue={Array.isArray(initialFormData?.emergency_contact_info) && initialFormData?.emergency_contact_info[2]?.child_emergency_contact_telephone_number || ''}
                                 />
                                 <span id="child_emergency_contact_telephone_number_span"
                                     style={{ display: 'none' }}>
@@ -878,7 +878,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
                                 <PDFFormInput
                                     id="child_emergency_contact_state_address2"
                                     name="child_emergency_contact_state_address2"
-                                    defaultValue={initialFormData?.emergency_contact_info[2]?.child_emergency_contact_state_address || ''}
+                                    defaultValue={Array.isArray(initialFormData?.emergency_contact_info) && initialFormData?.emergency_contact_info[2]?.child_emergency_contact_state_address || ''}
                                 />
                             </div>
 
@@ -888,7 +888,7 @@ const AdmissionSection = forwardRef(({ initialFormData }, ref) => {
                                 <PDFFormInput
                                     id="child_emergency_contact_zip_address2"
                                     name="child_emergency_contact_zip_address2"
-                                    defaultValue={initialFormData?.emergency_contact_info[2]?.child_emergency_contact_zip_address || ''}
+                                    defaultValue={Array.isArray(initialFormData?.emergency_contact_info) && initialFormData?.emergency_contact_info[2]?.child_emergency_contact_zip_address || ''}
                                 />
                             </div>
 

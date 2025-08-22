@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { api_base_url, school_id } from '@/utils/const';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -137,7 +138,7 @@ const ParentDashboard = () => {
         return;
       }
 
-      const apiUrl = `https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/get-s3-file/${school_name}/${child_id}/${item}/${false}`;
+      const apiUrl = `${api_base_url}/get-s3-file/${school_name}/${child_id}/${item}/${false}`;
       
       const response = await fetch(apiUrl);
       if (!response.ok) {
@@ -229,7 +230,7 @@ const ParentDashboard = () => {
         return;
       }
 
-      const apiUrl = `https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/get-s3-file/${school_name}/${child_id}/${item}/${true}`;
+      const apiUrl = `${api_base_url}/get-s3-file/${school_name}/${child_id}/${item}/${true}`;
       
       const response = await fetch(apiUrl);
       if (!response.ok) {
@@ -378,8 +379,8 @@ const ParentDashboard = () => {
     if (editID === loggedInEmail || loggedInEmail === 'goddard01arjava@gmail.com' || editID === '') {
       try {
         const url = editID ?
-          `https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/admission_child_personal/parent_email/${editID}` :
-          `https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/admission_child_personal/parent_email/${loggedInEmail}`;
+          `${api_base_url}/admission_child_personal/parent_email/${school_id}/${editID}` :
+          `${api_base_url}/admission_child_personal/parent_email/${school_id}/${loggedInEmail}`;
 
         const response = await fetch(url);
         const data = await response.json();
@@ -437,7 +438,7 @@ const ParentDashboard = () => {
 
     try {
       const response = await fetch(
-        `https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/admission_child_personal/completed_form_status_year/${activeChildId}/${selectedYear}`
+        `${api_base_url}/admission_child_personal/completed_form_status_year/${school_id}/${activeChildId}/${selectedYear}`
       );
       const data = await response.json();
 
@@ -457,7 +458,7 @@ const ParentDashboard = () => {
 
     try {
       const incompleteResponse = await fetch(
-        `https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/admission_child_personal/incomplete_form_status/${activeChildId}`
+        `${api_base_url}/admission_child_personal/incomplete_form_status/${school_id}/${activeChildId}`
       );
 
       if (!incompleteResponse.ok) {
@@ -486,7 +487,7 @@ const ParentDashboard = () => {
 
     try {
       const response = await fetch(
-        `https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/child_all_form_details/fetch/${activeChildId}`
+        `${api_base_url}/child_all_form_details/${school_id}/${activeChildId}`
       );
 
       if (!response.ok) {

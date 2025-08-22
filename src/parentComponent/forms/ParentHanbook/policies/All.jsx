@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-
+import { api_base_url, school_id } from '@/utils/const';
 import MissionStatement from './MissionStatement';
 import TheGoddardSchool from './TheGoddardSchool';
 import GeneralEnrollmentProcedure from './GeneralEnrollmentProcedure';
@@ -29,7 +29,7 @@ const ParentHandbook = ({ selectedSubForm = null, initialFormData = null, childI
     }
 
     try {
-      const response = await fetch(`https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/parent_handbook/update/${childId}`, {
+      const response = await fetch(`${api_base_url}/parent_handbook/${school_id}/${childId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

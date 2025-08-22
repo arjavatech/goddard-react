@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Check, ChevronUp, ChevronDown, Clock } from 'lucide-react';
+import { api_base_url, school_id } from '@/utils/const';
 
 const ChildProfileDetails = ({ expandedSections, toggleSection, initialFormData, childId }) => {
     const [localFormData, setLocalFormData] = useState({
@@ -46,7 +47,7 @@ const ChildProfileDetails = ({ expandedSections, toggleSection, initialFormData,
         }
 
         try {
-            const response = await fetch(`https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/admission_segment/${childId}`, {
+            const response = await fetch(`${api_base_url}/admission_segment/${school_id}/${childId}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

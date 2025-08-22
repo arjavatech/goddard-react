@@ -1,4 +1,5 @@
 import CryptoJS from 'crypto-js';
+import { api_base_url, school_id } from './const';
 
 export const loginFunction = async (email, password) => {
   if (!email || !password) {
@@ -12,7 +13,7 @@ export const loginFunction = async (email, password) => {
   };
 
   try {
-    const response = await fetch('https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/sign_in/check', {
+    const response = await fetch(`${api_base_url}/sign_in/check/${school_id}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(loginData)

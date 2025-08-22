@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { api_base_url, school_id } from '@/utils/const';
 
 const AuthorizationForm = ({ selectedSubForm = null, initialFormData = null, childId = null }) => {
   
@@ -10,7 +11,7 @@ const AuthorizationForm = ({ selectedSubForm = null, initialFormData = null, chi
     }
 
     try {
-      const response = await fetch(`https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/authorization_form/update/${childId}`, {
+      const response = await fetch(`${api_base_url}/authorization_form/${school_id}/${childId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

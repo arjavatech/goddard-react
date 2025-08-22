@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { FormInput } from './InputComponent';
 import { UpIcon, DownIcon } from './Arrows';
-
+import { api_base_url, school_id } from '@/utils/const';
 
 
 const SocialBehavior = ({ openSection, setOpenSection, formData, handleInputChange, initialFormData, childId }) => {
@@ -55,7 +55,7 @@ const SocialBehavior = ({ openSection, setOpenSection, formData, handleInputChan
         }
 
         try {
-            const response = await fetch(`https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/admission_form/update/${childId}`, {
+            const response = await fetch(`${api_base_url}/admission_segment/${school_id}/${childId}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ChevronUp, ChevronDown } from 'lucide-react';
 import { RadioGroup, FormInput } from './InputComponent';
+import { api_base_url, school_id } from '@/utils/const';
 
 const yesNoFields = [
   {
@@ -120,7 +121,7 @@ const MedicalGeneral = ({ initialFormData = null, expandedSections, toggleSectio
     }
 
     try {
-      const response = await fetch(`https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/admission_segment/${childId}`, {
+      const response = await fetch(`${api_base_url}/admission_segment/${school_id}/${childId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

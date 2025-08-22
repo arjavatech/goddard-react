@@ -1,3 +1,4 @@
+import { api_base_url, school_id } from '@/utils/const';
 import { useState, useEffect } from 'react';
 
 const useFormStatus = (activeChildId) => {
@@ -31,9 +32,9 @@ const useFormStatus = (activeChildId) => {
 
       try {
         const [incompleteResponse, completedResponse, formDataResponse] = await Promise.all([
-          fetch(`https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/admission_child_personal/incomplete_form_status/${activeChildId}`),
-          fetch(`https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/admission_child_personal/completed_form_status_year/${activeChildId}/${year}`),
-          fetch(`https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/child_all_form_details/fetch/${activeChildId}`)
+          fetch(`${api_base_url}/admission_child_personal/incomplete_form_status/${school_id}/${activeChildId}`),
+          fetch(`${api_base_url}/admission_child_personal/completed_form_status_year/${school_id}/${activeChildId}/${year}`),
+          fetch(`${api_base_url}/child_all_form_details/${school_id}/${activeChildId}`)
         ]);
 
         if (!incompleteResponse.ok || !completedResponse.ok || !formDataResponse.ok) {

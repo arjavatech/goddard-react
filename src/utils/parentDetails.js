@@ -1,6 +1,6 @@
 export const resendParentInvite = async (parentEmail) => {
   try {
-    const response = await fetch(`https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/parent_invite_mail/resend/${parentEmail}`, {
+    const response = await fetch(`${api_base_url}/parent_invite_mail/resend/${parentEmail}`, {
       method: 'GET'
     });
     
@@ -16,7 +16,7 @@ export const resendParentInvite = async (parentEmail) => {
 
 export const updateParentStatus = async (parentId, status) => {
   try {
-    const response = await fetch(`https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/update_parent_info_status/${parentId}`, {
+    const response = await fetch(`${api_base_url}/update_parent_info_status/${parentId}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ status })
@@ -36,7 +36,7 @@ export const updateParentStatus = async (parentId, status) => {
 
 export const loadParentDetails = async (statusFilter = '') => {
   try {
-    const response = await fetch('https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/parent_invite_status/getall');
+    const response = await fetch(`${api_base_url}/parent_invite_status/getall/${school_id}`);
     const result = await response.json();
     
     if (!statusFilter) {
@@ -55,7 +55,7 @@ export const loadParentDetails = async (statusFilter = '') => {
 
 export const loadParentInfo = async () => {
   try {
-    const response = await fetch('https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/parent_info/getall');
+    const response = await fetch(`${api_base_url}/parent/${school_id}`);
     const result = await response.json();
     return result || [];
   } catch (error) {

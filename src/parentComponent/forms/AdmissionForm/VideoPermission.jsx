@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import CheckboxWithLabel from './CheckboxWithLabel';
+import { api_base_url, school_id } from '@/utils/const';
 
 export default function VideoPermission({ initialFormData = null, childId = null }) {
   const [agreePhotos, setAgreePhotos] = useState(false);
@@ -14,7 +15,7 @@ export default function VideoPermission({ initialFormData = null, childId = null
     }
 
     try {
-      const response = await fetch(`https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/admission_form/update/${childId}`, {
+      const response = await fetch(`${api_base_url}/admission_segment/${school_id}/${childId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

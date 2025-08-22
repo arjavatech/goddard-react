@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { FormInput } from './InputComponent';
 
 import { DownIcon,UpIcon } from '../../../../components/common/Arrows';
+import { api_base_url, school_id } from '@/utils/const';
 
 
 const ParentAgreement = ({ openSection, setOpenSection, formData, handleInputChange, childId }) => {
@@ -17,7 +18,7 @@ const ParentAgreement = ({ openSection, setOpenSection, formData, handleInputCha
         }
     
         try {
-          const response = await fetch(`https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/admission_segment/${childId}`, {
+          const response = await fetch(`${api_base_url}/admission_segment/${school_id}/${childId}`, {
             method: 'PUT',
             headers: {
               'Content-Type': 'application/json',

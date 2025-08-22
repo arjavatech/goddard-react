@@ -7,6 +7,7 @@ import FamilyHistory from './FamilyHistory';
 import SocialBehavior from './SocialBehavior';
 import EnvironmentalFactors from './EnvironmentalFactors';
 import Parent_Agreement from './Parent_Agreement'
+import { api_base_url, school_id } from '@/utils/const';
 
 
 const ChildandFamilyHistory = ({ initialFormData = null, childId = null }) => {
@@ -19,7 +20,7 @@ const ChildandFamilyHistory = ({ initialFormData = null, childId = null }) => {
         }
 
         try {
-            const response = await fetch(`https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/admission_form/update/${childId}`, {
+            const response = await fetch(`${api_base_url}/admission_segment/${school_id}/${childId}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
