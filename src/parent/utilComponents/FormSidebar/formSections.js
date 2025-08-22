@@ -39,9 +39,13 @@ const formSections = [
   // These names are processed from API response: value.replace(/\s+/g, "_").toLowerCase()
   const formNameMapping = {
     'admission_form': 'admission',
-    'enrollment_agreement': 'enrollment', 
+    'admission_forms': 'admission',
+    'enrollment_agreement': 'enrollment',
+    'enrollment_form': 'enrollment',
     'authorization': 'authorization',
-    'parent_handbook': 'parentHandbook'
+    'authorization_form': 'authorization',
+    'parent_handbook': 'parentHandbook',
+    'parenthandbook': 'parentHandbook'
   };
   
   export { formSections, formNameMapping };

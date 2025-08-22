@@ -83,7 +83,7 @@ const EnrollmentFormNew = ({ selectedSubForm = null, initialFormData = null, chi
     }
 
     try {
-      const response = await fetch(`${api_base_url}/enrollment_form/update/${school_id}/${childId}`, {
+      const response = await fetch(`${api_base_url}/enrollment_form/${school_id}/${childId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

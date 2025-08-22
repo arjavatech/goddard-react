@@ -34,6 +34,7 @@ const EmergencyContact = ({ openSection, setOpenSection, initialFormData, handle
                 console.log("emergencyContacts", emergencyContacts); 
                 setFormData(prevState => ({
                   child_id: childId,
+                  
                   emergencyContact1Name: emergencyContacts[0]?.child_emergency_contact_name || '',
                   emergencyContact1Relationship: emergencyContacts[0]?.child_emergency_contact_relationship || '',
                   emergencyContact1Phone: emergencyContacts[0]?.child_emergency_contact_telephone_number || '',
@@ -140,6 +141,7 @@ const EmergencyContact = ({ openSection, setOpenSection, initialFormData, handle
                     ];
                     const saveData = {
                         child_id: childId,
+                        school_id: school_id,
                         emergency_contact_info: emergency_contact_info
                     };
                     console.log(saveData); // Log the data being sent to the API for debugging purposes

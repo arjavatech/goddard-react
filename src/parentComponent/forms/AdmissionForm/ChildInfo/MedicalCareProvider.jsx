@@ -52,6 +52,7 @@ const MedicalCareProvider = ({ openSection, setOpenSection, initialFormData, cha
           if (initialFormData) {
             setFormData(prevState => ({
               child_id: childId,
+             
 child_care_provider_id: charProviderData ? charProviderData.child_care_provider_id : null,
 child_care_provider_name: charProviderData ? charProviderData.child_care_provider_name  : null,
 child_hospital_affiliation: charProviderData ? charProviderData.child_hospital_affiliation : null,
@@ -130,6 +131,7 @@ policy_number: initialFormData.policy_number,
             try {
                 const saveData = {
                     child_id: childId,
+                     school_id: school_id,
                     child_care_provider_info : {
                     child_care_provider_id: formData.child_care_provider_id,
                     child_care_provider_name: formData.child_care_provider_name,

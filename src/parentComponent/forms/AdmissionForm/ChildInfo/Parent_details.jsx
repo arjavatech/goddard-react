@@ -110,6 +110,7 @@ const Parent_details = ({ openSection, setOpenSection, initialFormData, handleIn
                 
                 const saveData ={ 
                     child_id: childId,
+                    school_id: school_id,
                     primary_parent_info : {
                     parent_id: initialFormData.parent_id,
                     parent_name: formData.parent_name,

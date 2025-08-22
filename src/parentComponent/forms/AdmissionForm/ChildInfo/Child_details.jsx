@@ -103,6 +103,7 @@ const handleSave = async () => {
             
             const saveData = {
                 child_id: childId,
+                school_id: school_id,
                 child_first_name: formData.child_first_name,
                 child_last_name: formData.child_last_name,
                 nick_name: formData.nick_name,

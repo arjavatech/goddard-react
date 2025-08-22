@@ -17,7 +17,11 @@ const FormSidebar = ({
 
   const availableFormSections = formSections.filter(section => {
     if (incompleteForms !== undefined && Array.isArray(incompleteForms)) {
-      return incompleteForms.some(apiFormName => formNameMapping[apiFormName] === section.key);
+      const isIncluded = incompleteForms.some(apiFormName => {
+        const mapped = formNameMapping[apiFormName];
+        return mapped === section.key;
+      });
+      return isIncluded;
     }
     return !formStatus[section.key]?.completed;
   });

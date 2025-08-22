@@ -469,9 +469,22 @@ const ParentDashboard = () => {
 
       const incompleteFormsList = [];
       if (incompleteResult?.InCompletedFormStatus) {
-        for (let value of Object.values(incompleteResult.InCompletedFormStatus)) {
-          incompleteFormsList.push(value.replace(/\s+/g, "_").toLowerCase());
-        }
+        // Convert the object to an array of all incomplete forms
+        // The API returns an object with keys like form1, form2, form3, etc.
+        const formValues = Object.values(incompleteResult.InCompletedFormStatus);
+        
+        // Process each form value
+        formValues.forEach(value => {
+          if (value && typeof value === 'string') {
+            // Convert the form name to the expected format
+            const processedFormName = value.replace(/\s+/g, "_").toLowerCase();
+            // Add to list if not already present
+            if (!incompleteFormsList.includes(processedFormName)) {
+              incompleteFormsList.push(processedFormName);
+            }
+          }
+        });
+        
       }
 
       setIncompleteForms(incompleteFormsList);

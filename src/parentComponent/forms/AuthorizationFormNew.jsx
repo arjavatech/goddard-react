@@ -219,7 +219,7 @@ const AuthorizationFormNew = ({ selectedSubForm = null, initialFormData = null, 
         const epochValue = new Date(formData.admin_sign_date_ach).getTime();
         saveData = {
           ...saveData,
-          bank_routing: formData.bank_routing,
+          bank_routing: formData.bank_routing.toString(),
           bank_account: formData.bank_account.toString(),
           driver_license: formData.driver_license,
           state: formData.state,

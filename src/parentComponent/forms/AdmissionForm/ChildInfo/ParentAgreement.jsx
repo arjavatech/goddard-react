@@ -62,6 +62,7 @@ const ParentAgreement = ({ openSection, setOpenSection, formData, handleInputCha
         try {
           const saveData = {
             child_id: childId,
+            school_id: school_id,
             obtaining_emergency_medical_care: obtainText,
             administration_first_aid_procedures: procedure,
             agree_all_above_information_is_correct: submitted ? 'on' : 'off'
