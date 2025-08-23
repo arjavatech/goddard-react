@@ -1,17 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { api_base_url, school_id, updated_by } from './utils/const';
 import { useAuth } from './hooks/useAuth';
 import HeaderNew from './components/HeaderNew';
 import { Card, CardContent, CardHeader, CardTitle } from './components/ui/card';
 import { Button } from './components/ui/button';
 import { Badge } from './components/ui/badge';
-import { 
-  Table, 
-  TableBody, 
-  TableCell, 
-  TableHead, 
-  TableHeader, 
-  TableRow 
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow
 } from './components/ui/table';
 import {
   Select,
@@ -29,22 +28,25 @@ import {
   DialogTitle,
 } from './components/ui/dialog';
 import { Skeleton } from './components/ui/skeleton';
+import { Input } from './components/ui/input';
 import { toast } from 'sonner';
-import { 
-  UserPlus, 
-  Mail, 
-  Plus, 
-  Download, 
-  Users, 
+import {
+  UserPlus,
+  Mail,
+  Plus,
+  Download,
+  Users,
   Filter,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  Search
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import AddChildModal from './components/AddChildModal';
 
 const ParentDetailsNew = () => {
   const [data, setData] = useState([]);
+  const [allData, setAllData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [sendingEmail, setSendingEmail] = useState(false);
   const [addingChild, setAddingChild] = useState(false);
@@ -54,6 +56,7 @@ const ParentDetailsNew = () => {
   const [showStatusUpdateModal, setShowStatusUpdateModal] = useState(false);
   const [selectedParentEmail, setSelectedParentEmail] = useState('');
   const [selectedParentForStatus, setSelectedParentForStatus] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
   const { isAuthenticated, signOut } = useAuth();
@@ -72,25 +75,29 @@ const ParentDetailsNew = () => {
   }, []);
 
   useEffect(() => {
-    // Calculate statistics
-    const activeCount = data.filter(item => item.status === 'Active').length;
-    const archivedCount = data.filter(item => item.status === 'Archive').length;
-    const invitedCount = data.filter(item => item.invite_status === 'Active').length;
-    
+    // Calculate statistics from complete dataset
+    const activeCount = allData.filter(item => item.status === 'Active').length;
+    const archivedCount = allData.filter(item => item.status === 'Archive').length;
+    const invitedCount = allData.filter(item => item.invite_status === 'Active').length;
+
     setStats({
-      total: data.length,
+      total: allData.length,
       active: activeCount,
       archived: archivedCount,
       invited: invitedCount
     });
-  }, [data]);
+  }, [allData]);
 
   const loadData = async (statusFilter = '') => {
     setLoading(true);
     try {
-      const response = await fetch(`${api_base_url}/parent_invite_status/getall/${school_id}`);
+      const response = await fetch('https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/parent_invite_status/getall');
       const result = await response.json();
-      
+
+      // Store complete dataset
+      const completeData = result.Active && result.Archive ? [...result.Active, ...result.Archive] : [];
+      setAllData(completeData);
+
       let responseData = [];
 
       if (!statusFilter) {
@@ -99,14 +106,15 @@ const ParentDetailsNew = () => {
         responseData = result.Archive || [];
       } else if (statusFilter === "Active") {
         responseData = result.Active || [];
-      } else if(statusFilter === "All") {
-        responseData = result.Active && result.Archive ? [...result.Active, ...result.Archive] : [];
+      } else if (statusFilter === "All") {
+        responseData = completeData;
       }
-      
+
       setData(responseData);
       setCurrentPage(1);
     } catch (error) {
       setData([]);
+      setAllData([]);
       toast.error('Failed to load parent data');
     } finally {
       setLoading(false);
@@ -121,10 +129,10 @@ const ParentDetailsNew = () => {
   const handleResendEmail = async (email) => {
     setSendingEmail(true);
     try {
-      const response = await fetch(`${api_base_url}/parent_invite_mail/resend/${school_id}/${email}/${updated_by}`, {
+      const response = await fetch(`https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/parent_invite_mail/resend/${email}`, {
         method: 'GET'
       });
-      
+
       if (response.ok) {
         toast.success('Email sent successfully!');
       } else {
@@ -140,7 +148,7 @@ const ParentDetailsNew = () => {
   const handleStatusUpdate = async (parentId, newStatus) => {
     setUpdatingStatus(true);
     try {
-      const response = await fetch(`${api_base_url}/update_parent_info_status/${school_id}/${parentId}`, {
+      const response = await fetch(`https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/update_parent_info_status/${parentId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status: newStatus })
@@ -169,7 +177,7 @@ const ParentDetailsNew = () => {
   const handleAddChild = async (childData) => {
     setAddingChild(true);
     try {
-      const response = await fetch(`${api_base_url}/child_info/create`, {
+      const response = await fetch('https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/child_info/create', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(childData)
@@ -197,7 +205,7 @@ const ParentDetailsNew = () => {
       'Date': row.time_stamp?.split(' ')[0] || '',
       'Status': row.status || ''
     }));
-    
+
     if (window.XLSX) {
       const ws = window.XLSX.utils.json_to_sheet(exportData);
       const wb = window.XLSX.utils.book_new();
@@ -209,7 +217,7 @@ const ParentDetailsNew = () => {
         Object.keys(exportData[0]).join(','),
         ...exportData.map(row => Object.values(row).join(','))
       ].join('\n');
-      
+
       const blob = new Blob([csvContent], { type: 'text/csv' });
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -221,11 +229,21 @@ const ParentDetailsNew = () => {
     toast.success('Export completed successfully!');
   };
 
-  // Pagination
-  const totalPages = Math.ceil(data.length / itemsPerPage);
+  // Search and Pagination
+  const filteredData = data.filter(item => {
+    const searchLower = searchTerm.toLowerCase();
+    return (
+      item.parent_name?.toLowerCase().includes(searchLower) ||
+      item.primary_email?.toLowerCase().includes(searchLower) ||
+      item.invite_email?.toLowerCase().includes(searchLower) ||
+      item.status?.toLowerCase().includes(searchLower)
+    );
+  });
+  
+  const totalPages = Math.ceil(filteredData.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  const currentData = data.slice(startIndex, endIndex);
+  const currentData = filteredData.slice(startIndex, endIndex);
 
   const goToPage = (page) => {
     setCurrentPage(page);
@@ -241,9 +259,9 @@ const ParentDetailsNew = () => {
 
   const getInviteStatusBadge = (inviteStatus) => {
     if (inviteStatus === 'Active') {
-      return <Badge variant="outline" className="text-green-600 border-green-600">Invited</Badge>;
+      return <Badge variant="outline" className="text-green-600 border-green-600">Signed</Badge>;
     } else {
-      return <Badge variant="outline" className="text-gray-600 border-gray-600">Not Invited</Badge>;
+      return <Badge variant="outline" className="text-gray-600 border-gray-600">Not Signed</Badge>;
     }
   };
 
@@ -254,7 +272,7 @@ const ParentDetailsNew = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       <HeaderNew onSignOut={signOut} sidebar={true} component="ParentDetails" />
-      
+
       <div className="container mx-auto pt-6 px-4 sm:px-6 lg:px-8 space-y-6">
         {/* Page Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -281,7 +299,7 @@ const ParentDetailsNew = () => {
               </div>
             </CardContent>
           </Card>
-          
+
           <Card>
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
@@ -314,7 +332,7 @@ const ParentDetailsNew = () => {
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Invitations Sent</p>
+                  <p className="text-sm font-medium text-gray-600">Signed Parents</p>
                   <p className="text-2xl font-bold text-blue-600">{stats.invited}</p>
                 </div>
                 <Mail className="w-8 h-8 text-blue-600" />
@@ -329,6 +347,15 @@ const ParentDetailsNew = () => {
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
               <CardTitle className="text-xl">Parent Management</CardTitle>
               <div className="flex flex-col sm:flex-row gap-3">
+                <div className="relative">
+                  <Search className="h-4 w-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                  <Input
+                    placeholder="Search by name, email, or status..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="pl-10 w-full sm:w-64"
+                  />
+                </div>
                 <Select value={selectedStatus} onValueChange={handleStatusChange}>
                   <SelectTrigger className="w-full sm:w-48">
                     <Filter className="w-4 h-4 mr-2" />
@@ -340,7 +367,7 @@ const ParentDetailsNew = () => {
                     <SelectItem value="Archive">Archived</SelectItem>
                   </SelectContent>
                 </Select>
-                
+
                 <Button variant="outline" onClick={handleExportToExcel}>
                   <Download className="w-4 h-4 mr-2" />
                   Export Excel
@@ -460,10 +487,10 @@ const ParentDetailsNew = () => {
             </div>
 
             {/* Pagination */}
-            {data.length > itemsPerPage && (
+            {filteredData.length > itemsPerPage && (
               <div className="flex items-center justify-between mt-4">
                 <div className="text-sm text-gray-600">
-                  Showing {startIndex + 1} to {Math.min(endIndex, data.length)} of {data.length} results
+                  Showing {startIndex + 1} to {Math.min(endIndex, filteredData.length)} of {filteredData.length} results
                 </div>
                 <div className="flex items-center gap-2">
                   <Button
@@ -474,7 +501,7 @@ const ParentDetailsNew = () => {
                   >
                     <ChevronLeft className="w-4 h-4" />
                   </Button>
-                  
+
                   {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
                     const page = i + 1;
                     return (
@@ -489,7 +516,7 @@ const ParentDetailsNew = () => {
                       </Button>
                     );
                   })}
-                  
+
                   <Button
                     variant="outline"
                     size="sm"
@@ -506,8 +533,8 @@ const ParentDetailsNew = () => {
       </div>
 
       {/* Add Child Modal */}
-      <AddChildModal 
-        isOpen={showAddChildModal} 
+      <AddChildModal
+        isOpen={showAddChildModal}
         onClose={() => setShowAddChildModal(false)}
         parentEmail={selectedParentEmail}
         onAddChild={handleAddChild}
@@ -526,7 +553,7 @@ const ParentDetailsNew = () => {
             <Button variant="outline" onClick={() => setShowStatusUpdateModal(false)}>
               Cancel
             </Button>
-            <Button 
+            <Button
               onClick={() => handleStatusUpdate(selectedParentForStatus?.id, selectedParentForStatus?.newStatus === '1' ? 'Active' : 'Archive')}
               disabled={updatingStatus}
               className="bg-[#002e4d] hover:bg-[#002e4d]/90"

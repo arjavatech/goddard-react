@@ -15,7 +15,7 @@ const ForgotPasswordModal = ({ isOpen, onClose }) => {
   const handleEmailChange = (e) => {
     const value = e.target.value;
     setEmail(value);
-    
+
     if (value === '') {
       setEmailError(false);
     } else {
@@ -25,7 +25,7 @@ const ForgotPasswordModal = ({ isOpen, onClose }) => {
 
   const handleSendEmail = async (e) => {
     e.preventDefault();
-    
+
     if (!email) {
       setEmailError(!validateEmail(e.target.value));
       return;
@@ -43,7 +43,7 @@ const ForgotPasswordModal = ({ isOpen, onClose }) => {
       });
 
       const result = await response.json();
-      
+
       if (result.message === "Password reset email sent successfully!") {
         showAlert('success', 'Email send successfully!');
         setEmail('');
@@ -79,7 +79,7 @@ const ForgotPasswordModal = ({ isOpen, onClose }) => {
 
   return (
     <>
-      <Alert 
+      <Alert
         show={alert.show}
         type={alert.type}
         message={alert.message}
@@ -88,9 +88,9 @@ const ForgotPasswordModal = ({ isOpen, onClose }) => {
 
       {/* Modal Backdrop */}
       <div className="fixed inset-0  flex items-center justify-center z-50 p-4" style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
-      <div className="bg-white rounded-lg w-full max-w-xs sm:max-w-sm md:max-w-md">
-                    <div className="flex justify-between items-center p-4 border-b border-b-gray-200">
-                     <h5 className="text-lg font-semibold text-gray-900">Reset Email</h5>
+        <div className="bg-white rounded-lg w-full max-w-xs sm:max-w-sm md:max-w-md">
+          <div className="flex justify-between items-center p-4 border-b border-b-gray-200">
+            <h5 className="text-lg font-semibold text-gray-900">Reset Email</h5>
             <button
               type="button"
               onClick={onClose}
@@ -99,7 +99,7 @@ const ForgotPasswordModal = ({ isOpen, onClose }) => {
               ×
             </button>
           </div>
-          
+
           {/* Modal Body */}
           <div className="p-4">
             <form onSubmit={handleSendEmail}>
@@ -122,7 +122,7 @@ const ForgotPasswordModal = ({ isOpen, onClose }) => {
                   </span>
                 )}
               </div>
-              
+
               <div className="w-full">
                 <button
                   type="submit"

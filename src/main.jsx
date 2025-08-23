@@ -12,6 +12,8 @@ import InviteParentNew from './InviteParentNew.jsx'
 import ParentDetailsNew from './ParentDetailsNew.jsx'
 import FormsRepositoryNew from './FormsRepositoryNew.jsx'
 
+import SignUp from './components/SignUp.jsx'
+
 
 
 ReactDOM.createRoot(document.getElementById('root')).render(
@@ -27,6 +29,8 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         <Route path="/forms-repository" element={<FormsRepositoryNew />} />
 
         <Route path="/login" element={<LoginNew></LoginNew>} />
+
+        <Route path="/signup" element={<SignUp></SignUp>} />
       </Routes>
       <Toaster />
     </Router>

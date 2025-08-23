@@ -710,7 +710,7 @@ const ParentDashboard = () => {
 
       {/* Welcome Section */}
       <div className="bg-white border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="text-center">
             <h1 className="text-3xl font-bold text-[#0F2D52] mb-2">
               Parent Dashboard
@@ -720,7 +720,7 @@ const ParentDashboard = () => {
             </p>
 
             {/* Statistics Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 max-w-6xl mx-auto">
               <Card>
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between">
