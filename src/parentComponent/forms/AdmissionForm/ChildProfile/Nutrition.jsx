@@ -100,6 +100,7 @@ const Nutrition = ({ expandedSections, toggleSection, formData, handleInputChang
     try {
       const saveData = {
         child_id: childId,
+        school_id: school_id,
         restricted_diet: localFormData.hasSpecialDiet === 'Yes' ? 1 : 2,
         restricted_diet_reason: localFormData.specialDietExplanation,
         eat_own: localFormData.eatsOnOwn === 'Yes' ? 1 : 2,

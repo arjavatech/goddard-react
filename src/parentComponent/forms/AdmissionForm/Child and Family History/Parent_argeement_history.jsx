@@ -119,6 +119,7 @@ const Parent_argeement = ({ openSection, setOpenSection, formData, handleInputCh
         try {
             const saveData = {
                 child_id: childId,
+                school_id: school_id,
                 allergies: localFormData.AllergiesFoodDrug,
                 asthma: localFormData.Asthma,
                 bleeding_problems: localFormData.BleedingProblems,

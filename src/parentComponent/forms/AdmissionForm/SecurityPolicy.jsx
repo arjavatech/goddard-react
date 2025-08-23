@@ -53,6 +53,7 @@ const SecurityPolicy = ({ initialFormData = null, childId = null }) => {
     try {
       const saveData = {
         child_id: childId,
+        school_id: school_id,
         security_release_policy_form: agreed ? 'on' : 'off'
       };
 

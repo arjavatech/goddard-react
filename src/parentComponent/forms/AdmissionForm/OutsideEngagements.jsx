@@ -47,6 +47,7 @@ export default function OutsideEngagements({initialFormData = null, childId }) {
       // Prepare the complete form data for API call including child_id
       const saveData = {
         child_id: childId,
+        school_id: school_id,
         parent_sign_outside_waiver: agreePhotos ? 'on' : 'off'
       };
 

@@ -55,6 +55,7 @@ export default function SocialMediaReleaseForm({initialFormData = null, childId}
       // Prepare the complete form data for API call including child_id
       const saveData = {
         child_id: childId,
+        school_id: school_id,
         approve_social_media_post: approval,
         printed_name_social_media_post: printedName,
         do_you_agree_this_social_media_post: agreed ? 'on' : 'off'

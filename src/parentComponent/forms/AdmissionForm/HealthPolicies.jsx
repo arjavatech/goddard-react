@@ -51,6 +51,7 @@ export default function HealthPolicies({initialFormData = null, childId = null})
         try {
             const saveData = {
                 child_id: childId,
+                school_id: school_id,
                 do_you_agree_this_health_policies: agreePhotos ? 'on' : 'off'
             };
 

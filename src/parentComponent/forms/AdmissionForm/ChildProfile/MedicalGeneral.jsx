@@ -169,6 +169,7 @@ const MedicalGeneral = ({ initialFormData = null, expandedSections, toggleSectio
     try {
       const saveData = {
         child_id: childId,
+        school_id: school_id,
         existing_illness_allergy: localFormData.hasExistingCondition === 'Yes' ? 1 : 2,
         explain_for_existing_illness_allergy: localFormData.existingConditionExplanation,
         functioning_at_age: localFormData.functioningAtAge === 'Yes' ? 1 : 2,

@@ -96,6 +96,7 @@ const ToiletLearning = ({ expandedSections, toggleSection, formData, handleInput
     try {
       const saveData = {
         child_id: childId,
+        school_id: school_id,
         rest_in_the_middle_day: localFormData.restsInMiddleOfDay === 'Yes' ? 1 : 2,
         reason_for_rest_in_the_middle_day: localFormData.restExplanation,
         rest_routine: localFormData.napRoutine,

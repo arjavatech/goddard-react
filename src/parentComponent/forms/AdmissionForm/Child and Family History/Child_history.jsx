@@ -42,6 +42,7 @@ const Child_history = ({ openSection, setOpenSection, formData, handleInputChang
 
         try {
             const response = await fetch(`${api_base_url}/admission_segment/${school_id}/${childId}`, {
+                method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
                 },
@@ -82,6 +83,7 @@ const Child_history = ({ openSection, setOpenSection, formData, handleInputChang
         try {
             const saveData = {
                 child_id: childId,
+                school_id: school_id,
                 physical_exam_last_date: localFormData.DateOfLastPhysicalExam,
                 dental_exam_last_date: localFormData.DateOfLastDentalExam
             };

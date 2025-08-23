@@ -91,6 +91,7 @@ const ChildProfileDetails = ({ expandedSections, toggleSection, initialFormData,
         try {
             const saveData = {
                 child_id: childId,
+                school_id: school_id,
                 important_fam_members: localFormData.important_fam_members,
                 about_family_celebrations: localFormData.about_family_celebrations,
                 childcare_before: localFormData.childcare_before === 'Yes' ? 1 : (localFormData.childcare_before === 'No' ? 2 : 2),

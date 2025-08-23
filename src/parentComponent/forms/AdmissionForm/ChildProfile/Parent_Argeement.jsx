@@ -73,6 +73,7 @@ const Parent_Argeement = ({ expandedSections, toggleSection, formData, handleInp
     try {
       const saveData = {
         child_id: childId,
+        school_id: school_id,
         do_you_agree_this: localFormData.agreementConfirmed ? 'on' : 'off'
       };
       console.log(saveData);

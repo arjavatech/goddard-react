@@ -57,6 +57,7 @@ const PickUpPassword = ({initialFormData = null, childId = null}) => {
     try {
       const saveData = {
         child_id: childId,
+        school_id: school_id,
         child_password_pick_up_password_form: password,
         do_you_agree_this_pick_up_password_form: agree ? 'on' : 'off'
       };

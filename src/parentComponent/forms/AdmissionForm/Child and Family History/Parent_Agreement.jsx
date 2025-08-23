@@ -73,6 +73,7 @@ const Parent_Agreement = ({ openSection, setOpenSection, formData, handleInputCh
         try {
             const saveData = {
                 child_id: childId,
+                school_id: school_id,
                 agree_all_above_info_is_correct: localFormData.agree_all_above_info_is_correct.includes('I agree all the above information is correct.') ? 'on' : ''
             };
             console.log(saveData);

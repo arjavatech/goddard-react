@@ -100,6 +100,7 @@ const SocialBehavior = ({ openSection, setOpenSection, formData, handleInputChan
         try {
             const saveData = {
                 child_id: childId,
+                school_id: school_id,
                 age_group_friends: localFormData.AgeGroupOfFriends,
                 neighborhood_friends: localFormData.NeighborhoodFriends,
                 relationship_with_mother: localFormData.RelationshipWithMother,

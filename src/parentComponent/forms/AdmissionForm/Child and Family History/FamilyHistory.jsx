@@ -98,6 +98,7 @@ const FamilyHistory = ({ openSection, setOpenSection, formData, handleInputChang
         try {
             const saveData = {
                 child_id: childId,
+                school_id: school_id,
                 family_history_allergies: localFormData.hobbies.includes('allergies') ? 'on' : '',
                 family_history_heart_problems: localFormData.HeartProblems.includes('HeartProblems') ? 'on' : '',
                 family_history_tuberculosis: localFormData.Tuberculosis.includes('Tuberculosis') ? 'on' : '',

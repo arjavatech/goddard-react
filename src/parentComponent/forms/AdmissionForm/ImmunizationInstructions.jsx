@@ -44,6 +44,7 @@ const ImmunizationInstructions = ({ initialFormData = null , childId}) => {
     try {
       const saveData = {
         child_id: childId,
+        school_id: school_id,
         do_you_agree_this_immunization_instructions: isChecked ? 'on' : 'off'
       };
 

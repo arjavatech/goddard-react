@@ -70,8 +70,9 @@ const ParentSign = ({ initialFormData = null, formData, childId, editID, onAlert
       // Prepare the complete form data for API call including child_id
       const saveData = {
         child_id: childId,
+        school_id: school_id,
         parent_sign_admission: formState.parent_sign_admission,
-        parent_sign_date_admission: new Date().toLocaleDateString('en-CA')
+        parent_sign_date_admission: Math.floor(Date.now())
       };
 
       // Call the API to save all form data

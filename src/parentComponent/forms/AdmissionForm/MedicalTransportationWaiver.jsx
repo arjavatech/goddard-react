@@ -58,6 +58,7 @@ export default function MedicalTransportationWaiver({initialFormData = null, chi
     try {
       const saveData = {
         child_id: childId,
+        school_id: school_id,
         med_technicians_med_transportation_waiver: studentName,
         medical_transportation_waiver: agreed ? 'on' : 'off'
       };

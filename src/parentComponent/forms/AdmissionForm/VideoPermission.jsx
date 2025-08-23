@@ -62,6 +62,7 @@ export default function VideoPermission({ initialFormData = null, childId = null
     try {
       const saveData = {
         child_id: childId,
+        school_id: school_id,
         photo_usage_photo_video_permission_form: photoUsageType,
         photo_permission_agree_group_photos_electronic: agreePhotos ? 'on' : 'off',
         do_you_agree_this_photo_video_permission_form: agreeGroup ? 'on' : 'off'

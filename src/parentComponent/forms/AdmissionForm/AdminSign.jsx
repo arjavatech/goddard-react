@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import FormInput from '../../../components/FormInput';
 import FormLabel from '../../../components/FormLabel';
+import { api_base_url, school_id } from '@/utils/const';
 
 const adminSign = ({ initialFormData = null, formData, childId, editID, onAlert }) => {
   const [formState, setFormState] = useState({
@@ -142,7 +143,9 @@ const adminSign = ({ initialFormData = null, formData, childId, editID, onAlert 
       
       // Set the required fields
       saveData['child_id'] = childId;
-      saveData['admin_sign_date_admission'] = epochValue;
+      saveData['school_id'] = school_id;
+      saveData['pointer'] = 22;
+      saveData['admin_sign_date_admission'] = Math.floor(new Date(formState.admin_sign_date_admission).getTime())
       saveData['admin_sign_admission'] = formState.admin_sign_admission;
 
 

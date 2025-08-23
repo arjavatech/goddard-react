@@ -90,6 +90,7 @@ const EnvironmentalFactors = ({ openSection, setOpenSection, formData, handleInp
         try {
             const saveData = {
                 child_id: childId,
+                school_id: school_id,
                 last_five_years_moved: localFormData.HowManyTimesHaveYouMovedInTheLastFiveYears,
                 things_used_at_home: localFormData.EducationalToysGamesBooksUsedAtHome,
                 hours_of_television_daily: localFormData.HowManyHoursOfTelevisionDaily,

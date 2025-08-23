@@ -117,6 +117,7 @@ const ChildandFamilyHistory = ({ initialFormData = null, childId = null }) => {
             // Map form data back to API field names
             const saveData = {
                 child_id: childId,
+                school_id: school_id,
                 // General Info
                 physical_exam_last_date: formData.DateOfLastPhysicalExam,
                 dental_exam_last_date: formData.DateOfLastDentalExam,

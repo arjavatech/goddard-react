@@ -110,6 +110,7 @@ const PregnancyAndInfantHistory = ({ openSection, setOpenSection, formData, hand
 
             const saveData = {
                 child_id: childId,
+                school_id: school_id,
                 illness_during_pregnancy: localFormData.IllnessDuringPregnancy,
                 condition_of_newborn: localFormData.ConditionOfNewborn,
                 duration_of_pregnancy: localFormData.DurationOfPregnancy,
