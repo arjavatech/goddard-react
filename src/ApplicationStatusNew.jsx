@@ -13,7 +13,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Skeleton } from '@/components/ui/skeleton';
 import HeaderNew from './components/HeaderNew';
 import { exportToCSVFromData } from './components/common/ExcelExport';
-import { school_id } from './utils/const';
+import { api_base_url, school_id } from './utils/const';
 
 const ApplicationStatusNew = () => {
   const { isAuthenticated, signOut } = useAuth();
@@ -72,7 +72,7 @@ const ApplicationStatusNew = () => {
 
   const loadForms = async () => {
     try {
-      const response = await fetch(`${api_base_url}/class_form_repositary/getall`);
+      const response = await fetch(`${api_base_url}/class_form_repository/${school_id}`);
       const data = await response.json();
       const formOptions = [
         { value: 'all', label: 'All Forms' },
