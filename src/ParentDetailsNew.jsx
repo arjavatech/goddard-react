@@ -5,13 +5,13 @@ import HeaderNew from './components/HeaderNew';
 import { Card, CardContent, CardHeader, CardTitle } from './components/ui/card';
 import { Button } from './components/ui/button';
 import { Badge } from './components/ui/badge';
-import { 
-  Table, 
-  TableBody, 
-  TableCell, 
-  TableHead, 
-  TableHeader, 
-  TableRow 
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow
 } from './components/ui/table';
 import {
   Select,
@@ -30,12 +30,12 @@ import {
 } from './components/ui/dialog';
 import { Skeleton } from './components/ui/skeleton';
 import { toast } from 'sonner';
-import { 
-  UserPlus, 
-  Mail, 
-  Plus, 
-  Download, 
-  Users, 
+import {
+  UserPlus,
+  Mail,
+  Plus,
+  Download,
+  Users,
   Filter,
   ChevronLeft,
   ChevronRight
@@ -53,11 +53,14 @@ const ParentDetailsNew = () => {
   const [showAddChildModal, setShowAddChildModal] = useState(false);
   const [showStatusUpdateModal, setShowStatusUpdateModal] = useState(false);
   const [selectedParentEmail, setSelectedParentEmail] = useState('');
+  const [selectedParentID, setSelectedParentID] = useState('');
   const [selectedParentForStatus, setSelectedParentForStatus] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
   const { isAuthenticated, signOut } = useAuth();
   const navigate = useNavigate();
+
+
 
   // Statistics
   const [stats, setStats] = useState({
@@ -76,7 +79,7 @@ const ParentDetailsNew = () => {
     const activeCount = data.filter(item => item.status === 'Active').length;
     const archivedCount = data.filter(item => item.status === 'Archive').length;
     const invitedCount = data.filter(item => item.invite_status === 'Active').length;
-    
+
     setStats({
       total: data.length,
       active: activeCount,
@@ -90,7 +93,7 @@ const ParentDetailsNew = () => {
     try {
       const response = await fetch(`${api_base_url}/parent_invite_status/getall/${school_id}`);
       const result = await response.json();
-      
+
       let responseData = [];
 
       if (!statusFilter) {
@@ -99,10 +102,10 @@ const ParentDetailsNew = () => {
         responseData = result.Archive || [];
       } else if (statusFilter === "Active") {
         responseData = result.Active || [];
-      } else if(statusFilter === "All") {
+      } else if (statusFilter === "All") {
         responseData = result.Active && result.Archive ? [...result.Active, ...result.Archive] : [];
       }
-      
+
       setData(responseData);
       setCurrentPage(1);
     } catch (error) {
@@ -124,7 +127,7 @@ const ParentDetailsNew = () => {
       const response = await fetch(`${api_base_url}/parent_invite_mail/resend/${school_id}/${email}/${updated_by}`, {
         method: 'GET'
       });
-      
+
       if (response.ok) {
         toast.success('Email sent successfully!');
       } else {
@@ -167,9 +170,12 @@ const ParentDetailsNew = () => {
   };
 
   const handleAddChild = async (childData) => {
+    childData.parent_id = String(childData.parent_id);
+
     setAddingChild(true);
     try {
-      const response = await fetch(`${api_base_url}/child_info/create`, {
+
+      const response = await fetch(`${api_base_url}/child_info/create/${school_id}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(childData)
@@ -197,7 +203,7 @@ const ParentDetailsNew = () => {
       'Date': row.time_stamp?.split(' ')[0] || '',
       'Status': row.status || ''
     }));
-    
+
     if (window.XLSX) {
       const ws = window.XLSX.utils.json_to_sheet(exportData);
       const wb = window.XLSX.utils.book_new();
@@ -209,7 +215,7 @@ const ParentDetailsNew = () => {
         Object.keys(exportData[0]).join(','),
         ...exportData.map(row => Object.values(row).join(','))
       ].join('\n');
-      
+
       const blob = new Blob([csvContent], { type: 'text/csv' });
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -226,6 +232,7 @@ const ParentDetailsNew = () => {
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   const currentData = data.slice(startIndex, endIndex);
+
 
   const goToPage = (page) => {
     setCurrentPage(page);
@@ -254,7 +261,7 @@ const ParentDetailsNew = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       <HeaderNew onSignOut={signOut} sidebar={true} component="ParentDetails" />
-      
+
       <div className="container mx-auto pt-6 px-4 sm:px-6 lg:px-8 space-y-6">
         {/* Page Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -281,7 +288,7 @@ const ParentDetailsNew = () => {
               </div>
             </CardContent>
           </Card>
-          
+
           <Card>
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
@@ -340,7 +347,7 @@ const ParentDetailsNew = () => {
                     <SelectItem value="Archive">Archived</SelectItem>
                   </SelectContent>
                 </Select>
-                
+
                 <Button variant="outline" onClick={handleExportToExcel}>
                   <Download className="w-4 h-4 mr-2" />
                   Export Excel
@@ -442,7 +449,9 @@ const ParentDetailsNew = () => {
                               variant={row.invite_status === 'Inactive' ? "secondary" : "default"}
                               onClick={() => {
                                 setSelectedParentEmail(row.invite_email);
+                                setSelectedParentID(row.parent_id)
                                 setShowAddChildModal(true);
+
                               }}
                               disabled={row.invite_status === 'Inactive' || addingChild}
                               className={row.invite_status === 'Inactive' ? "" : "bg-[#002e4d] hover:bg-[#002e4d]/90"}
@@ -474,7 +483,7 @@ const ParentDetailsNew = () => {
                   >
                     <ChevronLeft className="w-4 h-4" />
                   </Button>
-                  
+
                   {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
                     const page = i + 1;
                     return (
@@ -489,7 +498,7 @@ const ParentDetailsNew = () => {
                       </Button>
                     );
                   })}
-                  
+
                   <Button
                     variant="outline"
                     size="sm"
@@ -506,11 +515,12 @@ const ParentDetailsNew = () => {
       </div>
 
       {/* Add Child Modal */}
-      <AddChildModal 
-        isOpen={showAddChildModal} 
+      <AddChildModal
+        isOpen={showAddChildModal}
         onClose={() => setShowAddChildModal(false)}
         parentEmail={selectedParentEmail}
         onAddChild={handleAddChild}
+        Parent_id={selectedParentID}
       />
 
       {/* Status Update Confirmation Modal */}
@@ -526,7 +536,7 @@ const ParentDetailsNew = () => {
             <Button variant="outline" onClick={() => setShowStatusUpdateModal(false)}>
               Cancel
             </Button>
-            <Button 
+            <Button
               onClick={() => handleStatusUpdate(selectedParentForStatus?.id, selectedParentForStatus?.newStatus === '1' ? 'Active' : 'Archive')}
               disabled={updatingStatus}
               className="bg-[#002e4d] hover:bg-[#002e4d]/90"

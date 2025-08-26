@@ -4,12 +4,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { 
-  Download, 
-  FileText, 
-  Users, 
-  Clock, 
-  CheckCircle, 
+import {
+  Download,
+  FileText,
+  Users,
+  Clock,
+  CheckCircle,
   AlertCircle,
   BookOpen,
   CreditCard,
@@ -119,7 +119,7 @@ const ParentDashboard = () => {
     try {
       const school_name = "lynnwood";
       const child_id = activeChildId;
-      
+
       if (!child_id) {
         toast.error("Child ID not found. Please select a child and try again.");
         return;
@@ -127,7 +127,7 @@ const ParentDashboard = () => {
 
       const formMapping = {
         'authorization_form': 'authorization_form',
-        'parent_handbook': 'parent_handbook', 
+        'parent_handbook': 'parent_handbook',
         'enrollment_agreement': 'enrollment_agreement',
         'admission_form': 'admission_form'
       };
@@ -139,14 +139,14 @@ const ParentDashboard = () => {
       }
 
       const apiUrl = `${api_base_url}/get-s3-file/${school_name}/${child_id}/${item}/${false}`;
-      
+
       const response = await fetch(apiUrl);
       if (!response.ok) {
         throw new Error(`API error: ${response.status}`);
       }
-      
+
       const data = await response.json();
-      
+
       if (!data.s3_location || !data.filename) {
         toast.error("File not found. Please contact support.");
         return;
@@ -159,10 +159,10 @@ const ParentDashboard = () => {
             mode: 'cors',
             credentials: 'omit'
           });
-          
+
           if (response.ok) {
             const blob = await response.blob();
-            
+
             const link = document.createElement("a");
             link.href = window.URL.createObjectURL(blob);
             link.download = data.filename;
@@ -170,14 +170,14 @@ const ParentDashboard = () => {
             link.click();
             document.body.removeChild(link);
             window.URL.revokeObjectURL(link.href);
-            
+
             toast.success(`${formName} downloaded successfully`);
           } else {
             throw new Error(`Download failed: ${response.status} ${response.statusText}`);
           }
         } catch (downloadError) {
           console.error("Download error:", downloadError);
-          
+
           if (downloadError.name === 'TypeError' || downloadError.message.includes('CORS')) {
             try {
               window.location.href = data.download_url;
@@ -186,7 +186,7 @@ const ParentDashboard = () => {
               iframe.style.display = 'none';
               iframe.src = data.download_url;
               document.body.appendChild(iframe);
-              
+
               setTimeout(() => {
                 if (document.body.contains(iframe)) {
                   document.body.removeChild(iframe);
@@ -200,7 +200,7 @@ const ParentDashboard = () => {
       } else {
         toast.error("Download URL not available. Please contact support.");
       }
-      
+
     } catch (error) {
       console.error(`Error accessing ${formName}:`, error);
       toast.error(`Unable to access file: ${error.message}`);
@@ -368,9 +368,7 @@ const ParentDashboard = () => {
       setCompletedForms([]);
       setChildFormData(null);
 
-      loadIncompletedForms();
-      loadCompletedForms();
-      loadChildFormDetails();
+      loadAllFormData();
     }
   }, [activeChildId]);
 
@@ -378,29 +376,36 @@ const ParentDashboard = () => {
     const loggedInEmail = localStorage.getItem('logged_in_email');
     if (editID === loggedInEmail || loggedInEmail === 'goddard01arjava@gmail.com' || editID === '') {
       try {
-        const url = editID ?
-          `${api_base_url}/admission_child_personal/parent_email/${school_id}/${editID}` :
-          `${api_base_url}/admission_child_personal/parent_email/${school_id}/${loggedInEmail}`;
-
-        const response = await fetch(url);
+        const emailToUse = editID || loggedInEmail;
+        const response = await fetch(
+          `${api_base_url}/admission_child_personal/parent_email/${school_id}/${emailToUse}`
+        );
         const data = await response.json();
 
-        if (data.parent_name) {
-          localStorage.setItem('parent_name', data.parent_name);
-          setParentName(data.parent_name);
-        }
+        if (data.length > 0) {
+          const firstChild = data[0];
 
-        if (data.children) {
-          setChildren(data.children);
-          localStorage.setItem('number_of_children', data.children.length.toString());
+          if (firstChild.parent_name) {
+            localStorage.setItem('parent_name', firstChild.parent_name);
+            setParentName(firstChild.parent_name);
+          }
+
+          const childrenList = data.map(child => ({
+            child_id: child.child_id,
+            child_first_name: child.child_first_name,
+            child_last_name: child.child_last_name
+          }));
+
+          setChildren(childrenList);
+          localStorage.setItem('number_of_children', childrenList.length.toString());
 
           const putcallId = sessionStorage.getItem('putcallId');
           if (putcallId) {
-            setActiveChildId(putcallId);
-          } else if (data.children.length > 0) {
-            setActiveChildId(data.children[0].child_id);
-            localStorage.setItem('child_name', data.children[0].child_first_name);
-            localStorage.setItem('child_id', data.children[0].child_id);
+            setActiveChildId(parseInt(putcallId));
+          } else if (childrenList.length > 0) {
+            setActiveChildId(childrenList[0].child_id);
+            localStorage.setItem('child_name', childrenList[0].child_first_name);
+            localStorage.setItem('child_id', childrenList[0].child_id);
           }
         }
       } catch (error) {
@@ -423,96 +428,46 @@ const ParentDashboard = () => {
   };
 
   const toggleCompletedForms = () => {
-    if (showCompletedForms) {
-      loadCompletedForms();
-      return;
-    }
-
-    setShowCompletedForms(true);
+    setShowCompletedForms(!showCompletedForms);
     setCurrentSection(null);
-    loadCompletedForms();
-  };
-
-  const loadCompletedForms = async () => {
-    if (!activeChildId) return;
-
-    try {
-      const response = await fetch(
-        `${api_base_url}/admission_child_personal/completed_form_status_year/${school_id}/${activeChildId}/${selectedYear}`
-      );
-      const data = await response.json();
-
-      if (data.CompletedFormStatus) {
-        setCompletedForms(data.CompletedFormStatus);
-      } else {
-        setCompletedForms([]);
-      }
-    } catch (error) {
-      setCompletedForms([]);
-      toast.error('Failed to load completed forms');
+    if (!showCompletedForms) {
+      loadAllFormData();
     }
   };
 
-  const loadIncompletedForms = async () => {
+  const loadAllFormData = async () => {
     if (!activeChildId) return;
 
-    try {
-      const incompleteResponse = await fetch(
-        `${api_base_url}/admission_child_personal/incomplete_form_status/${school_id}/${activeChildId}`
-      );
-
-      if (!incompleteResponse.ok) {
-        throw new Error('Failed to fetch incomplete form data');
-      }
-
-      const incompleteResult = await incompleteResponse.json();
-
-      const incompleteFormsList = [];
-      if (incompleteResult?.InCompletedFormStatus) {
-        // Convert the object to an array of all incomplete forms
-        // The API returns an object with keys like form1, form2, form3, etc.
-        const formValues = Object.values(incompleteResult.InCompletedFormStatus);
-        
-        // Process each form value
-        formValues.forEach(value => {
-          if (value && typeof value === 'string') {
-            // Convert the form name to the expected format
-            const processedFormName = value.replace(/\s+/g, "_").toLowerCase();
-            // Add to list if not already present
-            if (!incompleteFormsList.includes(processedFormName)) {
-              incompleteFormsList.push(processedFormName);
-            }
-          }
-        });
-        
-      }
-
-      setIncompleteForms(incompleteFormsList);
-
-    } catch (error) {
-      setIncompleteForms([]);
-      toast.error('Failed to load incomplete forms');
-    }
-  };
-
-  const loadChildFormDetails = async () => {
-    if (!activeChildId) return;
+    const loggedInEmail = localStorage.getItem('logged_in_email');
+    const emailToUse = editID || loggedInEmail;
 
     try {
       const response = await fetch(
-        `${api_base_url}/child_all_form_details/${school_id}/${activeChildId}`
+        `${api_base_url}/admission_child_personal/parent_email/${school_id}/${emailToUse}`
       );
 
       if (!response.ok) {
-        throw new Error('Failed to fetch child form details');
+        throw new Error('Failed to fetch form data');
       }
 
-      const formData = await response.json();
-      setChildFormData(formData);
+      const data = await response.json();
+      const currentChildData = data.find(child => child.child_id === activeChildId);
+
+      if (currentChildData) {
+        setCompletedForms(currentChildData.CompletedFormStatus || []);
+        setIncompleteForms(currentChildData.InCompletedFormStatus || []);
+        setChildFormData(currentChildData.child_information || null);
+      } else {
+        setCompletedForms([]);
+        setIncompleteForms([]);
+        setChildFormData(null);
+      }
 
     } catch (error) {
+      setCompletedForms([]);
+      setIncompleteForms([]);
       setChildFormData(null);
-      toast.error('Failed to load child form details');
+      toast.error('Failed to load form data');
     }
   };
 
@@ -529,7 +484,7 @@ const ParentDashboard = () => {
     const totalForms = 4; // admission, authorization, handbook, enrollment
     const completedCount = completedForms.length;
     const incompleteCount = incompleteForms.length;
-    
+
     return {
       total: totalForms,
       completed: completedCount,
@@ -704,7 +659,7 @@ const ParentDashboard = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       <Toaster richColors position="top-center" />
-      
+
       {/* Navigation Bar */}
       <HeaderNew onSignOut={signOut} sidebar={false} />
 
@@ -783,11 +738,10 @@ const ParentDashboard = () => {
               <Button
                 key={child.child_id}
                 variant={activeChildId === child.child_id ? "secondary" : "ghost"}
-                className={`min-w-fit whitespace-nowrap ${
-                  activeChildId === child.child_id
+                className={`min-w-fit whitespace-nowrap ${activeChildId === child.child_id
                     ? 'bg-white text-[#0F2D52] hover:bg-gray-100'
                     : 'text-white hover:bg-[#0F2D52]/80'
-                }`}
+                  }`}
                 onClick={() => handleChildSelect(child.child_id)}
               >
                 <Users className="h-4 w-4 mr-2" />
@@ -896,7 +850,7 @@ const ParentDashboard = () => {
                                   onClick={(e) => {
                                     e.preventDefault();
                                     e.stopPropagation();
-                                    
+
                                     setIsDownloading(true);
                                     setTimeout(() => {
                                       switch (formName) {
@@ -930,7 +884,7 @@ const ParentDashboard = () => {
                                   onClick={(e) => {
                                     e.preventDefault();
                                     e.stopPropagation();
-                                    
+
                                     setIsDownloading(true);
                                     setTimeout(() => {
                                       switch (formName) {
@@ -994,8 +948,8 @@ const ParentDashboard = () => {
       {/* Hidden PDF Components */}
       <div className="hidden">
         <AdmissionSection ref={admissionRef} initialFormData={childFormData} />
-        <ParentHandbook 
-          ref={phbFormRef} 
+        <ParentHandbook
+          ref={phbFormRef}
           initialFormData={childFormData ? {
             welcome_goddard_agreement: childFormData.welcome_goddard_agreement || '',
             mission_statement_agreement: childFormData.mission_statement_agreement || '',
@@ -1020,10 +974,10 @@ const ParentDashboard = () => {
             admin_sign_handbook: childFormData.admin_sign_handbook || '',
             admin_sign_date_handbook: childFormData.admin_sign_date_handbook || '',
             handbook_pointer: childFormData.handbook_pointer || ''
-          } : null} 
+          } : null}
         />
-        <ACHForm 
-          ref={achFormRef} 
+        <ACHForm
+          ref={achFormRef}
           initialFormData={childFormData ? {
             bank_routing: childFormData.bank_routing || '',
             bank_account: childFormData.bank_account || '',
@@ -1034,10 +988,10 @@ const ParentDashboard = () => {
             parent_sign_date_ach: childFormData.parent_sign_date_ach || '',
             admin_sign_ach: childFormData.admin_sign_ach || '',
             admin_sign_date_ach: childFormData.admin_sign_date_ach || ''
-          } : null} 
+          } : null}
         />
-        <EnrollmentAgreementPDF 
-          ref={enrollFormRef} 
+        <EnrollmentAgreementPDF
+          ref={enrollFormRef}
           initialFormData={childFormData ? {
             point_one_field_one: childFormData.point_one_field_one || '',
             point_one_field_three: childFormData.point_one_field_three || '',
@@ -1069,7 +1023,7 @@ const ParentDashboard = () => {
             preferred_home_addr: childFormData.preferred_home_addr || '',
             parent_sign_enroll: childFormData.parent_sign_enroll || '',
             parent_sign_date_enroll: childFormData.parent_sign_date_enroll || ''
-          } : null} 
+          } : null}
         />
       </div>
     </div>

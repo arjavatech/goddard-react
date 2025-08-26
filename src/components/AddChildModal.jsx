@@ -2,12 +2,15 @@ import React, { useState, useEffect } from 'react';
 import Alert from './Alert';
 import { api_base_url, school_id } from '../utils/const';
 
-const AddChildModal = ({ isOpen, onClose, parentEmail, onAddChild }) => {
+const AddChildModal = ({ isOpen, onClose, parentEmail, onAddChild ,  Parent_id}) => {
+
+
   const [formData, setFormData] = useState({
     child_first_name: '',
     child_last_name: '',
     class_id: '',
-    parent_id: ''
+    parent_id: Parent_id || '',
+    school_id : ""
   });
   const [classrooms, setClassrooms] = useState([]);
   const [alert, setAlert] = useState({ show: false, type: '', message: '' });
@@ -21,12 +24,18 @@ const AddChildModal = ({ isOpen, onClose, parentEmail, onAddChild }) => {
   }, [isOpen, parentEmail]);
 
   useEffect(() => {
+    if (Parent_id) {
+      setFormData(prev => ({ ...prev, parent_id: Parent_id }));
+    }
+  }, [Parent_id]);
+
+  useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = 'unset';
       // Clear form data when modal closes
-      setFormData({ child_first_name: '', child_last_name: '', class_id: '', parent_id: '' });
+      setFormData({ child_first_name: '', child_last_name: '', class_id: '', parent_id: Parent_id || '', school_id:school_id  });
     }
     return () => {
       document.body.style.overflow = 'unset';
@@ -54,7 +63,11 @@ const AddChildModal = ({ isOpen, onClose, parentEmail, onAddChild }) => {
       const data = await response.json();
       const parent = data.find(p => p.parent_email === parentEmail);
       if (parent) {
-        setFormData(prev => ({ ...prev, parent_id: parent.parent_id }));
+        setFormData(prevData => ({
+          ...prevData,
+          parent_id: Parent_id || parent.parent_id
+        }));
+
       }
     } catch (error) {
       // console.error('Error loading parent info:', error);
@@ -67,25 +80,25 @@ const AddChildModal = ({ isOpen, onClose, parentEmail, onAddChild }) => {
   };
 
   const submitForm = async () => {
-    console.log(formData);
     const obj = { ...formData };
     
+
     // Validate each field individually
     if (!obj.child_first_name || obj.child_first_name.trim() === '') {
       showAlert('error', 'First Name is required!');
       return;
     }
-    
+
     if (!obj.child_last_name || obj.child_last_name.trim() === '') {
       showAlert('error', 'Last Name is required!');
       return;
     }
-    
+
     if (!obj.class_id || obj.class_id === '') {
       showAlert('error', 'Class Room selection is required!');
       return;
     }
-    
+
     if (!obj.parent_id || obj.parent_id === '') {
       showAlert('error', 'Parent information is required!');
       return;
@@ -121,7 +134,7 @@ const AddChildModal = ({ isOpen, onClose, parentEmail, onAddChild }) => {
     <>
       <Alert show={alert.show} type={alert.type} message={alert.message} onClose={closeAlert} />
 
-      <div 
+      <div
         className="fixed inset-0 bg-white/30 backdrop-blur-sm flex items-center justify-center z-50 px-4 overflow-hidden"
         onClick={(e) => {
           if (e.target === e.currentTarget) {
@@ -132,7 +145,7 @@ const AddChildModal = ({ isOpen, onClose, parentEmail, onAddChild }) => {
         onTouchMove={(e) => e.preventDefault()}
         style={{ touchAction: 'none' }}
       >
-        <div 
+        <div
           className="bg-white rounded-lg shadow-xl w-full max-w-2xl mx-auto"
           onClick={(e) => e.stopPropagation()}
         >
@@ -213,8 +226,10 @@ const AddChildModal = ({ isOpen, onClose, parentEmail, onAddChild }) => {
                   </label>
                   <input
                     type="text"
+                    name='parent_email'
                     value={parentEmail}
-                    disabled
+                    onChange={handleInputChange}
+                    disabled={loading}
                     required
                     className="w-full border border-gray-400 rounded-md p-2 bg-gray-100 cursor-not-allowed"
                   />

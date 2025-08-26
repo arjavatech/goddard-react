@@ -23,9 +23,18 @@ const AddChildModalNew = ({ isOpen, onClose, parentEmail, onAddChild }) => {
   const [loadingClassrooms, setLoadingClassrooms] = useState(false);
 
   useEffect(() => {
-    if (isOpen && parentEmail) {
+    if (isOpen) {
       loadClassrooms();
-      loadParentInfo();
+      if (parentEmail) {
+        loadParentInfo();
+      } else {
+        // Fallback to logged in email if parentEmail is not provided
+        const loggedInEmail = localStorage.getItem('logged_in_email');
+        if (loggedInEmail) {
+          console.log('Using logged in email as fallback:', loggedInEmail);
+          loadParentInfoByEmail(loggedInEmail);
+        }
+      }
     }
   }, [isOpen, parentEmail]);
 
@@ -55,17 +64,31 @@ const AddChildModalNew = ({ isOpen, onClose, parentEmail, onAddChild }) => {
     }
   };
 
-  const loadParentInfo = async () => {
+  const loadParentInfoByEmail = async (email) => {
     try {
-      const response = await fetch(`${api_base_url}/parent_info/${school_id}`);
+      console.log('Loading parent info for email:', email);
+      const response = await fetch(`${api_base_url}/child_info/`);
       const data = await response.json();
-      const parent = data.find(p => p.parent_email === parentEmail);
+      console.log('Parent info response:', data);
+      
+      const parent = data.find(p => p.parent_email === email || p.parent_email === `mailto:${email}`);
+      console.log('Found parent:', parent);
+      
       if (parent) {
         setFormData(prev => ({ ...prev, parent_id: parent.parent_id }));
+        console.log('Set parent_id:', parent.parent_id);
+      } else {
+        console.log('Parent not found for email:', email);
+        toast.error('Parent information not found. Please contact administrator.');
       }
     } catch (error) {
       console.error('Error loading parent info:', error);
+      toast.error('Failed to load parent information.');
     }
+  };
+
+  const loadParentInfo = async () => {
+    await loadParentInfoByEmail(parentEmail);
   };
 
   const handleInputChange = (name, value) => {
@@ -88,6 +111,7 @@ const AddChildModalNew = ({ isOpen, onClose, parentEmail, onAddChild }) => {
     }
     
     if (!formData.parent_id) {
+      console.log('Validation error: parent_id is missing:', formData);
       errors.push('Parent information is required');
     }
 
