@@ -14,21 +14,32 @@ build/
 
 # Environment variables
 .env
+.env.*
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
+!.env.example
+!.env.sample
 
 # Editor directories and files
 .vscode/
 !.vscode/extensions.json
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
 .idea/
+*.sublime-project
+*.sublime-workspace
 .DS_Store
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
+*.swp
+*.swo
+*~
 
 # Logs
 logs/
@@ -43,9 +54,16 @@ pids/
 # Coverage directory used by tools like istanbul
 coverage/
 *.lcov
-
-# nyc test coverage
 .nyc_output/
+
+# Testing
+cypress/videos/
+cypress/screenshots/
+cypress/downloads/
+test-results/
+playwright-report/
+playwright/.cache/
+e2e-results/
 
 # Dependency directories
 jspm_packages/
@@ -64,6 +82,14 @@ jspm_packages/
 
 # Yarn Integrity file
 .yarn-integrity
+.yarn/
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
 
 # parcel-bundler cache (https://parceljs.org/)
 .cache/
@@ -96,16 +122,104 @@ jspm_packages/
 # Temporary folders
 tmp/
 temp/
+*.tmp
+*.temp
 
 # OS generated files
 Thumbs.db
+Thumbs.db:encryptable
 ehthumbs.db
+ehthumbs_vista.db
+Desktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+*.lnk
 
 # AWS
 .aws/
+aws-exports.js
+amplify/
+#amplify-do-not-edit-begin
+amplify/\#current-cloud-backend
+amplify/.config/local-*
+amplify/logs
+amplify/mock-data
+amplify/mock-api-resources
+amplify/backend/amplify-meta.json
+amplify/backend/.temp
+build/
+dist/
+node_modules/
+aws-exports.js
+awsconfiguration.json
+amplifyconfiguration.json
+amplifyconfiguration.dart
+amplify-build-config.json
+amplify-gradle-config.json
+amplifytools.xcconfig
+.secret-*
+**.sample
+#amplify-do-not-edit-end
+
+# Security and keys
+*.pem
+*.key
+*.p12
+*.pfx
+*.jks
+*.keystore
+*.crt
+*.cer
+private/
+secrets/
+
+# Database
+*.sqlite
+*.sqlite3
+*.db
+*.db3
+
+# Backup files
+*.bak
+*.backup
+*.old
+*.orig
+
+# Wrangler/Cloudflare Workers
+.wrangler/
+.dev.vars
+wrangler.toml
+.cloudflare/
+
+# Package manager locks (optional - uncomment if you want to ignore lock files)
+# package-lock.json
+# yarn.lock
+# pnpm-lock.yaml
+
+# Storybook
+storybook-static/
+*.stories.js.map
+
+# Production files
+*.production.*
+!*.production.example.*
+
+# Stats files
+stats.json
+webpack-stats.json
+bundle-stats.json
 
 # Tailwind CSS
 *.css.map
+tailwind.output.css
 
 # Vite
 *.tsbuildinfo
+node_modules/.vite/
+.vite/
+vite.config.js.timestamp-*
+vite.config.ts.timestamp-*
