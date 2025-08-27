@@ -15,6 +15,7 @@ import Auth0ProviderWithHistory from './auth/Auth0Provider.jsx'
 import PrivateRoute from './components/PrivateRoute.jsx'
 
 import SignUp from './components/SignUp.jsx'
+import SelectSchool from './SelectSchool.jsx'
 
 
 
@@ -23,7 +24,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     <Router>
       <Auth0ProviderWithHistory>
         <Routes>
-          <Route path="/" element={<Login />} />
+          <Route path="/" element={<SelectSchool />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<SignUp />} />
           
@@ -58,6 +59,11 @@ ReactDOM.createRoot(document.getElementById('root')).render(
           <Route path="/forms-repository" element={
             <PrivateRoute requireAdmin={true}>
               <FormsRepositoryNew />
+            </PrivateRoute>
+          } />
+           <Route path="/" element={
+            <PrivateRoute requireAdmin={true}>
+              <SelectSchool />
             </PrivateRoute>
           } />
         </Routes>

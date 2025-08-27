@@ -134,7 +134,8 @@ const PrivateRoute = ({ children, requireAdmin = false, requireParent = false })
     return <Navigate to="/login" replace />;
   }
 
-  if (requireParent && permissions?.isParent !== true) {
+  // Admin users can access parent routes
+  if (requireParent && permissions?.isParent !== true && permissions?.isAdmin !== true) {
     alert('Access denied - Parent privileges required');
     return <Navigate to="/login" replace />;
   }
