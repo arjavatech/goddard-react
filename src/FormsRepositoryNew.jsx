@@ -133,7 +133,7 @@ const FormsRepositoryNew = () => {
   const loadClassroomData = async () => {
     setIsLoadingClassrooms(true);
     try {
-      const response = await fetch('https://hfj4ckons6.execute-api.ap-south-1.amazonaws.com/dev/child_count_with_class_name/1');
+      const response = await fetch(`${api_base_url}/child_count_with_class_name/${school_id}`);
       const data = await response.json();
       setClassrooms(data || []);
 
@@ -160,7 +160,7 @@ const FormsRepositoryNew = () => {
   // new api
   const loadClassroomForms = async () => {
     try {
-      const response = await fetch('https://hfj4ckons6.execute-api.ap-south-1.amazonaws.com/dev/child_count_with_class_name/1');
+      const response = await fetch(`${api_base_url}/child_count_with_class_name/${school_id}`);
       const data = await response.json();
       const formsMap = {};
       data.forEach(classroom => {
@@ -214,7 +214,7 @@ const FormsRepositoryNew = () => {
   // Load available forms for dropdown
   const loadAvailableForms = async () => {
     try {
-      const response = await fetch('https://hfj4ckons6.execute-api.ap-south-1.amazonaws.com/dev/form/school/1');
+      const response = await fetch(`${api_base_url}/form/school/${school_id}`);
       const data = await response.json();
 
       const formsList = [];
@@ -241,7 +241,7 @@ const FormsRepositoryNew = () => {
   // new api
   const loadStudentForms = async () => {
     try {
-      const response = await fetch('https://hfj4ckons6.execute-api.ap-south-1.amazonaws.com/dev/admission_child_personal/all_child_status/1');
+      const response = await fetch(`${api_base_url}/admission_child_personal/all_child_status/${school_id}`);
       const data = await response.json();
 
       const studentsList = [];
@@ -273,7 +273,7 @@ const FormsRepositoryNew = () => {
   // Load student dropdown forms
   const loadStudentDropdownForms = async () => {
     try {
-      const response = await fetch('https://hfj4ckons6.execute-api.ap-south-1.amazonaws.com/dev/admission_child_personal/all_child_status/1');
+      const response = await fetch(`${api_base_url}/admission_child_personal/all_child_status/${school_id}`);
       const data = await response.json();
 
       const formsSet = new Set();
@@ -346,11 +346,11 @@ const FormsRepositoryNew = () => {
         const selectedForm = availableForms.find(f => f.name === formName);
         console.log('Selected form:', selectedForm);
         if (selectedForm) {
-          const response = await fetch('https://hfj4ckons6.execute-api.ap-south-1.amazonaws.com/dev/class_form_repository', {
+          const response = await fetch(`${api_base_url}/class_form_repository`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-              school_id: 1,
+              school_id: school_id,
               class_id: editingClassroom.class_id,
               form_id: selectedForm.id,
               created_by: "system",
@@ -458,12 +458,12 @@ const FormsRepositoryNew = () => {
     };
 
     try {
-      const response = await fetch('https://hfj4ckons6.execute-api.ap-south-1.amazonaws.com/dev/form', {
+      const response = await fetch(`${api_base_url}/form`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           form_id: editingForm.id,
-          school_id: 1,
+          school_id: school_id,
           form_name: editFormName.trim(),
           state: statusToState[editFormChangeType] || 0,
           created_by: "system",
@@ -508,7 +508,7 @@ const FormsRepositoryNew = () => {
   const handleDeleteStudentForm = async (student, form) => {
     try {
       const formId = availableForms.find(f => f.name === form)?.id || 0;
-      const response = await fetch(`https://hfj4ckons6.execute-api.ap-south-1.amazonaws.com/dev/student-form-repository/1/${student.id}/${formId}/Admin`, {
+      const response = await fetch(`${api_base_url}/student-form-repository/1/${student.id}/${formId}/Admin`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' }
       });
@@ -1022,11 +1022,11 @@ const FormsRepositoryNew = () => {
 
                                   if (!updatedForms[studentIndex].forms.includes(e.target.value)) {
                                     try {
-                                      const response = await fetch('https://hfj4ckons6.execute-api.ap-south-1.amazonaws.com/dev/student-form-repository', {
+                                      const response = await fetch(`${api_base_url}/student-form-repository`, {
                                         method: 'POST',
                                         headers: { 'Content-Type': 'application/json' },
                                         body: JSON.stringify({
-                                          school_id: 1,
+                                          school_id: school_id,
                                           child_id: student.id,
                                           form_id: availableForms.find(f => f.name === e.target.value)?.id || 0,
                                           form_status: 0,
