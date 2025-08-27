@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import { useAuth0 } from '@auth0/auth0-react';
-import {  school_id } from '../utils/const';
+import { api_base_url,  school_id } from '../utils/const';
 
-const api_base_url = 'http://localhost:8000'
 
 const PrivateRoute = ({ children, requireAdmin = false, requireParent = false }) => {
   const { isAuthenticated, isLoading, user, logout } = useAuth0();

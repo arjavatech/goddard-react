@@ -2,9 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth0 } from '@auth0/auth0-react';
 import Header from './Header';
-import { school_id } from '../utils/const';
+import { api_base_url, school_id } from '../utils/const';
 
-const api_base_url = 'http://localhost:8000'
 
 const Login = () => {
   const { loginWithPopup, isAuthenticated, isLoading, user, logout } = useAuth0();

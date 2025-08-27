@@ -2,9 +2,8 @@ import React, { useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth0 } from '@auth0/auth0-react';
 import { toast } from 'sonner';
-import { school_id } from '../utils/const';
+import {api_base_url, school_id } from '../utils/const';
 
-const api_base_url = 'http://localhost:8000'
 
 import Header from './Header';
 
