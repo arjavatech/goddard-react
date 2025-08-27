@@ -77,7 +77,7 @@ const InviteParentNew = () => {
       const classroomOptions = data
         .filter(item => item.class_name && item.class_name !== undefined)
         .map(item => ({
-          id: item.class_id,
+          id: String(item.class_id), // Ensure id is a string
           name: item.class_name,
           selected: item.class_name === "Unassign"
         }));
@@ -253,7 +253,7 @@ const InviteParentNew = () => {
                           <FormLabel>Classroom</FormLabel>
                           <Select 
                             onValueChange={field.onChange} 
-                            defaultValue={field.value}
+                            value={field.value}
                             disabled={isLoadingClassrooms}
                           >
                             <FormControl>
@@ -271,10 +271,7 @@ const InviteParentNew = () => {
                               ) : (
                                 classrooms.map((classroom) => (
                                   <SelectItem key={classroom.id} value={classroom.id}>
-                                    <div className="flex items-center gap-2">
-                                      <BookOpen className="w-4 h-4" />
-                                      {classroom.name}
-                                    </div>
+                                    {classroom.name}
                                   </SelectItem>
                                 ))
                               )}
