@@ -4,13 +4,15 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import AdminDashboardNew from './AdminDashboardNew.jsx'
 import ApplicationStatusNew from './ApplicationStatusNew.jsx'
 import './index.css'
-import LoginNew from './components/LoginNew.jsx'
+import Login from './components/Login.jsx'
 import { Toaster } from '@/components/ui/sonner'
 // import ParentDashboard from './parent/Components/ParentDashboard.jsx'
 import ParentDashboard from './parentComponent/ParentDashboardNew.jsx'
 import InviteParentNew from './InviteParentNew.jsx'
 import ParentDetailsNew from './ParentDetailsNew.jsx'
 import FormsRepositoryNew from './FormsRepositoryNew.jsx'
+import Auth0ProviderWithHistory from './auth/Auth0Provider.jsx'
+import PrivateRoute from './components/PrivateRoute.jsx'
 
 import SignUp from './components/SignUp.jsx'
 
@@ -19,20 +21,48 @@ import SignUp from './components/SignUp.jsx'
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <Router>
-      <Routes>
-        <Route path="/" element={<LoginNew />} />
-        <Route path="/parent-dashboard" element={<ParentDashboard />} />
-        <Route path="/admin-dashboard" element={<AdminDashboardNew />} />
-        <Route path="/application-status" element={<ApplicationStatusNew />} />
-        <Route path="/parent-details" element={<ParentDetailsNew></ParentDetailsNew>} />
-        <Route path="/invite-parent" element={<InviteParentNew></InviteParentNew>} />
-        <Route path="/forms-repository" element={<FormsRepositoryNew />} />
-
-        <Route path="/login" element={<LoginNew></LoginNew>} />
-
-        <Route path="/signup" element={<SignUp></SignUp>} />
-      </Routes>
-      <Toaster />
+      <Auth0ProviderWithHistory>
+        <Routes>
+          <Route path="/" element={<Login />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<SignUp />} />
+          
+          {/* Protected Parent Routes */}
+          <Route path="/parent-dashboard" element={
+            <PrivateRoute requireParent={true}>
+              <ParentDashboard />
+            </PrivateRoute>
+          } />
+          
+          {/* Protected Admin Routes */}
+          <Route path="/admin-dashboard" element={
+            <PrivateRoute requireAdmin={true}>
+              <AdminDashboardNew />
+            </PrivateRoute>
+          } />
+          <Route path="/application-status" element={
+            <PrivateRoute requireAdmin={true}>
+              <ApplicationStatusNew />
+            </PrivateRoute>
+          } />
+          <Route path="/parent-details" element={
+            <PrivateRoute requireAdmin={true}>
+              <ParentDetailsNew />
+            </PrivateRoute>
+          } />
+          <Route path="/invite-parent" element={
+            <PrivateRoute requireAdmin={true}>
+              <InviteParentNew />
+            </PrivateRoute>
+          } />
+          <Route path="/forms-repository" element={
+            <PrivateRoute requireAdmin={true}>
+              <FormsRepositoryNew />
+            </PrivateRoute>
+          } />
+        </Routes>
+        <Toaster />
+      </Auth0ProviderWithHistory>
     </Router>
   </React.StrictMode>,
 )

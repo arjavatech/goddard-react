@@ -1,24 +1,24 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth0 } from '@auth0/auth0-react';
+import { api_base_url, school_id } from '../utils/const';
 
 export const useAuth = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const { isAuthenticated, isLoading, logout, user } = useAuth0();
   const navigate = useNavigate();
 
   const checkAuth = () => {
-    const loggedInEmail = localStorage.getItem('logged_in_email');
-    if (!loggedInEmail) {
-      const isSignout = localStorage.getItem('isSignout');
-      localStorage.removeItem('isSignout');
-      // if (isSignout !== 'yes') {
-      //   alert('Please login');
-      // }
+    // With Auth0, we check the isAuthenticated flag
+    if (!isAuthenticated && !isLoading) {
       return false;
     }
     return true;
   };
 
   const signOut = () => {
+    console.log('Signing out user...');
+    
+    // Clear local storage
     localStorage.clear();
     localStorage.setItem('isSignout', 'yes');
     
@@ -34,17 +34,59 @@ export const useAuth = () => {
       document.cookie = cookieName + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
     }
     
-    window.location.reload();
+    // Since Auth0 logout is having issues, let's do a simpler approach
+    // Clear everything and redirect manually without using Auth0 logout
+    console.log('Performing manual logout...');
+    
+    // Redirect to login page
+    window.location.href = '/login';
+    
+    // Optional: Try Auth0 logout in background (non-blocking)
+    setTimeout(() => {
+      try {
+        logout({ 
+          logoutParams: { 
+            returnTo: window.location.origin
+          } 
+        });
+      } catch (error) {
+        console.log('Auth0 logout failed, but manual logout completed');
+      }
+    }, 100);
+  };
+
+  const checkUserPermissions = async () => {
+    if (!user?.email) return null;
+    
+    try {
+      const response = await fetch(`${api_base_url}/sign_in/${school_id}/${encodeURIComponent(user.email)}`);
+      
+      if (response.ok) {
+        const data = await response.json();
+        return data;
+      }
+      return null;
+    } catch (error) {
+      console.error('Error checking permissions:', error);
+      return null;
+    }
   };
 
   useEffect(() => {
-    if (checkAuth()) {
-      setIsAuthenticated(true);
-      document.body.style.visibility = 'visible';
-    } else {
-      navigate('/login');
+    if (!isLoading) {
+      if (checkAuth()) {
+        document.body.style.visibility = 'visible';
+      } else {
+        navigate('/login');
+      }
     }
-  }, [navigate]);
+  }, [isAuthenticated, isLoading, navigate]);
 
-  return { isAuthenticated, signOut };
+  return { 
+    isAuthenticated, 
+    isLoading,
+    signOut,
+    user,
+    checkUserPermissions
+  };
 };
