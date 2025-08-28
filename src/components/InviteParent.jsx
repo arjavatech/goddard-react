@@ -2,9 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../hooks/useAuth';
 import Header from './Header';
 import { api_base_url, school_id } from '@/utils/const';
+import { useAuth0 } from '@auth0/auth0-react';
+import { getAuthHeaders } from '../utils/auth';
 
 const InviteParent = () => {
   const { isAuthenticated, signOut } = useAuth();
+  const { getAccessTokenSilently } = useAuth0();
   const [formData, setFormData] = useState({
     child_fname: '',
     child_lname: '',
@@ -36,7 +39,10 @@ const InviteParent = () => {
 
   const loadClassroomData = async () => {
     try {
-      const response = await fetch(`${api_base_url}/class_details/${school_id}`);
+      const headers = await getAuthHeaders(getAccessTokenSilently);
+      const response = await fetch(`${api_base_url}/class_details/${school_id}`, {
+        headers
+      });
       const data = await response.json();
       const classroomOptions = data.filter(item => item.class_name && item.class_name !== undefined)
         .map(item => ({
@@ -85,9 +91,10 @@ const InviteParent = () => {
 
     setLoading(true);
     try {
+      const headers = await getAuthHeaders(getAccessTokenSilently);
       const response = await fetch(`${api_base_url}/parent_invite_with_mail_trigger/${school_id}`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers,
         body: JSON.stringify(formData)
       });
 

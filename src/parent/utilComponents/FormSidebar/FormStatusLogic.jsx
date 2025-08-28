@@ -1,7 +1,10 @@
 import { api_base_url, school_id } from '@/utils/const';
 import { useState, useEffect } from 'react';
+import { useAuth0 } from '@auth0/auth0-react';
+import { getAuthHeaders } from '@/utils/auth';
 
 const useFormStatus = (activeChildId) => {
+  const { getAccessTokenSilently } = useAuth0();
   const [openSection, setOpenSection] = useState("enrollment");
   const [formStatus, setFormStatus] = useState({});
   const [loading, setLoading] = useState(false);
@@ -33,7 +36,10 @@ const useFormStatus = (activeChildId) => {
         // Get parent email from localStorage or context - you'll need to provide this
         const parentEmail = localStorage.getItem('parentEmail') || 'pitchumaniece@gmail.com'; // Replace with actual parent email
         
-        const response = await fetch(`${api_base_url}/admission_child_personal/parent_email/${school_id}/${parentEmail}`);
+        const headers = await getAuthHeaders(getAccessTokenSilently);
+        const response = await fetch(`${api_base_url}/admission_child_personal/parent_email/${school_id}/${parentEmail}`, {
+          headers
+        });
 
         if (!response.ok) {
           throw new Error('Failed to fetch form data');

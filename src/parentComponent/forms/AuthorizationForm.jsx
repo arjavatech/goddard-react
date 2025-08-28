@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { api_base_url, school_id } from '@/utils/const';
+import { useAuth0 } from '@auth0/auth0-react';
+import { getAuthHeaders } from '../../utils/auth';
 
 const AuthorizationForm = ({ selectedSubForm = null, initialFormData = null, childId = null }) => {
+  const { getAccessTokenSilently } = useAuth0();
   
   // API function to update authorization form data
   const updateAuthorizationData = async (fieldData) => {
@@ -11,11 +14,10 @@ const AuthorizationForm = ({ selectedSubForm = null, initialFormData = null, chi
     }
 
     try {
+      const headers = await getAuthHeaders(getAccessTokenSilently);
       const response = await fetch(`${api_base_url}/authorization_form/${school_id}/${childId}`, {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers,
         body: JSON.stringify(fieldData)
       });
 

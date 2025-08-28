@@ -2,9 +2,11 @@ import React, { useState, useEffect } from 'react';
 import DataTable from './DataTable';
 import { api_base_url, school_id } from '@/utils/const';
 import { exportToExcel, exportToCSVFromData } from './common/ExcelExport';
-import { school_id } from '@/utils/const';
+import { useAuth0 } from '@auth0/auth0-react';
+import { getAuthHeaders } from '../utils/auth';
 
 const ClassroomRepo = ({ onAlert }) => {
+  const { getAccessTokenSilently } = useAuth0();
   const [classroomName, setClassroomName] = useState('');
   const [classroomData, setClassroomData] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -22,7 +24,10 @@ const ClassroomRepo = ({ onAlert }) => {
   const loadClassroomData = async () => {
     setLoading(true);
     try {
-      const response = await fetch(`${api_base_url}/child_count_with_class_name/${school_id}`);
+      const headers = await getAuthHeaders(getAccessTokenSilently);
+      const response = await fetch(`${api_base_url}/child_count_with_class_name/${school_id}`, {
+        headers
+      });
       const data = await response.json();
       setClassroomData(data);
     } catch (error) {
@@ -45,10 +50,11 @@ const ClassroomRepo = ({ onAlert }) => {
       const url = `${api_base_url}/class_details/${school_id}`;
       const method = 'POST';
       const body = JSON.stringify({ class_name: classroomName });
+      const headers = await getAuthHeaders(getAccessTokenSilently);
 
       const response = await fetch(url, {
         method,
-        headers: { 'Content-Type': 'application/json' },
+        headers,
         body
       });
 
@@ -103,9 +109,10 @@ const ClassroomRepo = ({ onAlert }) => {
     
     try {
       const url = `${api_base_url}/class_details/${school_id}/${classroomToUpdate.class_id}`;
+      const headers = await getAuthHeaders(getAccessTokenSilently);
       const response = await fetch(url, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers,
         body: JSON.stringify({ class_name: nameToUpdate, class_id: classroomToUpdate.class_id })
       });
 
@@ -141,9 +148,10 @@ const ClassroomRepo = ({ onAlert }) => {
     document.body.style.overflow = 'unset';
 
     try {
+      const headers = await getAuthHeaders(getAccessTokenSilently);
       const response = await fetch(`${api_base_url}/class_details/${school_id}/${classroomToDelete.class_id}`, {
         method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
+        headers,
         body: JSON.stringify({ class_id: classroomToDelete.class_id })
       });
 

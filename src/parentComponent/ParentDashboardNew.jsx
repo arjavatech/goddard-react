@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { api_base_url, school_id } from '@/utils/const';
+import { useAuth0 } from '@auth0/auth0-react';
+import { getAuthHeaders } from '../utils/auth';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -35,6 +37,7 @@ import EnrollmentAgreementPDF from './pdf_forms/EnrollmentAgreement';
 
 const ParentDashboard = () => {
   const { isAuthenticated, signOut } = useAuth();
+  const { getAccessTokenSilently } = useAuth0();
   const [children, setChildren] = useState([]);
   const [activeChildId, setActiveChildId] = useState(null);
   const [parentName, setParentName] = useState('');
@@ -140,7 +143,8 @@ const ParentDashboard = () => {
 
       const apiUrl = `${api_base_url}/get-s3-file/${school_name}/${child_id}/${item}/${false}`;
 
-      const response = await fetch(apiUrl);
+      const headers = await getAuthHeaders(getAccessTokenSilently);
+      const response = await fetch(apiUrl, { headers });
       if (!response.ok) {
         throw new Error(`API error: ${response.status}`);
       }
@@ -232,7 +236,8 @@ const ParentDashboard = () => {
 
       const apiUrl = `${api_base_url}/get-s3-file/${school_name}/${child_id}/${item}/${true}`;
       
-      const response = await fetch(apiUrl);
+      const headers = await getAuthHeaders(getAccessTokenSilently);
+      const response = await fetch(apiUrl, { headers });
       if (!response.ok) {
         throw new Error(`API error: ${response.status}`);
       }
@@ -377,8 +382,10 @@ const ParentDashboard = () => {
     if (editID === loggedInEmail || loggedInEmail === 'goddard01arjava@gmail.com' || editID === '') {
       try {
         const emailToUse = editID || loggedInEmail;
+        const headers = await getAuthHeaders(getAccessTokenSilently);
         const response = await fetch(
-          `${api_base_url}/admission_child_personal/parent_email/${school_id}/${emailToUse}`
+          `${api_base_url}/admission_child_personal/parent_email/${school_id}/${emailToUse}`,
+          { headers }
         );
         const data = await response.json();
 
@@ -442,8 +449,10 @@ const ParentDashboard = () => {
     const emailToUse = editID || loggedInEmail;
 
     try {
+      const headers = await getAuthHeaders(getAccessTokenSilently);
       const response = await fetch(
-        `${api_base_url}/admission_child_personal/parent_email/${school_id}/${emailToUse}`
+        `${api_base_url}/admission_child_personal/parent_email/${school_id}/${emailToUse}`,
+        { headers }
       );
 
       if (!response.ok) {

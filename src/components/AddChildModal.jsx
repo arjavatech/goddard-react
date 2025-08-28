@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import Alert from './Alert';
 import { api_base_url, school_id } from '../utils/const';
+import { useAuth0 } from '@auth0/auth0-react';
+import { getAuthHeaders } from '../utils/auth';
 
 const AddChildModal = ({ isOpen, onClose, parentEmail, onAddChild ,  Parent_id}) => {
-
+  const { getAccessTokenSilently } = useAuth0();
 
   const [formData, setFormData] = useState({
     child_first_name: '',
@@ -44,7 +46,10 @@ const AddChildModal = ({ isOpen, onClose, parentEmail, onAddChild ,  Parent_id})
 
   const loadClassrooms = async () => {
     try {
-      const response = await fetch(`${api_base_url}/class_details/${school_id}`);
+      const headers = await getAuthHeaders(getAccessTokenSilently);
+      const response = await fetch(`${api_base_url}/class_details/${school_id}`, {
+        headers
+      });
       const data = await response.json();
       const classroomOptions = data.filter(item => item.class_name)
         .map(item => ({
@@ -59,7 +64,10 @@ const AddChildModal = ({ isOpen, onClose, parentEmail, onAddChild ,  Parent_id})
 
   const loadParentInfo = async () => {
     try {
-      const response = await fetch(`${api_base_url}/parent_info/${school_id}`);
+      const headers = await getAuthHeaders(getAccessTokenSilently);
+      const response = await fetch(`${api_base_url}/parent_info/${school_id}`, {
+        headers
+      });
       const data = await response.json();
       const parent = data.find(p => p.parent_email === parentEmail);
       if (parent) {

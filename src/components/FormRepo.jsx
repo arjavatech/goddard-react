@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import SearchableSelect from './SearchableSelect';
 import { api_base_url, school_id } from '@/utils/const';
+import { useAuth0 } from '@auth0/auth0-react';
+import { getAuthHeaders } from '../utils/auth';
 
 const FormRepo = ({ onAlert }) => {
+  const { getAccessTokenSilently } = useAuth0();
   const [formType, setFormType] = useState([]);
   const [formNames, setFormNames] = useState([]);
   const [allocateTo, setAllocateTo] = useState('0');
@@ -19,7 +22,10 @@ const FormRepo = ({ onAlert }) => {
 
   const loadActiveForms = async () => {
     try {
-      const response = await fetch(`${api_base_url}/get_all_form_details/${school_id}`);
+      const headers = await getAuthHeaders(getAccessTokenSilently);
+      const response = await fetch(`${api_base_url}/get_all_form_details/${school_id}`, {
+        headers
+      });
       const data = await response.json();
       
       if (data.active) {
@@ -36,7 +42,10 @@ const FormRepo = ({ onAlert }) => {
 
   const loadClassroomNames = async () => {
     try {
-      const response = await fetch(`${api_base_url}/child_count_with_class_name/${school_id}`);
+      const headers = await getAuthHeaders(getAccessTokenSilently);
+      const response = await fetch(`${api_base_url}/child_count_with_class_name/${school_id}`, {
+        headers
+      });
       const data = await response.json();
       setClassrooms(data);
     } catch (error) {
@@ -58,7 +67,10 @@ const FormRepo = ({ onAlert }) => {
     }
 
     try {
-      const response = await fetch(`${api_base_url}/get_all_form_details/${school_id}`);
+      const headers = await getAuthHeaders(getAccessTokenSilently);
+      const response = await fetch(`${api_base_url}/get_all_form_details/${school_id}`, {
+        headers
+      });
       const data = await response.json();
       
       let filteredForms = [];
@@ -84,7 +96,10 @@ const FormRepo = ({ onAlert }) => {
     }
 
     try {
-      const response = await fetch(`${api_base_url}/class_wise_child_details/${school_id}`);
+      const headers = await getAuthHeaders(getAccessTokenSilently);
+      const response = await fetch(`${api_base_url}/class_wise_child_details/${school_id}`, {
+        headers
+      });
       const data = await response.json();
       
       let filteredChildren = [];
@@ -114,9 +129,10 @@ const FormRepo = ({ onAlert }) => {
     }
 
     try {
+      const headers = await getAuthHeaders(getAccessTokenSilently);
       const response = await fetch(`${api_base_url}/update_form_repo_state/${school_id}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers,
         body: JSON.stringify({
           form_ids: selectedForms.map(f => f.id),
           state: allocateTo
@@ -162,9 +178,10 @@ const FormRepo = ({ onAlert }) => {
         });
       }
 
+      const headers = await getAuthHeaders(getAccessTokenSilently);
       const response = await fetch(url, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers,
         body
       });
 

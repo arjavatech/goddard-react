@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import Alert from './Alert';
 import { api_base_url, school_id } from '@/utils/const';
+import { useAuth0 } from '@auth0/auth0-react';
+import { getAuthHeaders } from '../utils/auth';
 const ForgotPasswordModal = ({ isOpen, onClose }) => {
+  const { getAccessTokenSilently } = useAuth0();
   const [email, setEmail] = useState('');
   const [emailError, setEmailError] = useState(false);
   const [alert, setAlert] = useState({ show: false, type: '', message: '' });
@@ -38,8 +41,10 @@ const ForgotPasswordModal = ({ isOpen, onClose }) => {
 
     setLoading(true);
     try {
+      const headers = await getAuthHeaders(getAccessTokenSilently);
       const response = await fetch(`${api_base_url}/forget_password_mail_trigger/${school_id}/${email}`, {
-        method: 'GET'
+        method: 'GET',
+        headers
       });
 
       const result = await response.json();

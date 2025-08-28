@@ -3,13 +3,14 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth0 } from '@auth0/auth0-react';
 import { toast } from 'sonner';
 import {api_base_url, school_id } from '../utils/const';
+import { getAuthHeaders } from '../utils/auth';
 
 
 import Header from './Header';
 
 
 const SignUp = () => {
-    const { loginWithPopup, isAuthenticated, isLoading, user, logout } = useAuth0();
+    const { loginWithPopup, isAuthenticated, isLoading, user, logout, getAccessTokenSilently } = useAuth0();
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -40,11 +41,10 @@ const SignUp = () => {
                 invite_id: inviteId ? `http://localhost:5173/signUp?invite_id=${inviteId}` : null
             };
 
+            const headers = await getAuthHeaders(getAccessTokenSilently);
             const response = await fetch(`${api_base_url}/sign_up/${school_id}`, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
+                headers,
                 body: JSON.stringify(obj)
             });
 
@@ -70,9 +70,10 @@ const SignUp = () => {
 
     const checkUserPermissionsAfterSignup = async (email) => {
         try {
+            const headers = await getAuthHeaders(getAccessTokenSilently);
             const response = await fetch(`${api_base_url}/sign_in/check/${school_id}`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers,
                 body: JSON.stringify({ 
                     email: email.toLowerCase(),
                     auth0_user: true

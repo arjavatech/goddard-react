@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { api_base_url, school_id } from '@/utils/const';
+import { useAuth0 } from '@auth0/auth0-react';
+import { getAuthHeaders } from '../../../../utils/auth';
 import MissionStatement from './MissionStatement';
 import TheGoddardSchool from './TheGoddardSchool';
 import GeneralEnrollmentProcedure from './GeneralEnrollmentProcedure';
@@ -20,6 +22,7 @@ import AddressingIndividualChildConcern from './AddressingIndividualChildConcern
 import FinalWord from './FinalWord';
 
 const ParentHandbook = ({ selectedSubForm = null, initialFormData = null, childId = null }) => {
+  const { getAccessTokenSilently } = useAuth0();
   
   // API function to update parent handbook data
   const updateParentHandbookData = async (fieldData) => {
@@ -29,11 +32,10 @@ const ParentHandbook = ({ selectedSubForm = null, initialFormData = null, childI
     }
 
     try {
+      const headers = await getAuthHeaders(getAccessTokenSilently);
       const response = await fetch(`${api_base_url}/parent_handbook/${school_id}/${childId}`, {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers,
         body: JSON.stringify(fieldData)
       });
 
