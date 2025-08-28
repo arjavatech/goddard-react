@@ -3,10 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth0 } from '@auth0/auth0-react';
 import Header from './Header';
 import { api_base_url, school_id } from '../utils/const';
+import { getAuthHeaders } from '../utils/auth';
 
 
 const Login = () => {
-  const { loginWithPopup, isAuthenticated, isLoading, user, logout } = useAuth0();
+  const { loginWithPopup, isAuthenticated, isLoading, user, logout, getAccessTokenSilently } = useAuth0();
   const navigate = useNavigate();
   const [isSignupFlow, setIsSignupFlow] = useState(false);
 
@@ -29,10 +30,13 @@ const Login = () => {
     console.log('API URL:', `${api_base_url}/sign_in/check/${school_id}`);
     
     try {
-      // Call the API_user flag
+      // Get Auth0 token and headers
+      const headers = await getAuthHeaders(getAccessTokenSilently);
+      
+      // Call the API with Auth0 token
       const response = await fetch(`${api_base_url}/sign_in/check/${school_id}`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers,
         body: JSON.stringify({ 
           email: email.toLowerCase(),
           auth0_user: true
@@ -113,11 +117,12 @@ const Login = () => {
         invite_id: null
       };
 
+      // Get Auth0 token and headers
+      const headers = await getAuthHeaders(getAccessTokenSilently);
+
       const response = await fetch(`${api_base_url}/sign_up/${school_id}`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
+        headers,
         body: JSON.stringify(obj)
       });
 

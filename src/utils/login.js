@@ -1,7 +1,8 @@
 import CryptoJS from 'crypto-js';
 import { api_base_url, school_id } from './const';
+import { getAuthHeaders } from './auth';
 
-export const loginFunction = async (email, password) => {
+export const loginFunction = async (email, password, getAccessTokenSilently = null) => {
   if (!email || !password) {
     return { success: false, error: 'empty' };
   }
@@ -13,9 +14,14 @@ export const loginFunction = async (email, password) => {
   };
 
   try {
+    // Get headers with auth token if available
+    const headers = getAccessTokenSilently 
+      ? await getAuthHeaders(getAccessTokenSilently)
+      : { 'Content-Type': 'application/json' };
+    
     const response = await fetch(`${api_base_url}/sign_in/check/${school_id}`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers,
       body: JSON.stringify(loginData)
     });
 

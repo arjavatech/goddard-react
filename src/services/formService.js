@@ -1,10 +1,14 @@
 // API service for form-related operations
 import { api_base_url, school_id } from "@/utils/const";
+import { getAuthHeaders } from "@/utils/auth";
 
 export const formService = {
   // Get parent and children data
-  async getParentData(email) {
-    const response = await fetch(`${api_base_url}/admission_child_personal/parent_email/${email}`);
+  async getParentData(email, getAccessTokenSilently) {
+    const headers = await getAuthHeaders(getAccessTokenSilently);
+    const response = await fetch(`${api_base_url}/admission_child_personal/parent_email/${email}`, {
+      headers
+    });
     if (!response.ok) {
       throw new Error('Failed to fetch parent data');
     }
@@ -12,8 +16,11 @@ export const formService = {
   },
 
   // Get completed forms for a specific child and year
-  async getCompletedForms(childId, year) {
-    const response = await fetch(`${api_base_url}/admission_child_personal/completed_form_status_year/${school_id}/${childId}/${year}`);
+  async getCompletedForms(childId, year, getAccessTokenSilently) {
+    const headers = await getAuthHeaders(getAccessTokenSilently);
+    const response = await fetch(`${api_base_url}/admission_child_personal/completed_form_status_year/${school_id}/${childId}/${year}`, {
+      headers
+    });
     if (!response.ok) {
       throw new Error('Failed to fetch completed forms');
     }
@@ -21,8 +28,11 @@ export const formService = {
   },
 
   // Get detailed form data for a child
-  async getFormDetails(childId) {
-    const response = await fetch(`${api_base_url}/child_all_form_details/${school_id}/${childId}`);
+  async getFormDetails(childId, getAccessTokenSilently) {
+    const headers = await getAuthHeaders(getAccessTokenSilently);
+    const response = await fetch(`${api_base_url}/child_all_form_details/${school_id}/${childId}`, {
+      headers
+    });
     if (!response.ok) {
       throw new Error('Failed to fetch form details');
     }
@@ -30,12 +40,11 @@ export const formService = {
   },
 
   // Save form data
-  async saveFormData(childId, formData, formType) {
+  async saveFormData(childId, formData, formType, getAccessTokenSilently) {
+    const headers = await getAuthHeaders(getAccessTokenSilently);
     const response = await fetch(`${api_base_url}/child_all_form_details/${school_id}/${childId}`, {
       method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers,
       body: JSON.stringify({
         ...formData,
         form_type: formType
@@ -49,12 +58,11 @@ export const formService = {
   },
 
   // Submit completed form
-  async submitCompletedForm(childId, formName) {
+  async submitCompletedForm(childId, formName, getAccessTokenSilently) {
+    const headers = await getAuthHeaders(getAccessTokenSilently);
     const response = await fetch(`${api_base_url}/admission_child_personal/completed_form_status/${school_id}/${childId}`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers,
       body: JSON.stringify({
         child_id: childId,
         formname: formName,

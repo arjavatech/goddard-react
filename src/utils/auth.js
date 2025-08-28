@@ -28,3 +28,20 @@ export const signOut = () => {
   
   window.location.href = '/login';  
 };
+
+// Helper function to get authorization headers with JWT token
+// For use in components where getAccessTokenSilently is available
+export const getAuthHeaders = async (getAccessTokenSilently) => {
+  try {
+    const token = await getAccessTokenSilently();
+    return {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    };
+  } catch (error) {
+    console.error('Error getting Auth0 token:', error);
+    return {
+      'Content-Type': 'application/json'
+    };
+  }
+};

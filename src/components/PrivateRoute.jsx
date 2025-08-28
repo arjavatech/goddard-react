@@ -5,7 +5,7 @@ import { api_base_url,  school_id } from '../utils/const';
 
 
 const PrivateRoute = ({ children, requireAdmin = false, requireParent = false }) => {
-  const { isAuthenticated, isLoading, user, logout } = useAuth0();
+  const { isAuthenticated, isLoading, user, logout, getAccessTokenSilently } = useAuth0();
   const [permissions, setPermissions] = useState(null);
   const [checkingPermissions, setCheckingPermissions] = useState(true);
   const [invalidUser, setInvalidUser] = useState(false);
@@ -17,10 +17,16 @@ const PrivateRoute = ({ children, requireAdmin = false, requireParent = false })
           console.log('PrivateRoute checking permissions for:', user.email);
           console.log('API URL:', `${api_base_url}/sign_in/check/${school_id}`);
           
+          // Get Auth0 access token
+          const token = await getAccessTokenSilently();
+          
           // First try with auth0_user flag (same as Login component)
-          let response = await fetch(`${api_base_url}/sign_in/check/${school_id}`, {
+          let response = await fetch(`http://localhost:8000/sign_in/check/${school_id}`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+            },
             body: JSON.stringify({ 
               email: user.email.toLowerCase(),
               auth0_user: true
@@ -32,7 +38,10 @@ const PrivateRoute = ({ children, requireAdmin = false, requireParent = false })
             console.log('PrivateRoute: Trying fallback API call with empty password');
             response = await fetch(`${api_base_url}/sign_in/check/${school_id}`, {
               method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
+              headers: { 
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+              },
               body: JSON.stringify({ 
                 email: user.email.toLowerCase(),
                 password: ''
