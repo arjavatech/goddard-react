@@ -2,9 +2,10 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth0 } from '@auth0/auth0-react';
 import { api_base_url, school_id } from '../utils/const';
+import { getAuthHeaders } from '../utils/auth';
 
 export const useAuth = () => {
-  const { isAuthenticated, isLoading, logout, user } = useAuth0();
+  const { isAuthenticated, isLoading, logout, user, getAccessTokenSilently } = useAuth0();
   const navigate = useNavigate();
 
   const checkAuth = () => {
@@ -59,7 +60,10 @@ export const useAuth = () => {
     if (!user?.email) return null;
     
     try {
-      const response = await fetch(`${api_base_url}/sign_in/${school_id}/${encodeURIComponent(user.email)}`);
+      const headers = await getAuthHeaders(getAccessTokenSilently);
+      const response = await fetch(`${api_base_url}/sign_in/${school_id}/${encodeURIComponent(user.email)}`, {
+        headers
+      });
       
       if (response.ok) {
         const data = await response.json();

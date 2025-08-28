@@ -1,7 +1,12 @@
-export const resendParentInvite = async (parentEmail) => {
+import { api_base_url, school_id } from './const';
+import { getAuthHeaders } from './auth';
+
+export const resendParentInvite = async (parentEmail, getAccessTokenSilently) => {
   try {
+    const headers = await getAuthHeaders(getAccessTokenSilently);
     const response = await fetch(`${api_base_url}/parent_invite_mail/resend/${parentEmail}`, {
-      method: 'GET'
+      method: 'GET',
+      headers
     });
     
     if (response.ok) {
@@ -14,11 +19,12 @@ export const resendParentInvite = async (parentEmail) => {
   }
 };
 
-export const updateParentStatus = async (parentId, status) => {
+export const updateParentStatus = async (parentId, status, getAccessTokenSilently) => {
   try {
+    const headers = await getAuthHeaders(getAccessTokenSilently);
     const response = await fetch(`${api_base_url}/update_parent_info_status/${parentId}`, {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
+      headers,
       body: JSON.stringify({ status })
     });
 
@@ -34,9 +40,12 @@ export const updateParentStatus = async (parentId, status) => {
   }
 };
 
-export const loadParentDetails = async (statusFilter = '') => {
+export const loadParentDetails = async (statusFilter = '', getAccessTokenSilently) => {
   try {
-    const response = await fetch(`${api_base_url}/parent_invite_status/getall/${school_id}`);
+    const headers = await getAuthHeaders(getAccessTokenSilently);
+    const response = await fetch(`${api_base_url}/parent_invite_status/getall/${school_id}`, {
+      headers
+    });
     const result = await response.json();
     
     if (!statusFilter) {
@@ -53,9 +62,12 @@ export const loadParentDetails = async (statusFilter = '') => {
   }
 };
 
-export const loadParentInfo = async () => {
+export const loadParentInfo = async (getAccessTokenSilently) => {
   try {
-    const response = await fetch(`${api_base_url}/parent/${school_id}`);
+    const headers = await getAuthHeaders(getAccessTokenSilently);
+    const response = await fetch(`${api_base_url}/parent/${school_id}`, {
+      headers
+    });
     const result = await response.json();
     return result || [];
   } catch (error) {

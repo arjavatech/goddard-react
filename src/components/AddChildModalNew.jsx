@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import Alert from './Alert';
 import { api_base_url, school_id } from '../utils/const';
+import { useAuth0 } from '@auth0/auth0-react';
+import { getAuthHeaders } from '../utils/auth';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -12,6 +14,7 @@ import { Loader2, User, Mail, School, AlertCircle } from 'lucide-react';
 import { toast } from 'sonner';
 
 const AddChildModalNew = ({ isOpen, onClose, parentEmail, onAddChild }) => {
+  const { getAccessTokenSilently } = useAuth0();
   const [formData, setFormData] = useState({
     child_first_name: '',
     child_last_name: '',
@@ -48,7 +51,10 @@ const AddChildModalNew = ({ isOpen, onClose, parentEmail, onAddChild }) => {
   const loadClassrooms = async () => {
     setLoadingClassrooms(true);
     try {
-      const response = await fetch(`${api_base_url}/class_details/${school_id}`);
+      const headers = await getAuthHeaders(getAccessTokenSilently);
+      const response = await fetch(`${api_base_url}/class_details/${school_id}`, {
+        headers
+      });
       const data = await response.json();
       const classroomOptions = data.filter(item => item.class_name)
         .map(item => ({
@@ -67,7 +73,10 @@ const AddChildModalNew = ({ isOpen, onClose, parentEmail, onAddChild }) => {
   const loadParentInfoByEmail = async (email) => {
     try {
       console.log('Loading parent info for email:', email);
-      const response = await fetch(`${api_base_url}/child_info/`);
+      const headers = await getAuthHeaders(getAccessTokenSilently);
+      const response = await fetch(`${api_base_url}/child_info/`, {
+        headers
+      });
       const data = await response.json();
       console.log('Parent info response:', data);
       

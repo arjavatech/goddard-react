@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from './hooks/useAuth';
+import { useAuth0 } from '@auth0/auth0-react';
+import { getAuthHeaders } from './utils/auth';
 import { useNavigate } from 'react-router-dom';
 import { Search, Filter, Download, ExternalLink, Users, FileText, AlertCircle, CheckCircle2 } from 'lucide-react';
 import { toast } from 'sonner';
@@ -17,6 +19,7 @@ import { api_base_url, school_id } from './utils/const';
 
 const ApplicationStatusNew = () => {
   const { isAuthenticated, signOut } = useAuth();
+  const { getAccessTokenSilently } = useAuth0();
   const navigate = useNavigate();
   
   const [data, setData] = useState([]);
@@ -47,7 +50,10 @@ const ApplicationStatusNew = () => {
 
   const loadClassrooms = async () => {
     try {
-      const response = await fetch(`${api_base_url}/class_details/${school_id}`);
+      const headers = await getAuthHeaders(getAccessTokenSilently);
+      const response = await fetch(`${api_base_url}/class_details/${school_id}`, {
+        headers
+      });
       const data = await response.json();
       
       const classroomOptions = [
@@ -72,7 +78,10 @@ const ApplicationStatusNew = () => {
 
   const loadForms = async () => {
     try {
-      const response = await fetch(`${api_base_url}/class_form_repository/${school_id}`);
+      const headers = await getAuthHeaders(getAccessTokenSilently);
+      const response = await fetch(`${api_base_url}/class_form_repository/${school_id}`, {
+        headers
+      });
       const data = await response.json();
       const formOptions = [
         { value: 'all', label: 'All Forms' },
@@ -110,7 +119,10 @@ const ApplicationStatusNew = () => {
         apiUrl = `${api_base_url}/form_based_all_child_details/${school_id}/${formFilter}`;
       }
       
-      const response = await fetch(apiUrl);
+      const headers = await getAuthHeaders(getAccessTokenSilently);
+      const response = await fetch(apiUrl, {
+        headers
+      });
       let responseData = await response.json();
 
       // Apply filtering logic

@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from './hooks/useAuth';
+import { useAuth0 } from '@auth0/auth0-react';
+import { getAuthHeaders } from './utils/auth';
 import HeaderNew from './components/HeaderNew';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './components/ui/card';
 import { Button } from './components/ui/button';
@@ -51,6 +53,7 @@ import {
 import { school_id, api_base_url } from './utils/const';
 const FormsRepositoryNew = () => {
   const { isAuthenticated, signOut } = useAuth();
+  const { getAccessTokenSilently } = useAuth0();
 
   // Get class_id from URL parameters
   const urlParams = new URLSearchParams(window.location.search);
@@ -133,7 +136,10 @@ const FormsRepositoryNew = () => {
   const loadClassroomData = async () => {
     setIsLoadingClassrooms(true);
     try {
-      const response = await fetch(`${api_base_url}/child_count_with_class_name/${school_id}`);
+      const headers = await getAuthHeaders(getAccessTokenSilently);
+      const response = await fetch(`${api_base_url}/child_count_with_class_name/${school_id}`, {
+        headers
+      });
       const data = await response.json();
       setClassrooms(data || []);
 
@@ -160,7 +166,10 @@ const FormsRepositoryNew = () => {
   // new api
   const loadClassroomForms = async () => {
     try {
-      const response = await fetch(`${api_base_url}/child_count_with_class_name/${school_id}`);
+      const headers = await getAuthHeaders(getAccessTokenSilently);
+      const response = await fetch(`${api_base_url}/child_count_with_class_name/${school_id}`, {
+        headers
+      });
       const data = await response.json();
       const formsMap = {};
       data.forEach(classroom => {
@@ -214,7 +223,10 @@ const FormsRepositoryNew = () => {
   // Load available forms for dropdown
   const loadAvailableForms = async () => {
     try {
-      const response = await fetch(`${api_base_url}/form/school/${school_id}`);
+      const headers = await getAuthHeaders(getAccessTokenSilently);
+      const response = await fetch(`${api_base_url}/form/school/${school_id}`, {
+        headers
+      });
       const data = await response.json();
 
       const formsList = [];
@@ -241,7 +253,10 @@ const FormsRepositoryNew = () => {
   // new api
   const loadStudentForms = async () => {
     try {
-      const response = await fetch(`${api_base_url}/admission_child_personal/all_child_status/${school_id}`);
+      const headers = await getAuthHeaders(getAccessTokenSilently);
+      const response = await fetch(`${api_base_url}/admission_child_personal/all_child_status/${school_id}`, {
+        headers
+      });
       const data = await response.json();
 
       const studentsList = [];
@@ -273,7 +288,10 @@ const FormsRepositoryNew = () => {
   // Load student dropdown forms
   const loadStudentDropdownForms = async () => {
     try {
-      const response = await fetch(`${api_base_url}/admission_child_personal/all_child_status/${school_id}`);
+      const headers = await getAuthHeaders(getAccessTokenSilently);
+      const response = await fetch(`${api_base_url}/admission_child_personal/all_child_status/${school_id}`, {
+        headers
+      });
       const data = await response.json();
 
       const formsSet = new Set();
@@ -305,9 +323,10 @@ const FormsRepositoryNew = () => {
 
     setIsAddingClassroom(true);
     try {
+      const headers = await getAuthHeaders(getAccessTokenSilently);
       const response = await fetch('https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/class_form_repository', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers,
         body: JSON.stringify({ class_name: newClassroomName.trim() })
       });
 
@@ -346,9 +365,10 @@ const FormsRepositoryNew = () => {
         const selectedForm = availableForms.find(f => f.name === formName);
         console.log('Selected form:', selectedForm);
         if (selectedForm) {
+          const headers = await getAuthHeaders(getAccessTokenSilently);
           const response = await fetch(`${api_base_url}/class_form_repository`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers,
             body: JSON.stringify({
               school_id: school_id,
               class_id: editingClassroom.class_id,
@@ -392,10 +412,11 @@ const FormsRepositoryNew = () => {
   const handleDeleteClassroom = async () => {
     setIsDeletingClassroom(true);
     try {
-      const response = await fetch(`https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/class_details/delete/${classroomToDelete.class_id}`, {
+      const headers = await getAuthHeaders(getAccessTokenSilently);
+      const response = await fetch(`https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/class_details/delete/${deletingClassroom.class_id}`, {
         method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ class_id: classroomToDelete.class_id })
+        headers,
+        body: JSON.stringify({ class_id: deletingClassroom.class_id })
       });
 
       const result = await response.json();
@@ -458,9 +479,10 @@ const FormsRepositoryNew = () => {
     };
 
     try {
+      const headers = await getAuthHeaders(getAccessTokenSilently);
       const response = await fetch(`${api_base_url}/form`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers,
         body: JSON.stringify({
           form_id: editingForm.id,
           school_id: school_id,
@@ -508,9 +530,10 @@ const FormsRepositoryNew = () => {
   const handleDeleteStudentForm = async (student, form) => {
     try {
       const formId = availableForms.find(f => f.name === form)?.id || 0;
+      const headers = await getAuthHeaders(getAccessTokenSilently);
       const response = await fetch(`${api_base_url}/student-form-repository/1/${student.id}/${formId}/Admin`, {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' }
+        headers
       });
 
       if (response.ok) {
@@ -1022,9 +1045,10 @@ const FormsRepositoryNew = () => {
 
                                   if (!updatedForms[studentIndex].forms.includes(e.target.value)) {
                                     try {
+                                      const headers = await getAuthHeaders(getAccessTokenSilently);
                                       const response = await fetch(`${api_base_url}/student-form-repository`, {
                                         method: 'POST',
-                                        headers: { 'Content-Type': 'application/json' },
+                                        headers,
                                         body: JSON.stringify({
                                           school_id: school_id,
                                           child_id: student.id,

@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { api_base_url, school_id, updated_by } from './utils/const';
 import { useAuth } from './hooks/useAuth';
+import { useAuth0 } from '@auth0/auth0-react';
+import { getAuthHeaders } from './utils/auth';
 import HeaderNew from './components/HeaderNew';
 import { Card, CardContent, CardHeader, CardTitle } from './components/ui/card';
 import { Button } from './components/ui/button';
@@ -58,6 +60,7 @@ const ParentDetailsNew = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
   const { isAuthenticated, signOut } = useAuth();
+  const { getAccessTokenSilently } = useAuth0();
   const navigate = useNavigate();
 
 
@@ -91,7 +94,10 @@ const ParentDetailsNew = () => {
   const loadData = async (statusFilter = '') => {
     setLoading(true);
     try {
-      const response = await fetch(`${api_base_url}/parent_invite_status/getall/${school_id}`);
+      const headers = await getAuthHeaders(getAccessTokenSilently);
+      const response = await fetch(`${api_base_url}/parent_invite_status/getall/${school_id}`, {
+        headers
+      });
       const result = await response.json();
 
       let responseData = [];
@@ -124,8 +130,10 @@ const ParentDetailsNew = () => {
   const handleResendEmail = async (email) => {
     setSendingEmail(true);
     try {
+      const headers = await getAuthHeaders(getAccessTokenSilently);
       const response = await fetch(`${api_base_url}/parent_invite_mail/resend/${school_id}/${email}/${updated_by}`, {
-        method: 'GET'
+        method: 'GET',
+        headers
       });
 
       if (response.ok) {
@@ -143,9 +151,10 @@ const ParentDetailsNew = () => {
   const handleStatusUpdate = async (parentId, newStatus) => {
     setUpdatingStatus(true);
     try {
+      const headers = await getAuthHeaders(getAccessTokenSilently);
       const response = await fetch(`${api_base_url}/update_parent_info_status/${school_id}/${parentId}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers,
         body: JSON.stringify({ status: newStatus })
       });
 
@@ -174,10 +183,10 @@ const ParentDetailsNew = () => {
 
     setAddingChild(true);
     try {
-
+      const headers = await getAuthHeaders(getAccessTokenSilently);
       const response = await fetch(`${api_base_url}/child_info/create/${school_id}`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers,
         body: JSON.stringify(childData)
       });
 

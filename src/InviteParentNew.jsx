@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { api_base_url, school_id } from './utils/const';
 import { useAuth } from './hooks/useAuth';
+import { useAuth0 } from '@auth0/auth0-react';
+import { getAuthHeaders } from './utils/auth';
 import HeaderNew from './components/HeaderNew';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './components/ui/card';
 import { Button } from './components/ui/button';
@@ -50,6 +52,7 @@ const inviteFormSchema = z.object({
 
 const InviteParentNew = () => {
   const { isAuthenticated, signOut } = useAuth();
+  const { getAccessTokenSilently } = useAuth0();
   const navigate = useNavigate();
   const [classrooms, setClassrooms] = useState([]);
   const [isLoadingClassrooms, setIsLoadingClassrooms] = useState(true);
@@ -72,7 +75,10 @@ const InviteParentNew = () => {
 
   const loadClassroomData = async () => {
     try {
-      const response = await fetch(`${api_base_url}/class_details/${school_id}`);
+      const headers = await getAuthHeaders(getAccessTokenSilently);
+      const response = await fetch(`${api_base_url}/class_details/${school_id}`, {
+        headers
+      });
       const data = await response.json();
       const classroomOptions = data
         .filter(item => item.class_name && item.class_name !== undefined)
@@ -92,9 +98,10 @@ const InviteParentNew = () => {
   const onSubmit = async (data) => {
     setIsSubmitting(true);
     try {
+      const headers = await getAuthHeaders(getAccessTokenSilently);
       const response = await fetch(`${api_base_url}/parent_invite_with_mail_trigger/${school_id}`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers,
         body: JSON.stringify(data)
       });
 
