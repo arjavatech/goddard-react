@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import AdmissionForm from './forms/AdmissionForm';
 import AuthorizationForm from './forms/AuthorizationForm';
-import EnrollmentForm from './forms/EnrollmentForm';
-import HandbookForm from './forms/HandbookForm';
+import EnrollmentFormNew from './forms/EnrollmentFormNew';
+import HandbookFormNew from './forms/ParentHanbook/policies/AllNew';
 
 const FormContent = ({ formData, incompleteForms, childId, editID, onAlert }) => {
   const [activeForm, setActiveForm] = useState(null);
@@ -29,8 +29,8 @@ const FormContent = ({ formData, incompleteForms, childId, editID, onAlert }) =>
         );
       case 'enrollment_agreement':
         return (
-          <EnrollmentForm
-            formData={formData}
+          <EnrollmentFormNew
+            initialFormData={formData}
             childId={childId}
             editID={editID}
             onAlert={onAlert}
@@ -38,8 +38,8 @@ const FormContent = ({ formData, incompleteForms, childId, editID, onAlert }) =>
         );
       case 'parent_handbook':
         return (
-          <HandbookForm
-            formData={formData}
+          <HandbookFormNew
+            initialFormData={formData}
             childId={childId}
             editID={editID}
             onAlert={onAlert}
