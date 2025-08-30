@@ -3,6 +3,20 @@ import { Navigate } from 'react-router-dom';
 import { useAuth0 } from '@auth0/auth0-react';
 import { api_base_url,  school_id } from '../utils/const';
 
+const getAuthHeaders = async (getAccessTokenSilently) => {
+  try {
+    const token = await getAccessTokenSilently();
+    return {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`,
+    };
+  } catch (error) {
+    return {
+      'Content-Type': 'application/json',
+    };
+  }
+};
+
 
 const PrivateRoute = ({ children, requireAdmin = false, requireParent = false }) => {
   const { isAuthenticated, isLoading, user, logout, getAccessTokenSilently } = useAuth0();
@@ -17,16 +31,11 @@ const PrivateRoute = ({ children, requireAdmin = false, requireParent = false })
           console.log('PrivateRoute checking permissions for:', user.email);
           console.log('API URL:', `${api_base_url}/sign_in/check/${school_id}`);
           
-          // Get Auth0 access token
-          const token = await getAccessTokenSilently();
-          
           // First try with auth0_user flag (same as Login component)
+          const headers = await getAuthHeaders(getAccessTokenSilently);
           let response = await fetch(`http://localhost:8000/sign_in/check/${school_id}`, {
             method: 'POST',
-            headers: { 
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${token}`
-            },
+            headers,
             body: JSON.stringify({ 
               email: user.email.toLowerCase(),
               auth0_user: true
@@ -36,12 +45,10 @@ const PrivateRoute = ({ children, requireAdmin = false, requireParent = false })
           // If that fails, try with empty password (fallback)
           if (!response.ok) {
             console.log('PrivateRoute: Trying fallback API call with empty password');
+            const fallbackHeaders = await getAuthHeaders(getAccessTokenSilently);
             response = await fetch(`${api_base_url}/sign_in/check/${school_id}`, {
               method: 'POST',
-              headers: { 
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-              },
+              headers: fallbackHeaders,
               body: JSON.stringify({ 
                 email: user.email.toLowerCase(),
                 password: ''

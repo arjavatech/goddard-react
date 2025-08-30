@@ -25,8 +25,24 @@ import {
   Info
 } from 'lucide-react';
 import { toast, Toaster } from 'sonner';
+import { useAuth0 } from '@auth0/auth0-react';
+
+const getAuthHeaders = async (getAccessTokenSilently) => {
+  try {
+    const token = await getAccessTokenSilently();
+    return {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`,
+    };
+  } catch (error) {
+    return {
+      'Content-Type': 'application/json',
+    };
+  }
+};
 
 const EnrollmentFormNew = ({ selectedSubForm = null, initialFormData = null, childId = null }) => {
+  const { getAccessTokenSilently } = useAuth0();
   const [activeTab, setActiveTab] = useState(selectedSubForm ? getTabFromSubForm(selectedSubForm) : 'enrollment');
   const [formData, setFormData] = useState({
     point_one_field_one: new Date().toISOString().split('T')[0],
@@ -85,9 +101,7 @@ const EnrollmentFormNew = ({ selectedSubForm = null, initialFormData = null, chi
     try {
       const response = await fetch(`https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/enrollment_form/update/${childId}`, {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: await getAuthHeaders(getAccessTokenSilently),
         body: JSON.stringify(fieldData)
       });
 

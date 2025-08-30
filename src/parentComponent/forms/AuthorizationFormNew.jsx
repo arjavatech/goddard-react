@@ -19,6 +19,21 @@ import {
 } from 'lucide-react';
 import { toast, Toaster } from 'sonner';
 import { api_base_url, school_id } from '@/utils/const';
+import { useAuth0 } from '@auth0/auth0-react';
+
+const getAuthHeaders = async (getAccessTokenSilently) => {
+  try {
+    const token = await getAccessTokenSilently();
+    return {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`,
+    };
+  } catch (error) {
+    return {
+      'Content-Type': 'application/json',
+    };
+  }
+};
 
 const AuthorizationFormNew = ({ selectedSubForm = null, initialFormData = null, childId = null }) => {
   const [activeTab, setActiveTab] = useState(selectedSubForm ? getTabFromSubForm(selectedSubForm) : 'ach');
@@ -116,7 +131,7 @@ const AuthorizationFormNew = ({ selectedSubForm = null, initialFormData = null, 
       const response = await fetch(`${api_base_url}/authorization_form/${school_id}/${childId}`, {
         method: 'PUT',
         headers: {
-          'Content-Type': 'application/json',
+          ...(await getAuthHeaders(getAccessTokenSilently)),
         },
         body: JSON.stringify(fieldData)
       });
