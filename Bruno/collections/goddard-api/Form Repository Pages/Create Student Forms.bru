@@ -1,0 +1,46 @@
+meta {
+  name: Create Student Forms
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{base_url}}/student-form-repository
+  body: json
+  auth: bearer
+}
+
+headers {
+  Content-Type: application/json
+  Authorization: Bearer {{token}}
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+
+body:json {
+  {
+    "student_id": "student_123",
+    "form_id": "form_456",
+    "form_data": {},
+    "status": "submitted",
+    "updated_by": "{{updated_by}}"
+  }
+}
+
+docs {
+  ## Student Form Repository
+  
+  Creates or updates student form repository entries.
+  
+  ### Request Body
+  - `student_id` (string, required): Student identifier
+  - `form_id` (string, required): Form identifier
+  - `form_data` (object): Form data payload
+  - `status` (string): Form status
+  - `updated_by` (string, required): User making the update
+  
+  ### Response
+  Returns created/updated repository entry
+}

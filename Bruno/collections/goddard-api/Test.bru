@@ -1,0 +1,19 @@
+meta {
+  name: Test
+  type: http
+  seq: 8
+}
+
+get {
+  url: {{base_url}}/test
+  body: none
+  auth: inherit
+}
+
+headers {
+  Content-Type: application/json
+}
+
+settings {
+  encodeUrl: true
+}

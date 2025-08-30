@@ -1,0 +1,41 @@
+meta {
+  name: Delete Student Forms
+  type: http
+  seq: 3
+}
+
+delete {
+  url: {{base_url}}/student-form-repository/{{school_id}}/{{student_id}}/{{form_id}}/{{updated_by}}
+  body: none
+  auth: bearer
+}
+
+params:path {
+  student_id: student_123
+  form_id: form_456
+  updated_by: Admin
+}
+
+headers {
+  Content-Type: application/json
+  Authorization: Bearer {{token}}
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+
+docs {
+  ## Delete Student Form
+  
+  Removes a student form from the repository.
+  
+  ### Path Parameters
+  - `school_id` (number, required): School identifier
+  - `student_id` (string, required): Student identifier
+  - `form_id` (string, required): Form identifier to delete
+  - `updated_by` (string, required): User performing the deletion
+  
+  ### Response
+  Returns confirmation of form deletion
+}

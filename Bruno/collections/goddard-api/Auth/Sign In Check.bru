@@ -1,0 +1,39 @@
+meta {
+  name: Sign In Check
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{base_url}}/sign_in/check/{{school_id}}
+  body: json
+  auth: bearer
+}
+
+headers {
+  Content-Type: application/json
+  Authorization: Bearer {{token}}
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+
+body:json {
+  {
+    "email": "rajaeceram@gmail.com"
+  }
+}
+
+docs {
+  ## Sign In
+  
+  Gets user details after authentication.
+  
+  ### Path Parameters
+  - `school_id` (number, required): School identifier
+  - `email` (string, required): User's email address (URL encoded)
+  
+  ### Response
+  Returns user profile and associated data
+}

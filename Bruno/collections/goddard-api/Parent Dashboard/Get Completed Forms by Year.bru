@@ -1,0 +1,42 @@
+meta {
+  name: Get Completed Forms by Year
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{base_url}}/admission_child_personal/completed_form_status_year/{{school_id}}/{{child_id}}/{{year}}
+  body: none
+  auth: bearer
+}
+
+params:path {
+  child_id: child_123
+  year: 2024
+}
+
+headers {
+  Content-Type: application/json
+  Authorization: Bearer {{token}}
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+
+docs {
+  ## Get Completed Forms by Year
+  
+  Retrieves completed form status for a child in a specific year.
+  
+  ### Path Parameters
+  - `school_id` (number, required): School identifier
+  - `child_id` (string, required): Child identifier
+  - `year` (number, required): Enrollment year
+  
+  ### Response
+  Returns form completion status including:
+  - Form names and completion timestamps
+  - Overall completion percentage
+  - Missing forms list
+}

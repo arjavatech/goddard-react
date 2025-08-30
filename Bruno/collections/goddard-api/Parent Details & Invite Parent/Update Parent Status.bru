@@ -1,0 +1,52 @@
+meta {
+  name: Update Parent Status
+  type: http
+  seq: 2
+}
+
+put {
+  url: {{base_url}}/update_parent_info_status/{{school_id}}/{{parent_id}}
+  body: json
+  auth: bearer
+}
+
+params:path {
+  parent_id: parent_456
+}
+
+headers {
+  Content-Type: application/json
+  Authorization: Bearer {{token}}
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+
+body:json {
+  {
+    "status": "active",
+    "approval_status": "approved",
+    "notes": "Parent information verified",
+    "updated_by": "{{updated_by}}"
+  }
+}
+
+docs {
+  ## Update Parent Status
+  
+  Updates parent information and approval status.
+  
+  ### Path Parameters
+  - `school_id` (number, required): School identifier
+  - `parent_id` (string, required): Parent identifier
+  
+  ### Request Body
+  - `status` (string): Parent status (active, inactive, pending)
+  - `approval_status` (string): Approval status (approved, pending, rejected)
+  - `notes` (string): Admin notes
+  - `updated_by` (string, required): Admin making the update
+  
+  ### Response
+  Returns updated parent status information
+}

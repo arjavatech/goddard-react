@@ -1,0 +1,50 @@
+meta {
+  name: Invite New Parent
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{base_url}}/parent_invite_with_mail_trigger/{{school_id}}
+  body: json
+  auth: bearer
+}
+
+headers {
+  Content-Type: application/json
+  Authorization: Bearer {{token}}
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+
+body:json {
+  {
+    "parent_name": "string",
+    "invite_email": "string",
+    "child_fname": "string",
+    "child_lname": "string",
+    "child_classroom_id": 0,
+    "created_by": "string"
+  }
+}
+
+docs {
+  ## Invite Parent
+  
+  Sends invitation email to parent and creates parent-child record.
+  
+  ### Request Body
+  - `parent_name` (string, required): Parent's full name
+  - `parent_email` (string, required): Parent's email address
+  - `child_name` (string, required): Child's full name
+  - `child_dob` (string, required): Child's date of birth (YYYY-MM-DD)
+  - `class_id` (string, required): Assigned class ID
+  - `class_name` (string, required): Class name
+  - `invitation_status` (string): Invitation status
+  - `updated_by` (string, required): User who sent the invitation
+  
+  ### Response
+  Returns invitation details and confirmation
+}

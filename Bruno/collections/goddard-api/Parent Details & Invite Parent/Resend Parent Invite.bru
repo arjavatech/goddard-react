@@ -1,0 +1,39 @@
+meta {
+  name: Resend Parent Invite
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{base_url}}/parent_invite_mail/resend/{{school_id}}/{{email}}/{{updated_by}}
+  body: none
+  auth: bearer
+}
+
+params:path {
+  email: parent@example.com
+  updated_by: Admin
+}
+
+headers {
+  Content-Type: application/json
+  Authorization: Bearer {{token}}
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+
+docs {
+  ## Resend Parent Invite
+  
+  Resends invitation email to a parent.
+  
+  ### Path Parameters
+  - `school_id` (number, required): School identifier
+  - `email` (string, required): Parent's email address
+  - `updated_by` (string, required): User who is resending the invitation
+  
+  ### Response
+  Returns confirmation of resent invitation
+}

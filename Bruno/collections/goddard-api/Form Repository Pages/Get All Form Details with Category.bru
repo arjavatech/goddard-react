@@ -1,0 +1,35 @@
+meta {
+  name: Get All Form Details with Category
+  type: http
+  seq: 5
+}
+
+get {
+  url: {{test_url}}/get_all_form_details
+  body: none
+  auth: bearer
+}
+
+headers {
+  Content-Type: application/json
+  Authorization: Bearer {{token}}
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+
+docs {
+  ## Get All Form Details (Test Environment)
+  
+  Retrieves all form data across the system in test environment.
+  
+  ### Response
+  Returns comprehensive form data including:
+  - All children's form information
+  - Form completion statistics
+  - System-wide form status
+  
+  ### Note
+  This endpoint uses the test environment API
+}

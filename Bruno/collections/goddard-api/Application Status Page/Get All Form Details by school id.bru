@@ -1,0 +1,19 @@
+meta {
+  name: Get All Form Details by school id
+  type: http
+  seq: 5
+}
+
+get {
+  url: {{base_url}}/form/school/{{school_id}}
+  body: none
+  auth: inherit
+}
+
+headers {
+  Authorization: Bearer {{token}}
+}
+
+settings {
+  encodeUrl: true
+}

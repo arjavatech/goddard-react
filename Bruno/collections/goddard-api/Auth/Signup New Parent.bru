@@ -1,0 +1,27 @@
+meta {
+  name: Signup New Parent
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{base_url}}/sign_up/{{school_id}}/
+  body: json
+  auth: inherit
+}
+
+headers {
+  Content-Type: application/json
+  Authorization: Bearer {{token}}
+}
+
+body:json {
+  {
+    "email": "test123@gmail.com",
+    "invite_id": ""
+  }
+}
+
+settings {
+  encodeUrl: true
+}

@@ -1,0 +1,25 @@
+{
+  "version": "1",
+  "name": "Bruno",
+  "type": "collection",
+  "environments": [
+    {
+      "name": "Production",
+      "variables": {
+        "base_url": "https://hfj4ckons6.execute-api.ap-south-1.amazonaws.com/dev",
+        "test_url": "https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test",
+        "school_id": "1",
+        "updated_by": "Admin"
+      }
+    },
+    {
+      "name": "Local",
+      "variables": {
+        "base_url": "http://localhost:8000",
+        "test_url": "http://localhost:8001",
+        "school_id": "1",
+        "updated_by": "Admin"
+      }
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+meta {
+  name: Get All Parent Invite Status
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{base_url}}/parent_invite_status/getall/{{school_id}}
+  body: none
+  auth: bearer
+}
+
+headers {
+  Content-Type: application/json
+  Authorization: Bearer {{token}}
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+
+docs {
+  ## Get All Parent Invites
+  
+  Retrieves all parent invitations for a school.
+  
+  ### Path Parameters
+  - `school_id` (number, required): School identifier
+  
+  ### Response
+  Returns list of parent invitations including:
+  - Parent details
+  - Child information
+  - Invitation status
+  - Timestamp
+}

@@ -1,0 +1,35 @@
+meta {
+  name: Get Child Count by Class (Class Room Repo Page Data Get)
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{base_url}}/child_count_with_class_name/{{school_id}}
+  body: none
+  auth: bearer
+}
+
+headers {
+  Content-Type: application/json
+  Authorization: Bearer {{token}}
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+
+docs {
+  ## Get Child Count by Class
+  
+  Retrieves child enrollment count for each class in the school.
+  
+  ### Path Parameters
+  - `school_id` (number, required): School identifier
+  
+  ### Response
+  Returns array of classes with:
+  - Class details (ID, name, age group)
+  - Current enrollment count
+  - Capacity information
+}

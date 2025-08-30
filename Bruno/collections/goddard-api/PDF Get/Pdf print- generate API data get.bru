@@ -1,0 +1,19 @@
+meta {
+  name: Pdf print/ generate API data get
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{base_url}}/get-s3-file/{{school_name}}/{{child_id}}/{{item}}/{{isPrint}}
+  body: none
+  auth: inherit
+}
+
+headers {
+  Authorization: Bearer {{token}}
+}
+
+settings {
+  encodeUrl: true
+}

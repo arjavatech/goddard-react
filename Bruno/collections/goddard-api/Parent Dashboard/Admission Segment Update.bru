@@ -1,0 +1,233 @@
+meta {
+  name: Admission Segment Update
+  type: http
+  seq: 5
+}
+
+put {
+  url: {{base_url}}/admission_segment/{{school_id}}/{{child_id}}
+  body: json
+  auth: bearer
+}
+
+params:path {
+  child_id: child_123
+}
+
+headers {
+  Content-Type: application/json
+  Authorization: Bearer {{token}}
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+
+body:json {
+  {
+    "parent_id": 0,
+    "class_id": 0,
+    "child_first_name": "string",
+    "child_last_name": "string",
+    "primary_parent_info": {
+      "parent_id": 0,
+      "parent_email": "string",
+      "parent_name": "string",
+      "parent_street_address": "string",
+      "parent_city_address": "string",
+      "parent_state_address": "string",
+      "parent_zip_address": "string",
+      "home_telephone_number": "string",
+      "home_cell_number": "string",
+      "business_name": "string",
+      "work_hours_from": "string",
+      "work_hours_to": "string",
+      "business_telephone_number": "string",
+      "business_street_address": "string",
+      "business_city_address": "string",
+      "business_state_address": "string",
+      "business_zip_address": "string",
+      "business_cell_number": "string",
+      "password": "string"
+    },
+    "additional_parent_id": 0,
+    "additional_parent_info": {
+      "parent_id": 0,
+      "parent_email": "string",
+      "parent_name": "string",
+      "parent_street_address": "string",
+      "parent_city_address": "string",
+      "parent_state_address": "string",
+      "parent_zip_address": "string",
+      "home_telephone_number": "string",
+      "home_cell_number": "string",
+      "business_name": "string",
+      "work_hours_from": "string",
+      "work_hours_to": "string",
+      "business_telephone_number": "string",
+      "business_street_address": "string",
+      "business_city_address": "string",
+      "business_state_address": "string",
+      "business_zip_address": "string",
+      "business_cell_number": "string",
+      "password": "string"
+    },
+    "dob": "2025-08-30",
+    "nick_name": "string",
+    "primary_language": "string",
+    "school_age_child_school": "string",
+    "do_relevant_custody_papers_apply": 0,
+    "gender": 0,
+    "special_diabilities": "string",
+    "allergies_medication_reaction": "string",
+    "additional_info": "string",
+    "medication": "string",
+    "health_insurance": "string",
+    "policy_number": "string",
+    "obtaining_emergency_medical_care": "string",
+    "administration_first_aid_procedures": "string",
+    "agree_all_above_information_is_correct": "string",
+    "physical_exam_last_date": "2025-08-30",
+    "dental_exam_last_date": "2025-08-30",
+    "allergies": "string",
+    "asthma": "string",
+    "bleeding_problems": "string",
+    "diabetes": "string",
+    "epilepsy": "string",
+    "frequent_ear_infections": "string",
+    "frequent_illnesses": "string",
+    "hearing_problems": "string",
+    "high_fevers": "string",
+    "hospitalization": "string",
+    "rheumatic_fever": "string",
+    "seizures_convulsions": "string",
+    "serious_injuries_accidents": "string",
+    "surgeries": "string",
+    "vision_problems": "string",
+    "medical_other": "string",
+    "illness_during_pregnancy": "string",
+    "condition_of_newborn": "string",
+    "duration_of_pregnancy": "string",
+    "birth_weight_lbs": "string",
+    "birth_weight_oz": "string",
+    "complications": "string",
+    "bottle_fed": 0,
+    "breast_fed": 0,
+    "other_siblings_name": "string",
+    "other_siblings_age": "string",
+    "family_history_allergies": "string",
+    "family_history_heart_problems": "string",
+    "family_history_tuberculosis": "string",
+    "family_history_asthma": "string",
+    "family_history_high_blood_pressure": "string",
+    "family_history_vision_problems": "string",
+    "family_history_diabetes": "string",
+    "family_history_hyperactivity": "string",
+    "family_history_epilepsy": "string",
+    "no_illnesses_for_this_child": "string",
+    "age_group_friends": "string",
+    "neighborhood_friends": "string",
+    "relationship_with_mother": "string",
+    "relationship_with_father": "string",
+    "relationship_with_siblings": "string",
+    "relationship_with_extended_family": "string",
+    "fears_conflicts": "string",
+    "child_response_frustration": "string",
+    "favorite_activities": "string",
+    "last_five_years_moved": "string",
+    "things_used_at_home": "string",
+    "hours_of_television_daily": "string",
+    "language_used_at_home": "string",
+    "changes_at_home_situation": "string",
+    "educational_expectations_of_child": "string",
+    "fam_his_instructions": "string",
+    "do_you_agree_this_immunization_instructions": "string",
+    "important_fam_members": "string",
+    "about_family_celebrations": "string",
+    "childcare_before": 0,
+    "reason_for_childcare_before": "string",
+    "what_child_interests": "string",
+    "drop_off_time": "string",
+    "pick_up_time": "string",
+    "restricted_diet": 0,
+    "restricted_diet_reason": "string",
+    "eat_own": 0,
+    "eat_own_reason": "string",
+    "favorite_foods": "string",
+    "rest_in_the_middle_day": 0,
+    "reason_for_rest_in_the_middle_day": "string",
+    "rest_routine": "string",
+    "toilet_trained": 0,
+    "reason_for_toilet_trained": "string",
+    "explain_for_existing_illness_allergy": "string",
+    "existing_illness_allergy": 0,
+    "functioning_at_age": 0,
+    "explain_for_functioning_at_age": "string",
+    "explain_for_able_to_walk": "string",
+    "able_to_walk": 0,
+    "explain_for_communicate_their_needs": "string",
+    "communicate_their_needs": 0,
+    "any_medication": 0,
+    "explain_for_any_medication": "string",
+    "utilize_special_equipment": 0,
+    "explain_for_utilize_special_equipment": "string",
+    "significant_periods": 0,
+    "explain_for_significant_periods": "string",
+    "desire_any_accommodations": 0,
+    "explain_for_desire_any_accommodations": "string",
+    "additional_information": "string",
+    "do_you_agree_this": "string",
+    "child_password_pick_up_password_form": "string",
+    "do_you_agree_this_pick_up_password_form": "string",
+    "photo_usage_photo_video_permission_form": "string",
+    "photo_permission_agree_group_photos_electronic": "string",
+    "do_you_agree_this_photo_video_permission_form": "string",
+    "security_release_policy_form": "string",
+    "med_technicians_med_transportation_waiver": "string",
+    "medical_transportation_waiver": "string",
+    "do_you_agree_this_health_policies": "string",
+    "parent_sign_outside_waiver": "string",
+    "approve_social_media_post": 0,
+    "printed_name_social_media_post": "string",
+    "do_you_agree_this_social_media_post": "string",
+    "parent_sign_admission": "string",
+    "admin_sign_admission": "string",
+    "pointer": 0,
+    "agree_all_above_info_is_correct": "string",
+    "parent_sign_date_admission": 0,
+    "admin_sign_date_admission": 0,
+    "dentist_info": {},
+    "care_provider_info": {},
+    "emergency_contacts": [
+      {}
+    ],
+    "created_by": "parent",
+    "created_at": "2025-08-30T10:14:21.850Z",
+    "updated_by": "string",
+    "updated_at": "2025-08-30T10:14:21.850Z",
+    "is_active": true
+  }
+  
+}
+
+docs {
+  ## Admission Segment Update
+  
+  Updates specific segments of the admission form.
+  
+  ### Path Parameters
+  - `school_id` (number, required): School identifier
+  - `child_id` (string, required): Child identifier
+  
+  ### Request Body
+  - `segment_type` (string, required): Type of admission segment
+  - Various segment-specific fields based on segment type
+  - `updated_by` (string, required): User making the update
+  
+  ### Response
+  Returns updated admission segment data
+  
+  ### Segment Types
+  - child_info, parent_details, emergency_contact
+  - medical_provider, child_profile, family_history
+}

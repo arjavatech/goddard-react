@@ -1,0 +1,19 @@
+meta {
+  name: Class based Child details Get
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{base_url}}/class_based_all_child_details/{{school_id}}/{{class_id}}
+  body: none
+  auth: inherit
+}
+
+headers {
+  Authorization: Bearer {{token}}
+}
+
+settings {
+  encodeUrl: true
+}

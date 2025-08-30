@@ -1,0 +1,19 @@
+meta {
+  name: Form based Child details Get
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{base_url}}/form_based_all_child_details/{{school_id}}/{{form_id}}
+  body: none
+  auth: inherit
+}
+
+headers {
+  Authorization: Bearer {{token}}
+}
+
+settings {
+  encodeUrl: true
+}

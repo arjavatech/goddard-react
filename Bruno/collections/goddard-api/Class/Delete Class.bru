@@ -1,0 +1,40 @@
+meta {
+  name: Delete Class
+  type: http
+  seq: 2
+}
+
+delete {
+  url: {{base_url}}/class_details/{{school_id}}/{{class_id}}
+  body: none
+  auth: bearer
+}
+
+params:path {
+  class_id: class_123
+}
+
+headers {
+  Content-Type: application/json
+  Authorization: Bearer {{token}}
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+
+docs {
+  ## Delete Class
+  
+  Removes a class from the school system.
+  
+  ### Path Parameters
+  - `school_id` (number, required): School identifier
+  - `class_id` (string, required): Class identifier to delete
+  
+  ### Response
+  Returns confirmation of class deletion
+  
+  ### Note
+  This operation may fail if children are currently enrolled in the class.
+}

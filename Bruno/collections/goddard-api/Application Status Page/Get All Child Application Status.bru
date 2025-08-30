@@ -1,0 +1,37 @@
+meta {
+  name: Get All Child Application Status
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{base_url}}/admission_child_personal/all_child_status/{{school_id}}
+  body: none
+  auth: bearer
+}
+
+headers {
+  Content-Type: application/json
+  Authorization: Bearer {{token}}
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+
+docs {
+  ## Get All Child Status
+  
+  Retrieves enrollment and form completion status for all children in school.
+  
+  ### Path Parameters
+  - `school_id` (number, required): School identifier
+  
+  ### Response
+  Returns array of children with:
+  - Child basic information
+  - Parent details
+  - Form completion status
+  - Enrollment progress
+  - Class assignment
+}

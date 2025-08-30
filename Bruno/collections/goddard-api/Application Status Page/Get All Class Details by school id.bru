@@ -1,0 +1,19 @@
+meta {
+  name: Get All Class Details by school id
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{base_url}}/class_details/{{school_id}}
+  body: none
+  auth: inherit
+}
+
+headers {
+  Authorization: Bearer {{token}}
+}
+
+settings {
+  encodeUrl: true
+}

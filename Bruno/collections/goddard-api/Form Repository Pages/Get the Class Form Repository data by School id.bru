@@ -1,0 +1,35 @@
+meta {
+  name: Get the Class Form Repository data by School id
+  type: http
+  seq: 6
+}
+
+get {
+  url: {{test_url}}/class_form_repository
+  body: none
+  auth: bearer
+}
+
+headers {
+  Content-Type: application/json
+  Authorization: Bearer {{token}}
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+
+docs {
+  ## Class Form Repository (Test Environment)
+  
+  Retrieves class and form repository data in test environment.
+  
+  ### Response
+  Returns:
+  - Class information with associated forms
+  - Form templates and requirements
+  - Repository metadata
+  
+  ### Note
+  This endpoint uses the test environment API
+}

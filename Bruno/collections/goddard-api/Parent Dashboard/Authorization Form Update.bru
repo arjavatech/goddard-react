@@ -1,0 +1,65 @@
+meta {
+  name: Authorization Form Update
+  type: http
+  seq: 3
+}
+
+put {
+  url: {{base_url}}/authorization_form/{{school_id}}/{{child_id}}
+  body: json
+  auth: bearer
+}
+
+params:path {
+  child_id: child_123
+}
+
+headers {
+  Content-Type: application/json
+  Authorization: Bearer {{token}}
+}
+
+auth:bearer {
+  token: {{auth_token}}
+}
+
+body:json {
+  {
+    "bank_routing": "string",
+    "bank_account": "string",
+    "driver_license": "string",
+    "state": "string",
+    "i": "string",
+    "parent_sign_ach": "string",
+    "parent_sign_date_ach": "string",
+    "admin_sign_ach": "string",
+    "admin_sign_date_ach": 0,
+    "ach_pointer": 0,
+    "created_by": "parent",
+    "created_at": "2025-08-30T10:07:43.118Z",
+    "updated_by": "string",
+    "updated_at": "2025-08-30T10:07:43.118Z",
+    "is_active": true
+  }
+}
+
+docs {
+  ## Authorization Form
+  
+  Updates ACH authorization form data.
+  
+  ### Path Parameters
+  - `school_id` (number, required): School identifier
+  - `child_id` (string, required): Child identifier
+  
+  ### Request Body
+  - `bank_routing` (string, required): Bank routing number
+  - `bank_account` (string, required): Bank account number
+  - `driver_license` (string, required): Driver's license number
+  - `state` (string, required): State abbreviation
+  - `parent_sign_date_ach` (string, required): Signature date
+  - `updated_by` (string, required): User making the update
+  
+  ### Response
+  Returns updated authorization form data
+}

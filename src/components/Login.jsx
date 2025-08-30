@@ -32,7 +32,7 @@ const Login = () => {
     try {
       // Get Auth0 token and headers
       const headers = await getAuthHeaders(getAccessTokenSilently);
-      
+
       // Call the API with Auth0 token
       const response = await fetch(`${api_base_url}/sign_in/check/${school_id}`, {
         method: 'POST',
