@@ -4,16 +4,10 @@ meta {
   seq: 3
 }
 
-delete {
+patch {
   url: {{base_url}}/student-form-repository/{{school_id}}/{{student_id}}/{{form_id}}/{{updated_by}}
   body: none
   auth: bearer
-}
-
-params:path {
-  student_id: student_123
-  form_id: form_456
-  updated_by: Admin
 }
 
 headers {
@@ -38,4 +32,6 @@ docs {
   
   ### Response
   Returns confirmation of form deletion
+  
+  ### No joins here.
 }
