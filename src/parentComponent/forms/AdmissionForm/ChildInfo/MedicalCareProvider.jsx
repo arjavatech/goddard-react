@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { toast } from 'sonner';
 import { FormInput } from './InputComponent';
 import { DownIcon,UpIcon } from '../../../../components/common/Arrows';
 import { api_base_url, school_id } from '@/utils/const';
@@ -124,7 +125,7 @@ policy_number: initialFormData.policy_number,
 
     const handleSave = async () => {
             if (!childId) {
-                alert('Error: Child ID is missing');
+                toast.error('Error: Child ID is missing');
                 return;
             }
     
@@ -157,10 +158,10 @@ policy_number: initialFormData.policy_number,
                 };
                 console.log(saveData) // Log the data being sent to the API for debugging pur)
                 await updateAdmissionData(saveData);
-                alert('Child details data saved successfully!');
+                toast.success('Child details data saved successfully!');
             } catch (error) {
                 console.error('Failed to save Child details:', error);
-                alert('Error saving Child details data. Please try again.');
+                toast.error('Error saving Child details data. Please try again.');
             }
         };
     

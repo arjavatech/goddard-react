@@ -1,157 +1,158 @@
 import React, { useState, useEffect } from 'react';
+import { toast } from 'sonner';
 
 import { FormInput } from './InputComponent';
-import { DownIcon,UpIcon } from '../../../../components/common/Arrows';
+import { DownIcon, UpIcon } from '../../../../components/common/Arrows';
 import { api_base_url, school_id } from '@/utils/const';
 
 const EmergencyContact = ({ openSection, setOpenSection, initialFormData, handleInputChange, childId }) => {
     const [formData, setFormData] = useState({
-              });
-        
-        
-            const handleChange = (e) => {
-            const { name, value } = e.target;
-        
-        
-            
-            // Update local state only - no API call
-            setFormData(prevState => ({
-              ...prevState,
-              [name]: value
-            }));
-          };
-        
-            useEffect(() => {
-              setFormData(prevState => ({
-                
-                ...prevState
-              }));
-            }, []);
-          
-            useEffect(() => {
-              if (initialFormData) {
-                const emergencyContacts = initialFormData;
-                console.log("emergencyContacts", emergencyContacts); 
-                setFormData(prevState => ({
-                  child_id: childId,
-                  
-                  emergencyContact1Name: emergencyContacts[0]?.child_emergency_contact_name || '',
-                  emergencyContact1Relationship: emergencyContacts[0]?.child_emergency_contact_relationship || '',
-                  emergencyContact1Phone: emergencyContacts[0]?.child_emergency_contact_telephone_number || '',
-                  emergencyContact1Street: emergencyContacts[0]?.child_emergency_contact_full_address || '',
-                  emergencyContact1City: emergencyContacts[0]?.child_emergency_contact_city_address || '',
-                  emergencyContact1State: emergencyContacts[0]?.child_emergency_contact_state_address || '',
-                  emergencyContact1Zip: emergencyContacts[0]?.child_emergency_contact_zip_address || '',
-                  emergencyContact2Name: emergencyContacts[1]?.child_emergency_contact_name || '',
-                  emergencyContact2Relationship: emergencyContacts[1]?.child_emergency_contact_relationship || '',
-                  emergencyContact2Phone: emergencyContacts[1]?.child_emergency_contact_telephone_number || '',
-                  emergencyContact2Street: emergencyContacts[1]?.child_emergency_contact_full_address || '',
-                  emergencyContact2City: emergencyContacts[1]?.child_emergency_contact_city_address || '',
-                  emergencyContact2State: emergencyContacts[1]?.child_emergency_contact_state_address || '',
-                  emergencyContact2Zip: emergencyContacts[1]?.child_emergency_contact_zip_address || '',
-                  emergencyContact3Name: emergencyContacts[2]?.child_emergency_contact_name || '',
-                  emergencyContact3Relationship: emergencyContacts[2]?.child_emergency_contact_relationship || '',
-                  emergencyContact3Phone: emergencyContacts[2]?.child_emergency_contact_telephone_number || '',
-                  emergencyContact3Street: emergencyContacts[2]?.child_emergency_contact_full_address || '',
-                  emergencyContact3City: emergencyContacts[2]?.child_emergency_contact_city_address || '',
-                  emergencyContact3State: emergencyContacts[2]?.child_emergency_contact_state_address || '',
-                  emergencyContact3Zip: emergencyContacts[2]?.child_emergency_contact_zip_address || '',
-                }));
-              } else {
-                setFormData(prevState => ({
-                  child_id: childId,
-                }));
-              }
-            }, [initialFormData, childId]);
-        
-            
-        
-              // API function to update admission form data
-              const updateAdmissionData = async (fieldData) => {
-                  if (!childId) {
-                      console.error('Child ID is required for API update');
-                      return;
-                  }
-          
-                  try {
-                      const response = await fetch(`${api_base_url}/admission_segment/${school_id}/${childId}`, {
-                          method: 'PUT',
-                          headers: {
-                              'Content-Type': 'application/json',
-                          },
-                          body: JSON.stringify(fieldData)
-                      });
-          
-                      if (!response.ok) {
-                          throw new Error(`Failed to update admission data: ${response.status}`);
-                      }
-          
-                      const result = await response.json();
-                      console.log('Admission data updated successfully:', result);
-                      return result;
-                  } catch (error) {
-                      console.error('Error updating admission data:', error);
-                      throw error;
-                  }
-              };
-        
-        // Function to check if at least one emergency contact is complete
-        const isFormComplete = () => {
-            const hasFirstContact = formData.emergencyContact1Name && 
-                                  formData.emergencyContact1Relationship && 
-                                  formData.emergencyContact1Phone;
-            return hasFirstContact;
-        };
+    });
 
-        const handleSave = async () => {
-                if (!childId) {
-                    alert('Error: Child ID is missing');
-                    return;
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+
+
+
+        // Update local state only - no API call
+        setFormData(prevState => ({
+            ...prevState,
+            [name]: value
+        }));
+    };
+
+    useEffect(() => {
+        setFormData(prevState => ({
+
+            ...prevState
+        }));
+    }, []);
+
+    useEffect(() => {
+        if (initialFormData) {
+            const emergencyContacts = initialFormData;
+            console.log("emergencyContacts", emergencyContacts);
+            setFormData(prevState => ({
+                child_id: childId,
+
+                emergencyContact1Name: emergencyContacts[0]?.child_emergency_contact_name || '',
+                emergencyContact1Relationship: emergencyContacts[0]?.child_emergency_contact_relationship || '',
+                emergencyContact1Phone: emergencyContacts[0]?.child_emergency_contact_telephone_number || '',
+                emergencyContact1Street: emergencyContacts[0]?.child_emergency_contact_full_address || '',
+                emergencyContact1City: emergencyContacts[0]?.child_emergency_contact_city_address || '',
+                emergencyContact1State: emergencyContacts[0]?.child_emergency_contact_state_address || '',
+                emergencyContact1Zip: emergencyContacts[0]?.child_emergency_contact_zip_address || '',
+                emergencyContact2Name: emergencyContacts[1]?.child_emergency_contact_name || '',
+                emergencyContact2Relationship: emergencyContacts[1]?.child_emergency_contact_relationship || '',
+                emergencyContact2Phone: emergencyContacts[1]?.child_emergency_contact_telephone_number || '',
+                emergencyContact2Street: emergencyContacts[1]?.child_emergency_contact_full_address || '',
+                emergencyContact2City: emergencyContacts[1]?.child_emergency_contact_city_address || '',
+                emergencyContact2State: emergencyContacts[1]?.child_emergency_contact_state_address || '',
+                emergencyContact2Zip: emergencyContacts[1]?.child_emergency_contact_zip_address || '',
+                emergencyContact3Name: emergencyContacts[2]?.child_emergency_contact_name || '',
+                emergencyContact3Relationship: emergencyContacts[2]?.child_emergency_contact_relationship || '',
+                emergencyContact3Phone: emergencyContacts[2]?.child_emergency_contact_telephone_number || '',
+                emergencyContact3Street: emergencyContacts[2]?.child_emergency_contact_full_address || '',
+                emergencyContact3City: emergencyContacts[2]?.child_emergency_contact_city_address || '',
+                emergencyContact3State: emergencyContacts[2]?.child_emergency_contact_state_address || '',
+                emergencyContact3Zip: emergencyContacts[2]?.child_emergency_contact_zip_address || '',
+            }));
+        } else {
+            setFormData(prevState => ({
+                child_id: childId,
+            }));
+        }
+    }, [initialFormData, childId]);
+
+
+
+    // API function to update admission form data
+    const updateAdmissionData = async (fieldData) => {
+        if (!childId) {
+            console.error('Child ID is required for API update');
+            return;
+        }
+
+        try {
+            const response = await fetch(`${api_base_url}/admission_segment/${school_id}/${childId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(fieldData)
+            });
+
+            if (!response.ok) {
+                throw new Error(`Failed to update admission data: ${response.status}`);
+            }
+
+            const result = await response.json();
+            console.log('Admission data updated successfully:', result);
+            return result;
+        } catch (error) {
+            console.error('Error updating admission data:', error);
+            throw error;
+        }
+    };
+
+    // Function to check if at least one emergency contact is complete
+    const isFormComplete = () => {
+        const hasFirstContact = formData.emergencyContact1Name &&
+            formData.emergencyContact1Relationship &&
+            formData.emergencyContact1Phone;
+        return hasFirstContact;
+    };
+
+    const handleSave = async () => {
+        if (!childId) {
+            toast.error('Error: Child ID is missing');
+            return;
+        }
+
+        try {
+            const emergency_contact_info = [
+                {
+                    child_emergency_contact_name: formData.emergencyContact1Name || '',
+                    child_emergency_contact_relationship: formData.emergencyContact1Relationship || '',
+                    child_emergency_contact_telephone_number: formData.emergencyContact1Phone || '',
+                    child_emergency_contact_full_address: formData.emergencyContact1Street || '',
+                    child_emergency_contact_city_address: formData.emergencyContact1City || '',
+                    child_emergency_contact_state_address: formData.emergencyContact1State || '',
+                    child_emergency_contact_zip_address: formData.emergencyContact1Zip || ''
+                },
+                {
+                    child_emergency_contact_name: formData.emergencyContact2Name || '',
+                    child_emergency_contact_relationship: formData.emergencyContact2Relationship || '',
+                    child_emergency_contact_telephone_number: formData.emergencyContact2Phone || '',
+                    child_emergency_contact_full_address: formData.emergencyContact2Street || '',
+                    child_emergency_contact_city_address: formData.emergencyContact2City || '',
+                    child_emergency_contact_state_address: formData.emergencyContact2State || '',
+                    child_emergency_contact_zip_address: formData.emergencyContact2Zip || ''
+                },
+                {
+                    child_emergency_contact_name: formData.emergencyContact3Name || '',
+                    child_emergency_contact_relationship: formData.emergencyContact3Relationship || '',
+                    child_emergency_contact_telephone_number: formData.emergencyContact3Phone || '',
+                    child_emergency_contact_full_address: formData.emergencyContact3Street || '',
+                    child_emergency_contact_city_address: formData.emergencyContact3City || '',
+                    child_emergency_contact_state_address: formData.emergencyContact3State || '',
+                    child_emergency_contact_zip_address: formData.emergencyContact3Zip || ''
                 }
-        
-                try {
-                    const emergency_contact_info = [
-                        {
-                            child_emergency_contact_name: formData.emergencyContact1Name || '',
-                            child_emergency_contact_relationship: formData.emergencyContact1Relationship || '',
-                            child_emergency_contact_telephone_number: formData.emergencyContact1Phone || '',
-                            child_emergency_contact_full_address: formData.emergencyContact1Street || '',
-                            child_emergency_contact_city_address: formData.emergencyContact1City || '',
-                            child_emergency_contact_state_address: formData.emergencyContact1State || '',
-                            child_emergency_contact_zip_address: formData.emergencyContact1Zip || ''
-                        },
-                        {
-                            child_emergency_contact_name: formData.emergencyContact2Name || '',
-                            child_emergency_contact_relationship: formData.emergencyContact2Relationship || '',
-                            child_emergency_contact_telephone_number: formData.emergencyContact2Phone || '',
-                            child_emergency_contact_full_address: formData.emergencyContact2Street || '',
-                            child_emergency_contact_city_address: formData.emergencyContact2City || '',
-                            child_emergency_contact_state_address: formData.emergencyContact2State || '',
-                            child_emergency_contact_zip_address: formData.emergencyContact2Zip || ''
-                        },
-                        {
-                            child_emergency_contact_name: formData.emergencyContact3Name || '',
-                            child_emergency_contact_relationship: formData.emergencyContact3Relationship || '',
-                            child_emergency_contact_telephone_number: formData.emergencyContact3Phone || '',
-                            child_emergency_contact_full_address: formData.emergencyContact3Street || '',
-                            child_emergency_contact_city_address: formData.emergencyContact3City || '',
-                            child_emergency_contact_state_address: formData.emergencyContact3State || '',
-                            child_emergency_contact_zip_address: formData.emergencyContact3Zip || ''
-                        }
-                    ];
-                    const saveData = {
-                        child_id: childId,
-                        school_id: school_id,
-                        emergency_contact_info: emergency_contact_info
-                    };
-                    console.log(saveData); // Log the data being sent to the API for debugging purposes
-                    await updateAdmissionData(saveData);
-                    alert('Child details data saved successfully!');
-                } catch (error) {
-                    console.error('Failed to save Child details:', error);
-                    alert('Error saving Child details data. Please try again.');
-                }
+            ];
+            const saveData = {
+                child_id: childId,
+                school_id: school_id,
+                emergency_contact_info: emergency_contact_info
             };
+            console.log(saveData); // Log the data being sent to the API for debugging purposes
+            await updateAdmissionData(saveData);
+            toast.success('Child details data saved successfully!');
+        } catch (error) {
+            console.error('Failed to save Child details:', error);
+            toast.error('Error saving Child details data. Please try again.');
+        }
+    };
     return (
         <>
             <div
@@ -167,7 +168,7 @@ const EmergencyContact = ({ openSection, setOpenSection, initialFormData, handle
                 }
                 onMouseEnter={(e) => {
                     e.currentTarget.style.backgroundColor = '#0F2D52';
-                     e.currentTarget.style.color = 'white';
+                    e.currentTarget.style.color = 'white';
                 }}
                 onMouseLeave={(e) => {
                     if (openSection !== 'emergencyContact') {
@@ -179,9 +180,9 @@ const EmergencyContact = ({ openSection, setOpenSection, initialFormData, handle
                 <div className="flex items-center space-x-3">
                     <div className="flex items-center space-x-3">
                         <h2 className="text-lg font-semibold">Emergency Contact</h2>
-                        <img 
-                            src={isFormComplete() ? "/image/tick.png" : "/image/circle-with.png"} 
-                            alt={isFormComplete() ? "Complete" : "Incomplete"} 
+                        <img
+                            src={isFormComplete() ? "/image/tick.png" : "/image/circle-with.png"}
+                            alt={isFormComplete() ? "Complete" : "Incomplete"}
                             className="w-5 h-5"
                         />
                     </div>
@@ -360,7 +361,7 @@ const EmergencyContact = ({ openSection, setOpenSection, initialFormData, handle
                     </div>
 
                     <div className="flex justify-center pt-4">
-                        <button 
+                        <button
                             onClick={handleSave}
                             className="bg-slate-700 text-white px-8 py-3 rounded-md hover:bg-slate-800 transition-colors"
                         >

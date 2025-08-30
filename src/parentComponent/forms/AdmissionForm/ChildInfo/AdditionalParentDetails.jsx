@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react';
 import { FormInput } from './InputComponent';
 import { DownIcon,UpIcon } from '../../../../components/common/Arrows';
 import { api_base_url, school_id } from '@/utils/const';
+import { toast } from 'sonner';
 
 const Additional_Parent_details = ({ openSection, setOpenSection, initialFormData, handleInputChange, childId }) => {
 
@@ -26,6 +27,8 @@ const Additional_Parent_details = ({ openSection, setOpenSection, initialFormDat
             parent_business_street_address: "",
             parent_business_telephone_number: ""
           });
+
+
     
     
         const handleChange = (e) => {
@@ -102,7 +105,7 @@ const Additional_Parent_details = ({ openSection, setOpenSection, initialFormDat
 
     const handleSave = async () => {
             if (!childId) {
-                alert('Error: Child ID is missing');
+                toast.error('Child ID is missing');
                 return;
             }
     
@@ -133,10 +136,10 @@ const Additional_Parent_details = ({ openSection, setOpenSection, initialFormDat
                 }};
                 console.log(saveData) // Log the data being sent to the API for debugging pur)
                 await updateAdmissionData(saveData);
-                alert('Child details data saved successfully!');
+                toast.success('Child details data saved successfully!');
             } catch (error) {
                 console.error('Failed to save Child details:', error);
-                alert('Error saving Child details data. Please try again.');
+                toast.error('Error saving Child details data. Please try again.');
             }
         };
     
@@ -144,22 +147,22 @@ const Additional_Parent_details = ({ openSection, setOpenSection, initialFormDat
     return (
         <>
             <div
-                className={`px-6 py-4 flex items-center justify-between cursor-pointer transition-colors ${openSection === 'parentDetails' ? 'text-white' : 'text-slate-700'
+                className={`px-6 py-4 flex items-center justify-between cursor-pointer transition-colors ${openSection === 'additionalParentDetails' ? 'text-white' : 'text-slate-700'
                     }`}
                 style={
-                    openSection === 'parentDetails'
+                    openSection === 'additionalParentDetails'
                         ? { backgroundColor: '#0F2D52', color: 'white' }
                         : { backgroundColor: '#DBEAFE' }
                 }
                 onClick={() =>
-                    setOpenSection(openSection === 'parentDetails' ? '' : 'parentDetails')
+                    setOpenSection(openSection === 'additionalParentDetails' ? '' : 'additionalParentDetails')
                 }
                 onMouseEnter={(e) => {
                     e.currentTarget.style.backgroundColor = '#0F2D52';
                      e.currentTarget.style.color = 'white';
                 }}
                 onMouseLeave={(e) => {
-                    if (openSection !== 'parentDetails') {
+                    if (openSection !== 'additionalParentDetails') {
                         e.currentTarget.style.backgroundColor = '#DBEAFE';
                         e.currentTarget.style.color = '#374151'; // Tailwind text-slate-700
                     }
@@ -176,12 +179,12 @@ const Additional_Parent_details = ({ openSection, setOpenSection, initialFormDat
                     </div>
                 </div>
                 <div className="text-xl transform transition-transform duration-200">
-                    {openSection === 'parentDetails' ? <DownIcon className="h-5 w-5 text-gray-500" /> : <UpIcon className="h-5 w-5 text-black" />}
+                    {openSection === 'additionalParentDetails' ? <DownIcon className="h-5 w-5 text-gray-500" /> : <UpIcon className="h-5 w-5 text-black" />}
                 </div>
             </div>
 
 
-            {openSection === 'parentDetails' && (
+            {openSection === 'additionalParentDetails' && (
                 <div className="p-6 space-y-6 bg-gray-50" style={{ border: '1px solid #314158' }} onClick={(e) => e.stopPropagation()}>
                     {/* Parent/Legal Guardian Name */}
                     <div>
@@ -230,6 +233,7 @@ const Additional_Parent_details = ({ openSection, setOpenSection, initialFormDat
                     </div>
                 </div>
             )}
+
         </>
     );
 };

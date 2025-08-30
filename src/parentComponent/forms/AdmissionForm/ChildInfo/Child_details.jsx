@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import { toast } from 'sonner';
 import { FormInput } from './InputComponent';
 import { DownIcon,UpIcon } from '../../../../components/common/Arrows';
 import { api_base_url, school_id } from '@/utils/const';
-import { useAuth0 } from '@auth0/auth0-react';
-import { getAuthHeaders } from '../../../../utils/auth';
 
 const Child_details = ({ openSection, setOpenSection, initialFormData, childId }) => {
-    const { getAccessTokenSilently } = useAuth0();
+
     
     const [formData, setFormData] = useState({
         child_first_name: '',
@@ -73,10 +72,11 @@ const Child_details = ({ openSection, setOpenSection, initialFormData, childId }
           }
   
           try {
-              const headers = await getAuthHeaders(getAccessTokenSilently);
               const response = await fetch(`${api_base_url}/admission_segment/${school_id}/${childId}`, {
                   method: 'PUT',
-                  headers,
+                  headers: {
+                      'Content-Type': 'application/json',
+                  },
                   body: JSON.stringify(fieldData)
               });
   
@@ -95,7 +95,7 @@ const Child_details = ({ openSection, setOpenSection, initialFormData, childId }
 
 const handleSave = async () => {
         if (!childId) {
-            alert('Error: Child ID is missing');
+            toast.error('Error: Child ID is missing');
             return;
         }
 
@@ -116,10 +116,10 @@ const handleSave = async () => {
             };
             console.log(saveData) // Log the data being sent to the API for debugging pur)
             await updateAdmissionData(saveData);
-            alert('Child details data saved successfully!');
+            toast.success('Child details data saved successfully!');
         } catch (error) {
             console.error('Failed to save Child details:', error);
-            alert('Error saving Child details data. Please try again.');
+            toast.error('Error saving Child details data. Please try again.');
         }
     };
 
