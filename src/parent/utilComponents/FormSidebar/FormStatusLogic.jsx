@@ -33,8 +33,17 @@ const useFormStatus = (activeChildId) => {
       setLoading(true);
 
       try {
-        // Get parent email from localStorage or context - you'll need to provide this
-        const parentEmail = localStorage.getItem('parentEmail') || 'pitchumaniece@gmail.com'; // Replace with actual parent email
+        // Get parent email from URL params with priority over localStorage
+        const urlParams = new URLSearchParams(window.location.search);
+        const urlEmail = urlParams.get('id');
+        const localEmail = localStorage.getItem('logged_in_email');
+        const parentEmail = urlEmail || localEmail;
+        
+        if (!parentEmail) {
+          throw new Error('No parent email available');
+        }
+        
+        console.log('FormStatusLogic: Using email for API call:', parentEmail);
         
         const headers = await getAuthHeaders(getAccessTokenSilently);
         const response = await fetch(`${api_base_url}/admission_child_personal/parent_email/${school_id}/${parentEmail}`, {

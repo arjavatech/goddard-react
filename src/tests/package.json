@@ -1,0 +1,24 @@
+{
+  "name": "@goddard-react/tests",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Test suite for Goddard React Parent Dashboard refactoring",
+  "scripts": {
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "test:coverage": "vitest --coverage",
+    "test:performance": "vitest run --reporter=verbose performance/",
+    "test:services": "vitest run --reporter=verbose services/",
+    "test:hooks": "vitest run --reporter=verbose hooks/",
+    "test:watch": "vitest --watch"
+  },
+  "devDependencies": {
+    "vitest": "^1.0.0",
+    "@testing-library/react": "^14.0.0",
+    "@testing-library/react-hooks": "^8.0.1",
+    "@testing-library/jest-dom": "^6.0.0",
+    "@vitejs/plugin-react": "^4.0.0",
+    "jsdom": "^23.0.0"
+  },
+  "testEnvironment": "jsdom"
+}

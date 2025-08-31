@@ -1,18 +1,18 @@
 {
   "mcpServers": {
-    "shadcn-ui": {
-      "type": "stdio",
-      "command": "npx",
-      "args": [
-        "@jpisnice/shadcn-ui-mcp-server"
-      ],
-      "env": {}
-    },
     "playwright": {
       "type": "stdio",
       "command": "npx",
       "args": [
         "@playwright/mcp@latest"
+      ],
+      "env": {}
+    },
+    "shadcn-ui": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "@jpisnice/shadcn-ui-mcp-server"
       ],
       "env": {}
     }
