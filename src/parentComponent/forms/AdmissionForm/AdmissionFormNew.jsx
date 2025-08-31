@@ -37,7 +37,7 @@ import ChildProfileForm from './ChildProfile/ChildProfile';
 import AdminSign from './AdminSign';
 import ParentSign from './ParentSign';
 
-const AdmissionFormNew = ({ selectedSubForm, initialFormData = null, childId = null }) => {
+const AdmissionFormNew = ({ selectedSubForm, initialFormData = null, childId = null, onSubmitSuccess }) => {
   const [activeTab, setActiveTab] = useState(selectedSubForm || 'Child Information');
   
   const formSections = [
@@ -159,31 +159,31 @@ const AdmissionFormNew = ({ selectedSubForm, initialFormData = null, childId = n
   const renderFormContent = () => {
     switch (activeTab) {
       case 'Child Information':
-        return <ChildInfo initialFormData={initialFormData} childId={childId} />;
+        return <ChildInfo initialFormData={initialFormData} childId={childId} onSubmitSuccess={onSubmitSuccess} />;
       case 'Child and Family History':
-        return <ChildandFamilyHistory initialFormData={initialFormData} childId={childId} />;
+        return <ChildandFamilyHistory initialFormData={initialFormData} childId={childId} onSubmitSuccess={onSubmitSuccess} />;
       case 'Immunization':
-        return <ImmunizationInstructions initialFormData={initialFormData} childId={childId} />;
+        return <ImmunizationInstructions initialFormData={initialFormData} childId={childId} onSubmitSuccess={onSubmitSuccess} />;
       case 'Child Profile':
-        return <ChildProfileForm initialFormData={initialFormData} childId={childId} />;
+        return <ChildProfileForm initialFormData={initialFormData} childId={childId} onSubmitSuccess={onSubmitSuccess} />;
       case 'Photo/Video Permission':
-        return <VideoPermission initialFormData={initialFormData} childId={childId} />;
+        return <VideoPermission initialFormData={initialFormData} childId={childId} onSubmitSuccess={onSubmitSuccess} />;
       case 'Pick-up Password':
-        return <PickUpPassword initialFormData={initialFormData} childId={childId} />;
+        return <PickUpPassword initialFormData={initialFormData} childId={childId} onSubmitSuccess={onSubmitSuccess} />;
       case 'Security & Policy':
-        return <SecurityPolicy initialFormData={initialFormData} childId={childId} />;
+        return <SecurityPolicy initialFormData={initialFormData} childId={childId} onSubmitSuccess={onSubmitSuccess} />;
       case 'Medical Transportation':
-        return <MedicalTransportationWaiver initialFormData={initialFormData} childId={childId} />;
+        return <MedicalTransportationWaiver initialFormData={initialFormData} childId={childId} onSubmitSuccess={onSubmitSuccess} />;
       case 'Health Policies':
-        return <HealthPolicies initialFormData={initialFormData} childId={childId} />;
+        return <HealthPolicies initialFormData={initialFormData} childId={childId} onSubmitSuccess={onSubmitSuccess} />;
       case 'Outside Engagements':
-        return <OutsideEngagements initialFormData={initialFormData} childId={childId} />;
+        return <OutsideEngagements initialFormData={initialFormData} childId={childId} onSubmitSuccess={onSubmitSuccess} />;
       case 'Social Media Approval':
-        return <SocialMediaReleaseForm initialFormData={initialFormData} childId={childId} />;
+        return <SocialMediaReleaseForm initialFormData={initialFormData} childId={childId} onSubmitSuccess={onSubmitSuccess} />;
       case 'Admin Signature':
-        return <AdminSign initialFormData={initialFormData} childId={childId} />;
+        return <AdminSign initialFormData={initialFormData} childId={childId} onSubmitSuccess={onSubmitSuccess} />;
       case 'Parent Signature':
-        return <ParentSign initialFormData={initialFormData} childId={childId} />;
+        return <ParentSign initialFormData={initialFormData} childId={childId} onSubmitSuccess={onSubmitSuccess} />;
       default:
         return (
           <Card>

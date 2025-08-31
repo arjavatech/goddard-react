@@ -1,181 +1,181 @@
-import { api_base_url, school_id } from "./const";
+// SIMPLIFIED Form Submission Utilities - No more complex DOM manipulation!
+// Standardized form submission with dashboard refresh integration
+import { api_base_url, school_id } from '@/utils/const';
+import { getAuthHeaders } from '@/utils/auth';
+import { toast } from 'sonner';
 
-// Form submission functions from all_form.js
-export const submitForm = (editID, number) => {
-  const form = document.getElementById("childInfoAdmission");
-  if (!form) return;
-  
-  const formData = new FormData(form);
-  const obj = Object.fromEntries(formData);
-  
-  const currentDate = new Date(obj.admin_sign_date_admission);
-  const epochTime = currentDate.getTime();
-  obj.admin_sign_date_admission = parseInt(epochTime, 10);
-  
-  obj.form_year_admission = new Date().getFullYear().toString();
-  obj.pointer = number;
-  
-  const bottleFedValue = document.querySelector('input[name="bottle_fed"]:checked')?.value || null;
-  const breastFedValue = document.querySelector('input[name="breast_fed"]:checked')?.value || null;
-  obj.bottle_fed = bottleFedValue;
-  obj.breast_fed = breastFedValue;
-  
-  const response = JSON.parse(localStorage.getItem("responseData") || '{}');
-  const outputobject = {
-    bottle_fed: obj.bottle_fed,
-    breast_fed: obj.breast_fed,
-    classid: response.classid
-  };
-  
-  outputobject.primary_parent_email = editID || localStorage.getItem('logged_in_email');
-  const child_id_val = localStorage.getItem('child_id');
-  if (child_id_val) outputobject.child_id = child_id_val;
-  
-  Object.keys(obj).forEach(key => {
-    if (obj[key] !== response[key] && obj[key] !== "") {
-      outputobject[key] = obj[key];
-    }
-  });
-  
-  // Build parent info objects
-  if (response.primary_parent_info) {
-    outputobject.primary_parent_info = {
-      parent_id: response.primary_parent_info.parent_id,
-      parent_name: obj.parent_name,
-      parent_street_address: obj.parent_street_address,
-      parent_city_address: obj.parent_city_address,
-      parent_state_address: obj.parent_state_address,
-      parent_zip_address: obj.parent_zip_address,
-      home_telephone_number: obj.home_telephone_number,
-      business_name: obj.business_name,
-      work_hours_from: obj.work_hours_from,
-      work_hours_to: obj.work_hours_to,
-      business_telephone_number: obj.business_telephone_number,
-      business_cell_number: obj.business_cell_number,
-      parent_email: obj.primary_parent_email
-    };
+/**
+ * Submit form data to appropriate API endpoint
+ * @param {number} childId - Child ID
+ * @param {object} formData - Form data to submit
+ * @param {string} formType - Type of form (admission, authorization, parentHandbook, enrollment)
+ * @param {Function} getAccessTokenSilently - Auth0 token function
+ * @returns {Promise} API response
+ */
+export const submitFormData = async (childId, formData, formType, getAccessTokenSilently) => {
+  if (!childId || !formData || !formType) {
+    throw new Error('Missing required parameters for form submission');
   }
-  
-  // Submit form data
-  const xhr = new XMLHttpRequest();
-  xhr.onload = () => {
-    if (xhr.status === 200) {
-      const successMsg = document.querySelector(".success-msg");
-      if (successMsg) {
-        successMsg.style.display = 'block';
-        setTimeout(() => {
-          successMsg.style.display = 'none';
-          sessionStorage.setItem('putcallId', localStorage.getItem('child_id'));
-          window.location.href = `./parent_dashboard.html?id=${editID}`;
-        }, 3000);
-      }
-    } else {
-      const errorMsg = document.querySelector(".error-msg");
-      if (errorMsg) {
-        errorMsg.style.display = 'block';
-        setTimeout(() => errorMsg.style.display = 'none', 3000);
-      }
-    }
+
+  console.log('📝 Submitting form data:', { childId, formType, dataKeys: Object.keys(formData) });
+
+  // API endpoint mapping - standardized across all forms
+  const endpoints = {
+    admission: `/admission_segment/${school_id}/${childId}`,
+    authorization: `/authorization_form/${school_id}/${childId}`,
+    parentHandbook: `/parent_handbook/${school_id}/${childId}`,
+    enrollment: `/enrollment_form/${school_id}/${childId}`
   };
-  xhr.open("PUT", `${api_base_url}/admission_segment/${school_id}/${child_id_val}`);
-  xhr.setRequestHeader("Content-Type", "application/json");
-  xhr.send(JSON.stringify(outputobject));
+
+  const endpoint = endpoints[formType];
+  if (!endpoint) {
+    throw new Error(`Unknown form type: ${formType}`);
+  }
+
+  try {
+    const headers = await getAuthHeaders(getAccessTokenSilently);
+    const startTime = performance.now();
+    
+    const response = await fetch(`${api_base_url}${endpoint}`, {
+      method: 'PUT',
+      headers,
+      body: JSON.stringify(formData)
+    });
+
+    const submitTime = performance.now() - startTime;
+    console.log(`📊 Form submission time: ${submitTime.toFixed(2)}ms`);
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Form submission failed: ${response.status} - ${errorText}`);
+    }
+
+    const result = await response.json();
+    console.log('✅ Form data submitted successfully:', result);
+    
+    return result;
+  } catch (error) {
+    console.error('❌ Form submission failed:', error);
+    throw error;
+  }
 };
 
-export const authorizationSubmitForm = (editID, number) => {
-  const form = document.getElementById("childInfoAuthorization");
-  if (!form) return;
-  
-  const formData = new FormData(form);
-  const obj = Object.fromEntries(formData);
-  
-  const currentDate = new Date(obj.admin_sign_date_ach);
-  obj.admin_sign_date_ach = parseInt(currentDate.getTime(), 10);
-  obj.form_year_ach = new Date().getFullYear().toString();
-  obj.pointer = number;
-  
-  const response = JSON.parse(localStorage.getItem("responseData") || '{}');
-  const outputobject = {};
-  outputobject.primary_parent_email = editID || localStorage.getItem('logged_in_email');
-  const child_id_val = localStorage.getItem('child_id');
-  if (child_id_val) outputobject.child_id = child_id_val;
-  
-  Object.keys(obj).forEach(key => {
-    if (obj[key] !== response[key] && obj[key] !== "") {
-      outputobject[key] = obj[key];
-    }
-  });
-  
-  const xhr = new XMLHttpRequest();
-  xhr.onload = () => {
-    if (xhr.status === 200) {
-      const successMsg = document.querySelector(".success-msg");
-      if (successMsg) {
-        successMsg.style.display = 'block';
-        setTimeout(() => {
-          successMsg.style.display = 'none';
-          sessionStorage.setItem('putcallId', localStorage.getItem('child_id'));
-          window.location.href = `./parent_dashboard.html?id=${editID}`;
-        }, 3000);
+/**
+ * Mark form as completed in the system
+ * @param {number} childId - Child ID
+ * @param {string} formType - Form type identifier
+ * @param {Function} getAccessTokenSilently - Auth0 token function
+ * @returns {Promise} API response
+ */
+export const markFormCompleted = async (childId, formType, getAccessTokenSilently) => {
+  if (!childId || !formType) {
+    throw new Error('Missing required parameters for form completion');
+  }
+
+  console.log('✅ Marking form as completed:', { childId, formType });
+
+  try {
+    const headers = await getAuthHeaders(getAccessTokenSilently);
+    
+    const response = await fetch(
+      `${api_base_url}/admission_child_personal/completed_form_status/${school_id}/${childId}`,
+      {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({
+          child_id: childId,
+          formname: formType,
+          completedTimestamp: new Date().toISOString()
+        })
       }
-    } else {
-      const errorMsg = document.querySelector(".error-msg");
-      if (errorMsg) {
-        errorMsg.style.display = 'block';
-        setTimeout(() => errorMsg.style.display = 'none', 3000);
-      }
+    );
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Failed to mark form as completed: ${response.status} - ${errorText}`);
     }
-  };
-  xhr.open("PUT", `${api_base_url}/authorization_form/${school_id}/${child_id_val}`);
-  xhr.setRequestHeader("Content-Type", "application/json");
-  xhr.send(JSON.stringify(outputobject));
+
+    const result = await response.json();
+    console.log('✅ Form marked as completed:', result);
+    
+    return result;
+  } catch (error) {
+    console.error('❌ Failed to mark form as completed:', error);
+    throw error;
+  }
 };
 
-export const enrollmentSubmitForm = (editID, number) => {
-  const form = document.getElementById("childInfoEnrollment");
-  if (!form) return;
+/**
+ * Complete form submission process
+ * Submits form data, marks as completed, and triggers dashboard refresh
+ * @param {number} childId - Child ID
+ * @param {object} formData - Form data
+ * @param {string} formType - Form type
+ * @param {Function} getAccessTokenSilently - Auth0 token function
+ * @param {Function} onSuccess - Success callback (triggers dashboard refresh)
+ * @returns {Promise<boolean>} Success status
+ */
+export const submitAndCompleteForm = async (
+  childId, 
+  formData, 
+  formType, 
+  getAccessTokenSilently,
+  onSuccess = null
+) => {
+  const startTime = performance.now();
   
-  const formData = new FormData(form);
-  const obj = Object.fromEntries(formData);
-  
-  const currentDate = new Date(obj.admin_sign_date_enroll);
-  obj.admin_sign_date_enroll = parseInt(currentDate.getTime(), 10);
-  obj.form_year_enroll = new Date().getFullYear().toString();
-  obj.pointer = number;
-  
-  const response = JSON.parse(localStorage.getItem("responseData") || '{}');
-  const outputobject = {};
-  outputobject.primary_parent_email = editID || localStorage.getItem('logged_in_email');
-  const child_id_val = localStorage.getItem('child_id');
-  if (child_id_val) outputobject.child_id = child_id_val;
-  
-  Object.keys(obj).forEach(key => {
-    if (obj[key] !== response[key] && obj[key] !== "") {
-      outputobject[key] = obj[key];
+  try {
+    console.log('🚀 Starting complete form submission process...');
+
+    // Step 1: Submit form data
+    await submitFormData(childId, formData, formType, getAccessTokenSilently);
+    
+    // Step 2: Mark as completed
+    await markFormCompleted(childId, formType, getAccessTokenSilently);
+    
+    const totalTime = performance.now() - startTime;
+    console.log(`⚡ Complete form submission finished in ${totalTime.toFixed(2)}ms`);
+    
+    // Step 3: Show success message
+    const formDisplayName = formatFormName(formType);
+    toast.success(`${formDisplayName} submitted successfully!`, {
+      duration: 4000,
+      description: 'Your form has been saved and marked as completed.'
+    });
+    
+    // Step 4: Trigger dashboard refresh (this will refresh all data with single API call)
+    if (onSuccess && typeof onSuccess === 'function') {
+      console.log('🔄 Triggering dashboard refresh...');
+      onSuccess();
     }
-  });
-  
-  const xhr = new XMLHttpRequest();
-  xhr.onload = () => {
-    if (xhr.status === 200) {
-      const successMsg = document.querySelector(".success-msg");
-      if (successMsg) {
-        successMsg.style.display = 'block';
-        setTimeout(() => {
-          successMsg.style.display = 'none';
-          sessionStorage.setItem('putcallId', localStorage.getItem('child_id'));
-          window.location.href = `./parent_dashboard.html?id=${editID}`;
-        }, 3000);
-      }
-    } else {
-      const errorMsg = document.querySelector(".error-msg");
-      if (errorMsg) {
-        errorMsg.style.display = 'block';
-        setTimeout(() => errorMsg.style.display = 'none', 3000);
-      }
-    }
+    
+    return true;
+  } catch (error) {
+    console.error('❌ Form submission process failed:', error);
+    
+    // Show user-friendly error message
+    const formDisplayName = formatFormName(formType);
+    toast.error(`Failed to submit ${formDisplayName}`, {
+      duration: 6000,
+      description: error.message || 'Please try again or contact support if the problem persists.'
+    });
+    
+    return false;
+  }
+};
+
+/**
+ * Format form type for display
+ * @param {string} formType - Form type identifier
+ * @returns {string} Formatted form name
+ */
+export const formatFormName = (formType) => {
+  const formNames = {
+    admission: 'Admission Form',
+    authorization: 'Authorization Form',
+    parentHandbook: 'Parent Handbook',
+    enrollment: 'Enrollment Agreement'
   };
-  xhr.open("PUT", `${api_base_url}/enrollment_form/${school_id}/${child_id_val}`);
-  xhr.setRequestHeader("Content-Type", "application/json");
-  xhr.send(JSON.stringify(outputobject));
+
+  return formNames[formType] || formType.replace(/([A-Z])/g, ' $1').trim();
 };

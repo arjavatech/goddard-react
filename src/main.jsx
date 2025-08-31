@@ -6,8 +6,10 @@ import ApplicationStatusNew from './ApplicationStatusNew.jsx'
 import './index.css'
 import Login from './components/Login.jsx'
 import { Toaster } from '@/components/ui/sonner'
-// import ParentDashboard from './parent/Components/ParentDashboard.jsx'
-import ParentDashboard from './parentComponent/ParentDashboardWrapper.jsx'
+// OLD: Complex wrapper with feature flags and caching
+// import ParentDashboard from './parentComponent/ParentDashboardWrapper.jsx'
+// NEW: Simple single API call dashboard
+import ParentDashboard from './components/ParentDashboardSimple.jsx'
 import InviteParentNew from './InviteParentNew.jsx'
 import ParentDetailsNew from './ParentDetailsNew.jsx'
 import FormsRepositoryNew from './FormsRepositoryNew.jsx'

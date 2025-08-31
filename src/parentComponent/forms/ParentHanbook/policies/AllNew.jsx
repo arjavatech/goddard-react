@@ -18,6 +18,8 @@ import {
   Info
 } from 'lucide-react';
 import { toast, Toaster } from 'sonner';
+import { useAuth0 } from '@auth0/auth0-react';
+import { submitAndCompleteForm } from '@/utils/formSubmission';
 
 // Import existing policy components
 import MissionStatement from './MissionStatement';
@@ -39,7 +41,7 @@ import ExpulsionPolicy from './ExpulsionPolicy';
 import AddressingIndividualChildConcern from './AddressingIndividualChildConcern';
 import FinalWord from './FinalWord';
 
-const ParentHandbookNew = ({ selectedSubForm = null, initialFormData = null, childId = null }) => {
+const ParentHandbookNew = ({ selectedSubForm = null, initialFormData = null, childId = null, onSubmitSuccess }) => {
   const [activeTab, setActiveTab] = useState(selectedSubForm ? getTabFromSubForm(selectedSubForm) : 'policies');
   const [openSection, setOpenSection] = useState('');
   const [formData, setFormData] = useState({
@@ -84,34 +86,8 @@ const ParentHandbookNew = ({ selectedSubForm = null, initialFormData = null, chi
     }
   }
 
-  // API function to update parent handbook data
-  const updateParentHandbookData = async (fieldData) => {
-    if (!childId) {
-      toast.error('Child ID is required for API update');
-      return;
-    }
-
-    try {
-      const response = await fetch(`https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/parent_handbook/update/${childId}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(fieldData)
-      });
-
-      if (!response.ok) {
-        throw new Error(`Failed to update parent handbook data: ${response.status}`);
-      }
-
-      const result = await response.json();
-      console.log('Parent handbook data updated successfully:', result);
-      return result;
-    } catch (error) {
-      console.error('Error updating parent handbook data:', error);
-      throw error;
-    }
-  };
+  // Use standardized form submission
+  const { getAccessTokenSilently } = useAuth0();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -183,8 +159,17 @@ const ParentHandbookNew = ({ selectedSubForm = null, initialFormData = null, chi
         finalword_agreement: formData.finalword_agreement
       };
 
-      await updateParentHandbookData(saveData);
-      toast.success('Parent handbook data saved successfully!');
+      const success = await submitAndCompleteForm(
+        childId, 
+        saveData, 
+        'parentHandbook', 
+        getAccessTokenSilently,
+        onSubmitSuccess
+      );
+      
+      if (success) {
+        console.log('✅ Parent handbook saved and dashboard will refresh');
+      }
     } catch (error) {
       console.error('Failed to save parent handbook:', error);
       toast.error('Error saving parent handbook data. Please try again.');
@@ -210,8 +195,17 @@ const ParentHandbookNew = ({ selectedSubForm = null, initialFormData = null, chi
           parent_sign_date_handbook: new Date().toLocaleDateString('en-CA')
         };
 
-        await updateParentHandbookData(saveData);
-        toast.success('Parent signature saved successfully!');
+        const success = await submitAndCompleteForm(
+          childId, 
+          saveData, 
+          'parentHandbook', 
+          getAccessTokenSilently,
+          onSubmitSuccess
+        );
+        
+        if (success) {
+          console.log('✅ Parent handbook parent signature submitted and dashboard will refresh');
+        }
       } else if (type === 'admin') {
         if (!formData.admin_sign_handbook || formData.admin_sign_handbook === '') {
           toast.error('Error: Admin signature is missing');
@@ -245,8 +239,17 @@ const ParentHandbookNew = ({ selectedSubForm = null, initialFormData = null, chi
           admin_sign_date_handbook: epochValue
         };
 
-        await updateParentHandbookData(saveData);
-        toast.success('Admin signature saved successfully!');
+        const success = await submitAndCompleteForm(
+          childId, 
+          saveData, 
+          'parentHandbook', 
+          getAccessTokenSilently,
+          onSubmitSuccess
+        );
+        
+        if (success) {
+          console.log('✅ Parent handbook admin signature submitted and dashboard will refresh');
+        }
       }
     } catch (error) {
       console.error('Failed to save parent handbook:', error);

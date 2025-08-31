@@ -18,24 +18,10 @@ import {
   Send
 } from 'lucide-react';
 import { toast, Toaster } from 'sonner';
-import { api_base_url, school_id } from '@/utils/const';
 import { useAuth0 } from '@auth0/auth0-react';
+import { submitAndCompleteForm } from '@/utils/formSubmission';
 
-const getAuthHeaders = async (getAccessTokenSilently) => {
-  try {
-    const token = await getAccessTokenSilently();
-    return {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`,
-    };
-  } catch (error) {
-    return {
-      'Content-Type': 'application/json',
-    };
-  }
-};
-
-const AuthorizationFormNew = ({ selectedSubForm = null, initialFormData = null, childId = null }) => {
+const AuthorizationFormNew = ({ selectedSubForm = null, initialFormData = null, childId = null, onSubmitSuccess }) => {
   const [activeTab, setActiveTab] = useState(selectedSubForm ? getTabFromSubForm(selectedSubForm) : 'ach');
   const [formData, setFormData] = useState({
     child_id: '',
@@ -120,34 +106,8 @@ const AuthorizationFormNew = ({ selectedSubForm = null, initialFormData = null, 
     { value: 'WY', label: 'Wyoming' }
   ];
 
-  // API function to update authorization form data
-  const updateAuthorizationData = async (fieldData) => {
-    if (!childId) {
-      toast.error('Child ID is required for API update');
-      return;
-    }
-
-    try {
-      const response = await fetch(`${api_base_url}/authorization_form/${school_id}/${childId}`, {
-        method: 'PUT',
-        headers: {
-          ...(await getAuthHeaders(getAccessTokenSilently)),
-        },
-        body: JSON.stringify(fieldData)
-      });
-
-      if (!response.ok) {
-        throw new Error(`Failed to update authorization data: ${response.status}`);
-      }
-
-      const result = await response.json();
-      console.log('Authorization data updated successfully:', result);
-      return result;
-    } catch (error) {
-      console.error('Error updating authorization data:', error);
-      throw error;
-    }
-  };
+  // Use standardized form submission
+  const { getAccessTokenSilently } = useAuth0();
 
   const handleChange = (name, value) => {
     if (name === 'admin_sign_date_ach') {
@@ -195,8 +155,17 @@ const AuthorizationFormNew = ({ selectedSubForm = null, initialFormData = null, 
         i: formData.i
       };
 
-      await updateAuthorizationData(saveData);
-      toast.success('Authorization form data saved successfully!');
+      const success = await submitAndCompleteForm(
+        childId, 
+        saveData, 
+        'authorization', 
+        getAccessTokenSilently,
+        onSubmitSuccess
+      );
+      
+      if (success) {
+        console.log('✅ Authorization form saved and dashboard will refresh');
+      }
     } catch (error) {
       console.error('Failed to save authorization form:', error);
       toast.error('Error saving authorization form data. Please try again.');
@@ -246,8 +215,17 @@ const AuthorizationFormNew = ({ selectedSubForm = null, initialFormData = null, 
         };
       }
 
-      await updateAuthorizationData(saveData);
-      toast.success('Authorization form data saved successfully!');
+      const success = await submitAndCompleteForm(
+        childId, 
+        saveData, 
+        'authorization', 
+        getAccessTokenSilently,
+        onSubmitSuccess
+      );
+      
+      if (success) {
+        console.log(`✅ Authorization ${type} signature submitted and dashboard will refresh`);
+      }
     } catch (error) {
       console.error('Failed to save authorization form:', error);
       toast.error('Error saving authorization form data. Please try again.');

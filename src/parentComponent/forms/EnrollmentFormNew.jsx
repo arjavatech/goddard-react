@@ -26,22 +26,9 @@ import {
 } from 'lucide-react';
 import { toast, Toaster } from 'sonner';
 import { useAuth0 } from '@auth0/auth0-react';
+import { submitAndCompleteForm } from '@/utils/formSubmission';
 
-const getAuthHeaders = async (getAccessTokenSilently) => {
-  try {
-    const token = await getAccessTokenSilently();
-    return {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`,
-    };
-  } catch (error) {
-    return {
-      'Content-Type': 'application/json',
-    };
-  }
-};
-
-const EnrollmentFormNew = ({ selectedSubForm = null, initialFormData = null, childId = null }) => {
+const EnrollmentFormNew = ({ selectedSubForm = null, initialFormData = null, childId = null, onSubmitSuccess }) => {
   const { getAccessTokenSilently } = useAuth0();
   const [activeTab, setActiveTab] = useState(selectedSubForm ? getTabFromSubForm(selectedSubForm) : 'enrollment');
   const [formData, setFormData] = useState({
@@ -91,32 +78,7 @@ const EnrollmentFormNew = ({ selectedSubForm = null, initialFormData = null, chi
     }
   }
 
-  // API function to update enrollment form data
-  const updateEnrollmentData = async (fieldData) => {
-    if (!childId) {
-      console.error('Child ID is required for API update');
-      return;
-    }
-
-    try {
-      const response = await fetch(`https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/enrollment_form/update/${childId}`, {
-        method: 'PUT',
-        headers: await getAuthHeaders(getAccessTokenSilently),
-        body: JSON.stringify(fieldData)
-      });
-
-      if (!response.ok) {
-        throw new Error(`Failed to update enrollment data: ${response.status}`);
-      }
-
-      const result = await response.json();
-      console.log('Enrollment data updated successfully:', result);
-      return result;
-    } catch (error) {
-      console.error('Error updating enrollment data:', error);
-      throw error;
-    }
-  };
+  // Use standardized form submission
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -161,8 +123,17 @@ const EnrollmentFormNew = ({ selectedSubForm = null, initialFormData = null, chi
         half_day: formData.half_day.toString()
       };
 
-      await updateEnrollmentData(saveData);
-      toast.success('Enrollment form data saved successfully!');
+      const success = await submitAndCompleteForm(
+        childId, 
+        saveData, 
+        'enrollment', 
+        getAccessTokenSilently,
+        onSubmitSuccess
+      );
+      
+      if (success) {
+        console.log('✅ Enrollment form saved and dashboard will refresh');
+      }
     } catch (error) {
       console.error('Failed to save enrollment form:', error);
       toast.error('Error saving enrollment form data. Please try again.');
@@ -188,8 +159,17 @@ const EnrollmentFormNew = ({ selectedSubForm = null, initialFormData = null, chi
           parent_sign_date_enroll: new Date().toLocaleDateString('en-CA')
         };
 
-        await updateEnrollmentData(saveData);
-        toast.success('Parent signature saved successfully!');
+        const success = await submitAndCompleteForm(
+          childId, 
+          saveData, 
+          'enrollment', 
+          getAccessTokenSilently,
+          onSubmitSuccess
+        );
+        
+        if (success) {
+          console.log('✅ Enrollment parent signature submitted and dashboard will refresh');
+        }
       } else if (type === 'admin') {
         if (!formData.admin_sign_enroll || formData.admin_sign_enroll === '') {
           toast.error('Error: Admin signature is missing');
@@ -229,8 +209,17 @@ const EnrollmentFormNew = ({ selectedSubForm = null, initialFormData = null, chi
           admin_sign_date_enroll: epochValue
         };
 
-        await updateEnrollmentData(saveData);
-        toast.success('Admin signature saved successfully!');
+        const success = await submitAndCompleteForm(
+          childId, 
+          saveData, 
+          'enrollment', 
+          getAccessTokenSilently,
+          onSubmitSuccess
+        );
+        
+        if (success) {
+          console.log('✅ Enrollment admin signature submitted and dashboard will refresh');
+        }
       }
     } catch (error) {
       console.error('Failed to save form:', error);
