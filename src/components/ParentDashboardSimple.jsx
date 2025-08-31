@@ -40,6 +40,7 @@ const ParentDashboardSimple = () => {
     completedForms,
     incompleteForms,
     formData,
+    formStatus, // NEW: Form status for sidebar
     switchChild,
     refresh,
     getWelcomeMessage,
@@ -262,6 +263,9 @@ const ParentDashboardSimple = () => {
               onSubFormChange={setSelectedSubForm}
               selectedSubForm={selectedSubForm}
               incompleteForms={incompleteForms}
+              // NEW: Pass form status to avoid duplicate API call
+              externalFormStatus={formStatus}
+              externalLoading={loading}
             />
           </div>
 

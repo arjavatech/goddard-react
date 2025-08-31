@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
 import { getAuthHeaders } from '@/utils/auth';
 
-const useFormStatus = (activeChildId) => {
+const useFormStatus = (activeChildId, shouldFetch = true) => {
   const { getAccessTokenSilently } = useAuth0();
   const [openSection, setOpenSection] = useState("enrollment");
   const [formStatus, setFormStatus] = useState({});
@@ -27,9 +27,13 @@ const useFormStatus = (activeChildId) => {
   };
 
   useEffect(() => {
-    if (!activeChildId) return;
+    if (!activeChildId || !shouldFetch) {
+      console.log('⏭️ Skipping FormStatusLogic API call - data provided externally');
+      return;
+    }
 
     const fetchFormStatus = async () => {
+      console.log('🔄 FormStatusLogic making API call (fallback mode)');
       setLoading(true);
 
       try {
@@ -362,7 +366,7 @@ const useFormStatus = (activeChildId) => {
     };
 
     fetchFormStatus();
-  }, [activeChildId]);
+  }, [activeChildId, shouldFetch]);
 
   return { formStatus, handleToggle, openSection, toggleCompleted, loading };
 };

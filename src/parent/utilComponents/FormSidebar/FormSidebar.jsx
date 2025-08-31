@@ -11,9 +11,18 @@ const FormSidebar = ({
   onToggleCompleted,
   onSubFormChange,
   incompleteForms,
+  // NEW: Accept external form status to avoid API call
+  externalFormStatus = null,
+  externalLoading = false,
 }) => {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
-  const { formStatus, handleToggle, openSection, toggleCompleted, loading } = useFormStatus(activeChildId);
+  // Use external form status if provided, otherwise fall back to useFormStatus hook
+  const hookData = useFormStatus(activeChildId, !externalFormStatus); // Skip API call if external data provided
+  const formStatus = externalFormStatus || hookData.formStatus;
+  const handleToggle = hookData.handleToggle;
+  const openSection = hookData.openSection;
+  const toggleCompleted = hookData.toggleCompleted;
+  const loading = externalLoading || hookData.loading;
 
   const availableFormSections = formSections.filter(section => {
     if (incompleteForms !== undefined && Array.isArray(incompleteForms)) {
@@ -49,7 +58,7 @@ const FormSidebar = ({
       {loading && (
         <div className="text-center py-4">
           <div className="inline-block animate-spin rounded-full h-6 w-6 border-b-2 border-[#0F2D52]"></div>
-          <p className="mt-2 text-sm">Loading forms...</p>
+          <p className="mt-2 text-sm text-gray-600">Loading forms status...</p>
         </div>
       )}
 

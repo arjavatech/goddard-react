@@ -6,6 +6,58 @@ import { api_base_url, school_id } from '@/utils/const';
 import { getAuthHeaders } from '@/utils/auth';
 import { toast } from 'sonner';
 
+// Simplified form status calculator for FormSidebar
+const calculateFormStatus = (formData, completedForms) => {
+  const isValidValue = (value) => {
+    return value !== undefined && value !== null && value !== '' && value !== false;
+  };
+
+  // Basic form completion checks (simplified from FormStatusLogic)
+  const enrollment = {
+    completed: completedForms.some(f => f.formname === 'enrollment_form')
+  };
+  
+  const authorization = {
+    completed: completedForms.some(f => f.formname === 'authorization_form')
+  };
+  
+  const parentHandbook = {
+    completed: completedForms.some(f => f.formname === 'parent_handbook')
+  };
+  
+  const admission = {
+    completed: completedForms.some(f => f.formname === 'admission_form')
+  };
+
+  // Check for basic field completion (simplified validation)
+  const enrollmentBasic = formData.enrollment_form && 
+    isValidValue(formData.enrollment_form.point_one_field_three);
+  
+  const authorizationBasic = formData.authorization_form && 
+    isValidValue(formData.authorization_form.bank_routing);
+  
+  const handbookBasic = formData.parent_handbook && 
+    isValidValue(formData.parent_handbook.welcome_goddard_agreement);
+  
+  const admissionBasic = formData.admission_form && 
+    isValidValue(formData.admission_form.nick_name);
+
+  return {
+    enrollment: {
+      completed: enrollment.completed || enrollmentBasic
+    },
+    authorization: {
+      completed: authorization.completed || authorizationBasic
+    },
+    parentHandbook: {
+      completed: parentHandbook.completed || handbookBasic
+    },
+    admission: {
+      completed: admission.completed || admissionBasic
+    }
+  };
+};
+
 export const useParentData = (email) => {
   const { getAccessTokenSilently } = useAuth0();
   
@@ -55,20 +107,30 @@ export const useParentData = (email) => {
       }
 
       // Transform API data for frontend use
-      const transformedChildren = data.map(child => ({
-        id: child.child_id,
-        firstName: child.child_first_name,
-        lastName: child.child_last_name,
-        completedForms: child.CompletedFormStatus || [],
-        incompleteForms: child.InCompletedFormStatus || [],
-        formData: child.child_information || {},
-        stats: {
-          total: 4, // admission, authorization, handbook, enrollment
-          completed: (child.CompletedFormStatus || []).length,
-          incomplete: (child.InCompletedFormStatus || []).length,
-          progress: Math.round(((child.CompletedFormStatus || []).length / 4) * 100)
-        }
-      }));
+      const transformedChildren = data.map(child => {
+        const completedForms = child.CompletedFormStatus || [];
+        const incompleteForms = child.InCompletedFormStatus || [];
+        const formData = child.child_information || {};
+        
+        // Calculate basic form status for FormSidebar (simplified version)
+        const formStatus = calculateFormStatus(formData, completedForms);
+        
+        return {
+          id: child.child_id,
+          firstName: child.child_first_name,
+          lastName: child.child_last_name,
+          completedForms,
+          incompleteForms,
+          formData,
+          formStatus, // Add calculated form status
+          stats: {
+            total: 4, // admission, authorization, handbook, enrollment
+            completed: completedForms.length,
+            incomplete: incompleteForms.length,
+            progress: Math.round((completedForms.length / 4) * 100)
+          }
+        };
+      });
 
       // Set active child from session storage or first child
       const sessionChildId = sessionStorage.getItem('putcallId');
@@ -182,6 +244,7 @@ export const useParentData = (email) => {
     completedForms: activeChild?.completedForms || [],
     incompleteForms: activeChild?.incompleteForms || [],
     formData: activeChild?.formData || {},
+    formStatus: activeChild?.formStatus || {},
     
     // Actions
     switchChild,
