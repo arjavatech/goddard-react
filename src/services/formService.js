@@ -61,7 +61,7 @@ export const formService = {
   async submitCompletedForm(childId, formName, getAccessTokenSilently) {
     const headers = await getAuthHeaders(getAccessTokenSilently);
     const response = await fetch(`${api_base_url}/admission_child_personal/completed_form_status/${school_id}/${childId}`, {
-      method: 'POST',
+      method: 'PUT',
       headers,
       body: JSON.stringify({
         child_id: childId,

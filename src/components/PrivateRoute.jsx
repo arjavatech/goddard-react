@@ -28,32 +28,48 @@ const PrivateRoute = ({ children, requireAdmin = false, requireParent = false })
     const checkPermissions = async () => {
       if (isAuthenticated && user?.email) {
         try {
-          console.log('PrivateRoute checking permissions for:', user.email);
-          console.log('API URL:', `${api_base_url}/sign_in/check/${school_id}`);
-          
+          console.log('🔍 PrivateRoute checking permissions for:', user.email);
+          console.log('🌐 API URL:', `${api_base_url}/sign_in/check/${school_id}`);
+
           // First try with auth0_user flag (same as Login component)
           const headers = await getAuthHeaders(getAccessTokenSilently);
-          let response = await fetch(`http://localhost:8000/sign_in/check/${school_id}`, {
+
+          const requestBody = {
+            email: user.email.toLowerCase(),
+            auth0_user: true
+          };
+
+          console.log('📨 Making API request with body:', requestBody);
+
+          let response = await fetch(`${api_base_url}/sign_in/check/${school_id}`, {
             method: 'POST',
             headers,
-            body: JSON.stringify({ 
-              email: user.email.toLowerCase(),
-              auth0_user: true
-            })
+            body: JSON.stringify(requestBody)
           });
-          
+
+          console.log('📥 Response status:', response.status);
+          console.log('📥 Response ok:', response.ok);
+
           // If that fails, try with empty password (fallback)
           if (!response.ok) {
-            console.log('PrivateRoute: Trying fallback API call with empty password');
+            console.log('⚠️ First API call failed, trying fallback with empty password');
             const fallbackHeaders = await getAuthHeaders(getAccessTokenSilently);
+
+            const fallbackBody = {
+              email: user.email.toLowerCase(),
+              password: ''
+            };
+
+            console.log('📨 Making fallback API request with body:', fallbackBody);
+
             response = await fetch(`${api_base_url}/sign_in/check/${school_id}`, {
               method: 'POST',
               headers: fallbackHeaders,
-              body: JSON.stringify({ 
-                email: user.email.toLowerCase(),
-                password: ''
-              })
+              body: JSON.stringify(fallbackBody)
             });
+
+            console.log('📥 Fallback response status:', response.status);
+            console.log('📥 Fallback response ok:', response.ok);
           }
 
           console.log('PrivateRoute API response status:', response.status);

@@ -1,143 +1,272 @@
-# CLAUDE.md
+# Claude Code Configuration - SPARC Development Environment
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+## 🚨 CRITICAL: CONCURRENT EXECUTION & FILE MANAGEMENT
+
+**ABSOLUTE RULES**:
+1. ALL operations MUST be concurrent/parallel in a single message
+2. **NEVER save working files, text/mds and tests to the root folder**
+3. ALWAYS organize files in appropriate subdirectories
+
+### ⚡ GOLDEN RULE: "1 MESSAGE = ALL RELATED OPERATIONS"
+
+**MANDATORY PATTERNS:**
+- **TodoWrite**: ALWAYS batch ALL todos in ONE call (5-10+ todos minimum)
+- **Task tool**: ALWAYS spawn ALL agents in ONE message with full instructions
+- **File operations**: ALWAYS batch ALL reads/writes/edits in ONE message
+- **Bash commands**: ALWAYS batch ALL terminal operations in ONE message
+- **Memory operations**: ALWAYS batch ALL memory store/retrieve in ONE message
+
+### 📁 File Organization Rules
+
+**NEVER save to root folder. Use these directories:**
+- `/src` - Source code files
+- `/tests` - Test files
+- `/docs` - Documentation and markdown files
+- `/config` - Configuration files
+- `/scripts` - Utility scripts
+- `/examples` - Example code
 
 ## Project Overview
 
-This is a React-based web application for The Goddard School, built with Vite and Tailwind CSS. The application manages parent-child enrollment, forms submission, and administrative tasks for a preschool/childcare center.
+This project uses SPARC (Specification, Pseudocode, Architecture, Refinement, Completion) methodology with Claude-Flow orchestration for systematic Test-Driven Development.
 
-## Development Commands
+## SPARC Commands
+
+### Core Commands
+- `npx claude-flow sparc modes` - List available modes
+- `npx claude-flow sparc run <mode> "<task>"` - Execute specific mode
+- `npx claude-flow sparc tdd "<feature>"` - Run complete TDD workflow
+- `npx claude-flow sparc info <mode>` - Get mode details
+
+### Batchtools Commands
+- `npx claude-flow sparc batch <modes> "<task>"` - Parallel execution
+- `npx claude-flow sparc pipeline "<task>"` - Full pipeline processing
+- `npx claude-flow sparc concurrent <mode> "<tasks-file>"` - Multi-task processing
+
+### Build Commands
+- `npm run build` - Build project
+- `npm run test` - Run tests
+- `npm run lint` - Linting
+- `npm run typecheck` - Type checking
+
+## SPARC Workflow Phases
+
+1. **Specification** - Requirements analysis (`sparc run spec-pseudocode`)
+2. **Pseudocode** - Algorithm design (`sparc run spec-pseudocode`)
+3. **Architecture** - System design (`sparc run architect`)
+4. **Refinement** - TDD implementation (`sparc tdd`)
+5. **Completion** - Integration (`sparc run integration`)
+
+## Code Style & Best Practices
+
+- **Modular Design**: Files under 500 lines
+- **Environment Safety**: Never hardcode secrets
+- **Test-First**: Write tests before implementation
+- **Clean Architecture**: Separate concerns
+- **Documentation**: Keep updated
+
+## 🚀 Available Agents (54 Total)
+
+### Core Development
+`coder`, `reviewer`, `tester`, `planner`, `researcher`
+
+### Swarm Coordination
+`hierarchical-coordinator`, `mesh-coordinator`, `adaptive-coordinator`, `collective-intelligence-coordinator`, `swarm-memory-manager`
+
+### Consensus & Distributed
+`byzantine-coordinator`, `raft-manager`, `gossip-coordinator`, `consensus-builder`, `crdt-synchronizer`, `quorum-manager`, `security-manager`
+
+### Performance & Optimization
+`perf-analyzer`, `performance-benchmarker`, `task-orchestrator`, `memory-coordinator`, `smart-agent`
+
+### GitHub & Repository
+`github-modes`, `pr-manager`, `code-review-swarm`, `issue-tracker`, `release-manager`, `workflow-automation`, `project-board-sync`, `repo-architect`, `multi-repo-swarm`
+
+### SPARC Methodology
+`sparc-coord`, `sparc-coder`, `specification`, `pseudocode`, `architecture`, `refinement`
+
+### Specialized Development
+`backend-dev`, `mobile-dev`, `ml-developer`, `cicd-engineer`, `api-docs`, `system-architect`, `code-analyzer`, `base-template-generator`
+
+### Testing & Validation
+`tdd-london-swarm`, `production-validator`
+
+### Migration & Planning
+`migration-planner`, `swarm-init`
+
+## 🎯 Claude Code vs MCP Tools
+
+### Claude Code Handles ALL:
+- File operations (Read, Write, Edit, MultiEdit, Glob, Grep)
+- Code generation and programming
+- Bash commands and system operations
+- Implementation work
+- Project navigation and analysis
+- TodoWrite and task management
+- Git operations
+- Package management
+- Testing and debugging
+
+### MCP Tools ONLY:
+- Coordination and planning
+- Memory management
+- Neural features
+- Performance tracking
+- Swarm orchestration
+- GitHub integration
+
+**KEY**: MCP coordinates, Claude Code executes.
+
+## 🚀 Quick Setup
 
 ```bash
-# Install dependencies
-npm install
-
-# Start development server
-npm run dev
-
-# Build for production
-npm run build
-
-# Run ESLint
-npm run lint
-
-# Preview production build
-npm run preview
+# Add Claude Flow MCP server
+claude mcp add claude-flow npx claude-flow@alpha mcp start
 ```
 
-## Architecture
+## MCP Tool Categories
 
-### Technology Stack
-- **Frontend Framework**: React 19.1 with React Router for routing
-- **Build Tool**: Vite with React plugin
-- **Styling**: Tailwind CSS (using @tailwindcss/vite plugin)
-- **Code Quality**: ESLint with React hooks and refresh plugins
-- **PDF Generation**: jspdf and html2canvas for form exports
-- **Icons**: Lucide React and FontAwesome
+### Coordination
+`swarm_init`, `agent_spawn`, `task_orchestrate`
 
-### Application Structure
+### Monitoring
+`swarm_status`, `agent_list`, `agent_metrics`, `task_status`, `task_results`
 
-The application has two main user flows:
+### Memory & Neural
+`memory_usage`, `neural_status`, `neural_train`, `neural_patterns`
 
-1. **Admin Flow** (`/admin-dashboard`)
-   - Dashboard for school administrators
-   - Application status tracking
-   - Parent invitation system
-   - Forms repository management
-   - Classroom repository
+### GitHub Integration
+`github_swarm`, `repo_analyze`, `pr_enhance`, `issue_triage`, `code_review`
 
-2. **Parent Flow** (`/parent-dashboard`)
-   - Parent portal for enrollment and forms
-   - Child information management
-   - Multiple form types: Admission, Authorization, Enrollment Agreement, Parent Handbook
-   - PDF generation for completed forms
+### System
+`benchmark_run`, `features_detect`, `swarm_monitor`
 
-### Key Directories
+## 📋 Agent Coordination Protocol
 
-- `/src/components/` - Shared UI components (Header, Sidebar, Modals, DataTable, etc.)
-- `/src/parentComponent/` - Parent dashboard specific components
-- `/src/parentComponent/forms/` - Complex multi-section enrollment forms
-- `/src/parentComponent/pdf_forms/` - PDF generation components for each form type
-- `/src/services/` - API service layer (formService.js)
-- `/src/utils/` - Utility functions for auth, form submission, etc.
-- `/src/hooks/` - Custom React hooks (useAuth)
+### Every Agent MUST:
 
-### API Integration
+**1️⃣ BEFORE Work:**
+```bash
+npx claude-flow@alpha hooks pre-task --description "[task]"
+npx claude-flow@alpha hooks session-restore --session-id "swarm-[id]"
+```
 
-The application connects to AWS API Gateway endpoints:
-- Base URL: `https://hfj4ckons6.execute-api.ap-south-1.amazonaws.com/dev`
-- Key endpoints:
-  - `/admission_child_personal/` - Parent and child data management
-  - `/child_all_form_details/` - Detailed form data operations
-  - Form completion status tracking
+**2️⃣ DURING Work:**
+```bash
+npx claude-flow@alpha hooks post-edit --file "[file]" --memory-key "swarm/[agent]/[step]"
+npx claude-flow@alpha hooks notify --message "[what was done]"
+```
 
-### Form System Architecture
+**3️⃣ AFTER Work:**
+```bash
+npx claude-flow@alpha hooks post-task --task-id "[task]"
+npx claude-flow@alpha hooks session-end --export-metrics true
+```
 
-The forms system is complex with multiple interconnected components:
+## 🎯 Concurrent Execution Examples
 
-1. **Admission Form** - Multi-section form with child info, family history, medical details
-2. **Authorization Form** - ACH payment authorization
-3. **Parent Handbook** - Policy acknowledgments with 18+ policy sections
-4. **Enrollment Agreement** - Terms and conditions with initials required
+### ✅ CORRECT (Single Message):
+```javascript
+[BatchTool]:
+  // Initialize swarm
+  mcp__claude-flow__swarm_init { topology: "mesh", maxAgents: 6 }
+  mcp__claude-flow__agent_spawn { type: "researcher" }
+  mcp__claude-flow__agent_spawn { type: "coder" }
+  mcp__claude-flow__agent_spawn { type: "tester" }
+  
+  // Spawn agents with Task tool
+  Task("Research agent: Analyze requirements...")
+  Task("Coder agent: Implement features...")
+  Task("Tester agent: Create test suite...")
+  
+  // Batch todos
+  TodoWrite { todos: [
+    {id: "1", content: "Research", status: "in_progress", priority: "high"},
+    {id: "2", content: "Design", status: "pending", priority: "high"},
+    {id: "3", content: "Implement", status: "pending", priority: "high"},
+    {id: "4", content: "Test", status: "pending", priority: "medium"},
+    {id: "5", content: "Document", status: "pending", priority: "low"}
+  ]}
+  
+  // File operations
+  Bash "mkdir -p app/{src,tests,docs}"
+  Write "app/src/index.js"
+  Write "app/tests/index.test.js"
+  Write "app/docs/README.md"
+```
 
-Each form has:
-- A main component in `/src/parentComponent/forms/`
-- A PDF export component in `/src/parentComponent/pdf_forms/`
-- Validation logic in `/src/services/formService.js`
-- Status tracking through the FormSidebar component
+### ❌ WRONG (Multiple Messages):
+```javascript
+Message 1: mcp__claude-flow__swarm_init
+Message 2: Task("agent 1")
+Message 3: TodoWrite { todos: [single todo] }
+Message 4: Write "file.js"
+// This breaks parallel coordination!
+```
 
-### Routing Structure
+## Performance Benefits
 
-The application uses dual routing configuration:
-- Main routing in `/src/main.jsx` (currently active)
-- Alternative routing in `/src/App.jsx` (appears to be legacy)
+- **84.8% SWE-Bench solve rate**
+- **32.3% token reduction**
+- **2.8-4.4x speed improvement**
+- **27+ neural models**
 
-Note: There's inconsistency in import paths - some components reference `/parent/Components/` while others use `/parentComponent/`
+## Hooks Integration
 
-### State Management
+### Pre-Operation
+- Auto-assign agents by file type
+- Validate commands for safety
+- Prepare resources automatically
+- Optimize topology by complexity
+- Cache searches
 
-The application uses React's built-in state management with useState and useEffect hooks. Authentication state is managed through a custom useAuth hook.
+### Post-Operation
+- Auto-format code
+- Train neural patterns
+- Update memory
+- Analyze performance
+- Track token usage
 
-### Important Considerations
+### Session Management
+- Generate summaries
+- Persist state
+- Track metrics
+- Restore context
+- Export workflows
 
-1. The application is currently on branch `feature/react-conversion`, suggesting ongoing migration work
-2. There are no test files in the main source code - testing strategy needs to be established
-3. PDF generation is handled client-side using jspdf and html2canvas
-4. Form validation is extensive with specific field requirements for each form type
+## Advanced Features (v2.0.0)
 
-## Claude Code Agents
+- 🚀 Automatic Topology Selection
+- ⚡ Parallel Execution (2.8-4.4x speed)
+- 🧠 Neural Training
+- 📊 Bottleneck Analysis
+- 🤖 Smart Auto-Spawning
+- 🛡️ Self-Healing Workflows
+- 💾 Cross-Session Memory
+- 🔗 GitHub Integration
 
-Specialized agents have been created to assist with common development tasks:
+## Integration Tips
 
-### 1. Form Validator Agent (`.claude/agents/form-validator.md`)
-- Validates multi-section enrollment forms
-- Checks required fields and completion status
-- Identifies validation errors and suggests fixes
-- Manages form status tracking
+1. Start with basic swarm init
+2. Scale agents gradually
+3. Use memory for context
+4. Monitor progress regularly
+5. Train patterns from success
+6. Enable hooks automation
+7. Use GitHub tools first
 
-### 2. API Integration Agent (`.claude/agents/api-integration.md`)
-- Manages AWS API Gateway integrations
-- Handles API endpoints and error responses
-- Implements retry logic and caching
-- Manages authentication headers
+## Support
 
-### 3. PDF Generator Agent (`.claude/agents/pdf-generator.md`)
-- Handles PDF generation for all forms
-- Customizes PDF layouts and styling
-- Optimizes file sizes and formatting
-- Manages batch exports
+- Documentation: https://github.com/ruvnet/claude-flow
+- Issues: https://github.com/ruvnet/claude-flow/issues
 
-### 4. Component Builder Agent (`.claude/agents/component-builder.md`)
-- Creates React components following project patterns
-- Builds reusable UI components
-- Implements modals, forms, and data tables
-- Follows Tailwind CSS conventions
+---
 
-### 5. Route Manager Agent (`.claude/agents/route-manager.md`)
-- Manages React Router configuration
-- Implements route guards and authentication
-- Handles navigation flow
-- Resolves routing inconsistencies
+Remember: **Claude Flow coordinates, Claude Code creates!**
 
-Use these agents by referencing their specific documentation when working on related tasks. Each agent contains detailed usage examples, patterns, and best practices specific to their domain.
-- This project tasks are maintained in ASANA with project name Goddard and project ID 1211190796939388
+# important-instruction-reminders
+Do what has been asked; nothing more, nothing less.
+NEVER create files unless they're absolutely necessary for achieving your goal.
+ALWAYS prefer editing an existing file to creating a new one.
+NEVER proactively create documentation files (*.md) or README files. Only create documentation files if explicitly requested by the User.
+Never save working files, text/mds and tests to the root folder.

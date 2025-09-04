@@ -1,20 +1,22 @@
 {
   "mcpServers": {
-    "playwright": {
-      "type": "stdio",
+    "claude-flow": {
       "command": "npx",
       "args": [
-        "@playwright/mcp@latest"
+        "claude-flow@alpha",
+        "mcp",
+        "start"
       ],
-      "env": {}
+      "type": "stdio"
     },
-    "shadcn-ui": {
-      "type": "stdio",
+    "ruv-swarm": {
       "command": "npx",
       "args": [
-        "@jpisnice/shadcn-ui-mcp-server"
+        "ruv-swarm@latest",
+        "mcp",
+        "start"
       ],
-      "env": {}
+      "type": "stdio"
     }
   }
 }

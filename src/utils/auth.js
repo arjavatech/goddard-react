@@ -33,15 +33,31 @@ export const signOut = () => {
 // For use in components where getAccessTokenSilently is available
 export const getAuthHeaders = async (getAccessTokenSilently) => {
   try {
+    console.log('🔑 Attempting to get Auth0 access token...');
     const token = await getAccessTokenSilently();
-    return {
+    console.log('✅ Auth0 token fetched successfully:', token ? `${token.substring(0, 20)}...` : 'EMPTY_TOKEN');
+
+    const headers = {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${token}`
     };
+
+    console.log('📤 Headers being sent:', {
+      'Content-Type': headers['Content-Type'],
+      'Authorization': headers['Authorization'] ? `${headers['Authorization'].substring(0, 30)}...` : 'MISSING'
+    });
+
+    return headers;
   } catch (error) {
-    console.error('Error getting Auth0 token:', error);
-    return {
+    console.error('❌ Error getting Auth0 token:', error);
+    console.log('⚠️ Falling back to headers without Authorization');
+
+    const fallbackHeaders = {
       'Content-Type': 'application/json'
     };
+
+    console.log('📤 Fallback headers being sent:', fallbackHeaders);
+
+    return fallbackHeaders;
   }
 };

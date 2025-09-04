@@ -26,25 +26,30 @@ const Login = () => {
   }, [isAuthenticated, user]);
 
   const checkUserPermissions = async (email) => {
-    console.log('Checking permissions for email:', email);
-    console.log('API URL:', `${api_base_url}/sign_in/check/${school_id}`);
-    
+    console.log('🔍 Checking permissions for email:', email);
+    console.log('🌐 API URL:', `${api_base_url}/sign_in/check/${school_id}`);
+
     try {
       // Get Auth0 token and headers
       const headers = await getAuthHeaders(getAccessTokenSilently);
+
+      const requestBody = {
+        email: email.toLowerCase(),
+        auth0_user: true
+      };
+
+      console.log('📨 Making API request with body:', requestBody);
 
       // Call the API with Auth0 token
       const response = await fetch(`${api_base_url}/sign_in/check/${school_id}`, {
         method: 'POST',
         headers,
-        body: JSON.stringify({ 
-          email: email.toLowerCase(),
-          auth0_user: true
-        })
+        body: JSON.stringify(requestBody)
       });
-      
-      console.log('Response status:', response.status);
-      console.log('Response ok:', response.ok);
+
+      console.log('📥 Response status:', response.status);
+      console.log('📥 Response ok:', response.ok);
+      console.log('📥 Response headers:', Object.fromEntries(response.headers.entries()));
 
       if (response.ok) {
         const data = await response.json();
