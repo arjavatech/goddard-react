@@ -40,9 +40,18 @@ const PrivateRoute = ({ children, requireAdmin = false, requireParent = false })
         try {
           console.log('🔍 PrivateRoute checking permissions for:', user.email);
           console.log('🌐 API URL:', `${api_base_url}/sign_in/check/${school_id}`);
-
+          console.log('🔐 Auth0 authenticated:', isAuthenticated);
+          console.log('⏰ Starting token acquisition at:', new Date().toISOString());
+          
+          const tokenStartTime = performance.now();
+          
           // First try with auth0_user flag (same as Login component)
+          console.log('🎫 Acquiring access token silently...');
           const headers = await getAuthHeaders(getAccessTokenSilently);
+          
+          const tokenEndTime = performance.now();
+          console.log('✅ Token acquisition successful in', (tokenEndTime - tokenStartTime).toFixed(2), 'ms');
+          console.log('🎫 Token acquired, headers prepared:', headers);
 
           const requestBody = {
             email: user.email.toLowerCase(),
@@ -63,7 +72,13 @@ const PrivateRoute = ({ children, requireAdmin = false, requireParent = false })
           // If that fails, try with empty password (fallback)
           if (!response.ok) {
             console.log('⚠️ First API call failed, trying fallback with empty password');
+            console.log('🎫 Acquiring fallback access token silently...');
+            
+            const fallbackTokenStartTime = performance.now();
             const fallbackHeaders = await getAuthHeaders(getAccessTokenSilently);
+            const fallbackTokenEndTime = performance.now();
+            
+            console.log('✅ Fallback token acquisition successful in', (fallbackTokenEndTime - fallbackTokenStartTime).toFixed(2), 'ms');
 
             const fallbackBody = {
               email: user.email.toLowerCase(),
@@ -97,29 +112,90 @@ const PrivateRoute = ({ children, requireAdmin = false, requireParent = false })
               setPermissions(data);
               console.log('✅ Permissions set successfully for user:', user.email, 'Admin:', data.isAdmin, 'Parent:', data.isParent);
             } else {
-              // Invalid user
+              // Invalid user - no admin or parent permissions
+              console.error('❌ User has no valid permissions:', {
+                email: user.email,
+                isAdmin: data.isAdmin,
+                isParent: data.isParent,
+                timestamp: new Date().toISOString()
+              });
               setInvalidUser(true);
-              alert('Invalid user - You do not have permission to access this application');
+              alert('Access Denied: Your account does not have the necessary permissions to access this application. Please contact an administrator if you believe this is an error.');
               handleLogoutAndReset();
             }
           } else {
-            console.error('PrivateRoute API failed with status:', response.status);
-            const errorText = await response.text();
-            console.error('PrivateRoute API error response:', errorText);
+            console.error('❌ PrivateRoute API failed with status:', response.status);
+            console.error('🌐 Failed API URL:', `${api_base_url}/sign_in/check/${school_id}`);
+            console.error('📧 User email:', user?.email);
+            
+            let errorText = '';
+            try {
+              errorText = await response.text();
+              console.error('📄 API error response:', errorText);
+            } catch (textError) {
+              console.error('❌ Failed to read error response:', textError);
+            }
+            
+            // Determine user-friendly error message based on status code
+            let userMessage = 'Unable to verify user permissions. Please try logging in again.';
+            
+            switch (response.status) {
+              case 401:
+                userMessage = 'Your session has expired. Please log in again.';
+                break;
+              case 403:
+                userMessage = 'Access forbidden. You do not have permission to access this application.';
+                break;
+              case 404:
+                userMessage = 'Service not found. Please contact support if this problem persists.';
+                break;
+              case 500:
+              case 502:
+              case 503:
+                userMessage = 'Server error occurred. Please try again in a few moments.';
+                break;
+              default:
+                userMessage = `Server responded with error (${response.status}). Please try logging in again.`;
+            }
             
             // REMOVED: localStorage fallback - insecure client-side storage
             // Instead of using localStorage, force user to re-authenticate through Auth0
             setInvalidUser(true);
-            alert('Unable to verify user permissions. Please log in again.');
+            alert(userMessage);
             handleLogoutAndReset();
           }
         } catch (error) {
-          console.error('PrivateRoute permission check error:', error);
+          console.error('❌ PrivateRoute permission check error:', error);
+          console.error('🔍 Error details:', {
+            message: error.message,
+            stack: error.stack,
+            name: error.name,
+            timestamp: new Date().toISOString()
+          });
+          console.error('🌐 API URL was:', `${api_base_url}/sign_in/check/${school_id}`);
+          console.error('👤 User email:', user?.email);
+          console.error('🔐 Auth0 authenticated:', isAuthenticated);
+          console.error('🎫 Token acquisition error context:', {
+            userAgent: navigator.userAgent,
+            currentTime: new Date().toISOString(),
+            location: window.location.href
+          });
+          
+          // Determine error type for user-friendly messaging
+          let userMessage = 'An error occurred while verifying your permissions.';
+          
+          if (error.name === 'NetworkError' || error.message.includes('Failed to fetch')) {
+            userMessage = 'Network connection error. Please check your internet connection and try again.';
+          } else if (error.message.includes('token') || error.message.includes('unauthorized')) {
+            userMessage = 'Authentication token has expired. Please log in again.';
+          } else if (error.message.includes('timeout')) {
+            userMessage = 'Request timed out. Please try again.';
+          }
           
           // REMOVED: localStorage fallback - insecure and unreliable
           // On network error, force re-authentication for security
           setInvalidUser(true);
-          alert('Network error occurred. Please log in again.');
+          alert(userMessage);
           handleLogoutAndReset();
         } finally {
           // CRITICAL FIX: Move setCheckingPermissions inside the finally block
@@ -156,15 +232,26 @@ const PrivateRoute = ({ children, requireAdmin = false, requireParent = false })
       permissions,
       isAdmin: permissions?.isAdmin,
       userEmail: user?.email,
-      checkingPermissions
+      checkingPermissions,
+      timestamp: new Date().toISOString(),
+      currentPath: window.location.pathname
     });
-    alert('Access denied - Admin privileges required');
+    alert('Access Denied: This page requires administrator privileges. Please contact an administrator if you believe you should have access.');
     return <Navigate to="/login" replace />;
   }
 
   // Admin users can access parent routes
   if (requireParent && permissions?.isParent !== true && permissions?.isAdmin !== true) {
-    alert('Access denied - Parent privileges required');
+    console.error('❌ Parent access denied:', {
+      requireParent,
+      permissions,
+      isParent: permissions?.isParent,
+      isAdmin: permissions?.isAdmin,
+      userEmail: user?.email,
+      timestamp: new Date().toISOString(),
+      currentPath: window.location.pathname
+    });
+    alert('Access Denied: This page requires parent or administrator privileges. Please contact an administrator if you believe you should have access.');
     return <Navigate to="/login" replace />;
   }
 

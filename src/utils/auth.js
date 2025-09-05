@@ -11,14 +11,37 @@
  * @returns {Promise<Object>} Headers object with Authorization and Content-Type
  */
 export const getAuthHeaders = async (getAccessTokenSilently) => {
+  const startTime = performance.now();
+  
   try {
+    console.log('🎫 [Auth] Requesting access token...');
     const token = await getAccessTokenSilently();
+    const endTime = performance.now();
+    
+    console.log('✅ [Auth] Token acquired successfully in', (endTime - startTime).toFixed(2), 'ms');
+    console.log('🔍 [Auth] Token validation:', {
+      hasToken: !!token,
+      tokenLength: token?.length || 0,
+      tokenPrefix: token ? token.substring(0, 20) + '...' : 'null',
+      timestamp: new Date().toISOString()
+    });
+    
     return {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${token}`,
     };
   } catch (error) {
-    console.warn('Failed to get access token, returning headers without authorization:', error);
+    const endTime = performance.now();
+    
+    console.error('❌ [Auth] Failed to get access token after', (endTime - startTime).toFixed(2), 'ms');
+    console.error('🔍 [Auth] Token acquisition error details:', {
+      message: error.message,
+      name: error.name,
+      stack: error.stack,
+      timestamp: new Date().toISOString(),
+      userAgent: navigator.userAgent
+    });
+    
     return {
       'Content-Type': 'application/json',
     };
@@ -32,14 +55,25 @@ export const getAuthHeaders = async (getAccessTokenSilently) => {
  * @returns {Promise<Object>} Headers object with Authorization and custom Content-Type
  */
 export const getAuthHeadersWithContentType = async (getAccessTokenSilently, contentType = 'application/json') => {
+  const startTime = performance.now();
+  
   try {
+    console.log('🎫 [Auth] Requesting access token for custom content type:', contentType);
     const token = await getAccessTokenSilently();
+    const endTime = performance.now();
+    
+    console.log('✅ [Auth] Token acquired for custom content type in', (endTime - startTime).toFixed(2), 'ms');
+    
     return {
       'Content-Type': contentType,
       'Authorization': `Bearer ${token}`,
     };
   } catch (error) {
-    console.warn('Failed to get access token, returning headers without authorization:', error);
+    const endTime = performance.now();
+    
+    console.error('❌ [Auth] Failed to get access token for custom content type after', (endTime - startTime).toFixed(2), 'ms');
+    console.error('🔍 [Auth] Error details:', error);
+    
     return {
       'Content-Type': contentType,
     };
@@ -52,14 +86,25 @@ export const getAuthHeadersWithContentType = async (getAccessTokenSilently, cont
  * @returns {Promise<Object>} Headers object with Authorization (no Content-Type for FormData)
  */
 export const getAuthHeadersForUpload = async (getAccessTokenSilently) => {
+  const startTime = performance.now();
+  
   try {
+    console.log('📤 [Auth] Requesting access token for file upload...');
     const token = await getAccessTokenSilently();
+    const endTime = performance.now();
+    
+    console.log('✅ [Auth] Upload token acquired in', (endTime - startTime).toFixed(2), 'ms');
+    
     return {
       'Authorization': `Bearer ${token}`,
       // Note: Don't set Content-Type for FormData - browser will set it automatically with boundary
     };
   } catch (error) {
-    console.warn('Failed to get access token, returning empty headers:', error);
+    const endTime = performance.now();
+    
+    console.error('❌ [Auth] Failed to get upload access token after', (endTime - startTime).toFixed(2), 'ms');
+    console.error('🔍 [Auth] Upload token error details:', error);
+    
     return {};
   }
 };
@@ -70,10 +115,31 @@ export const getAuthHeadersForUpload = async (getAccessTokenSilently) => {
  * @returns {Promise<string|null>} Access token or null if failed
  */
 export const getAccessToken = async (getAccessTokenSilently) => {
+  const startTime = performance.now();
+  
   try {
-    return await getAccessTokenSilently();
+    console.log('🎫 [Auth] Getting raw access token...');
+    const token = await getAccessTokenSilently();
+    const endTime = performance.now();
+    
+    console.log('✅ [Auth] Raw token acquired in', (endTime - startTime).toFixed(2), 'ms');
+    console.log('🔍 [Auth] Token info:', {
+      hasToken: !!token,
+      tokenLength: token?.length || 0,
+      timestamp: new Date().toISOString()
+    });
+    
+    return token;
   } catch (error) {
-    console.error('Failed to get access token:', error);
+    const endTime = performance.now();
+    
+    console.error('❌ [Auth] Failed to get raw access token after', (endTime - startTime).toFixed(2), 'ms');
+    console.error('🔍 [Auth] Raw token error details:', {
+      message: error.message,
+      name: error.name,
+      timestamp: new Date().toISOString()
+    });
+    
     return null;
   }
 };
@@ -86,15 +152,37 @@ export const getAccessToken = async (getAccessTokenSilently) => {
  * @returns {Promise<Response>} Fetch response
  */
 export const authenticatedFetch = async (url, options = {}, getAccessTokenSilently) => {
-  const headers = await getAuthHeaders(getAccessTokenSilently);
+  const startTime = performance.now();
   
-  return fetch(url, {
-    ...options,
-    headers: {
-      ...headers,
-      ...options.headers, // Allow overriding default headers
-    },
-  });
+  try {
+    console.log('🌐 [Auth] Making authenticated fetch to:', url);
+    const headers = await getAuthHeaders(getAccessTokenSilently);
+    
+    const response = await fetch(url, {
+      ...options,
+      headers: {
+        ...headers,
+        ...options.headers, // Allow overriding default headers
+      },
+    });
+    
+    const endTime = performance.now();
+    console.log('📡 [Auth] Fetch completed in', (endTime - startTime).toFixed(2), 'ms', '- Status:', response.status);
+    
+    return response;
+  } catch (error) {
+    const endTime = performance.now();
+    
+    console.error('❌ [Auth] Authenticated fetch failed after', (endTime - startTime).toFixed(2), 'ms');
+    console.error('🔍 [Auth] Fetch error details:', {
+      url,
+      method: options.method || 'GET',
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
+    
+    throw error;
+  }
 };
 
 /**
@@ -280,14 +368,37 @@ export const getUserPermissions = async (getAccessTokenSilently, email, schoolId
  * @returns {void}
  */
 export const handleAuthError = (error, logout) => {
-  console.error('Authentication error:', error);
+  console.error('❌ [Auth] Authentication error occurred:', error);
+  console.error('🔍 [Auth] Error context:', {
+    message: error.message,
+    name: error.name,
+    stack: error.stack,
+    timestamp: new Date().toISOString(),
+    currentUrl: window.location.href,
+    userAgent: navigator.userAgent
+  });
   
-  // If it's a token-related error, logout the user
-  if (error.message.includes('token') || error.message.includes('unauthorized')) {
-    logout({ 
-      logoutParams: { 
-        returnTo: window.location.origin + '/login'
-      } 
-    });
+  // Determine if this is a token-related error that requires logout
+  const isTokenError = error.message.includes('token') || 
+                      error.message.includes('unauthorized') ||
+                      error.message.includes('invalid_token') ||
+                      error.message.includes('expired') ||
+                      error.name === 'AuthenticationError';
+  
+  if (isTokenError) {
+    console.warn('🚪 [Auth] Token-related error detected, initiating logout...');
+    try {
+      logout({ 
+        logoutParams: { 
+          returnTo: window.location.origin + '/login'
+        } 
+      });
+    } catch (logoutError) {
+      console.error('❌ [Auth] Logout failed:', logoutError);
+      // Fallback: redirect manually
+      window.location.href = '/login';
+    }
+  } else {
+    console.log('ℹ️ [Auth] Non-token error, not forcing logout');
   }
 };
