@@ -14,16 +14,26 @@ export const getAuthHeaders = async (getAccessTokenSilently) => {
   const startTime = performance.now();
   
   try {
-    console.log('🎫 [Auth] Requesting access token...');
-    const token = await getAccessTokenSilently();
+    console.log('🎫 [Auth] Requesting access token for API calls...');
+    
+    // For backend API calls, request token with specific audience
+    const apiAudience = import.meta.env.VITE_AUTH0_AUDIENCE;
+    const tokenOptions = apiAudience ? { 
+      audience: apiAudience,
+      scope: 'openid profile email'
+    } : {};
+    
+    console.log('🔧 [Auth] Token request options:', tokenOptions);
+    const token = await getAccessTokenSilently(tokenOptions);
     const endTime = performance.now();
     
-    console.log('✅ [Auth] Token acquired successfully in', (endTime - startTime).toFixed(2), 'ms');
+    console.log('✅ [Auth] API token acquired successfully in', (endTime - startTime).toFixed(2), 'ms');
     console.log('🔍 [Auth] Token validation:', {
       hasToken: !!token,
       tokenLength: token?.length || 0,
       tokenPrefix: token ? token.substring(0, 20) + '...' : 'null',
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
+      audience: apiAudience || 'none'
     });
     
     return {
@@ -33,7 +43,7 @@ export const getAuthHeaders = async (getAccessTokenSilently) => {
   } catch (error) {
     const endTime = performance.now();
     
-    console.error('❌ [Auth] Failed to get access token after', (endTime - startTime).toFixed(2), 'ms');
+    console.error('❌ [Auth] Failed to get API access token after', (endTime - startTime).toFixed(2), 'ms');
     console.error('🔍 [Auth] Token acquisition error details:', {
       message: error.message,
       name: error.name,
@@ -42,6 +52,7 @@ export const getAuthHeaders = async (getAccessTokenSilently) => {
       userAgent: navigator.userAgent
     });
     
+    console.warn('⚠️ [Auth] Returning headers without authorization due to token failure');
     return {
       'Content-Type': 'application/json',
     };

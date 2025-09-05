@@ -121,7 +121,7 @@ const PrivateRoute = ({ children, requireAdmin = false, requireParent = false })
               });
               setInvalidUser(true);
               alert('Access Denied: Your account does not have the necessary permissions to access this application. Please contact an administrator if you believe this is an error.');
-              handleLogoutAndReset();
+              // REMOVED: handleLogoutAndReset() - This was causing infinite login loop for users without permissions
             }
           } else {
             console.error('❌ PrivateRoute API failed with status:', response.status);
@@ -158,11 +158,11 @@ const PrivateRoute = ({ children, requireAdmin = false, requireParent = false })
                 userMessage = `Server responded with error (${response.status}). Please try logging in again.`;
             }
             
-            // REMOVED: localStorage fallback - insecure client-side storage
-            // Instead of using localStorage, force user to re-authenticate through Auth0
+            // Handle API errors gracefully - don't force logout on server errors
+            console.warn('⚠️ Permission API failed, but maintaining Auth0 session for user:', user?.email);
             setInvalidUser(true);
-            alert(userMessage);
-            handleLogoutAndReset();
+            alert(userMessage + ' Your session is still valid - try refreshing the page.');
+            // REMOVED: handleLogoutAndReset() - This was causing the infinite login loop
           }
         } catch (error) {
           console.error('❌ PrivateRoute permission check error:', error);
@@ -192,11 +192,11 @@ const PrivateRoute = ({ children, requireAdmin = false, requireParent = false })
             userMessage = 'Request timed out. Please try again.';
           }
           
-          // REMOVED: localStorage fallback - insecure and unreliable
-          // On network error, force re-authentication for security
+          // Handle network errors gracefully - don't destroy valid Auth0 sessions
+          console.warn('⚠️ Network error during permission check, but maintaining Auth0 session for user:', user?.email);
           setInvalidUser(true);
-          alert(userMessage);
-          handleLogoutAndReset();
+          alert(userMessage + ' Your login session is still valid - please try again or refresh the page.');
+          // REMOVED: handleLogoutAndReset() - This was causing the infinite login loop on network errors
         } finally {
           // CRITICAL FIX: Move setCheckingPermissions inside the finally block
           // to ensure it only executes after the permission check is complete
@@ -205,10 +205,28 @@ const PrivateRoute = ({ children, requireAdmin = false, requireParent = false })
       }
     };
 
+    // Only check permissions if Auth0 has finished loading AND user is authenticated
     if (!isLoading) {
-      checkPermissions();
+      if (isAuthenticated && user?.email) {
+        checkPermissions();
+      } else {
+        // User is not authenticated, stop checking permissions
+        setCheckingPermissions(false);
+        console.log('🚫 User not authenticated, skipping permission check');
+      }
     }
   }, [isAuthenticated, isLoading, user, logout]);
+
+  // Debug logging for development
+  if (import.meta.env.DEV) {
+    console.log('🔍 PrivateRoute State:', {
+      isLoading,
+      isAuthenticated, 
+      checkingPermissions,
+      hasUser: !!user,
+      userEmail: user?.email
+    });
+  }
 
   if (isLoading || checkingPermissions) {
     return (
