@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth0 } from '@auth0/auth0-react';
 import Header from './Header';
@@ -7,13 +7,29 @@ import { getAuthHeaders } from '../utils/auth';
 
 
 const Login = () => {
-  const { loginWithPopup, isAuthenticated, isLoading, user, logout, getAccessTokenSilently } = useAuth0();
+  const { 
+    loginWithRedirect, 
+    isAuthenticated, 
+    isLoading, 
+    user, 
+    logout, 
+    getAccessTokenSilently,
+    error: auth0Error 
+  } = useAuth0();
   const navigate = useNavigate();
   const [isSignupFlow, setIsSignupFlow] = useState(false);
+  const [isProcessingAuth, setIsProcessingAuth] = useState(false);
+  const [authError, setAuthError] = useState(null);
+  const authProcessedRef = useRef(false);
 
   useEffect(() => {
     console.log('Auth state changed:', { isAuthenticated, isLoading, user: user?.email, isSignupFlow });
-    if (isAuthenticated && user) {
+    
+    // Prevent multiple executions and ensure we only process once per authentication
+    if (isAuthenticated && user && !isProcessingAuth && !authProcessedRef.current) {
+      authProcessedRef.current = true;
+      setIsProcessingAuth(true);
+      
       if (isSignupFlow) {
         console.log('Processing signup for user:', user.email);
         handleSignupAPI(user.email);
@@ -23,7 +39,7 @@ const Login = () => {
         checkUserPermissions(user.email);
       }
     }
-  }, [isAuthenticated, user]);
+  }, [isAuthenticated, user, isProcessingAuth]);
 
   const checkUserPermissions = async (email) => {
     console.log('🔍 Checking permissions for email:', email);
@@ -49,30 +65,28 @@ const Login = () => {
 
       console.log('📥 Response status:', response.status);
       console.log('📥 Response ok:', response.ok);
-      console.log('📥 Response headers:', Object.fromEntries(response.headers.entries()));
 
       if (response.ok) {
         const data = await response.json();
         console.log('Permission data:', data);
         
-        // Check if user has valid permissions
-        if (data.isAdmin === true) {
-          console.log('User is admin');
-          localStorage.setItem('logged_in_email', email);
-          localStorage.setItem('is_admin', 'true');
-          navigate('/admin-dashboard');
-        } else if (data.isParent === true) {
-          console.log('User is parent');
-          localStorage.setItem('logged_in_email', email);
-          localStorage.removeItem('is_admin'); // Ensure admin flag is cleared for parent users
-          navigate('/parent-dashboard');
-        } else {
-          // Invalid user - neither admin nor parent
-          console.log('Invalid user - no permissions', data);
-          alert('Invalid user - You do not have permission to access this application');
-          logout({ logoutParams: { returnTo: window.location.origin } });
-          return;
-        }
+        // Small delay to ensure Auth0 popup is fully closed before navigation
+        setTimeout(() => {
+          // Check if user has valid permissions and navigate accordingly
+          if (data.isAdmin === true) {
+            console.log('User is admin');
+            navigate('/admin-dashboard', { replace: true });
+          } else if (data.isParent === true) {
+            console.log('User is parent');
+            navigate('/parent-dashboard', { replace: true });
+          } else {
+            // Invalid user - neither admin nor parent
+            console.log('Invalid user - no permissions', data);
+            alert('Invalid user - You do not have permission to access this application');
+            handleLogoutAndReset();
+            return;
+          }
+        }, 100);
       } else {
         // API call failed
         console.error('Permission check failed with status:', response.status);
@@ -82,36 +96,67 @@ const Login = () => {
         // If user not found in system, show invalid user message
         if (response.status === 404 || response.status === 500) {
           alert('Invalid user - You are not registered in the system');
-          logout({ logoutParams: { returnTo: window.location.origin } });
+          handleLogoutAndReset();
           return;
         } else {
           alert('Unable to verify user permissions. Please contact support.');
-          logout({ logoutParams: { returnTo: window.location.origin } });
+          handleLogoutAndReset();
           return;
         }
       }
     } catch (error) {
       console.error('Error checking permissions:', error);
       alert('Network error occurred. Please try again.');
-      logout({ logoutParams: { returnTo: window.location.origin } });
+      handleLogoutAndReset();
       return;
+    } finally {
+      setIsProcessingAuth(false);
+    }
+  };
+
+  const handleLogoutAndReset = async () => {
+    try {
+      setIsProcessingAuth(false);
+      authProcessedRef.current = false;
+      setIsSignupFlow(false);
+      
+      await logout({ 
+        logoutParams: { 
+          returnTo: window.location.origin + '/login'
+        } 
+      });
+    } catch (error) {
+      console.error('Logout error:', error);
+      // Force reload as fallback
+      window.location.href = '/login';
     }
   };
 
   const handleLogin = async () => {
     try {
-      console.log('Opening Auth0 login popup...');
-      await loginWithPopup({
+      // Reset states before login
+      authProcessedRef.current = false;
+      setIsProcessingAuth(false);
+      setIsSignupFlow(false);
+      setAuthError(null);
+      
+      console.log('Redirecting to Auth0 login...');
+      await loginWithRedirect({
         authorizationParams: {
-          prompt: 'login' // Force login screen to always show
+          prompt: 'login',
+          screen_hint: 'login'
+        },
+        appState: {
+          returnTo: '/login'
         }
       });
-      console.log('Login popup completed successfully');
     } catch (error) {
-      console.error('Login popup error:', error);
-      if (error.error !== 'popup_closed_by_user') {
-        alert('Login failed. Please try again.');
-      }
+      console.error('Login redirect error:', error);
+      setAuthError('Login failed. Please try again.');
+      // Reset states on error
+      authProcessedRef.current = false;
+      setIsProcessingAuth(false);
+      setIsSignupFlow(false);
     }
   };
 
@@ -142,11 +187,12 @@ const Login = () => {
         await checkUserPermissions(email);
       } else {
         alert('Signup failed. Please try again.');
-        await logout({ logoutParams: { returnTo: window.location.origin } });
+        handleLogoutAndReset();
       }
     } catch (error) {
       console.error('Signup API error:', error);
       alert('Network error occurred during signup.');
+      handleLogoutAndReset();
     } finally {
       setIsSignupFlow(false);
     }
@@ -154,29 +200,59 @@ const Login = () => {
 
   const handleSignup = async () => {
     try {
+      // Reset states before signup
+      authProcessedRef.current = false;
+      setIsProcessingAuth(false);
       setIsSignupFlow(true);
-      console.log('Opening Auth0 signup popup...');
-      await loginWithPopup({
+      setAuthError(null);
+      
+      console.log('Redirecting to Auth0 signup...');
+      await loginWithRedirect({
         authorizationParams: {
           screen_hint: 'signup'
+        },
+        appState: {
+          returnTo: '/login'
         }
       });
-      console.log('Signup popup completed successfully');
     } catch (error) {
-      console.error('Signup popup error:', error);
+      console.error('Signup redirect error:', error);
+      setAuthError('Signup failed. Please try again.');
+      // Reset states on error
+      authProcessedRef.current = false;
+      setIsProcessingAuth(false);
       setIsSignupFlow(false);
-      if (error.error !== 'popup_closed_by_user') {
-        alert('Signup failed. Please try again.');
-      }
     }
   };
 
-  if (isLoading) {
+  if (isLoading || isProcessingAuth) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin h-12 w-12 border-4 border-blue-600 border-t-transparent rounded-full mx-auto mb-4" />
-          <p className="text-gray-600">Loading authentication...</p>
+          <p className="text-gray-600">
+            {isLoading ? 'Loading authentication...' : 'Verifying permissions...'}
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show Auth0 error if present
+  if (auth0Error) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center max-w-md">
+          <div className="bg-red-50 border border-red-200 rounded-lg p-6">
+            <h2 className="text-lg font-semibold text-red-800 mb-2">Authentication Error</h2>
+            <p className="text-red-700 mb-4">{auth0Error.message}</p>
+            <button
+              onClick={() => window.location.reload()}
+              className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700"
+            >
+              Try Again
+            </button>
+          </div>
         </div>
       </div>
     );
@@ -197,6 +273,11 @@ const Login = () => {
             <div className="text-center mb-6">
               <h2 className="text-2xl font-bold text-[#002e4d] mb-2">Welcome to Goddard School</h2>
               <p className="text-gray-600">Please sign in to continue</p>
+              {authError && (
+                <div className="mt-3 p-3 bg-red-50 border border-red-200 rounded-md">
+                  <p className="text-sm text-red-700">{authError}</p>
+                </div>
+              )}
             </div>
             
             <div className="space-y-3">

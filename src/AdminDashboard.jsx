@@ -1,13 +1,13 @@
 import React from 'react';
 import { useAuth } from './hooks/useAuth';
-
+import { usePermissions } from './hooks/usePermissions';
 import DashboardCard from './components/DashboardCard';
 import Header from './components/Header';
-import { useNavigate } from 'react-router-dom';
+import LoadingSpinner from './parentComponent/LoadingSpinner';
 
 const AdminDashboard = () => {
-  const { isAuthenticated, signOut } = useAuth();
-  const navigate = useNavigate();
+  const { signOut, isLoading } = useAuth();
+  const { isAdmin, permissionsLoading, error } = usePermissions();
 
   const dashboardCards = [
     {
@@ -39,8 +39,41 @@ const AdminDashboard = () => {
     }
   ];
 
-  if (!isAuthenticated) {
-    return null;
+  // Show loading while checking permissions
+  if (isLoading || permissionsLoading) {
+    return <LoadingSpinner message="Loading admin dashboard..." showLogo={true} />;
+  }
+
+  // Show error if permission check failed
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="max-w-md mx-auto bg-white rounded-lg shadow-lg p-8 text-center">
+          <div className="text-red-500 text-6xl mb-4">⚠️</div>
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">Access Error</h2>
+          <p className="text-gray-600 mb-6">{error}</p>
+          <button
+            onClick={() => window.location.reload()}
+            className="bg-[#0F2D52] text-white font-semibold py-2 px-4 rounded-md hover:bg-[#002e4d] transition-colors"
+          >
+            Try Again
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // Additional safety check for admin permissions
+  if (!isAdmin) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="max-w-md mx-auto bg-white rounded-lg shadow-lg p-8 text-center">
+          <div className="text-amber-500 text-6xl mb-4">🔒</div>
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">Admin Access Required</h2>
+          <p className="text-gray-600 mb-6">You need administrator privileges to view this page.</p>
+        </div>
+      </div>
+    );
   }
 
   return (

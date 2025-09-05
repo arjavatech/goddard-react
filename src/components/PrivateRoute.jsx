@@ -1,21 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Navigate } from 'react-router-dom';
 import { useAuth0 } from '@auth0/auth0-react';
 import { api_base_url,  school_id } from '../utils/const';
-
-const getAuthHeaders = async (getAccessTokenSilently) => {
-  try {
-    const token = await getAccessTokenSilently();
-    return {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`,
-    };
-  } catch (error) {
-    return {
-      'Content-Type': 'application/json',
-    };
-  }
-};
+import { getAuthHeaders } from '../utils/auth';
 
 
 const PrivateRoute = ({ children, requireAdmin = false, requireParent = false }) => {
@@ -23,10 +10,33 @@ const PrivateRoute = ({ children, requireAdmin = false, requireParent = false })
   const [permissions, setPermissions] = useState(null);
   const [checkingPermissions, setCheckingPermissions] = useState(true);
   const [invalidUser, setInvalidUser] = useState(false);
+  const permissionCheckedRef = useRef(false);
+
+  const handleLogoutAndReset = async () => {
+    try {
+      permissionCheckedRef.current = false;
+      setPermissions(null);
+      setInvalidUser(false);
+      setCheckingPermissions(true);
+      
+      await logout({ 
+        logoutParams: { 
+          returnTo: window.location.origin + '/login'
+        } 
+      });
+    } catch (error) {
+      console.error('Logout error:', error);
+      // Force reload as fallback
+      window.location.href = '/login';
+    }
+  };
 
   useEffect(() => {
     const checkPermissions = async () => {
-      if (isAuthenticated && user?.email) {
+      // Prevent multiple permission checks for the same user
+      if (isAuthenticated && user?.email && !permissionCheckedRef.current) {
+        permissionCheckedRef.current = true;
+        
         try {
           console.log('🔍 PrivateRoute checking permissions for:', user.email);
           console.log('🌐 API URL:', `${api_base_url}/sign_in/check/${school_id}`);
@@ -77,67 +87,46 @@ const PrivateRoute = ({ children, requireAdmin = false, requireParent = false })
           if (response.ok) {
             const data = await response.json();
             console.log('PrivateRoute permission data:', data);
+            console.log('🎯 Setting permissions state:', data);
             
             if (data.isAdmin === true || data.isParent === true) {
-              localStorage.setItem('logged_in_email', user.email);
-              
-              if (data.isAdmin === true) {
-                localStorage.setItem('is_admin', 'true');
-              }
+              // REMOVED: localStorage storage - auth now handled by Auth0 only
+              // localStorage.setItem('logged_in_email', user.email);
+              // localStorage.setItem('is_admin', 'true');
               
               setPermissions(data);
+              console.log('✅ Permissions set successfully for user:', user.email, 'Admin:', data.isAdmin, 'Parent:', data.isParent);
             } else {
               // Invalid user
               setInvalidUser(true);
               alert('Invalid user - You do not have permission to access this application');
-              logout({ logoutParams: { returnTo: window.location.origin } });
+              handleLogoutAndReset();
             }
           } else {
             console.error('PrivateRoute API failed with status:', response.status);
             const errorText = await response.text();
             console.error('PrivateRoute API error response:', errorText);
             
-            // Fallback: Use the same logic as Login component succeeded
-            // If user reached here, it means they passed the Login component validation
-            // So we can trust that they have valid permissions
-            const storedAdmin = localStorage.getItem('is_admin');
-            const storedEmail = localStorage.getItem('logged_in_email');
-            
-            if (storedEmail === user.email) {
-              console.log('Using stored permissions as fallback');
-              if (storedAdmin === 'true') {
-                setPermissions({ isAdmin: true, isParent: false });
-              } else {
-                setPermissions({ isAdmin: false, isParent: true });
-              }
-            } else {
-              setInvalidUser(true);
-              alert('Unable to verify user permissions. You will be logged out.');
-              logout({ logoutParams: { returnTo: window.location.origin } });
-            }
+            // REMOVED: localStorage fallback - insecure client-side storage
+            // Instead of using localStorage, force user to re-authenticate through Auth0
+            setInvalidUser(true);
+            alert('Unable to verify user permissions. Please log in again.');
+            handleLogoutAndReset();
           }
         } catch (error) {
           console.error('PrivateRoute permission check error:', error);
           
-          // Fallback: Use stored permissions if they exist
-          const storedAdmin = localStorage.getItem('is_admin');
-          const storedEmail = localStorage.getItem('logged_in_email');
-          
-          if (storedEmail === user.email) {
-            console.log('Using stored permissions due to network error');
-            if (storedAdmin === 'true') {
-              setPermissions({ isAdmin: true, isParent: false });
-            } else {
-              setPermissions({ isAdmin: false, isParent: true });
-            }
-          } else {
-            setInvalidUser(true);
-            alert('Network error occurred. You will be logged out.');
-            logout({ logoutParams: { returnTo: window.location.origin } });
-          }
+          // REMOVED: localStorage fallback - insecure and unreliable
+          // On network error, force re-authentication for security
+          setInvalidUser(true);
+          alert('Network error occurred. Please log in again.');
+          handleLogoutAndReset();
+        } finally {
+          // CRITICAL FIX: Move setCheckingPermissions inside the finally block
+          // to ensure it only executes after the permission check is complete
+          setCheckingPermissions(false);
         }
       }
-      setCheckingPermissions(false);
     };
 
     if (!isLoading) {
@@ -162,6 +151,13 @@ const PrivateRoute = ({ children, requireAdmin = false, requireParent = false })
 
   // Check specific permissions if required
   if (requireAdmin && permissions?.isAdmin !== true) {
+    console.error('❌ Admin access denied:', {
+      requireAdmin,
+      permissions,
+      isAdmin: permissions?.isAdmin,
+      userEmail: user?.email,
+      checkingPermissions
+    });
     alert('Access denied - Admin privileges required');
     return <Navigate to="/login" replace />;
   }

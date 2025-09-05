@@ -1,7 +1,11 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { usePermissions } from '../hooks/usePermissions';
 
 function Sidebar({ activeItem }) {
   const [isOpen, setIsOpen] = useState(false);
+  const navigate = useNavigate();
+  const { checkPermission } = usePermissions();
 
   const menuItems = [
     {
@@ -48,8 +52,10 @@ function Sidebar({ activeItem }) {
 
   const handleMenuClick = (itemId) => {
     setIsOpen(false);
-    // Navigate to the corresponding page
-    window.location.href = menuItems.find(item => item.id === itemId).href;
+    const menuItem = menuItems.find(item => item.id === itemId);
+    if (menuItem && checkPermission('admin')) {
+      navigate(menuItem.href);
+    }
   };
 
   return (

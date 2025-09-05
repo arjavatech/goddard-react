@@ -1,6 +1,7 @@
 // Refactored Parent Dashboard - Using unified API architecture
 import React, { useState } from 'react';
 import { useAuth } from '../hooks/useAuth';
+import { usePermissions } from '../hooks/usePermissions';
 import { useParentDashboard } from '../hooks/useParentDashboard.js';
 import { useFileOperations } from '../hooks/useFileOperations.js';
 import { toast, Toaster } from 'sonner';
@@ -10,7 +11,7 @@ import HeaderNew from '../components/HeaderNew';
 import LoadingSpinner from '../components/LoadingSpinner';
 import ErrorDisplay from '../components/ErrorDisplay';
 import WelcomeSection from '../components/WelcomeSection';
-import ChildTabs from '../components/ChildTabs';
+import ChildTabs from './ChildTabs';
 import CompletedFormsTable from '../components/CompletedFormsTable';
 import FormSidebar from '../parent/utilComponents/FormSidebar/FormSidebar';
 
@@ -27,25 +28,27 @@ import ACHFormPDF from './pdf_forms/AuthorizationForm';
 import EnrollmentAgreementPDF from './pdf_forms/EnrollmentAgreement';
 
 const ParentDashboardRefactored = () => {
-  const { isAuthenticated, signOut } = useAuth();
+  const { user, signOut, isLoading } = useAuth();
+  const { isParent, isAdmin, permissionsLoading } = usePermissions();
   
-  // Get email from URL params with priority over localStorage
+  // Get email from Auth0 user or URL params (for admin access)
   const urlParams = new URLSearchParams(window.location.search);
   const urlEmail = urlParams.get('id');
-  const localEmail = localStorage.getItem('logged_in_email');
   
-  // URL parameter takes precedence, fallback to localStorage
-  const email = urlEmail || localEmail;
+  // Use Auth0 user email by default, URL param for admin impersonation
+  const email = urlEmail || user?.email;
   
   // Debug logging for email resolution
   React.useEffect(() => {
     console.log('Email Resolution Debug:', {
+      auth0User: user?.email,
       urlParam: urlEmail,
-      localStorage: localEmail,
       resolved: email,
+      isAdmin,
+      isParent,
       timestamp: new Date().toISOString()
     });
-  }, [urlEmail, localEmail, email]);
+  }, [user?.email, urlEmail, email, isAdmin, isParent]);
 
   // Single hook manages all dashboard data
   const {
@@ -78,7 +81,7 @@ const ParentDashboardRefactored = () => {
   const [selectedSubForm, setSelectedSubForm] = useState(null);
 
   // Loading state
-  if (loading) {
+  if (loading || isLoading || permissionsLoading) {
     return <LoadingSpinner message="Loading your dashboard..." />;
   }
 
@@ -87,9 +90,36 @@ const ParentDashboardRefactored = () => {
     return <ErrorDisplay error={error} onRetry={refreshData} />;
   }
 
-  // Not authenticated
-  if (!isAuthenticated) {
-    return null;
+  // Check permissions - either parent or admin can access
+  if (!isParent && !isAdmin) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="max-w-md mx-auto bg-white rounded-lg shadow-lg p-8 text-center">
+          <div className="text-amber-500 text-6xl mb-4">👨‍👩‍👧‍👦</div>
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">Parent Access Required</h2>
+          <p className="text-gray-600 mb-6">You need parent or admin privileges to access this dashboard.</p>
+        </div>
+      </div>
+    );
+  }
+
+  // No email found
+  if (!email) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="max-w-md mx-auto bg-white rounded-lg shadow-lg p-8 text-center">
+          <div className="text-red-500 text-6xl mb-4">⚠️</div>
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">No User Email</h2>
+          <p className="text-gray-600 mb-6">Unable to determine user email for dashboard access.</p>
+          <button
+            onClick={signOut}
+            className="bg-[#0F2D52] text-white font-semibold py-2 px-4 rounded-md hover:bg-[#002e4d] transition-colors"
+          >
+            Sign Out
+          </button>
+        </div>
+      </div>
+    );
   }
 
   // No data available

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -14,7 +14,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 
-import { loginFunction } from '../utils/login';
+// REMOVED: Legacy login function with SHA256 hashing
+// import { loginFunction } from '../utils/login';
+import { auth0LoginFunction } from '../utils/login-auth0';
 import Header from './Header';
 import ForgotPasswordModal from './ForgotPasswordModal';
 import { api_base_url, school_id } from '../utils/const';
@@ -35,6 +37,8 @@ const LoginNew = () => {
   const [showForgotModal, setShowForgotModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [useAuth0Login, setUseAuth0Login] = useState(true); // Toggle between Auth0 and traditional login
+  const [isProcessingAuth, setIsProcessingAuth] = useState(false);
+  const authProcessedRef = useRef(false);
   const navigate = useNavigate();
   const { loginWithPopup, isAuthenticated, user, logout, getAccessTokenSilently } = useAuth0();
 
@@ -63,50 +67,88 @@ const LoginNew = () => {
       if (response.ok) {
         const data = await response.json();
         
-        if (data.isAdmin === true) {
-          localStorage.setItem('logged_in_email', email);
-          localStorage.setItem('is_admin', 'true');
-          navigate('/admin-dashboard');
-        } else if (data.isParent === true) {
-          localStorage.setItem('logged_in_email', email);
-          navigate('/parent-dashboard');
-        } else {
-          toast.error('Access denied', {
-            description: 'You do not have permission to access this application.',
-          });
-          logout({ logoutParams: { returnTo: window.location.origin } });
-        }
+        // Small delay to ensure Auth0 popup is fully closed before navigation
+        setTimeout(() => {
+          if (data.isAdmin === true) {
+            // REMOVED: localStorage storage - auth now handled by Auth0 only
+            // localStorage.setItem('logged_in_email', email);
+            // localStorage.setItem('is_admin', 'true');
+            navigate('/admin-dashboard', { replace: true });
+          } else if (data.isParent === true) {
+            // REMOVED: localStorage storage - auth now handled by Auth0 only  
+            // localStorage.setItem('logged_in_email', email);
+            navigate('/parent-dashboard', { replace: true });
+          } else {
+            toast.error('Access denied', {
+              description: 'You do not have permission to access this application.',
+            });
+            handleLogoutAndReset();
+          }
+        }, 100);
       } else {
         toast.error('Verification failed', {
           description: 'Unable to verify user permissions.',
         });
-        logout({ logoutParams: { returnTo: window.location.origin } });
+        handleLogoutAndReset();
       }
     } catch (error) {
       console.error('Permission check error:', error);
       toast.error('Network error', {
         description: 'Please check your connection and try again.',
       });
+      handleLogoutAndReset();
+    } finally {
+      setIsProcessingAuth(false);
+    }
+  };
+
+  const handleLogoutAndReset = async () => {
+    try {
+      setIsProcessingAuth(false);
+      authProcessedRef.current = false;
+      setIsLoading(false);
+      
+      await logout({ 
+        logoutParams: { 
+          returnTo: window.location.origin + '/login'
+        } 
+      });
+    } catch (error) {
+      console.error('Logout error:', error);
+      // Force reload as fallback
+      window.location.href = '/login';
     }
   };
 
   // Effect to check permissions after Auth0 authentication
   useEffect(() => {
-    if (isAuthenticated && user && useAuth0Login) {
+    // Prevent multiple executions and ensure we only process once per authentication
+    if (isAuthenticated && user && useAuth0Login && !isProcessingAuth && !authProcessedRef.current) {
+      authProcessedRef.current = true;
+      setIsProcessingAuth(true);
       checkUserPermissions(user.email);
     }
-  }, [isAuthenticated, user, useAuth0Login]);
+  }, [isAuthenticated, user, useAuth0Login, isProcessingAuth]);
 
   // Auth0 login handler
   const handleAuth0Login = async () => {
-    setIsLoading(true);
     try {
+      // Reset auth processing state before login
+      authProcessedRef.current = false;
+      setIsProcessingAuth(false);
+      setIsLoading(true);
+      
       await loginWithPopup({
         authorizationParams: {
           prompt: 'login'
         }
       });
     } catch (error) {
+      // Reset states on error
+      authProcessedRef.current = false;
+      setIsProcessingAuth(false);
+      setIsLoading(false);
+      
       if (error.error !== 'popup_closed_by_user') {
         toast.error('Login failed', {
           description: 'Please try again.',
@@ -117,45 +159,42 @@ const LoginNew = () => {
     }
   };
 
-  // Traditional login handler (with Auth0 token if available)
+  // DEPRECATED: Traditional password login - SECURITY RISK
+  // This function is deprecated and should redirect users to Auth0 login
   const onSubmit = async (data) => {
     setIsLoading(true);
     
     try {
-      // Pass getAccessTokenSilently if authenticated with Auth0
-      const result = await loginFunction(
-        data.email, 
-        data.password,
-        isAuthenticated ? getAccessTokenSilently : null
-      );
-
-      if (result.success) {
-        toast.success('Login successful! Redirecting...', {
-          description: 'You have been signed in successfully.',
-        });
-        
-        setTimeout(() => {
-          navigate(result.redirect);
-        }, 1500);
-      } else {
-        const errorMessages = {
-          'empty': 'Please fill in all fields',
-          'invalid': 'Invalid email or password',
-          'network': 'Network error. Please try again.'
-        };
-        
-        toast.error('Login failed', {
-          description: errorMessages[result.error] || 'Something went wrong. Please try again.',
-        });
-      }
+      // Show deprecation notice and redirect to Auth0
+      toast.error('Password login deprecated', {
+        description: 'Please use the secure Auth0 login button instead.',
+      });
+      
+      // Force Auth0 login flow
+      setTimeout(() => {
+        handleAuth0Login();
+      }, 2000);
+      
     } catch (error) {
       toast.error('Login failed', {
-        description: 'An unexpected error occurred. Please try again.',
+        description: 'Please use the Auth0 login button for secure authentication.',
       });
     } finally {
       setIsLoading(false);
     }
   };
+
+  // Show loading state during auth processing
+  if (isProcessingAuth) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin h-12 w-12 border-4 border-blue-600 border-t-transparent rounded-full mx-auto mb-4" />
+          <p className="text-gray-600">Verifying permissions...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -186,12 +225,12 @@ const LoginNew = () => {
                 <Button 
                   onClick={handleAuth0Login}
                   className="w-full h-11 bg-[#002e4d] hover:bg-[#0F2D52] text-white font-semibold"
-                  disabled={isLoading}
+                  disabled={isLoading || isProcessingAuth}
                 >
-                  {isLoading ? (
+                  {isLoading || isProcessingAuth ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Signing In...
+                      {isLoading ? 'Signing In...' : 'Verifying...'}
                     </>
                   ) : (
                     'Sign In with Auth0'
@@ -289,12 +328,12 @@ const LoginNew = () => {
                 <Button 
                   type="submit" 
                   className="w-full h-11 bg-[#002e4d] hover:bg-[#0F2D52] text-white font-semibold"
-                  disabled={isLoading}
+                  disabled={isLoading || isProcessingAuth}
                 >
-                  {isLoading ? (
+                  {isLoading || isProcessingAuth ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Signing In...
+                      {isLoading ? 'Signing In...' : 'Verifying...'}
                     </>
                   ) : (
                     'Sign In'

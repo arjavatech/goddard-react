@@ -67,9 +67,10 @@
 // export default SignOutModal;
 
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useCallback } from 'react';
 
 const SignOutModal = ({ isOpen, onClose, onConfirm }) => {
+  // Handle body scroll lock
   useEffect(() => {
     if (isOpen) {
       document.body.classList.add('overflow-hidden');
@@ -77,15 +78,34 @@ const SignOutModal = ({ isOpen, onClose, onConfirm }) => {
       document.body.classList.remove('overflow-hidden');
     }
 
-    // Clean up on unmount
+    // Clean up on unmount or when modal closes
     return () => document.body.classList.remove('overflow-hidden');
   }, [isOpen]);
+
+  // Handle escape key
+  const handleKeyDown = useCallback((event) => {
+    if (event.key === 'Escape' && isOpen) {
+      onClose();
+    }
+  }, [isOpen, onClose]);
+
+  useEffect(() => {
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [handleKeyDown]);
+
+  // Prevent event bubbling on modal content
+  const handleModalClick = useCallback((event) => {
+    event.stopPropagation();
+  }, []);
 
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-white/30 backdrop-blur-sm px-4">
-      
+    <div 
+      className="fixed inset-0 z-50 flex items-center justify-center bg-white/30 backdrop-blur-sm px-4"
+      onClick={onClose} // Close on backdrop click
+    >
       {/* Optional faded background content */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
         <h1 className="text-6xl sm:text-8xl font-bold text-gray-800 opacity-10 select-none">
@@ -94,7 +114,10 @@ const SignOutModal = ({ isOpen, onClose, onConfirm }) => {
       </div>
 
       {/* Modal box */}
-      <div className="relative z-10 bg-white rounded-lg shadow-xl w-full max-w-md mx-auto">
+      <div 
+        className="relative z-10 bg-white rounded-lg shadow-xl w-full max-w-md mx-auto"
+        onClick={handleModalClick} // Prevent close on content click
+      >
         {/* Modal Header */}
         <div className="flex justify-between items-center p-4 border-b border-gray-200">
           <h5 className="text-lg font-semibold text-gray-900">Confirm Sign Out</h5>

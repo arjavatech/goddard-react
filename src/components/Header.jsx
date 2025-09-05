@@ -1,30 +1,57 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
+import { useAuth0 } from '@auth0/auth0-react';
 import Sidebar from './Sidebar';
 import SignOutModal from './SignOutModal';
 
-function Header({ onSignOut, sidebar, component }) {
+function Header({ onSignOut, sidebar = true, component }) {
+  const { logout } = useAuth0();
   const [showSignOutModal, setShowSignOutModal] = useState(false);
+  
+  // For now, we'll determine admin status from onSignOut prop presence
+  // This could be enhanced with proper role checking later
+  const isAdmin = Boolean(onSignOut);
 
-  const handleSignOutClick = () => {
+  const handleSignOutClick = useCallback(() => {
     setShowSignOutModal(true);
-  };
+  }, []);
 
-  const handleConfirmSignOut = () => {
-    setShowSignOutModal(false);
-    onSignOut();
-  };
+  const handleConfirmSignOut = useCallback(async () => {
+    try {
+      // Close modal immediately
+      setShowSignOutModal(false);
+      
+      // Call parent's onSignOut if provided (for additional cleanup)
+      if (onSignOut) {
+        onSignOut();
+      }
+      
+      // Logout with Auth0
+      await logout({ 
+        logoutParams: { 
+          returnTo: window.location.origin + '/login'
+        } 
+      });
+    } catch (error) {
+      console.error('Sign out error:', error);
+      // Force redirect as fallback
+      window.location.href = '/login';
+    }
+  }, [logout, onSignOut]);
 
-  const handleCancelSignOut = () => {
+  const handleCancelSignOut = useCallback(() => {
     setShowSignOutModal(false);
-  };
+  }, []);
+
+  // Only show sidebar for admin users
+  const shouldShowSidebar = sidebar && isAdmin;
 
   return (
     <>
     <nav className="bg-white shadow-[0px_4px_4px_rgba(0,0,0,0.25)] relative w-full">
       {/* Desktop / Tablet View */}
       <div className="hidden sm:flex items-center justify-between px-4 sm:px-6 lg:px-8 py-2">
-        {/* Sidebar */}
-        {sidebar && (
+        {/* Sidebar - Only for admin users */}
+        {shouldShowSidebar && (
           <div className="flex-shrink-0">
             <Sidebar activeItem={component} />
           </div>
@@ -70,8 +97,8 @@ function Header({ onSignOut, sidebar, component }) {
 
         {/* Sidebar + Sign Out horizontally or stacked */}
         <div className="flex flex-row xs:flex-col  justify-between gap-3 ">
-          {/* Sidebar (if exists) */}
-          {sidebar && (
+          {/* Sidebar - Only for admin users */}
+          {shouldShowSidebar && (
             <div >
               <Sidebar activeItem={component} />
             </div>

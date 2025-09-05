@@ -63,11 +63,6 @@ ReactDOM.createRoot(document.getElementById('root')).render(
               <FormsRepositoryNew />
             </PrivateRoute>
           } />
-           <Route path="/" element={
-            <PrivateRoute requireAdmin={true}>
-              <SelectSchool />
-            </PrivateRoute>
-          } />
         </Routes>
         <Toaster />
       </Auth0ProviderWithHistory>

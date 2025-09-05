@@ -224,6 +224,7 @@ node_modules/.vite/
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 
+
 # Claude Flow generated files
 .claude/settings.local.json
 .mcp.json

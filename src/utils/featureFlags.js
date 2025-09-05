@@ -150,15 +150,18 @@ export class FeatureFlagManager {
     return enabled;
   }
 
-  // Simple user ID based on email or generate one
-  getUserId() {
-    let userId = localStorage.getItem('logged_in_email');
+  // Simple user ID based on Auth0 user or generate one
+  getUserId(auth0User = null) {
+    // Prefer Auth0 user email if available
+    if (auth0User?.email) {
+      return auth0User.email;
+    }
+    
+    // Generate anonymous ID for feature flag bucketing
+    let userId = sessionStorage.getItem('feature_flag_user_id');
     if (!userId) {
-      userId = localStorage.getItem('user_id');
-      if (!userId) {
-        userId = 'anonymous_' + Math.random().toString(36).substring(2, 15);
-        localStorage.setItem('user_id', userId);
-      }
+      userId = 'anonymous_' + Math.random().toString(36).substring(2, 15);
+      sessionStorage.setItem('feature_flag_user_id', userId);
     }
     return userId;
   }
@@ -174,21 +177,23 @@ export class FeatureFlagManager {
     return Math.abs(hash);
   }
 
-  // Check if user is in beta group
-  isInBetaGroup() {
-    const email = localStorage.getItem('logged_in_email');
+  // Check if user is in beta group (requires Auth0 user)
+  isInBetaGroup(auth0User = null) {
+    const email = auth0User?.email;
+    if (!email) return false;
+    
     const betaEmails = [
       'goddard01arjava@gmail.com',
-      'admin@goddardschool.com',
+      'admin@goddardschool.com', 
       'beta@goddardschool.com'
     ];
     
     return betaEmails.includes(email);
   }
 
-  // Enable beta features for beta users
-  enableBetaFeatures() {
-    if (this.isInBetaGroup()) {
+  // Enable beta features for beta users (requires Auth0 user)
+  enableBetaFeatures(auth0User = null) {
+    if (this.isInBetaGroup(auth0User)) {
       Object.values(FeatureFlags).forEach(flag => {
         this.enable(flag);
       });
@@ -204,11 +209,11 @@ export class FeatureFlagManager {
   }
 
   // Export configuration
-  exportConfig() {
+  exportConfig(auth0User = null) {
     return {
       flags: this.getAllFlags(),
-      userId: this.getUserId(),
-      isBeta: this.isInBetaGroup(),
+      userId: this.getUserId(auth0User),
+      isBeta: this.isInBetaGroup(auth0User),
       timestamp: Date.now()
     };
   }
@@ -258,7 +263,9 @@ export const useFeatureFlag = (flag) => {
   return isEnabled;
 };
 
-// Initialize beta features on load
+// Initialize beta features on load 
+// Note: This will need to be called from components with Auth0 user data
 if (typeof window !== 'undefined') {
-  featureFlagManager.enableBetaFeatures();
+  // Don't auto-enable beta features without Auth0 user context
+  console.log('Feature flag manager initialized. Call enableBetaFeatures(auth0User) from components.');
 }

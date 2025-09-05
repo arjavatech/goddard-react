@@ -215,14 +215,14 @@ export function useParentDashboard(email) {
     return child ? child.stats.progress : 0;
   }, [getChildData]);
 
-  // Get welcome message
+  // Get welcome message - using Auth0 email parameter
   const getWelcomeMessage = useCallback(() => {
-    const loggedInEmail = localStorage.getItem('logged_in_email');
-    if (loggedInEmail === 'goddard01arjava@gmail.com') {
+    // REMOVED: localStorage dependency - using email parameter instead
+    if (email === 'goddard01arjava@gmail.com') {
       return 'Welcome Admin';
     }
     return `Welcome ${state.parentName}`;
-  }, [state.parentName]);
+  }, [state.parentName, email]);
 
   return {
     // State

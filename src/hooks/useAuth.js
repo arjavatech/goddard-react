@@ -1,31 +1,21 @@
-import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useAuth0 } from '@auth0/auth0-react';
-import { api_base_url, school_id } from '../utils/const';
-import { getAuthHeaders } from '../utils/auth';
 
 export const useAuth = () => {
-  const { isAuthenticated, isLoading, logout, user, getAccessTokenSilently } = useAuth0();
-  const navigate = useNavigate();
+  const { 
+    isAuthenticated, 
+    isLoading, 
+    logout, 
+    user, 
+    getAccessTokenSilently,
+    loginWithPopup 
+  } = useAuth0();
 
-  const checkAuth = () => {
-    // With Auth0, we check the isAuthenticated flag
-    if (!isAuthenticated && !isLoading) {
-      return false;
-    }
-    return true;
-  };
-
-  const signOut = () => {
+  const signOut = async () => {
     console.log('Signing out user...');
     
-    // Clear local storage
+    // Clear any remaining localStorage (but don't rely on it for auth)
     localStorage.clear();
-    localStorage.setItem('isSignout', 'yes');
-    
-    if (sessionStorage.length > 0) {
-      sessionStorage.clear();
-    }
+    sessionStorage.clear();
     
     // Clear cookies
     const cookies = document.cookie.split("; ");
@@ -35,62 +25,75 @@ export const useAuth = () => {
       document.cookie = cookieName + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
     }
     
-    // Since Auth0 logout is having issues, let's do a simpler approach
-    // Clear everything and redirect manually without using Auth0 logout
-    console.log('Performing manual logout...');
-    
-    // Redirect to login page
-    window.location.href = '/login';
-    
-    // Optional: Try Auth0 logout in background (non-blocking)
-    setTimeout(() => {
-      try {
-        logout({ 
-          logoutParams: { 
-            returnTo: window.location.origin
-          } 
-        });
-      } catch (error) {
-        console.log('Auth0 logout failed, but manual logout completed');
-      }
-    }, 100);
+    try {
+      // Use Auth0 logout directly
+      await logout({ 
+        logoutParams: { 
+          returnTo: window.location.origin + '/login'
+        } 
+      });
+    } catch (error) {
+      console.error('Auth0 logout error:', error);
+      // Fallback to manual redirect
+      window.location.href = '/login';
+    }
   };
 
-  const checkUserPermissions = async () => {
-    if (!user?.email) return null;
-    
+  const login = async (options = {}) => {
     try {
-      const headers = await getAuthHeaders(getAccessTokenSilently);
-      const response = await fetch(`${api_base_url}/sign_in/${school_id}/${encodeURIComponent(user.email)}`, {
-        headers
+      await loginWithPopup(options);
+    } catch (error) {
+      console.error('Login error:', error);
+      throw error;
+    }
+  };
+
+  const loginAsSignup = async () => {
+    try {
+      await loginWithPopup({
+        authorizationParams: {
+          screen_hint: 'signup'
+        }
       });
-      
-      if (response.ok) {
-        const data = await response.json();
-        return data;
+    } catch (error) {
+      console.error('Signup error:', error);
+      throw error;
+    }
+  };
+
+  const getToken = async () => {
+    try {
+      if (isAuthenticated) {
+        return await getAccessTokenSilently();
       }
       return null;
     } catch (error) {
-      console.error('Error checking permissions:', error);
+      console.error('Error getting token:', error);
       return null;
     }
   };
 
-  useEffect(() => {
-    if (!isLoading) {
-      if (checkAuth()) {
-        document.body.style.visibility = 'visible';
-      } else {
-        navigate('/login');
-      }
-    }
-  }, [isAuthenticated, isLoading, navigate]);
+  // Simple authentication check - no localStorage dependency
+  const isLoggedIn = () => {
+    return isAuthenticated && !isLoading;
+  };
 
   return { 
+    // Auth0 state
     isAuthenticated, 
     isLoading,
-    signOut,
     user,
-    checkUserPermissions
+    
+    // Auth actions
+    signOut,
+    login,
+    loginAsSignup,
+    
+    // Token management
+    getToken,
+    getAccessTokenSilently,
+    
+    // Utility
+    isLoggedIn
   };
 };

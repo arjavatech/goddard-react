@@ -1,43 +1,45 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 
-const ChildTabs = () => {
-  const [children, setChildren] = useState([]);
-  const [activeId, setActiveId] = useState(null);
-
-  useEffect(() => {
-    const storedChildren = JSON.parse(localStorage.getItem("number_of_children"));
-    const storedData = JSON.parse(localStorage.getItem("responseData"));
-
-    if (storedData?.children?.length > 0) {
-      setChildren(storedData.children);
-      const putcallId = sessionStorage.getItem("putcallId") || storedData.children[0].child_id;
-      setActiveId(putcallId);
-      localStorage.setItem("child_id", putcallId);
-    }
-  }, []);
-
+const ChildTabs = ({ children = [], activeChildId, onChildSelect }) => {
   const handleChildClick = (child) => {
-    localStorage.setItem("child_id", child.child_id);
-    setActiveId(child.child_id);
-    // Trigger reload for selected child if needed
-    window.location.reload();
+    if (onChildSelect) {
+      onChildSelect(child.child_id || child.id);
+    }
   };
 
+  if (!children || children.length === 0) {
+    return (
+      <div className="bg-white rounded-lg shadow p-6 text-center">
+        <p className="text-gray-600">No children found for this account.</p>
+      </div>
+    );
+  }
+
   return (
-    <ul className="space-y-2" id="dynamicChildCards">
-      {children.map((child) => (
-        <li key={child.child_id}>
-          <button
-            className={`w-full text-left px-4 py-2 rounded-md border text-sm font-medium hover:bg-blue-100 ${
-              activeId === child.child_id ? "bg-blue-500 text-white" : "bg-white text-gray-800"
-            }`}
-            onClick={() => handleChildClick(child)}
-          >
-            {child.child_first_name}
-          </button>
-        </li>
-      ))}
-    </ul>
+    <div className="bg-white rounded-lg shadow p-6">
+      <h3 className="text-lg font-semibold text-[#0F2D52] mb-4">Select Child</h3>
+      <div className="flex flex-wrap gap-2">
+        {children.map((child) => {
+          const childId = child.child_id || child.id;
+          const childName = child.child_first_name || child.firstName || child.name;
+          const isActive = activeChildId === childId;
+          
+          return (
+            <button
+              key={childId}
+              className={`px-4 py-2 rounded-md border text-sm font-medium transition-colors ${
+                isActive 
+                  ? "bg-[#0F2D52] text-white border-[#0F2D52]" 
+                  : "bg-white text-gray-800 border-gray-300 hover:bg-gray-50"
+              }`}
+              onClick={() => handleChildClick(child)}
+            >
+              {childName}
+            </button>
+          );
+        })}
+      </div>
+    </div>
   );
 };
 

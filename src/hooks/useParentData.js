@@ -217,14 +217,14 @@ export const useParentData = (email) => {
     fetchData();
   }, [fetchData]);
 
-  // Get welcome message
+  // Get welcome message - updated to use Auth0 email parameter
   const getWelcomeMessage = useCallback(() => {
-    const loggedInEmail = localStorage.getItem('logged_in_email');
-    if (loggedInEmail === 'goddard01arjava@gmail.com') {
+    // REMOVED: localStorage dependency - using email parameter instead
+    if (email === 'goddard01arjava@gmail.com') {
       return 'Welcome Admin';
     }
     return `Welcome ${state.parentName}`;
-  }, [state.parentName]);
+  }, [state.parentName, email]);
 
   // Computed values
   const activeChild = state.children.find(c => c.id === state.activeChildId);

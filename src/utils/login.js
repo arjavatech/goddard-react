@@ -1,64 +1,70 @@
-import CryptoJS from 'crypto-js';
-import { api_base_url, school_id } from './const';
-import { getAuthHeaders } from './auth';
+/**
+ * DEPRECATED: Legacy login system with SHA256 password hashing
+ * 
+ * ⚠️  SECURITY WARNING: This file has been deprecated due to security vulnerabilities:
+ * 
+ * 1. SHA256 client-side password hashing - easily bypassable
+ * 2. localStorage authentication storage - client-side manipulation risk  
+ * 3. Hardcoded admin email arrays - maintenance nightmare
+ * 4. Console logging of sensitive authentication data
+ * 
+ * 🔒 REPLACEMENT: Use Auth0 authentication instead
+ * 
+ * See migration guide: /docs/LEGACY_AUTH_REMOVAL.md
+ * Use new Auth0 utilities: /utils/auth-clean.js, /utils/login-auth0.js
+ */
 
-export const loginFunction = async (email, password, getAccessTokenSilently = null) => {
-  if (!email || !password) {
-    return { success: false, error: 'empty' };
-  }
+console.error(`
+🚨 DEPRECATED: login.js is no longer supported
 
-  const hashedPassword = CryptoJS.SHA256(password).toString(CryptoJS.enc.Hex);
-  const loginData = {
-    email: email.toLowerCase(),
-    password: hashedPassword
-  };
+This file contains security vulnerabilities and has been replaced with Auth0 authentication.
 
-  try {
-    // Get headers with auth token if available
-    const headers = getAccessTokenSilently 
-      ? await getAuthHeaders(getAccessTokenSilently)
-      : { 'Content-Type': 'application/json' };
+❌ Vulnerabilities in this file:
+- Client-side SHA256 password hashing (bypassable)
+- localStorage authentication tokens (manipulatable) 
+- Hardcoded admin email lists (unmaintainable)
+
+✅ Use instead:
+- Auth0 authentication via useAuth0 hook
+- Server-side permission verification
+- JWT token-based authentication
+
+📖 Migration guide: /docs/LEGACY_AUTH_REMOVAL.md
+`);
+
+/**
+ * DEPRECATED: This function has been removed for security reasons
+ * Use Auth0 authentication instead
+ */
+export const loginFunction = () => {
+  throw new Error(`
+    SECURITY: loginFunction() has been deprecated due to vulnerabilities.
     
-    const response = await fetch(`${api_base_url}/sign_in/check/${school_id}`, {
-      method: 'POST',
-      headers,
-      body: JSON.stringify(loginData)
-    });
-
-    const result = await response.json();
-
-    if (result.isAdmin === true) {
-      localStorage.setItem('is_admin', result.admin);
-      localStorage.setItem('logged_in_email', email);
-      return { success: true, redirect: '/admin-dashboard' };
-    } else if (result.isParent === true) {
-      localStorage.setItem('logged_in_email', email);
-      return { success: true, redirect: '/parent-dashboard' };
-    } else {
-      return { success: false, error: 'invalid' };
-    }
-  } catch (error) {
-    return { success: false, error: 'network' };
-  }
+    ❌ Removed: SHA256 client-side password hashing
+    ❌ Removed: localStorage authentication storage
+    ❌ Removed: Hardcoded admin email verification
+    
+    ✅ Use: Auth0 authentication with server-side verification
+    
+    See: /utils/login-auth0.js for secure replacement
+    Guide: /docs/LEGACY_AUTH_REMOVAL.md
+  `);
 };
 
-export const handleGoogleLogin = (response) => {
-  const responsePayload = decodeJwtResponse(response.credential);
-  localStorage.clear();
-  localStorage.setItem('logged_in_email', responsePayload.email);
-  
-  if (['goddard01arjava@gmail.com', 'goddard02arjava@gmail.com', 's_kaliappan@hotmail.com'].includes(responsePayload.email)) {
-    return '/admin-dashboard';
-  } else {
-    return '/parent-dashboard';
-  }
-};
-
-const decodeJwtResponse = (token) => {
-  let base64Url = token.split('.')[1];
-  let base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-  let jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
-    return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-  }).join(''));
-  return JSON.parse(jsonPayload);
+/**
+ * DEPRECATED: This function has been removed for security reasons  
+ * Use Auth0 authentication instead
+ */
+export const handleGoogleLogin = () => {
+  throw new Error(`
+    SECURITY: handleGoogleLogin() has been deprecated due to vulnerabilities.
+    
+    ❌ Removed: Hardcoded admin email arrays
+    ❌ Removed: localStorage authentication storage
+    
+    ✅ Use: Auth0 authentication with database-driven roles
+    
+    See: /utils/auth-clean.js for secure replacement
+    Guide: /docs/LEGACY_AUTH_REMOVAL.md
+  `);
 };
