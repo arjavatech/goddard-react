@@ -164,6 +164,12 @@ const PrivateRoute = ({ children, requireAdmin = false, requireParent = false })
     });
   }
 
+  // Prioritize authentication check before showing loader or running permission logic
+  if (!isLoading && !isAuthenticated) {
+    console.log('🚫 User not authenticated, redirecting to login');
+    return <Navigate to="/login" replace />;
+  }
+
   if (isLoading || checkingPermissions) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -175,7 +181,7 @@ const PrivateRoute = ({ children, requireAdmin = false, requireParent = false })
     );
   }
 
-  if (!isAuthenticated || invalidUser) {
+  if (invalidUser) {
     return <Navigate to="/login" replace />;
   }
 
