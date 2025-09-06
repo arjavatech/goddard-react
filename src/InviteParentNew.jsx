@@ -110,7 +110,7 @@ const InviteParentNew = () => {
       if (result.error === "Already we send an mail. Please try different email" || 
           result.error === "Email Already Registered with another mail. Please try different email") {
         toast.error('Email already exists! Please use a different email address.');
-      } else if (result.message === "Parent invite created and Email sent successfully!") {
+      } else if (result.message === "Parent invite created and Email is being sent!") {
         toast.success('Invitation sent successfully! The parent will receive an email shortly.');
         form.reset();
         // Optionally navigate back to parent details after success
