@@ -41,7 +41,7 @@ function SidebarNew({ activeItem }) {
       icon: <UserPlus className="h-5 w-5" />
     },
     {
-      id: 'ClassroomFormManage',
+      id: 'Forms Repository',
       href: '/forms-repository',
       label: 'Forms Repository',
       icon: <FolderOpen className="h-5 w-5" />

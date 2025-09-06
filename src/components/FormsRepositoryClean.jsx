@@ -372,7 +372,7 @@ const FormsRepositoryClean = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <HeaderNew />
+      <HeaderNew onSignOut={signOut} sidebar={true} component="Forms Repository" />
       
       <main className="max-w-7xl mx-auto px-4 py-8">
         <div className="mb-8">
