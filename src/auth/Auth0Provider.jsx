@@ -35,7 +35,7 @@ const Auth0ProviderWithHistory = ({ children }) => {
         // API access tokens will be requested separately when needed
       }}
       useRefreshTokens={true}
-      cacheLocation="memory"
+      cacheLocation="localstorage"
       onRedirectCallback={onRedirectCallback}
     >
       {children}

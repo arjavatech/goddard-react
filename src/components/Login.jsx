@@ -4,6 +4,7 @@ import { useAuth0 } from '@auth0/auth0-react';
 import Header from './Header';
 import { api_base_url, school_id } from '../utils/const';
 import { getAuthHeaders } from '../utils/auth';
+import { withRetry, handleApiError, createResilientApiCall } from '../utils/errorHandler';
 
 
 const Login = () => {
@@ -45,10 +46,8 @@ const Login = () => {
     console.log('🔍 Checking permissions for email:', email);
     console.log('🌐 API URL:', `${api_base_url}/sign_in/check/${school_id}`);
 
-    try {
-      // Get Auth0 token and headers
+    const makePermissionRequest = async () => {
       const headers = await getAuthHeaders(getAccessTokenSilently);
-
       const requestBody = {
         email: email.toLowerCase(),
         auth0_user: true
@@ -56,7 +55,6 @@ const Login = () => {
 
       console.log('📨 Making API request with body:', requestBody);
 
-      // Call the API with Auth0 token
       const response = await fetch(`${api_base_url}/sign_in/check/${school_id}`, {
         method: 'POST',
         headers,
@@ -66,49 +64,47 @@ const Login = () => {
       console.log('📥 Response status:', response.status);
       console.log('📥 Response ok:', response.ok);
 
-      if (response.ok) {
-        const data = await response.json();
-        console.log('Permission data:', data);
-        
-        // Small delay to ensure Auth0 popup is fully closed before navigation
-        setTimeout(() => {
-          // Check if user has valid permissions and navigate accordingly
-          if (data.isAdmin === true) {
-            console.log('User is admin');
-            navigate('/admin-dashboard', { replace: true });
-          } else if (data.isParent === true) {
-            console.log('User is parent');
-            navigate('/parent-dashboard', { replace: true });
-          } else {
-            // Invalid user - neither admin nor parent
-            console.log('Invalid user - no permissions', data);
-            alert('Invalid user - You do not have permission to access this application');
-            handleLogoutAndReset();
-            return;
-          }
-        }, 100);
-      } else {
-        // API call failed
-        console.error('Permission check failed with status:', response.status);
-        const errorText = await response.text();
-        console.error('Error response:', errorText);
-        
-        // If user not found in system, show invalid user message
-        if (response.status === 404 || response.status === 500) {
-          alert('Invalid user - You are not registered in the system');
-          handleLogoutAndReset();
-          return;
+      if (!response.ok) {
+        const error = new Error(`Permission check failed with status: ${response.status}`);
+        error.status = response.status;
+        error.response = response;
+        throw error;
+      }
+
+      return response.json();
+    };
+
+    try {
+      const data = await withRetry(makePermissionRequest, 'permission check');
+      console.log('Permission data:', data);
+      
+      // Small delay to ensure Auth0 popup is fully closed before navigation
+      setTimeout(() => {
+        // Check if user has valid permissions and navigate accordingly
+        if (data.isAdmin === true) {
+          console.log('User is admin');
+          navigate('/admin-dashboard', { replace: true });
+        } else if (data.isParent === true) {
+          console.log('User is parent');
+          navigate('/parent-dashboard', { replace: true });
         } else {
-          alert('Unable to verify user permissions. Please contact support.');
+          // Invalid user - neither admin nor parent
+          console.log('Invalid user - no permissions', data);
+          alert('Access Denied: You do not have permission to access this application. Please contact an administrator if you believe this is an error.');
           handleLogoutAndReset();
           return;
         }
-      }
+      }, 100);
     } catch (error) {
-      console.error('Error checking permissions:', error);
-      alert('Network error occurred. Please try again.');
-      handleLogoutAndReset();
-      return;
+      const errorResult = handleApiError(error, 'permission check', {
+        onLogoutRequired: handleLogoutAndReset
+      });
+      
+      // Only logout if it's a genuine authentication failure
+      if (!errorResult.shouldLogout) {
+        // For non-auth errors, show error but don't logout
+        console.warn('Permission check failed but maintaining session:', errorResult.message);
+      }
     } finally {
       setIsProcessingAuth(false);
     }
@@ -161,13 +157,12 @@ const Login = () => {
   };
 
   const handleSignupAPI = async (email) => {
-    try {
+    const makeSignupRequest = async () => {
       const obj = {
         email: email,
         invite_id: null
       };
 
-      // Get Auth0 token and headers
       const headers = await getAuthHeaders(getAccessTokenSilently);
 
       const response = await fetch(`${api_base_url}/sign_up/${school_id}`, {
@@ -176,7 +171,18 @@ const Login = () => {
         body: JSON.stringify(obj)
       });
 
-      const result = await response.json();
+      if (!response.ok) {
+        const error = new Error(`Signup failed with status: ${response.status}`);
+        error.status = response.status;
+        error.response = response;
+        throw error;
+      }
+
+      return response.json();
+    };
+
+    try {
+      const result = await withRetry(makeSignupRequest, 'signup');
 
       if (result.message === "SignUp Data successfully updated") {
         console.log('Signup successful, checking permissions...');
@@ -187,12 +193,22 @@ const Login = () => {
         await checkUserPermissions(email);
       } else {
         alert('Signup failed. Please try again.');
-        handleLogoutAndReset();
+        // Only logout for genuine auth failures, not signup validation issues
+        console.warn('Signup validation failed, but maintaining Auth0 session');
+        setIsProcessingAuth(false);
+        authProcessedRef.current = false;
       }
     } catch (error) {
-      console.error('Signup API error:', error);
-      alert('Network error occurred during signup.');
-      handleLogoutAndReset();
+      const errorResult = handleApiError(error, 'signup', {
+        onLogoutRequired: handleLogoutAndReset
+      });
+      
+      // Only logout if it's a genuine authentication failure
+      if (!errorResult.shouldLogout) {
+        console.warn('Signup failed but maintaining session:', errorResult.message);
+        setIsProcessingAuth(false);
+        authProcessedRef.current = false;
+      }
     } finally {
       setIsSignupFlow(false);
     }
