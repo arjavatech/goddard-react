@@ -25,6 +25,7 @@ const ApplicationStatusNew = () => {
   const [data, setData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [pageLoading, setPageLoading] = useState(true);
   const [classrooms, setClassrooms] = useState([]);
   const [forms, setForms] = useState([]);
   const [selectedClassroom, setSelectedClassroom] = useState('all');
@@ -38,11 +39,24 @@ const ApplicationStatusNew = () => {
 
   useEffect(() => {
     if (isAuthenticated) {
-      loadClassrooms();
-      loadForms();
-      loadData();
+      initializePageData();
     }
   }, [isAuthenticated]);
+
+  const initializePageData = async () => {
+    setPageLoading(true);
+    try {
+      await Promise.all([
+        loadClassrooms(),
+        loadForms(),
+        loadData()
+      ]);
+    } catch (error) {
+      toast.error('Failed to initialize page data');
+    } finally {
+      setPageLoading(false);
+    }
+  };
 
   useEffect(() => {
     applyFilters();
@@ -259,6 +273,107 @@ const ApplicationStatusNew = () => {
 
   if (!isAuthenticated) {
     return null;
+  }
+
+  // Show page loading overlay while initial data is loading
+  if (pageLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <HeaderNew onSignOut={signOut} sidebar={true} component="Application Status" />
+        
+        <div className="container mx-auto px-4 py-6">
+          {/* Header Section Skeleton */}
+          <div className="mb-6">
+            <Skeleton className="h-8 w-64 mb-2" />
+            <Skeleton className="h-4 w-96" />
+          </div>
+
+          {/* Stats Cards Skeleton */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+            {Array.from({ length: 3 }).map((_, index) => (
+              <Card key={index}>
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-2">
+                      <Skeleton className="h-4 w-24" />
+                      <Skeleton className="h-8 w-16" />
+                    </div>
+                    <Skeleton className="h-8 w-8 rounded" />
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+
+          {/* Filters Card Skeleton */}
+          <Card className="mb-6">
+            <CardHeader>
+              <Skeleton className="h-6 w-48" />
+              <Skeleton className="h-4 w-80" />
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {Array.from({ length: 3 }).map((_, index) => (
+                  <div key={index} className="space-y-2">
+                    <Skeleton className="h-4 w-20" />
+                    <Skeleton className="h-10 w-full" />
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Table Card Skeleton */}
+          <Card>
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <div>
+                  <Skeleton className="h-6 w-40" />
+                  <Skeleton className="h-4 w-64 mt-1" />
+                </div>
+                <Skeleton className="h-10 w-20" />
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="rounded-md border">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      {Array.from({ length: 6 }).map((_, index) => (
+                        <TableHead key={index}>
+                          <Skeleton className="h-4 w-20" />
+                        </TableHead>
+                      ))}
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {Array.from({ length: 5 }).map((_, index) => (
+                      <TableRow key={index}>
+                        {Array.from({ length: 6 }).map((_, cellIndex) => (
+                          <TableCell key={cellIndex}>
+                            <Skeleton className="h-4 w-24" />
+                          </TableCell>
+                        ))}
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Loading indicator overlay */}
+          <div className="fixed inset-0 bg-black/20 backdrop-blur-sm flex items-center justify-center z-50">
+            <Card className="p-6">
+              <CardContent className="flex flex-col items-center space-y-4">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                <p className="text-sm text-gray-600">Loading application data...</p>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   return (
