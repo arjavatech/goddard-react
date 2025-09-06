@@ -26,12 +26,16 @@ import {
   Plus,
   School
 } from 'lucide-react';
+import { api_base_url, school_id } from '../utils/const';
+import { useAuth0 } from '@auth0/auth0-react';
+import { getAuthHeaders } from '../utils/auth';
 
 // FIXED: Import hooks from shared services (no provider needed)
 import { useClassrooms, useForms, useStudents, useLoadingState } from '../hooks/useApiData';
 
 const FormsRepositoryClean = () => {
   const { isAuthenticated, signOut } = useAuth();
+  const { getAccessTokenSilently } = useAuth0();
 
   // FIXED: Use shared API services (single instance across app)
   const {
@@ -41,7 +45,8 @@ const FormsRepositoryClean = () => {
     loading: classroomsLoading,
     createClassroom,
     updateClassroom,
-    deleteClassroom
+    deleteClassroom,
+    refetch: refetchClassrooms
   } = useClassrooms();
 
   const {
@@ -78,8 +83,19 @@ const FormsRepositoryClean = () => {
 
     setLoading('createClassroom', true);
     try {
-      await createClassroom({ name: newClassroomName.trim() });
-      setNewClassroomName('');
+      const headers = await getAuthHeaders(getAccessTokenSilently);
+      
+      const response = await fetch(`${api_base_url}/class_details`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({ class_name: newClassroomName.trim(), school_id: school_id })
+      });
+      
+      if (response.ok) {
+        setNewClassroomName('');
+        // Refresh the classrooms list after successful creation
+        await refetchClassrooms();
+      }
     } catch (error) {
       console.error('Failed to create classroom:', error);
     } finally {

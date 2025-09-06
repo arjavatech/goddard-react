@@ -324,7 +324,7 @@ const FormsRepositoryNew = () => {
     setIsAddingClassroom(true);
     try {
       const headers = await getAuthHeaders(getAccessTokenSilently);
-      const response = await fetch('https://v2bvjzsgrk.execute-api.ap-south-1.amazonaws.com/test/class_form_repository', {
+      const response = await fetch(`${api_base_url}/class_details`, {
         method: 'POST',
         headers,
         body: JSON.stringify({ class_name: newClassroomName.trim() })
