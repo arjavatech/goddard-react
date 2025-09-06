@@ -43,8 +43,6 @@ const Login = () => {
   }, [isAuthenticated, user, isProcessingAuth]);
 
   const checkUserPermissions = async (email) => {
-    console.log('🔍 Checking permissions for email:', email);
-    console.log('🌐 API URL:', `${api_base_url}/sign_in/check/${school_id}`);
 
     const makePermissionRequest = async () => {
       const headers = await getAuthHeaders(getAccessTokenSilently);
@@ -55,10 +53,10 @@ const Login = () => {
 
       console.log('📨 Making API request with body:', requestBody);
 
-      const response = await fetch(`${api_base_url}/sign_in/check/${school_id}`, {
-        method: 'POST',
+      const response = await fetch(`${api_base_url}/sign_in`, {
+        method: 'GET',
         headers,
-        body: JSON.stringify(requestBody)
+        // body: JSON.stringify(requestBody)
       });
 
       console.log('📥 Response status:', response.status);

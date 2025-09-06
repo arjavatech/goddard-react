@@ -1,11 +1,11 @@
 meta {
-  name: Get All Form Details by school id
+  name: Sign in
   type: http
-  seq: 5
+  seq: 3
 }
 
 get {
-  url: {{base_url}}/form/{{school_id}}
+  url: {{base_url}}/sign_in
   body: none
   auth: inherit
 }
@@ -16,8 +16,4 @@ headers {
 
 settings {
   encodeUrl: true
-}
-
-docs {
-  No joins here
 }

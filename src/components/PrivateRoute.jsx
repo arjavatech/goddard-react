@@ -40,8 +40,6 @@ const PrivateRoute = ({ children, requireAdmin = false, requireParent = false })
         
         // Primary permission check with auth0_user flag
         const makePermissionRequest = async () => {
-          console.log('🔍 PrivateRoute checking permissions for:', user.email);
-          console.log('🌐 API URL:', `${api_base_url}/sign_in/check/${school_id}`);
           
           const headers = await getAuthHeaders(getAccessTokenSilently);
           const requestBody = {
@@ -51,10 +49,9 @@ const PrivateRoute = ({ children, requireAdmin = false, requireParent = false })
 
           console.log('📨 Making API request with body:', requestBody);
 
-          const response = await fetch(`${api_base_url}/sign_in/check/${school_id}`, {
-            method: 'POST',
+          const response = await fetch(`${api_base_url}/sign_in`, {
+            method: 'GET',
             headers,
-            body: JSON.stringify(requestBody)
           });
 
           console.log('📥 Response status:', response.status);

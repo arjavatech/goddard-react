@@ -4,15 +4,10 @@ meta {
   seq: 5
 }
 
-post {
-  url: {{base_url}}/parent_invite_mail/resend/{{school_id}}/{{email}}/{{updated_by}}
+get {
+  url: {{base_url}}/parent_invite_mail/resend/{{school_id}}/{{email}}
   body: none
   auth: bearer
-}
-
-params:path {
-  email: parent@example.com
-  updated_by: Admin
 }
 
 headers {

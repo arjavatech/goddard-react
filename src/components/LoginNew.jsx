@@ -55,13 +55,10 @@ const LoginNew = () => {
     try {
       const headers = await getAuthHeaders(getAccessTokenSilently);
       
-      const response = await fetch(`${api_base_url}/sign_in/check/${school_id}`, {
-        method: 'POST',
+      const response = await fetch(`${api_base_url}/sign_in`, {
+        method: 'GET',
         headers,
-        body: JSON.stringify({ 
-          email: email.toLowerCase(),
-          auth0_user: true
-        })
+      
       });
 
       if (response.ok) {

@@ -71,13 +71,9 @@ const SignUp = () => {
     const checkUserPermissionsAfterSignup = async (email) => {
         try {
             const headers = await getAuthHeaders(getAccessTokenSilently);
-            const response = await fetch(`${api_base_url}/sign_in/check/${school_id}`, {
-                method: 'POST',
-                headers,
-                body: JSON.stringify({ 
-                    email: email.toLowerCase(),
-                    auth0_user: true
-                })
+            const response = await fetch(`${api_base_url}/sign_in`, {
+                method: 'GET',
+                headers
             });
 
             if (response.ok) {
