@@ -84,7 +84,7 @@ const Login = () => {
           navigate('/admin-dashboard', { replace: true });
         } else if (data.isParent === true) {
           console.log('User is parent');
-          navigate('/parent-dashboard', { replace: true });
+          navigate(`/parent-dashboard?id=${encodeURIComponent(email)}`, { replace: true });
         } else {
           // Invalid user - neither admin nor parent
           console.log('Invalid user - no permissions', data);

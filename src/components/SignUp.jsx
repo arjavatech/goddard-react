@@ -86,7 +86,7 @@ const SignUp = () => {
                     navigate('/admin-dashboard');
                 } else if (data.isParent === true) {
                     localStorage.setItem('logged_in_email', email);
-                    navigate('/parent-dashboard');
+                    navigate(`/parent-dashboard?id=${encodeURIComponent(email)}`);
                 } else {
                     // Invalid user
                     alert('Invalid user - You do not have permission to access this application');
