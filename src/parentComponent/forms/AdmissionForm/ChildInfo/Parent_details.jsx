@@ -3,6 +3,9 @@ import { toast } from 'sonner';
 import { FormInput } from './InputComponent';
 import { DownIcon,UpIcon } from '../../../../components/common/Arrows';
 import { api_base_url, school_id } from '@/utils/const';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { CheckCircle, Circle } from 'lucide-react';
 
 const Parent_details = ({ openSection, setOpenSection, initialFormData, handleInputChange, childId }) => {
 
@@ -169,11 +172,14 @@ const Parent_details = ({ openSection, setOpenSection, initialFormData, handleIn
                 <div className="flex items-center space-x-3">
                     <div className="flex items-center space-x-3">
                         <h2 className="text-lg font-semibold">Parent Details</h2>
-                        <img 
-                            src={isFormComplete() ? "/image/tick.png" : "/image/circle-with.png"} 
-                            alt={isFormComplete() ? "Complete" : "Incomplete"} 
-                            className="w-5 h-5"
-                        />
+                        {isFormComplete() ? (
+                            <CheckCircle className="w-5 h-5 text-green-500" />
+                        ) : (
+                            <Circle className="w-5 h-5 text-gray-400" />
+                        )}
+                        <Badge variant={isFormComplete() ? "default" : "secondary"}>
+                            {isFormComplete() ? "Complete" : "Incomplete"}
+                        </Badge>
                     </div>
                 </div>
                 <div className="text-xl transform transition-transform duration-200">
@@ -224,10 +230,9 @@ const Parent_details = ({ openSection, setOpenSection, initialFormData, handleIn
                     </div>
 
                     <div className="flex justify-center pt-4">
-                        <button className="bg-slate-700 text-white px-8 py-3 rounded-md hover:bg-slate-800 transition-colors"
-                        onClick={handleSave}>
+                        <Button onClick={handleSave} className="bg-[#0F2D52] hover:bg-[#0F2D52]/90 px-8 py-3">
                             Save
-                        </button>
+                        </Button>
                     </div>
                 </div>
             )}

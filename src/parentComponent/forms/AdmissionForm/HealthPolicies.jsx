@@ -1,5 +1,10 @@
 import React, { useState } from "react";
-import CheckboxWithLabel from "./CheckboxWithLabel";
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Label } from '@/components/ui/label';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { toast } from 'sonner';
 import { api_base_url, school_id } from "@/utils/const";
 import { useAuth0 } from '@auth0/auth0-react';
 import { getAuthHeaders } from '@/utils/auth';
@@ -58,19 +63,19 @@ export default function HealthPolicies({initialFormData = null, childId = null})
             };
 
             await updateAdmissionData(saveData);
-            alert('Health policies data saved successfully!');
+            toast.success('Health policies data saved successfully!');
         } catch (error) {
             console.error('Failed to save health policies:', error);
-            alert('Error saving health policies data. Please try again.');
+            toast.error('Error saving health policies data. Please try again.');
         }
     };
 
     return (
-        <>
-            <h1 className='text-center my-5 py-3 text-3xl text-white headerstyle' style={{ backgroundColor: '#0F2D52' }}>Health Policies</h1>
-            <div className="flex justify-center px-4 py-8 sm:py-8 md:py-6 lg:py-4">
-                <div className="w-full overflow-hidden">
-                    <div className="px-4 sm:px-6 md:px-2 py-3 space-y-6 text-justify text-base font-medium text-gray-800">
+        <Card className="w-full">
+            <CardHeader className="bg-[#0F2D52] text-white text-center">
+                <CardTitle className="text-3xl">Health Policies</CardTitle>
+            </CardHeader>
+            <CardContent className="p-6 space-y-6 text-justify text-base font-medium text-gray-800">
                         <p>
                             The owners and staff at The Goddard School® do all we can to promote a healthy environment for your children. Our teachers make sure children wash their hands before meals, after art projects, after toileting and diapering, after coming in from outside, and after wiping one's nose. Our teachers are required to wash their hands before serving meals or snacks and are sure to wear latex gloves while diapering or assisting a child with toileting and when coming into contact with any bodily fluids. In addition, we disinfect infant and toddler toys on a daily basis. Our preschool toys are disinfected weekly.
                         </p>
@@ -111,32 +116,32 @@ export default function HealthPolicies({initialFormData = null, childId = null})
                         </p>
                         <p>In cases of certain communicable diseases, The Goddard School® is required to file a report with the Department of Health within 24 hours, so control measures can be used. Parents and staff are reminded to notify The Goddard School® within 24 hours if a child or family member has developed a known or suspected communicable disease. If a child has not been fully immunized for these diseases (due to the child's age, medical condition, or religious belief) they will be excluded from the school during the outbreak of a vaccine-preventable disease, as directed by Washington State Department of Health. Examples of "Reportable Diseases" include (but are not limited to):</p>
                         <div className="overflow-x-auto">
-                            <table className="w-full table-auto border border-gray-300 text-sm md:text-base">
-                                <thead className="bg-[#e6f0ff] text-[#0F2D52]">
-                                    <tr>
-                                        <th className="border border-gray-300 p-3 font-semibold">COVID19</th>
-                                        <th className="border border-gray-300 p-3 font-semibold">Spinal Meningitis</th>
-                                        <th className="border border-gray-300 p-3 font-semibold">Hepatitis A</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr className="bg-blue-100">
-                                        <td className="border border-gray-300 p-3">RSV (respiratory syncytial virus)</td>
-                                        <td className="border border-gray-300 p-3">Flu A / Flu B</td>
-                                        <td className="border border-gray-300 p-3">Varicella / Chicken Pox</td>
-                                    </tr>
-                                    <tr className="bg-blue-100">
-                                        <td className="border border-gray-300 p-3">Measles / Mumps / Rubella</td>
-                                        <td className="border border-gray-300 p-3">Pinkeye / Conjunctivitis</td>
-                                        <td className="border border-gray-300 p-3">Giardiasis</td>
-                                    </tr>
-                                    <tr className="bg-blue-100">
-                                        <td className="border border-gray-300 p-3">Strep Throat</td>
-                                        <td className="border border-gray-300 p-3">Salmonellosis</td>
-                                        <td className="border border-gray-300 p-3">Shigellosis</td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                            <Table>
+                                <TableHeader>
+                                    <TableRow className="bg-[#e6f0ff] text-[#0F2D52]">
+                                        <TableHead className="font-semibold">COVID19</TableHead>
+                                        <TableHead className="font-semibold">Spinal Meningitis</TableHead>
+                                        <TableHead className="font-semibold">Hepatitis A</TableHead>
+                                    </TableRow>
+                                </TableHeader>
+                                <TableBody>
+                                    <TableRow className="bg-blue-100">
+                                        <TableCell>RSV (respiratory syncytial virus)</TableCell>
+                                        <TableCell>Flu A / Flu B</TableCell>
+                                        <TableCell>Varicella / Chicken Pox</TableCell>
+                                    </TableRow>
+                                    <TableRow className="bg-blue-100">
+                                        <TableCell>Measles / Mumps / Rubella</TableCell>
+                                        <TableCell>Pinkeye / Conjunctivitis</TableCell>
+                                        <TableCell>Giardiasis</TableCell>
+                                    </TableRow>
+                                    <TableRow className="bg-blue-100">
+                                        <TableCell>Strep Throat</TableCell>
+                                        <TableCell>Salmonellosis</TableCell>
+                                        <TableCell>Shigellosis</TableCell>
+                                    </TableRow>
+                                </TableBody>
+                            </Table>
                         </div>
 
 
@@ -145,10 +150,10 @@ export default function HealthPolicies({initialFormData = null, childId = null})
                         </p>
 
                         <p>
-                            Please refer to our parent handbook along with the detailed health policies here at
+                            Please refer to our parent handbook along with the detailed health policies here at{' '}
                             <a
                                 href="https://tinyurl.com/5x7c7nwf"
-                                className="text-blue-600 underline"
+                                className="text-blue-600 underline hover:text-blue-800"
                                 target="_blank"
                                 rel="noopener noreferrer"
                             >
@@ -156,27 +161,30 @@ export default function HealthPolicies({initialFormData = null, childId = null})
                             </a>
                         </p>
 
-                        <CheckboxWithLabel
-                            id="agreePhotos"
-                            checked={agreePhotos}
-                            onChange={setAgreePhotos}
-                            label="I agree to the health policies."
-                        />
+                        <div className="flex items-center space-x-3 pt-4">
+                            <Checkbox
+                                id="agreePhotos"
+                                checked={agreePhotos}
+                                onCheckedChange={setAgreePhotos}
+                                className="data-[state=checked]:bg-[#0F2D52] data-[state=checked]:border-[#0F2D52]"
+                            />
+                            <Label htmlFor="agreePhotos" className="font-bold text-base cursor-pointer">
+                                I agree to the health policies.
+                            </Label>
+                        </div>
                         {submitted && !agreePhotos && (
                             <p className="text-red-600 text-sm">You must agree to continue.</p>
                         )}
 
                         <div className="text-center pt-6">
-                            <button
+                            <Button
                                 onClick={handleSave}
                                 className="bg-[#0F2D52] hover:bg-[#093567] text-white font-semibold px-8 py-2"
                             >
                                 Save
-                            </button>
+                            </Button>
                         </div>
-                    </div>
-                </div>
-            </div>
-        </>
+            </CardContent>
+        </Card>
     );
 }

@@ -1,4 +1,11 @@
 import React, { useState } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Share2, Save } from 'lucide-react';
+import { toast, Toaster } from 'sonner';
 import CheckboxWithLabel from "./CheckboxWithLabel";
 import { api_base_url, school_id } from '@/utils/const';
 import { useAuth0 } from '@auth0/auth0-react';
@@ -13,9 +20,9 @@ export default function SocialMediaReleaseForm({initialFormData = null, childId}
   const handleSubmit = (e) => {
     e.preventDefault();
     if (approval && printedName && agreed) {
-      alert('Form submitted successfully!');
+      toast.success('Form submitted successfully!');
     } else {
-      alert('Please complete all fields.');
+      toast.error('Please complete all fields.');
     }
   };
 
@@ -49,7 +56,7 @@ export default function SocialMediaReleaseForm({initialFormData = null, childId}
 
     const handleSave = async () => {
     if (!childId) {
-      alert('Error: Child ID is missing');
+      toast.error('Error: Child ID is missing');
       return;
     }
 
@@ -67,111 +74,90 @@ export default function SocialMediaReleaseForm({initialFormData = null, childId}
       await updateAdmissionData(saveData);
       
       // Show success alert
-      alert('Admission form data saved successfully!');
+      toast.success('Admission form data saved successfully!');
     } catch (error) {
       console.error('Failed to save Admission form:', error);
-      alert('Error saving Admission form data. Please try again.');
+      toast.error('Error saving Admission form data. Please try again.');
     }
   };
 
   return (
-    <>
-      <h1 className='text-center my-5 py-3 text-3xl text-white headerstyle' style={{ backgroundColor: '#0F2D52' }}>Photo Release For Social Media</h1>
-      <div className="flex justify-center px-4 py-6 sm:py-10">
-        <form
-          onSubmit={handleSubmit}
-          className="w-full bg-white "
-        >
-          {/* Header */}
-
-
-          {/* Social Media Labels */}
-          <div className="flex justify-around mt-6 text-xl font-bold">
-            <div>Facebook</div>
-            <div>Instagram</div>
-          </div>
-
-          {/* Consent Text */}
-          <div className="px-6 sm:px-10 py-6 text-gray-800 text-justify font-semibold text-[16px] leading-relaxed">
-            <p>
-              I hereby grant permission for The Goddard School to utilize any photographs and/or video footage of my child, whose name is provided below, for social media purposes. Neither the child's name nor any other identifying details will be mentioned.
-            </p>
-          </div>
-
-          {/* Radio Options */}
-          <div className="px-6 sm:px-10 mb-6">
-            <label className="block font-bold mb-2 text-[16px]">Select One:</label>
-            <div className="flex flex-col sm:flex-row gap-4 text-[15px]">
-              <label className="inline-flex items-center">
-                <input
-                  type="radio"
-                  name="approval"
-                  value="approve"
-                  checked={approval}
-                  onChange={() => setApproval(!approval)}
-                  className="w-5 h-5 accent-[#0F2D52]  focus:ring-[#0F2D52] border-gray-300"
-
-
-                />
-                <span className="ml-2 font-semibold">Approve Social Media Postings</span>
-              </label>
-
-              <label className="inline-flex items-center">
-                <input
-                  type="radio"
-                  name="approval"
-                  value="deny"
-                  checked={approval === 'deny'}
-                  onChange={() => setApproval('deny')}
-
-                  className="w-5 h-5 accent-[#0F2D52]  focus:ring-[#0F2D52] border-gray-300"
-
-
-                />
-                <span className="ml-2 font-semibold">Do NOT Approve Postings to Social Media</span>
-              </label>
+    <div className="space-y-6">
+      <Toaster richColors position="top-center" />
+      
+      <Card className="w-full max-w-4xl mx-auto">
+        <CardHeader className="bg-[#0F2D52] text-white">
+          <CardTitle className="text-2xl flex items-center gap-3 justify-center">
+            <Share2 className="h-6 w-6" />
+            Photo Release For Social Media
+          </CardTitle>
+        </CardHeader>
+        
+        <CardContent className="p-6 space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Social Media Labels */}
+            <div className="flex justify-around text-xl font-bold text-[#0F2D52]">
+              <div>Facebook</div>
+              <div>Instagram</div>
             </div>
-          </div>
 
-          {/* Printed Name */}
-          <div className="px-6 sm:px-10 mb-6">
-            <label className="block font-bold mb-2 text-[16px]">Printed Name</label>
-            <input
-              type="text"
-              placeholder="Enter printed name"
-              value={printedName}
-              onChange={(e) => setPrintedName(e.target.value)}
-              className={`w-full px-3 py-2 rounded outline-none transition-colors duration-200 
-      ${printedName
-                  ? 'border border-gray-300 hover:border-[#0F2D52] focus:border-[#0F2D52] focus:ring-5 focus:ring-[#0F2D52]'
-                  : 'border border-red-500 hover:border-[#0F2D52] focus:border-[#0F2D52] focus:ring-5 focus:ring-[#0F2D52]'
-                }`}
-            />
-          </div>
+            {/* Consent Text */}
+            <div className="text-gray-800 text-justify font-semibold text-[16px] leading-relaxed">
+              <p>
+                I hereby grant permission for The Goddard School to utilize any photographs and/or video footage of my child, whose name is provided below, for social media purposes. Neither the child's name nor any other identifying details will be mentioned.
+              </p>
+            </div>
 
+            {/* Radio Options */}
+            <div className="space-y-4">
+              <Label className="block font-bold text-[16px]">Select One:</Label>
+              <RadioGroup value={approval} onValueChange={setApproval}>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="approve" id="approve" />
+                  <Label htmlFor="approve" className="font-semibold">Approve Social Media Postings</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="deny" id="deny" />
+                  <Label htmlFor="deny" className="font-semibold">Do NOT Approve Postings to Social Media</Label>
+                </div>
+              </RadioGroup>
+            </div>
 
-          {/* Checkbox */}
-          <div className="px-6 sm:px-10 mb-6">
+            {/* Printed Name */}
+            <div className="space-y-2">
+              <Label htmlFor="printedName" className="font-bold text-[16px]">Printed Name</Label>
+              <Input
+                id="printedName"
+                type="text"
+                placeholder="Enter printed name"
+                value={printedName}
+                onChange={(e) => setPrintedName(e.target.value)}
+                className="w-full focus:ring-2 focus:ring-[#0F2D52] focus:border-[#0F2D52]"
+              />
+            </div>
+
+            {/* Checkbox */}
             <CheckboxWithLabel
               id="agreeCheckbox"
               checked={agreed}
               onChange={setAgreed}
               label="I have read this agreement and understand its terms."
             />
-          </div>
 
-          {/* Submit Button */}
-          <div className="text-center pb-6">
-            <button
-              type="submit"
-              className="bg-[#0F2D52] hover:bg-[#093567] text-white font-semibold px-8 py-2 "
+            {/* Submit Button */}
+            <div className="flex justify-center pt-6">
+              <Button
+                type="submit"
+                className="bg-[#0F2D52] hover:bg-[#0F2D52]/90 px-8"
                 onClick={handleSave}
-            >
-              Save
-            </button>
-          </div>
-        </form>
-      </div>
-    </>
+              >
+                <Save className="h-4 w-4 mr-2" />
+                Save
+              </Button>
+            </div>
+          </form>
+        </CardContent>
+      </Card>
+    </div>
   );
 }

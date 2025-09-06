@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { toast } from 'sonner';
-import { FormInput } from './InputComponent';
+import { FormInput, RadioGroup } from './InputComponent';
 import { DownIcon,UpIcon } from '../../../../components/common/Arrows';
 import { api_base_url, school_id } from '@/utils/const';
 import { useAuth0 } from '@auth0/auth0-react';
 import { getAuthHeaders } from '@/utils/auth';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { CheckCircle, Circle } from 'lucide-react';
 
 const Child_details = ({ openSection, setOpenSection, initialFormData, childId }) => {
     const { getAccessTokenSilently } = useAuth0();
@@ -150,13 +153,15 @@ const handleSave = async () => {
                 }}
             >
                 <div className="flex items-center space-x-3">
-                    
                     <h2 className="text-lg font-semibold">Child Details</h2>
-                    <img 
-                        src={isFormComplete() ? "image/tick.png" : "image/circle-with.png"} 
-                        alt={isFormComplete() ? "Complete" : "Incomplete"} 
-                        className="w-5 h-5"
-                    />
+                    {isFormComplete() ? (
+                        <CheckCircle className="w-5 h-5 text-green-500" />
+                    ) : (
+                        <Circle className="w-5 h-5 text-gray-400" />
+                    )}
+                    <Badge variant={isFormComplete() ? "default" : "secondary"}>
+                        {isFormComplete() ? "Complete" : "Incomplete"}
+                    </Badge>
                 </div>
                 <div className="text-xl transform transition-transform duration-200">
                     {openSection === 'childDetails' ? <DownIcon className="h-5 w-5 text-gray-500" /> : <UpIcon className="h-5 w-5 text-black" />}
@@ -217,78 +222,33 @@ const handleSave = async () => {
                     </div>
 
                     <div className="grid md:grid-cols-2 gap-6">
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-3">DO RELEVANT CUSTODY PAPERS APPLY?</label>
-                            <div className="flex space-x-6">
-                                <label className="flex items-center">
-                                    <input
-                                        type="radio"
-                                        name="do_relevant_custody_papers_apply"
-                                        value= '1'
-                                        checked={formData.do_relevant_custody_papers_apply == 1}
-                                        onChange={handleChange}
-                                        className="mr-2 text-green-500 focus:ring-green-500"
-                                    />
-                                    Yes
-                                </label>
-                                <label className="flex items-center">
-                                    <input
-                                        type="radio"
-                                        name="do_relevant_custody_papers_apply"
-                                        value="2"
-                                        checked={formData.do_relevant_custody_papers_apply == 2}
-                                        onChange={handleChange}
-                                        className="mr-2 text-green-500 focus:ring-green-500"
-                                    />
-                                    No
-                                </label>
-                            </div>
-                        </div>
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-3">GENDER</label>
-                            <div className="flex space-x-6">
-                                <label className="flex items-center">
-                                    <input
-                                        type="radio"
-                                        name="gender"
-                                        value="1"
-                                        checked={formData.gender == 1}
-                                        onChange={handleChange}
-                                        className="mr-2 text-green-500 focus:ring-green-500"
-                                    />
-                                    Male
-                                </label>
-                                <label className="flex items-center">
-                                    <input
-                                        type="radio"
-                                        name="gender"
-                                        value="2"
-                                        checked={formData.gender == 2}
-                                        onChange={handleChange}
-                                        className="mr-2 text-green-500 focus:ring-green-500"
-                                    />
-                                    Female
-                                </label>
-                                <label className="flex items-center">
-                                    <input
-                                        type="radio"
-                                        name="gender"
-                                        value= "3"
-                                        checked={formData.gender == 3}
-                                        onChange={handleChange}
-                                        className="mr-2 text-green-500 focus:ring-green-500"
-                                    />
-                                    Others
-                                </label>
-                            </div>
-                        </div>
+                        <RadioGroup
+                            label="DO RELEVANT CUSTODY PAPERS APPLY?"
+                            name="do_relevant_custody_papers_apply"
+                            options={[
+                                { value: '1', label: 'Yes' },
+                                { value: '2', label: 'No' }
+                            ]}
+                            selectedValue={formData.do_relevant_custody_papers_apply?.toString()}
+                            onChange={handleChange}
+                        />
+                        <RadioGroup
+                            label="GENDER"
+                            name="gender"
+                            options={[
+                                { value: '1', label: 'Male' },
+                                { value: '2', label: 'Female' },
+                                { value: '3', label: 'Others' }
+                            ]}
+                            selectedValue={formData.gender?.toString()}
+                            onChange={handleChange}
+                        />
                     </div>
 
                     <div className="flex justify-center pt-4">
-                        <button className="bg-slate-700 text-white px-8 py-3 rounded-md hover:bg-slate-800 transition-colors"
-                        onClick={handleSave}>
+                        <Button onClick={handleSave} className="bg-[#0F2D52] hover:bg-[#0F2D52]/90 px-8 py-3">
                             Save
-                        </button>
+                        </Button>
                     </div>
                 </div>
             )}

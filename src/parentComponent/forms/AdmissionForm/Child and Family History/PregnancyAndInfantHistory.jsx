@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import { AccordionItem, AccordionTrigger, AccordionContent } from '@/components/ui/accordion';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { CheckCircle, Save, Baby } from 'lucide-react';
+import { toast } from 'sonner';
 import { FormInput, RadioGroup } from './InputComponent';
-import { UpIcon, DownIcon } from './Arrows';
 import { api_base_url, school_id } from '@/utils/const';
 
 const PregnancyAndInfantHistory = ({ openSection, setOpenSection, formData, handleInputChange, initialFormData, childId }) => {
@@ -98,7 +102,7 @@ const PregnancyAndInfantHistory = ({ openSection, setOpenSection, formData, hand
 
     const handleSave = async () => {
         if (!childId) {
-            alert('Error: Child ID is missing');
+            toast.error('Error: Child ID is missing');
             return;
         }
 
@@ -124,64 +128,35 @@ const PregnancyAndInfantHistory = ({ openSection, setOpenSection, formData, hand
             };
             console.log(saveData);
             await updateAdmissionData(saveData);
-            alert('Pregnancy and infant history data saved successfully!');
+            toast.success('Pregnancy and infant history data saved successfully!');
         } catch (error) {
             console.error('Failed to save Pregnancy and infant history data:', error);
-            alert('Error saving Pregnancy and infant history data. Please try again.');
+            toast.error('Error saving Pregnancy and infant history data. Please try again.');
         }
     };
     return (
-        <>
-            <div
-                className={`px-6 border-b py-4 flex items-center justify-between cursor-pointer transition-colors ${openSection === 'PregnancyAndInfantHistory' ? 'text-white' : 'text-slate-700'
-                    }`}
-                style={
-                    openSection === 'PregnancyAndInfantHistory'
-                        ? { backgroundColor: '#0F2D52', color: 'white' }
-                        : { backgroundColor: '#DBEAFE' }
-                }
-                onClick={() =>
-                    setOpenSection(
-                        openSection === 'PregnancyAndInfantHistory' ? '' : 'PregnancyAndInfantHistory'
-                    )
-                }
-                onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor = '#0F2D52';
-                     e.currentTarget.style.color = 'white';
-                }}
-                onMouseLeave={(e) => {
-                    if (openSection !== 'PregnancyAndInfantHistory') {
-                        e.currentTarget.style.backgroundColor = '#DBEAFE';
-                        e.currentTarget.style.color = '#374151'; // Tailwind text-slate-700
-                    }
-                }}
-            >
-                <div className="flex items-center space-x-3">
-                    <span className="text-lg font-medium">Pregnancy And Infant History</span>
-                    <img 
-                        src={isFormComplete() ? "/image/tick.png" : "/image/circle-with.png"} 
-                        alt={isFormComplete() ? "Complete" : "Incomplete"} 
-                        className="w-5 h-5"
-                    />
+        <AccordionItem value="PregnancyAndInfantHistory">
+            <AccordionTrigger className="px-6 py-4 hover:bg-[#0F2D52] hover:text-white data-[state=open]:bg-[#0F2D52] data-[state=open]:text-white">
+                <div className="flex items-center justify-between w-full">
+                    <div className="flex items-center space-x-3">
+                        <Baby className="h-5 w-5" />
+                        <span className="text-lg font-semibold">Pregnancy And Infant History</span>
+                        {isFormComplete() && (
+                            <CheckCircle className="h-5 w-5 text-green-600" />
+                        )}
+                    </div>
+                    <Badge variant={isFormComplete() ? "default" : "secondary"}>
+                        {isFormComplete() ? "Complete" : "Incomplete"}
+                    </Badge>
                 </div>
-                <div className="text-xl transform transition-transform duration-200">
-                    {openSection === 'PregnancyAndInfantHistory' ? (
-                        <UpIcon className="h-5 w-5 text-white" />
-                    ) : (
-                        <DownIcon className="h-5 w-5 text-gray-500" />
-                    )}
-                </div>
-            </div>
+            </AccordionTrigger>
 
 
-            {openSection === 'PregnancyAndInfantHistory' && (
-                <div className="p-6 space-y-6 bg-gray-50" style={{ border: '1px solid #314158' }} onClick={(e) => e.stopPropagation()}>
-
-
-                    {/* Home Address Section */}
+            <AccordionContent className="px-6 py-6 space-y-6 bg-gray-50">
+                <div className="space-y-6">
+                    {/* Pregnancy Information */}
                     <div className="space-y-4">
-                        <div className="grid md:grid-cols-2 gap-4">
-
+                        <div className="grid md:grid-cols-2 gap-6">
                             <FormInput
                                 label="Illness during pregnancy"
                                 value={localFormData.IllnessDuringPregnancy}
@@ -194,10 +169,9 @@ const PregnancyAndInfantHistory = ({ openSection, setOpenSection, formData, hand
                                 onChange={handleChange}
                                 name="ConditionOfNewborn"
                             />
-
-
                         </div>
-                        <div className="grid md:grid-cols-3 gap-4">
+                        
+                        <div className="grid md:grid-cols-3 gap-6">
                             <FormInput
                                 label="Duration of pregnancy"
                                 value={localFormData.DurationOfPregnancy}
@@ -210,14 +184,15 @@ const PregnancyAndInfantHistory = ({ openSection, setOpenSection, formData, hand
                                 onChange={handleChange}
                                 name="BirthWeight"
                             />
-
                             <FormInput
                                 label="Complications"
                                 value={localFormData.Complications}
                                 onChange={handleChange}
                                 name="Complications"
                             />
-
+                        </div>
+                        
+                        <div className="grid md:grid-cols-2 gap-6">
                             <RadioGroup
                                 label="Bottle Fed?"
                                 name="BottleFed"
@@ -228,7 +203,6 @@ const PregnancyAndInfantHistory = ({ openSection, setOpenSection, formData, hand
                                     { label: 'No', value: 'no' },
                                 ]}
                             />
-
                             <RadioGroup
                                 label="Breast Fed?"
                                 name="BreastFed"
@@ -239,17 +213,13 @@ const PregnancyAndInfantHistory = ({ openSection, setOpenSection, formData, hand
                                     { label: 'No', value: 'no' },
                                 ]}
                             />
-
-
                         </div>
                     </div>
 
+                    {/* Other Siblings Section */}
                     <div className="space-y-4">
-
-                        <h1 className="text-center text-[25px] font-medium">Other Siblings</h1>
-
-                        <div className="grid md:grid-cols-2 gap-4">
-
+                        <h3 className="text-center text-xl font-semibold text-[#0F2D52]">Other Siblings</h3>
+                        <div className="grid md:grid-cols-2 gap-6">
                             <FormInput
                                 label="Name"
                                 value={localFormData.Name}
@@ -262,22 +232,21 @@ const PregnancyAndInfantHistory = ({ openSection, setOpenSection, formData, hand
                                 onChange={handleChange}
                                 name="Age"
                             />
-
-
                         </div>
                     </div>
-
-                    <div className="flex justify-center pt-4">
-                        <button 
-                            onClick={handleSave}
-                            className="hover:bg-slate-700 text-white px-8 py-3 rounded-md bg-slate-800 transition-colors"
-                        >
-                            Save
-                        </button>
-                    </div>
                 </div>
-            )}
-        </>
+
+                <div className="flex justify-center pt-4">
+                    <Button 
+                        onClick={handleSave}
+                        className="bg-[#0F2D52] hover:bg-[#0F2D52]/90 text-white px-8 py-3"
+                    >
+                        <Save className="h-4 w-4 mr-2" />
+                        Save
+                    </Button>
+                </div>
+            </AccordionContent>
+        </AccordionItem>
     );
 };
 

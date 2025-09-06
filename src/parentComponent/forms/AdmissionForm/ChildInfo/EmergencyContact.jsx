@@ -6,6 +6,9 @@ import { DownIcon, UpIcon } from '../../../../components/common/Arrows';
 import { api_base_url, school_id } from '@/utils/const';
 import { useAuth0 } from '@auth0/auth0-react';
 import { getAuthHeaders } from '@/utils/auth';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { CheckCircle, Circle } from 'lucide-react';
 
 const EmergencyContact = ({ openSection, setOpenSection, initialFormData, handleInputChange, childId }) => {
     const { getAccessTokenSilently } = useAuth0();
@@ -182,11 +185,14 @@ const EmergencyContact = ({ openSection, setOpenSection, initialFormData, handle
                 <div className="flex items-center space-x-3">
                     <div className="flex items-center space-x-3">
                         <h2 className="text-lg font-semibold">Emergency Contact</h2>
-                        <img
-                            src={isFormComplete() ? "/image/tick.png" : "/image/circle-with.png"}
-                            alt={isFormComplete() ? "Complete" : "Incomplete"}
-                            className="w-5 h-5"
-                        />
+                        {isFormComplete() ? (
+                            <CheckCircle className="w-5 h-5 text-green-500" />
+                        ) : (
+                            <Circle className="w-5 h-5 text-gray-400" />
+                        )}
+                        <Badge variant={isFormComplete() ? "default" : "secondary"}>
+                            {isFormComplete() ? "Complete" : "Incomplete"}
+                        </Badge>
                     </div>
                 </div>
                 <div className="text-xl transform transition-transform duration-200">
@@ -363,12 +369,9 @@ const EmergencyContact = ({ openSection, setOpenSection, initialFormData, handle
                     </div>
 
                     <div className="flex justify-center pt-4">
-                        <button
-                            onClick={handleSave}
-                            className="bg-slate-700 text-white px-8 py-3 rounded-md hover:bg-slate-800 transition-colors"
-                        >
+                        <Button onClick={handleSave} className="bg-[#0F2D52] hover:bg-[#0F2D52]/90 px-8 py-3">
                             Save
-                        </button>
+                        </Button>
                     </div>
                 </div>
             )}

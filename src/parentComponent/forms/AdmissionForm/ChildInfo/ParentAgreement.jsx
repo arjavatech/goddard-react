@@ -3,6 +3,12 @@ import { FormInput } from './InputComponent';
 
 import { DownIcon,UpIcon } from '../../../../components/common/Arrows';
 import { api_base_url, school_id } from '@/utils/const';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { CheckCircle, Circle } from 'lucide-react';
+import { Label } from '@/components/ui/label';
+import { Checkbox } from '@/components/ui/checkbox';
+// Note: Using regular textarea as Textarea component may not be available
 
 
 const ParentAgreement = ({ openSection, setOpenSection, formData, handleInputChange, childId }) => {
@@ -111,11 +117,14 @@ const ParentAgreement = ({ openSection, setOpenSection, formData, handleInputCha
                 <div className="flex items-center space-x-3">
                     <div className="flex items-center space-x-3">
                         <h2 className="text-lg font-semibold">Parent Agreement</h2>
-                        <img 
-                            src={isFormComplete() ? "/image/tick.png" : "/image/circle-with.png"} 
-                            alt={isFormComplete() ? "Complete" : "Incomplete"} 
-                            className="w-5 h-5"
-                        />
+                        {isFormComplete() ? (
+                            <CheckCircle className="w-5 h-5 text-green-500" />
+                        ) : (
+                            <Circle className="w-5 h-5 text-gray-400" />
+                        )}
+                        <Badge variant={isFormComplete() ? "default" : "secondary"}>
+                            {isFormComplete() ? "Complete" : "Incomplete"}
+                        </Badge>
                     </div>
                 </div>
                 <div className="text-xl transform transition-transform duration-200">
@@ -130,24 +139,26 @@ const ParentAgreement = ({ openSection, setOpenSection, formData, handleInputCha
                         <h3 className="text-lg font-semibold text-center text-gray-800">PARENT'S / LEGAL GUARDIAN'S AGREEMENT</h3>
 
                         <div className="space-y-4">
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                            <div className="space-y-2">
+                                <Label htmlFor="emergencyMedicalCare" className="text-sm font-medium text-gray-700">
                                     OBTAINING EMERGENCY MEDICAL CARE
-                                </label>
+                                </Label>
                                 <textarea
-                                    className="w-full p-3 border border-gray-300 rounded-md  focus:ring-blue-500 focus:border-blue-500 min-h-[60px]"
+                                    id="emergencyMedicalCare"
+                                    className="w-full p-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 min-h-[60px] resize-none"
                                     value={obtainText}
                                     onChange={(e) => setobtainText(e.target.value)}
                                     name="emergencyMedicalCare"
                                 />
                             </div>
 
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                            <div className="space-y-2">
+                                <Label htmlFor="firstAidProcedures" className="text-sm font-medium text-gray-700">
                                     ADMINISTRATION OF MINOR FIRST-AID PROCEDURES
-                                </label>
+                                </Label>
                                 <textarea
-                                    className="w-full p-3 border border-gray-300 rounded-md  focus:ring-blue-500 focus:border-blue-500 min-h-[60px]"
+                                    id="firstAidProcedures"
+                                    className="w-full p-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 min-h-[60px] resize-none"
                                     value={procedure}
                                     onChange={(e) => setprocedure(e.target.value)}
                                     name="firstAidProcedures"
@@ -162,24 +173,21 @@ const ParentAgreement = ({ openSection, setOpenSection, formData, handleInputCha
                         </div>
 
                         <div className="flex items-start space-x-3">
-                            <input
-                                type="checkbox"
+                            <Checkbox
                                 id="agreementCheck"
-                               checked={submitted}
-              onChange={setSubmitted}
-                                className="form-checkbox h-4 w-4 text-blue-600 border-gray-300 rounded"
+                                checked={submitted}
+                                onCheckedChange={setSubmitted}
                             />
-                            <label htmlFor="agreementCheck" className="text-sm text-gray-700">
+                            <Label htmlFor="agreementCheck" className="text-sm text-gray-700 cursor-pointer">
                                 I agree all the above information is correct.
-                            </label>
+                            </Label>
                         </div>
                     </div>
 
                     <div className="flex justify-center pt-4">
-                        <button className="bg-slate-700 text-white px-8 py-3 rounded-md hover:bg-slate-800 transition-colors"
-                            onClick={handleSave}>
+                        <Button onClick={handleSave} className="bg-[#0F2D52] hover:bg-[#0F2D52]/90 px-8 py-3">
                             Save
-                        </button>
+                        </Button>
                     </div>
                 </div>
             )}

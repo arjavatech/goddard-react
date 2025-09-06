@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { ChevronUp, ChevronDown } from 'lucide-react';
+import { ChevronUp, ChevronDown, Moon, Check } from 'lucide-react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { RadioGroup, FormInput } from './InputComponent';
 import { api_base_url, school_id } from '@/utils/const';
+import { toast } from 'sonner';
 
 const ToiletLearning = ({ expandedSections, toggleSection, formData, handleInputChange, initialFormData, childId }) => {
   const [localFormData, setLocalFormData] = useState({
@@ -105,44 +109,46 @@ const ToiletLearning = ({ expandedSections, toggleSection, formData, handleInput
       };
       console.log(saveData);
       await updateAdmissionData(saveData);
-      alert('Toilet Learning data saved successfully!');
+      toast.success('Toilet Learning data saved successfully!');
     } catch (error) {
       console.error('Failed to save Toilet Learning data:', error);
-      alert('Error saving Toilet Learning data. Please try again.');
+      toast.error('Error saving Toilet Learning data. Please try again.');
     }
   };
   const isOpen = expandedSections.rest;
 
   return (
-    <div className="border border-gray-300 border-t-0">
-      <div
-        className={`p-3 flex items-center justify-between cursor-pointer transition-colors ${isOpen ? 'text-white' : 'text-gray-700'}`}
-        style={isOpen ? { backgroundColor: '#0F2D52',color :'text-gray-700' } : {backgroundColor: '#DBEAFE'}}
+    <Card className="border border-gray-300">
+      <CardHeader 
+        className={`p-3 cursor-pointer transition-colors ${
+          isOpen ? 'bg-[#0F2D52] text-white' : 'bg-[#DBEAFE] text-[#0F2D52]'
+        } hover:bg-[#0F2D52] hover:text-white`}
         onClick={() => toggleSection('rest')}
-        onMouseEnter={(e) => {
-          e.currentTarget.style.backgroundColor = '#0F2D52';
-          e.currentTarget.style.color = '#DBEAFE';
-        }}
-        onMouseLeave={(e) => {
-          if (!isOpen) {
-            e.currentTarget.style.backgroundColor = '#DBEAFE';
-            e.currentTarget.style.color = '#374151';
-          }
-        }}
       >
-        <div className="flex items-center space-x-3">
-          <span className="font-semibold">Rest and Diapering/Toilet Learning</span>
-          <img 
-            src={isFormComplete() ? "/image/tick.png" : "/image/circle-with.png"} 
-            alt={isFormComplete() ? "Complete" : "Incomplete"} 
-            className="w-5 h-5"
-          />
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <Moon className="h-5 w-5" />
+            <div>
+              <CardTitle className="text-base font-semibold">Rest and Diapering/Toilet Learning</CardTitle>
+              <CardDescription className={`text-sm ${
+                isOpen ? 'text-blue-100' : 'text-gray-600'
+              }`}>
+                Sleep patterns and toilet training status
+              </CardDescription>
+            </div>
+            {isFormComplete() && (
+              <Badge className="bg-green-100 text-green-800 ml-2">
+                <Check className="h-3 w-3 mr-1" />
+                Complete
+              </Badge>
+            )}
+          </div>
+          {isOpen ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
         </div>
-        {isOpen ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
-      </div>
+      </CardHeader>
 
       {isOpen && (
-        <div className="p-6 bg-gray-50 space-y-6" style={{ border: '1px solid #314158' }}>
+        <CardContent className="p-6 bg-gray-50 border-t space-y-6">
           <RadioGroup
             label="Does your child rest in the middle of the day?"
             name="restsInMiddleOfDay"
@@ -183,20 +189,17 @@ const ToiletLearning = ({ expandedSections, toggleSection, formData, handleInput
             placeholder="Indicate if the child is toilet trained."
           />
 
-          <div className="flex justify-center">
-            <button
+          <div className="flex justify-center pt-4">
+            <Button 
               onClick={handleSave}
-              className="text-white px-8 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-              style={{ backgroundColor: '#0F2D52' }}
-              onMouseEnter={(e) => e.currentTarget.style.opacity = '0.9'}
-              onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}
+              className="bg-[#0F2D52] hover:bg-[#0F2D52]/90 px-8"
             >
               Save
-            </button>
+            </Button>
           </div>
-        </div>
+        </CardContent>
       )}
-    </div>
+    </Card>
   );
 };
 

@@ -192,48 +192,48 @@ const MedicalGeneral = ({ initialFormData = null, expandedSections, toggleSectio
       };
       console.log(saveData);
       await updateAdmissionData(saveData);
-      alert('Medical General data saved successfully!');
+      toast.success('Medical General data saved successfully!');
     } catch (error) {
       console.error('Failed to save Medical General data:', error);
-      alert('Error saving Medical General data. Please try again.');
+      toast.error('Error saving Medical General data. Please try again.');
     }
   };
-  const isOpen = expandedSections.MedicalGeneral;
+  const isOpen = expandedSections.medical;
 
   return (
-    <div className="border border-gray-300 border-t-0">
-      {/* Accordion Header */}
-      <div
-        className={`p-3 flex items-center justify-between cursor-pointer transition-colors font-semibold ${isOpen ? 'text-white' : 'text-gray-700'}`}
-        style={isOpen ? { backgroundColor: '#0F2D52', color:'#DBEAFE' } : { backgroundColor: '#DBEAFE', color:'#0F2D52' }}
-        onClick={() => toggleSection('MedicalGeneral')}
-        onMouseEnter={(e) => {
-          e.currentTarget.style.backgroundColor = '#0F2D52';
-          e.currentTarget.style.color = '#DBEAFE';
-        }}
-        onMouseLeave={(e) => {
-          if (!isOpen) {
-            e.currentTarget.style.backgroundColor = '#DBEAFE';
-            e.currentTarget.style.color = '#374151';
-          }
-        }}
+    <Card className="border border-gray-300">
+      <CardHeader 
+        className={`p-3 cursor-pointer transition-colors ${
+          isOpen ? 'bg-[#0F2D52] text-white' : 'bg-[#DBEAFE] text-[#0F2D52]'
+        } hover:bg-[#0F2D52] hover:text-white`}
+        onClick={() => toggleSection('medical')}
       >
-        <div className="flex items-center space-x-3">
-          <span>Medical General</span>
-          <img 
-            src={isFormComplete() ? "/image/tick.png" : "/image/circle-with.png"} 
-            alt={isFormComplete() ? "Complete" : "Incomplete"} 
-            className="w-5 h-5"
-          />
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <Heart className="h-5 w-5" />
+            <div>
+              <CardTitle className="text-base font-semibold">Medical General</CardTitle>
+              <CardDescription className={`text-sm ${
+                isOpen ? 'text-blue-100' : 'text-gray-600'
+              }`}>
+                Health conditions and medical requirements
+              </CardDescription>
+            </div>
+            {isFormComplete() && (
+              <Badge className="bg-green-100 text-green-800 ml-2">
+                <Check className="h-3 w-3 mr-1" />
+                Complete
+              </Badge>
+            )}
+          </div>
+          {isOpen ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
         </div>
-        {isOpen ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
-      </div>
+      </CardHeader>
 
-      {/* Accordion Content */}
       {isOpen && (
-        <div className="p-6 bg-gray-50 space-y-6" style={{ border: '1px solid #314158' }}>
+        <CardContent className="p-6 bg-gray-50 border-t space-y-6">
           {yesNoFields.map(({ label, name, explanation }) => (
-            <React.Fragment key={name}>
+            <div key={name} className="space-y-4 p-4 bg-white rounded-lg border">
               <RadioGroup
                 label={label}
                 name={name}
@@ -249,32 +249,32 @@ const MedicalGeneral = ({ initialFormData = null, expandedSections, toggleSectio
                 name={explanation}
                 value={localFormData[explanation]}
                 onChange={handleChange}
+                placeholder="Provide details or type 'NA' if not applicable"
               />
-            </React.Fragment>
+            </div>
           ))}
 
-          <FormInput
-            label="Comments and additional information"
-            name="comments"
-            value={localFormData.comments}
-            onChange={handleChange}
-          />
+          <div className="p-4 bg-white rounded-lg border">
+            <FormInput
+              label="Comments and additional information"
+              name="comments"
+              value={localFormData.comments}
+              onChange={handleChange}
+              placeholder="Any additional medical or health information"
+            />
+          </div>
 
-
-          <div className="flex justify-center">
-            <button
+          <div className="flex justify-center pt-4">
+            <Button 
               onClick={handleSave}
-              className="text-white px-8 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-              style={{ backgroundColor: '#0F2D52' }}
-              onMouseEnter={(e) => (e.currentTarget.style.opacity = '0.9')}
-              onMouseLeave={(e) => (e.currentTarget.style.opacity = '1')}
+              className="bg-[#0F2D52] hover:bg-[#0F2D52]/90 px-8"
             >
               Save
-            </button>
+            </Button>
           </div>
-        </div>
+        </CardContent>
       )}
-    </div>
+    </Card>
   );
 };
 

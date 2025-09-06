@@ -1,5 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import './ImmunizationInstructions.css'; // assuming you have this CSS
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Label } from '@/components/ui/label';
+import { toast } from 'sonner';
 import { api_base_url, school_id } from '@/utils/const';
 
 const ImmunizationInstructions = ({ initialFormData = null , childId}) => {
@@ -37,7 +41,7 @@ const ImmunizationInstructions = ({ initialFormData = null , childId}) => {
 
   const handleSave = async () => {
     if (!childId) {
-      alert('Error: Child ID is missing');
+      toast.error('Error: Child ID is missing');
       return;
     }
 
@@ -49,10 +53,10 @@ const ImmunizationInstructions = ({ initialFormData = null , childId}) => {
       };
 
       await updateAdmissionData(saveData);
-      alert('Medical transportation waiver saved successfully!');
+      toast.success('Immunization instructions saved successfully!');
     } catch (error) {
       console.error('Failed to save medical transportation waiver:', error);
-      alert('Error saving medical transportation waiver. Please try again.');
+      toast.error('Error saving immunization instructions. Please try again.');
     }
   };
 
@@ -63,56 +67,53 @@ const ImmunizationInstructions = ({ initialFormData = null , childId}) => {
     }
   }, [initialFormData]);
 
-  const handleChange = (e) => {
-    setIsChecked(e.target.checked);
-  };
   return (
-    <div className="card bg-[#D8E9FF]">
-        <div className="custom-header text-center">
-          <h4 className="mb-0 text-white">Immunization Instructions</h4>
-        </div>
-        <div className="card-body p-4 bg-white">
-          <p className='my-12 ml-7'>
-            Please provide your children’s immunization records to the school on or before your
-            children’s first day in our school.
+    <Card className="bg-[#D8E9FF]">
+      <CardHeader className="bg-[#0F2D52] text-white text-center">
+        <CardTitle className="text-2xl">Immunization Instructions</CardTitle>
+      </CardHeader>
+      <CardContent className="p-6 bg-white space-y-6">
+        <div className="text-base text-gray-800 space-y-6">
+          <p>
+            Please provide your children's immunization records to the school on or before your
+            children's first day in our school.
           </p>
           
-
-          <p className='mb-12 ml-7'>
+          <p>
             <strong>NOTE:</strong> If your child has a vaccination history with Washington State, we
             can directly download the immunization record from the Department of Health. You don't
             have to send us an immunization copy.
           </p>
 
-          <ol className="instruction-list ml-3">
-            <li className='mb-10'>
-                <span className="number">1.</span>
-    <span className="ms-6">
-        If you have a soft copy, feel free to email it to us.
-        </span></li>
-            <li className='mb-10'>
-                <span className="number">2.</span>
-    <span className="ms-6">
-        You can visit{' '}
-        </span>
-                  
-              <a href="https://myirmobile.com" target="_blank" rel="noopener noreferrer" className='text-blue-600'>
-                https://myirmobile.com
-              </a>
-              , register, and access the report for your child.
+          <ol className="space-y-4 pl-4">
+            <li className="flex gap-3">
+              <span className="bg-[#0F2D52] text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-semibold flex-shrink-0">1</span>
+              <span>If you have a soft copy, feel free to email it to us.</span>
             </li>
-            <li className='mb-10'>
-                <span className="number">3.</span>
-    <span className="ms-6">
-        If you have a MyChart login for your child's profile, you can download the report
-              directly or request it from your pediatrician.
-        </span>    
+            <li className="flex gap-3">
+              <span className="bg-[#0F2D52] text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-semibold flex-shrink-0">2</span>
+              <span>
+                You can visit{' '}
+                <a href="https://myirmobile.com" target="_blank" rel="noopener noreferrer" className='text-blue-600 underline hover:text-blue-800'>
+                  https://myirmobile.com
+                </a>
+                , register, and access the report for your child.
+              </span>
+            </li>
+            <li className="flex gap-3">
+              <span className="bg-[#0F2D52] text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-semibold flex-shrink-0">3</span>
+              <span>
+                If you have a MyChart login for your child's profile, you can download the report
+                directly or request it from your pediatrician.
+              </span>    
             </li>
           </ol>
+        </div>
 
+        <div className="space-y-4">
           <p>
             Once obtained, kindly email it to us at{' '}
-            <a href="mailto:lynnwoodmanagementgroup@goddardsystems.onmicrosoft.com">
+            <a href="mailto:lynnwoodmanagementgroup@goddardsystems.onmicrosoft.com" className="text-blue-600 underline hover:text-blue-800">
               lynnwoodmanagementgroup@goddardsystems.onmicrosoft.com
             </a>
             .
@@ -123,30 +124,32 @@ const ImmunizationInstructions = ({ initialFormData = null , childId}) => {
             will help provide the proper form to fill out.
           </p>
 
-          <div className="form-check mt-3 mb-4">
-            <input
-              type="checkbox"
-              checked={isChecked}
-              onChange={handleChange}
-              className="form-checkbox h-4 w-4 text-blue-600 border-gray-300 rounded"
+          <div className="flex items-center space-x-3 pt-4">
+            <Checkbox
               id="do_you_agree_this_immunization_instructions"
+              checked={isChecked}
+              onCheckedChange={setIsChecked}
+              className="data-[state=checked]:bg-[#0F2D52] data-[state=checked]:border-[#0F2D52]"
             />
-            <label
-              className="form-check-label ml-3"
+            <Label
               htmlFor="do_you_agree_this_immunization_instructions"
+              className="font-bold text-base cursor-pointer"
             >
-              <strong>I agree immunization instructions.</strong>
-            </label>
-          </div>
-
-          <div className="text-center">
-            <button className="bg-slate-700 text-white px-8 py-3 rounded-md hover:bg-slate-800 transition-colors"
-            onClick={handleSave}>
-                            Save
-                        </button>
+              I agree immunization instructions.
+            </Label>
           </div>
         </div>
-      </div>
+
+        <div className="text-center pt-6">
+          <Button 
+            onClick={handleSave} 
+            className="bg-[#0F2D52] hover:bg-[#093567] px-8 py-3"
+          >
+            Save
+          </Button>
+        </div>
+      </CardContent>
+    </Card>
   );
 };
 

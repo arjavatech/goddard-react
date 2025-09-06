@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 import Parent_details from './Parent_details';
 import Child_details from './Child_details';
@@ -19,15 +19,17 @@ const ChildInfo = ({ initialFormData = null, childId = null }) => {
 
 
     return (
-        <>
-        <h1 className='text-center bg-[#0F2D52]  mb-4 py-3 text-3xl text-white headerstyle'>Child Information</h1>
-            <div className="mx-auto  bg-white shadow-4xl">
-                
+        <div className="space-y-6">
+            <Card>
+                <CardHeader className="bg-[#0F2D52] text-white">
+                    <CardTitle className="text-2xl text-center">Child Information</CardTitle>
+                </CardHeader>
+            </Card>
 
-                <div className="bg-white rounded-lg  overflow-hidden">
-
+            <Card className="overflow-hidden">
+                <CardContent className="p-0">
                     {/* Child Details Section */}
-                    <div className='border mt-px'>
+                    <div className='border-b'>
                         <Child_details
                             openSection={openSection}
                             setOpenSection={setOpenSection}
@@ -37,7 +39,7 @@ const ChildInfo = ({ initialFormData = null, childId = null }) => {
                     </div>
 
                     {/* Parent Details Section */}
-                    <div className='border mt-px'>
+                    <div className='border-b'>
                         <Parent_details
                             openSection={openSection}
                             setOpenSection={setOpenSection}
@@ -46,7 +48,7 @@ const ChildInfo = ({ initialFormData = null, childId = null }) => {
                         />
                     </div>
 
-                    <div className='border mt-px'>
+                    <div className='border-b'>
                         <Additional_Parent_details
                             openSection={openSection}
                             setOpenSection={setOpenSection}
@@ -55,7 +57,7 @@ const ChildInfo = ({ initialFormData = null, childId = null }) => {
                         />
                     </div>
 
-                    <div className='border mt-px'>
+                    <div className='border-b'>
                         <EmergencyContact
                             openSection={openSection}
                             setOpenSection={setOpenSection}
@@ -63,7 +65,8 @@ const ChildInfo = ({ initialFormData = null, childId = null }) => {
                             childId={childId}
                         />
                     </div>
-                    <div className='border mt-px'>
+                    
+                    <div className='border-b'>
                         <MedicalCareProvider
                             openSection={openSection}
                             setOpenSection={setOpenSection}
@@ -73,8 +76,6 @@ const ChildInfo = ({ initialFormData = null, childId = null }) => {
                         />
                     </div>
 
-
-
                     <div>
                         <ParentAgreement
                             openSection={openSection}
@@ -83,12 +84,9 @@ const ChildInfo = ({ initialFormData = null, childId = null }) => {
                            childId={childId}
                         />
                     </div>
-
-
-
-                </div>
-            </div>
-        </>
+                </CardContent>
+            </Card>
+        </div>
     );
 };
 

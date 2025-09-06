@@ -1,6 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { Check, ChevronUp, ChevronDown, Clock } from 'lucide-react';
+import { Check, ChevronUp, ChevronDown, Clock, User } from 'lucide-react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { RadioGroup as ShadcnRadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { api_base_url, school_id } from '@/utils/const';
+import { toast } from 'sonner';
+import { RadioGroup } from './InputComponent';
 
 const ChildProfileDetails = ({ expandedSections, toggleSection, initialFormData, childId }) => {
     const [localFormData, setLocalFormData] = useState({
@@ -101,160 +109,153 @@ const ChildProfileDetails = ({ expandedSections, toggleSection, initialFormData,
             };
             console.log(saveData);
             await updateAdmissionData(saveData);
-            alert('Child profile details saved successfully!');
+            toast.success('Child profile details saved successfully!');
         } catch (error) {
             console.error('Failed to save Child profile details:', error);
-            alert('Error saving Child profile details. Please try again.');
+            toast.error('Error saving Child profile details. Please try again.');
         }
     };
     const isOpen = expandedSections.profile;
   return (
-    <div className="border border-gray-300 border mt-px">
-      <div
-        className={`p-3 flex items-center justify-between cursor-pointer transition-colors ${
-          expandedSections.profile ? 'text-white' : 'text-gray-700'
-        }`}
-        style={isOpen ? { backgroundColor: '#0F2D52',color :'text-gray-700' } : {backgroundColor: '#DBEAFE'}}
-        
+    <Card className="border border-gray-300">
+      <CardHeader 
+        className={`p-3 cursor-pointer transition-colors ${
+          isOpen ? 'bg-[#0F2D52] text-white' : 'bg-[#DBEAFE] text-[#0F2D52]'
+        } hover:bg-[#0F2D52] hover:text-white`}
         onClick={() => toggleSection('profile')}
-        onMouseEnter={(e) => {
-          e.currentTarget.style.backgroundColor = '#0F2D52';
-          e.currentTarget.style.color = '#DBEAFE';
-        }}
-        onMouseLeave={(e) => {
-          if (!expandedSections.profile) {
-            e.currentTarget.style.backgroundColor = '#DBEAFE';
-            e.currentTarget.style.color = '#374151'; // Tailwind's text-gray-700
-          }
-        }}
       >
-        <div className="flex items-center gap-2">
-          <div className="flex items-center space-x-3">
-            <span className="font-semibold">Child Profile Details</span>
-            <img 
-              src={isFormComplete() ? "/image/tick.png" : "/image/circle-with.png"} 
-              alt={isFormComplete() ? "Complete" : "Incomplete"} 
-              className="w-5 h-5"
-            />
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <User className="h-5 w-5" />
+            <div>
+              <CardTitle className="text-base font-semibold">Child Profile Details</CardTitle>
+            </div>
+            {isFormComplete() && (
+              <Badge className="bg-green-100 text-green-800 ml-2">
+                <Check className="h-3 w-3 mr-1" />
+                Complete
+              </Badge>
+            )}
           </div>
+          {isOpen ? (
+            <ChevronUp className="w-5 h-5" />
+          ) : (
+            <ChevronDown className="w-5 h-5" />
+          )}
         </div>
-        {expandedSections.profile ? (
-          <ChevronUp className="w-5 h-5" />
-        ) : (
-          <ChevronDown className="w-5 h-5" />
-        )}
-      </div>
+      </CardHeader>
 
-      {expandedSections.profile && (
-        <div className="p-6 bg-gray-50" style={{ border: '1px solid #314158' }}>
+      {isOpen && (
+        <CardContent className="p-6 bg-gray-50 border-t">
           <div className="space-y-6">
             {/* Family Members */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+            <div className="space-y-2">
+              <Label htmlFor="important_fam_members" className="text-sm font-medium text-gray-700">
                 Other important Family Members (Siblings, Grandparent, Pets, etc)
-              </label>
-              <input
-                type="text"
+              </Label>
+              <Input
+                id="important_fam_members"
                 name="important_fam_members"
                 value={localFormData.important_fam_members}
                 onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full"
               />
             </div>
 
             {/* Family Traditions */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Tell us about your family about_family_celebrations or important celebrations
-              </label>
-              <input
-                type="text"
+            <div className="space-y-2">
+              <Label htmlFor="about_family_celebrations" className="text-sm font-medium text-gray-700">
+                Tell us about your family traditions or important celebrations
+              </Label>
+              <Input
+                id="about_family_celebrations"
                 name="about_family_celebrations"
                 value={localFormData.about_family_celebrations}
                 onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full"
               />
             </div>
 
             {/* Childcare Experience */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-3">
-                Has your child been in childcare before?
-              </label>
-              <div className="flex gap-4">
-                {['Yes', 'No'].map((option) => (
-                  <label key={option} className="flex items-center">
-                    <input
-                      type="radio"
-                      name="childcare_before"
-                      value={option}
-                      checked={localFormData.childcare_before === option}
-                      onChange={handleChange}
-                      className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
-                    />
-                    <span className="ml-2 text-sm text-gray-700">{option}</span>
-                  </label>
-                ))}
-              </div>
-            </div>
+            <RadioGroup
+              label="Has your child been in childcare before?"
+              name="childcare_before"
+              options={[
+                { label: 'Yes', value: 'Yes' },
+                { label: 'No', value: 'No' }
+              ]}
+              selectedValue={localFormData.childcare_before}
+              onChange={handleChange}
+            />
 
             {/* Child's Interests */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                What are your child's interests
-              </label>
-              <input
-                type="text"
+            <div className="space-y-2">
+              <Label htmlFor="what_child_interests" className="text-sm font-medium text-gray-700">
+                What are your child's interests?
+              </Label>
+              <Input
+                id="what_child_interests"
                 name="what_child_interests"
                 value={localFormData.what_child_interests}
                 onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full"
               />
             </div>
 
             {/* Typical Time Section */}
-            <div>
-              <h3 className="text-center text-sm font-medium text-gray-700 mb-4">
+            <div className="space-y-4">
+              <h3 className="text-center text-sm font-medium text-gray-700">
                 What will be your child's typical time?
               </h3>
-              <div className="grid grid-cols-2 gap-4">
-                {[
-                  { label: 'Drop off time?', name: 'drop_off_time' },
-                  { label: 'Pick up time?', name: 'pick_up_time' },
-                ].map(({ label, name }) => (
-                  <div key={name}>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">{label}</label>
-                    <div className="relative">
-                      <input
-                        type="text"
-                        name={name}
-                        value={localFormData[name]}
-                        onChange={handleChange}
-                        className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 pr-10"
-                      />
-                      <Clock className="absolute right-3 top-2.5 w-5 h-5 text-gray-400" />
-                    </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="drop_off_time" className="text-sm font-medium text-gray-700">
+                    Drop off time?
+                  </Label>
+                  <div className="relative">
+                    <Input
+                      id="drop_off_time"
+                      name="drop_off_time"
+                      value={localFormData.drop_off_time}
+                      onChange={handleChange}
+                      className="pr-10"
+                      placeholder="e.g., 8:00 AM"
+                    />
+                    <Clock className="absolute right-3 top-2.5 w-5 h-5 text-gray-400" />
                   </div>
-                ))}
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="pick_up_time" className="text-sm font-medium text-gray-700">
+                    Pick up time?
+                  </Label>
+                  <div className="relative">
+                    <Input
+                      id="pick_up_time"
+                      name="pick_up_time"
+                      value={localFormData.pick_up_time}
+                      onChange={handleChange}
+                      className="pr-10"
+                      placeholder="e.g., 5:00 PM"
+                    />
+                    <Clock className="absolute right-3 top-2.5 w-5 h-5 text-gray-400" />
+                  </div>
+                </div>
               </div>
             </div>
 
             {/* Save Button */}
-            <div className="flex justify-center">
-              <button
+            <div className="flex justify-center pt-4">
+              <Button 
                 onClick={handleSave}
-                className="text-white px-8 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                style={{ backgroundColor: '#0F2D52' }}
-                onMouseEnter={(e) => (e.currentTarget.style.opacity = '0.9')}
-                onMouseLeave={(e) => (e.currentTarget.style.opacity = '1')}
+                className="bg-[#0F2D52] hover:bg-[#0F2D52]/90 px-8"
               >
                 Save
-              </button>
+              </Button>
             </div>
           </div>
-        </div>
+        </CardContent>
       )}
-    </div>
+    </Card>
   );
 };
 

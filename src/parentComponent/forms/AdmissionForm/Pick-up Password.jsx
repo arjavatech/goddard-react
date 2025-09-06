@@ -1,4 +1,10 @@
 import React, { useState } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { KeyRound, Save } from 'lucide-react';
+import { toast, Toaster } from 'sonner';
 import CheckboxWithLabel from './CheckboxWithLabel';
 import { api_base_url, school_id } from '@/utils/const';
 import { useAuth0 } from '@auth0/auth0-react';
@@ -47,12 +53,12 @@ const PickUpPassword = ({initialFormData = null, childId = null}) => {
 
   const handleSave = async () => {
     if (!childId) {
-      alert('Error: Child ID is missing');
+      toast.error('Error: Child ID is missing');
       return;
     }
 
     if (!password || !agree) {
-      alert('Please enter the password and agree to the instructions.');
+      toast.error('Please enter the password and agree to the instructions.');
       return;
     }
 
@@ -65,23 +71,28 @@ const PickUpPassword = ({initialFormData = null, childId = null}) => {
       };
 
       await updateAdmissionData(saveData);
-      alert('Pick-up password saved successfully!');
+      toast.success('Pick-up password saved successfully!');
     } catch (error) {
       console.error('Failed to save pick-up password:', error);
-      alert('Error saving pick-up password. Please try again.');
+      toast.error('Error saving pick-up password. Please try again.');
     }
   };
 
   return (
-    <>
-      <h1 className='text-center my-5 py-3 text-3xl text-white headerstyle' style={{ backgroundColor: '#0F2D52' }}>Pick-up Password</h1>
-      <div className="flex justify-center px-4 py-8 sm:py-8 md:py-6 lg:py-4">
-        <div className="w-full overflow-hidden">
-          {/* Header */}
-         
-
+    <div className="space-y-6">
+      <Toaster richColors position="top-center" />
+      
+      <Card className="w-full max-w-4xl mx-auto">
+        <CardHeader className="bg-[#0F2D52] text-white">
+          <CardTitle className="text-2xl flex items-center gap-3 justify-center">
+            <KeyRound className="h-6 w-6" />
+            Pick-up Password
+          </CardTitle>
+        </CardHeader>
+        
+        <CardContent className="p-6 space-y-6">
           {/* Content */}
-          <div className="px-4 sm:px-6 md:px-10 py-6 sm:py-8 space-y-6 text-base leading-relaxed font-medium text-gray-900">
+          <div className="space-y-6 text-base leading-relaxed font-medium text-gray-900">
             <p className="text-justify">
               It is part of The Goddard School® security policy to have a password that is given to anyone
               whom you designate as an authorized pick-up for your child. Your child will be released to
@@ -96,7 +107,7 @@ const PickUpPassword = ({initialFormData = null, childId = null}) => {
                 to verify the information.
               </li>
               <li>
-                At the time of notification, you will need to give us the authorized individual’s full name
+                At the time of notification, you will need to give us the authorized individual's full name
                 and his/her approximate time of arrival so we can then notify the staff.
               </li>
               <li>
@@ -106,26 +117,25 @@ const PickUpPassword = ({initialFormData = null, childId = null}) => {
             </ol>
 
             <p className="text-justify">
-              The password is an added measure of security for your family and will be kept with your child’s
+              The password is an added measure of security for your family and will be kept with your child's
               emergency information.
             </p>
 
             {/* Password Field */}
             <div className="flex justify-center pt-4">
-              <div className="w-full sm:w-4/5 md:w-2/3">
-                <label htmlFor="pickupPassword" className="block text-md font-bold mb-2">
+              <div className="w-full sm:w-4/5 md:w-2/3 space-y-2">
+                <Label htmlFor="pickupPassword" className="text-md font-bold">
                   Password
-                </label>
-                <input
+                </Label>
+                <Input
                   id="pickupPassword"
                   name="pickupPassword"
                   type="text"
-                  maxLength="5"
+                  maxLength={5}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="(5 digits, alphanumeric)"
-                  className="w-full border border-red-500 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-[#0F2D52] text-base"
-
+                  className="w-full focus:ring-2 focus:ring-[#0F2D52] focus:border-[#0F2D52]"
                 />
               </div>
             </div>
@@ -139,18 +149,19 @@ const PickUpPassword = ({initialFormData = null, childId = null}) => {
             />
 
             {/* Save Button */}
-            <div className="text-center pt-6">
-              <button
+            <div className="flex justify-center pt-6">
+              <Button
                 onClick={handleSave}
-                className="bg-[#0F2D52] hover:bg-[#093567] text-white font-semibold px-8 py-2 "
+                className="bg-[#0F2D52] hover:bg-[#0F2D52]/90 px-8"
               >
+                <Save className="h-4 w-4 mr-2" />
                 Save
-              </button>
+              </Button>
             </div>
           </div>
-        </div>
-      </div>
-    </>
+        </CardContent>
+      </Card>
+    </div>
   );
 };
 

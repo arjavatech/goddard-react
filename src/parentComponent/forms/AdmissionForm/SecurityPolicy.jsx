@@ -1,4 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Shield, Save } from 'lucide-react';
+import { toast, Toaster } from 'sonner';
 import CheckboxWithLabel from "./CheckboxWithLabel";
 import { api_base_url, school_id } from '@/utils/const';
 import { useAuth0 } from '@auth0/auth0-react';
@@ -48,7 +52,7 @@ const SecurityPolicy = ({ initialFormData = null, childId = null }) => {
 
   const handleSave = async () => {
     if (!childId) {
-      alert('Error: Child ID is missing');
+      toast.error('Error: Child ID is missing');
       return;
     }
 
@@ -60,66 +64,74 @@ const SecurityPolicy = ({ initialFormData = null, childId = null }) => {
       };
 
       await updateAdmissionData(saveData);
-      alert('Security policy data saved successfully!');
+      toast.success('Security policy data saved successfully!');
     } catch (error) {
       console.error('Failed to save security policy:', error);
-      alert('Error saving security policy data. Please try again.');
+      toast.error('Error saving security policy data. Please try again.');
     }
   };
 
   return (
-    <div className="flex justify-center px-4 py-6 sm:py-8 md:py-10 lg:py-12 bg-gray-100 min-h-screen">
-      <div className="w-full max-w-4xl border-2 border-[#0F2D52] shadow-md bg-white overflow-hidden">
+    <div className="space-y-6">
+      <Toaster richColors position="top-center" />
+      
+      <Card className="w-full max-w-4xl mx-auto">
+        <CardHeader className="bg-[#0F2D52] text-white">
+          <CardTitle className="text-2xl flex items-center gap-3 justify-center">
+            <Shield className="h-6 w-6" />
+            Security Release & Policy Acknowledgement
+          </CardTitle>
+        </CardHeader>
         
-        {/* Header */}
-        <h4 className="text-center text-white bg-[#0F2D52] py-4 sm:py-5 text-xl sm:text-2xl font-semibold tracking-wide">
-          Security Release & Policy Acknowledgement
-        </h4>
+        <CardContent className="p-6 space-y-6">
+          {/* Policy Text */}
+          <div className="space-y-6 text-justify text-base font-medium text-gray-800 leading-relaxed">
+            <p>
+              I understand that The Goddard School® has installed security cameras in the foyer and around the outside perimeter of the building.
+              I also understand that while attending The Goddard School®, my child may be videotaped by a security camera.
+            </p>
+            <p>
+              I recognize that I may also be videotaped by a security camera while at or around the school premises. I will notify each person
+              listed on the Application for Admission that he or she may be also videotaped while at or around the school premises.
+            </p>
+          </div>
 
-        {/* Policy Text */}
-        <div className="px-4 sm:px-6 md:px-10 py-6 space-y-6 text-justify text-base font-medium text-gray-800">
-          <p>
-            I understand that The Goddard School® has installed security cameras in the foyer and around the outside perimeter of the building.
-            I also understand that while attending The Goddard School®, my child may be videotaped by a security camera.
+          {/* Sign Off Header */}
+          <div className="text-center">
+            <h4 className="font-bold text-lg sm:text-xl text-[#0F2D52]">
+              Policy Sign Off
+            </h4>
+          </div>
+
+          {/* Final Statement */}
+          <p className="text-justify text-base font-medium text-gray-800 leading-relaxed">
+            My signature below confirms my understanding of the Enrollment Agreement, school policies, my tuition obligation, my responsibility
+            for the payment of fees, and confirms that I have received and read a copy of the parent handbook.
           </p>
-          <p>
-            I recognize that I may also be videotaped by a security camera while at or around the school premises. I will notify each person
-            listed on the Application for Admission that he or she may be also videotaped while at or around the school premises.
-          </p>
-        </div>
 
-        {/* Sign Off Header */}
-        <h4 className="text-center font-bold text-lg sm:text-xl mt-4">
-          Policy Sign Off
-        </h4>
+          {/* Checkbox */}
+          <div className="py-4">
+            <CheckboxWithLabel
+              id="agreeCheckbox"
+              checked={agreed}
+              onChange={handleAgreedChange}
+              label="I agree to the Security Release & Policy Acknowledgement."
+            />
+          </div>
 
-        {/* Final Statement */}
-        <p className="px-4 sm:px-6 md:px-10 py-4 text-justify text-base font-medium text-gray-800">
-          My signature below confirms my understanding of the Enrollment Agreement, school policies, my tuition obligation, my responsibility
-          for the payment of fees, and confirms that I have received and read a copy of the parent handbook.
-        </p>
-
-        {/* Checkbox */}
-        <div className="px-4 sm:px-6 md:px-10 pb-4">
-          <CheckboxWithLabel
-            id="agreeCheckbox"
-            checked={agreed}
-            onChange={handleAgreedChange}
-            label="I agree to the Security Release & Policy Acknowledgement."
-          />
-        </div>
-
-        {/* Save Button */}
-        <div className="text-center pb-6">
-          <button
-            className="bg-[#0F2D52] hover:bg-[#093567] text-white font-semibold px-8 py-2"
-            disabled={!agreed}
-            onClick={handleSave}
-          >
-            Save
-          </button>
-        </div>
-      </div>
+          {/* Save Button */}
+          <div className="flex justify-center pt-4">
+            <Button
+              onClick={handleSave}
+              disabled={!agreed}
+              className="bg-[#0F2D52] hover:bg-[#0F2D52]/90 px-8"
+            >
+              <Save className="h-4 w-4 mr-2" />
+              Save
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 };

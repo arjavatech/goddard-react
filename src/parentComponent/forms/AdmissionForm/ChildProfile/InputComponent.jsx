@@ -1,80 +1,92 @@
 import React from 'react';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { RadioGroup as ShadcnRadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Checkbox } from '@/components/ui/checkbox';
+import { cn } from '@/lib/utils';
 
-const FormInput = ({ label, type = "text", value, onChange, placeholder, name }) => {
+const FormInput = ({ label, type = "text", value, onChange, placeholder, name, className }) => {
     const getInputBorderClass = (value) => {
         if (value && typeof value === 'string' && value.trim() !== '') {
-            return 'border-green-500 focus:ring-green-500';
+            return 'border-green-500 focus-visible:ring-green-500';
         } else {
-            return 'border-red-500 focus:ring-red-500';
+            return 'border-red-500 focus-visible:ring-red-500';
         }
     };
 
     return (
-        <div>
-            <label className="block  font-medium text-gray-700 mb-2 form-label">{label}</label>
-            <input
+        <div className={cn("space-y-2", className)}>
+            <Label htmlFor={name} className="text-sm font-medium text-gray-700">
+                {label}
+            </Label>
+            <Input
+                id={name}
                 type={type}
                 name={name}
                 value={value}
                 onChange={onChange}
                 placeholder={placeholder}
-                className={`w-full px-3 py-2 border-2 rounded-md focus:outline-none transition-colors ${getInputBorderClass(value)}`}
+                className={cn("w-full transition-colors", getInputBorderClass(value))}
             />
         </div>
     );
 };
 
-const RadioGroup = ({ label, name, options, selectedValue, onChange }) => {
-  return (
-    <div className="mb-4">
-      <label className="block font-medium text-gray-700 mb-2">{label}</label>
-      <div className="flex space-x-4">
-        {options.map((option) => (
-          <label key={option.value} className="flex items-center space-x-2">
-            <input
-              type="radio"
-              name={name}
-              value={option.value}
-              checked={selectedValue === option.value}
-              onChange={(e) => onChange(name, e.target.value)}
-              className="text-blue-600 focus:ring-blue-500"
-            />
-            <span>{option.label}</span>
-          </label>
-        ))}
-      </div>
-    </div>
-  );
+const RadioGroup = ({ label, name, options, selectedValue, onChange, className }) => {
+    const handleValueChange = (value) => {
+        onChange({ target: { name, value } });
+    };
+
+    return (
+        <div className={cn("space-y-3", className)}>
+            <Label className="text-sm font-medium text-gray-700">{label}</Label>
+            <ShadcnRadioGroup value={selectedValue} onValueChange={handleValueChange}>
+                <div className="flex space-x-6">
+                    {options.map((option) => (
+                        <div key={option.value} className="flex items-center space-x-2">
+                            <RadioGroupItem value={option.value} id={`${name}-${option.value}`} />
+                            <Label 
+                                htmlFor={`${name}-${option.value}`} 
+                                className="text-sm text-gray-700 cursor-pointer"
+                            >
+                                {option.label}
+                            </Label>
+                        </div>
+                    ))}
+                </div>
+            </ShadcnRadioGroup>
+        </div>
+    );
 };
 
-
-
-const CheckboxGroup = ({ label, name, options, selectedValues = [], onChange }) => {
+const CheckboxGroup = ({ label, name, options, selectedValues = [], onChange, className }) => {
     // Handle toggle logic
-    const handleCheckboxChange = (value) => {
-        if (selectedValues.includes(value)) {
-            onChange(selectedValues.filter((v) => v !== value));
-        } else {
+    const handleCheckboxChange = (value, checked) => {
+        if (checked) {
             onChange([...selectedValues, value]);
+        } else {
+            onChange(selectedValues.filter((v) => v !== value));
         }
     };
 
     return (
-        <div className="mb-4">
-            <label className="block  font-medium text-gray-700 mb-2">{label}</label>
-            <div className="flex space-x-4">
+        <div className={cn("space-y-3", className)}>
+            <Label className="text-sm font-medium text-gray-700">{label}</Label>
+            <div className="flex space-x-6">
                 {options.map((option) => (
-                    <label key={option.value} className="flex items-center space-x-2">
-                        <input
-                            type="checkbox"
-                            name={name}
-                            value={option.value}
+                    <div key={option.value} className="flex items-center space-x-2">
+                        <Checkbox
+                            id={`${name}-${option.value}`}
                             checked={selectedValues.includes(option.value)}
-                            onChange={() => handleCheckboxChange(option.value)}
-                            className="w-4 h-5 text-blue-600 border-gray-300 rounded  focus:ring-blue-500"
+                            onCheckedChange={(checked) => handleCheckboxChange(option.value, checked)}
                         />
-                        <span className='text-x font-bold'>{option.label}</span>
-                    </label>
+                        <Label 
+                            htmlFor={`${name}-${option.value}`}
+                            className="text-sm font-medium text-gray-700 cursor-pointer"
+                        >
+                            {option.label}
+                        </Label>
+                    </div>
                 ))}
             </div>
         </div>

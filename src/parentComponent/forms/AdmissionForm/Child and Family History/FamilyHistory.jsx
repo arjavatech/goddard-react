@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import { AccordionItem, AccordionTrigger, AccordionContent } from '@/components/ui/accordion';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { CheckCircle, Save, Users } from 'lucide-react';
+import { toast } from 'sonner';
 import { CheckboxGroup } from './InputComponent';
-import { UpIcon, DownIcon } from './Arrows';
 import { api_base_url, school_id } from '@/utils/const';
 
 const FamilyHistory = ({ openSection, setOpenSection, formData, handleInputChange, initialFormData, childId }) => {
@@ -91,7 +95,7 @@ const FamilyHistory = ({ openSection, setOpenSection, formData, handleInputChang
 
     const handleSave = async () => {
         if (!childId) {
-            alert('Error: Child ID is missing');
+            toast.error('Error: Child ID is missing');
             return;
         }
 
@@ -112,184 +116,138 @@ const FamilyHistory = ({ openSection, setOpenSection, formData, handleInputChang
             };
             console.log(saveData);
             await updateAdmissionData(saveData);
-            alert('Family history data saved successfully!');
+            toast.success('Family history data saved successfully!');
         } catch (error) {
             console.error('Failed to save Family history data:', error);
-            alert('Error saving Family history data. Please try again.');
+            toast.error('Error saving Family history data. Please try again.');
         }
     };
     return (
-        <>
-            <div
-                className={`px-6 border-b py-4 flex items-center justify-between cursor-pointer transition-colors ${openSection === 'FamilyHistory' ? 'text-white' : 'text-slate-700'
-                    }`}
-                style={
-                    openSection === 'FamilyHistory'
-                        ? { backgroundColor: '#0F2D52', color: 'white' }
-                        : { backgroundColor: '#DBEAFE' }
-                }
-                onClick={() =>
-                    setOpenSection(openSection === 'FamilyHistory' ? '' : 'FamilyHistory')
-                }
-                onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor = '#0F2D52';
-                     e.currentTarget.style.color = 'white';
-                }}
-                onMouseLeave={(e) => {
-                    if (openSection !== 'FamilyHistory') {
-                        e.currentTarget.style.backgroundColor = '#DBEAFE';
-                        e.currentTarget.style.color = '#374151'; // Tailwind's text-slate-700
-                    }
-                }}
-            >
-                <div className="flex items-center space-x-3">
-                    <h2 className="text-lg font-semibold">Family History</h2>
-                    <img 
-                        src={isFormComplete() ? "/image/tick.png" : "/image/circle-with.png"} 
-                        alt={isFormComplete() ? "Complete" : "Incomplete"} 
-                        className="w-5 h-5"
-                    />
-                </div>
-                <div className="text-xl transform transition-transform duration-200">
-                    {openSection === 'FamilyHistory' ? (
-                        <UpIcon className="h-5 w-5 text-white" />
-                    ) : (
-                        <DownIcon className="h-5 w-5 text-gray-500" />
-                    )}
-                </div>
-            </div>
-
-
-            {openSection === 'FamilyHistory' && (
-                <div className="p-6 space-y-6 bg-gray-50" style={{ border: '1px solid #314158' }} onClick={(e) => e.stopPropagation()}>
-
-
-                    {/* Home Address Section */}
-                    <div className="space-y-4">
-                        <div className="grid md:grid-cols-3 gap-5 ps-10 pe-10">
-
-                            <CheckboxGroup
-                                label=""
-                                name="hobbies"
-                                options={[
-                                    { label: 'Allergies', value: 'allergies' },
-
-                                ]}
-                                selectedValues={localFormData.hobbies}
-                                onChange={(updatedValues) => handleCheckboxChange('hobbies', updatedValues)}
-                            />
-
-
-                            <CheckboxGroup
-                                label=""
-                                name="Heart Problems"
-                                options={[
-                                    { label: 'Heart Problems', value: 'HeartProblems' },
-
-                                ]}
-                                selectedValues={localFormData.HeartProblems}
-                                onChange={(updatedValues) => handleCheckboxChange('HeartProblems', updatedValues)}
-                            />
-
-                            <CheckboxGroup
-                                label=""
-                                name="Tuberculosis"
-                                options={[
-                                    { label: 'Tuberculosis', value: 'Tuberculosis' },
-
-                                ]}
-                                selectedValues={localFormData.Tuberculosis}
-                                onChange={(updatedValues) => handleCheckboxChange('Tuberculosis', updatedValues)}
-                            />
-
-                            <CheckboxGroup
-                                label=""
-                                name="Asthma"
-                                options={[
-                                    { label: 'Asthma', value: 'Asthma' },
-
-                                ]}
-                                selectedValues={localFormData.Asthma}
-                                onChange={(updatedValues) => handleCheckboxChange('Asthma', updatedValues)}
-                            />
-
-                            <CheckboxGroup
-                                label=""
-                                name="High Blood Pressure"
-                                options={[
-                                    { label: 'High Blood Pressure', value: 'HighBloodPressure' },
-
-                                ]}
-                                selectedValues={localFormData.HighBloodPressure}
-                                onChange={(updatedValues) => handleCheckboxChange('HighBloodPressure', updatedValues)}
-                            />
-                            <CheckboxGroup
-                                label=""
-                                name="Vision Problems"
-                                options={[
-                                    { label: 'Vision Problems', value: 'VisionProblems' },
-
-                                ]}
-                                selectedValues={localFormData.VisionProblems}
-                                onChange={(updatedValues) => handleCheckboxChange('VisionProblems', updatedValues)}
-                            />
-
-                            <CheckboxGroup
-                                label=""
-                                name="Diabetes"
-                                options={[
-                                    { label: 'Diabetes', value: 'Diabetes' },
-
-                                ]}
-                                selectedValues={localFormData.Diabetes}
-                                onChange={(updatedValues) => handleCheckboxChange('Diabetes', updatedValues)}
-                            />
-
-                            <CheckboxGroup
-                                label=""
-                                name="Hyperactivity"
-                                options={[
-                                    { label: 'Hyperactivity', value: 'Hyperactivity' },
-
-                                ]}
-                                selectedValues={localFormData.Hyperactivity}
-                                onChange={(updatedValues) => handleCheckboxChange('Hyperactivity', updatedValues)}
-                            />
-
-                            <CheckboxGroup
-                                label=""
-                                name="Epilepsy"
-                                options={[
-                                    { label: 'Epilepsy', value: 'Epilepsy' },
-
-                                ]}
-                                selectedValues={localFormData.Epilepsy}
-                                onChange={(updatedValues) => handleCheckboxChange('Epilepsy', updatedValues)}
-                            />
-                            <CheckboxGroup
-                                label=""
-                                name="No Illnesses"
-                                options={[
-                                    { label: 'No Illnesses', value: 'NoIllnesses' },
-
-                                ]}
-                                selectedValues={localFormData.NoIllnesses}
-                                onChange={(updatedValues) => handleCheckboxChange('NoIllnesses', updatedValues)}
-                            />
-                        </div>
+        <AccordionItem value="FamilyHistory">
+            <AccordionTrigger className="px-6 py-4 hover:bg-[#0F2D52] hover:text-white data-[state=open]:bg-[#0F2D52] data-[state=open]:text-white">
+                <div className="flex items-center justify-between w-full">
+                    <div className="flex items-center space-x-3">
+                        <Users className="h-5 w-5" />
+                        <span className="text-lg font-semibold">Family History</span>
+                        {isFormComplete() && (
+                            <CheckCircle className="h-5 w-5 text-green-600" />
+                        )}
                     </div>
+                    <Badge variant={isFormComplete() ? "default" : "secondary"}>
+                        {isFormComplete() ? "Complete" : "Incomplete"}
+                    </Badge>
+                </div>
+            </AccordionTrigger>
 
-                    <div className="flex justify-center pt-4">
-                        <button 
-                            onClick={handleSave}
-                            className="hover:bg-slate-700 text-white px-8 py-3 rounded-md bg-slate-800 transition-colors"
-                        >
-                            Save
-                        </button>
+
+            <AccordionContent className="px-6 py-6 space-y-6 bg-gray-50">
+                <div className="space-y-4">
+                    <p className="text-sm text-gray-600 mb-4">Select any conditions that apply to your family history:</p>
+                    <div className="grid md:grid-cols-3 gap-6">
+                        <CheckboxGroup
+                            label=""
+                            name="hobbies"
+                            options={[
+                                { label: 'Allergies', value: 'allergies' },
+                            ]}
+                            selectedValues={localFormData.hobbies}
+                            onChange={(updatedValues) => handleCheckboxChange('hobbies', updatedValues)}
+                        />
+                        <CheckboxGroup
+                            label=""
+                            name="Heart Problems"
+                            options={[
+                                { label: 'Heart Problems', value: 'HeartProblems' },
+                            ]}
+                            selectedValues={localFormData.HeartProblems}
+                            onChange={(updatedValues) => handleCheckboxChange('HeartProblems', updatedValues)}
+                        />
+                        <CheckboxGroup
+                            label=""
+                            name="Tuberculosis"
+                            options={[
+                                { label: 'Tuberculosis', value: 'Tuberculosis' },
+                            ]}
+                            selectedValues={localFormData.Tuberculosis}
+                            onChange={(updatedValues) => handleCheckboxChange('Tuberculosis', updatedValues)}
+                        />
+                        <CheckboxGroup
+                            label=""
+                            name="Asthma"
+                            options={[
+                                { label: 'Asthma', value: 'Asthma' },
+                            ]}
+                            selectedValues={localFormData.Asthma}
+                            onChange={(updatedValues) => handleCheckboxChange('Asthma', updatedValues)}
+                        />
+                        <CheckboxGroup
+                            label=""
+                            name="High Blood Pressure"
+                            options={[
+                                { label: 'High Blood Pressure', value: 'HighBloodPressure' },
+                            ]}
+                            selectedValues={localFormData.HighBloodPressure}
+                            onChange={(updatedValues) => handleCheckboxChange('HighBloodPressure', updatedValues)}
+                        />
+                        <CheckboxGroup
+                            label=""
+                            name="Vision Problems"
+                            options={[
+                                { label: 'Vision Problems', value: 'VisionProblems' },
+                            ]}
+                            selectedValues={localFormData.VisionProblems}
+                            onChange={(updatedValues) => handleCheckboxChange('VisionProblems', updatedValues)}
+                        />
+                        <CheckboxGroup
+                            label=""
+                            name="Diabetes"
+                            options={[
+                                { label: 'Diabetes', value: 'Diabetes' },
+                            ]}
+                            selectedValues={localFormData.Diabetes}
+                            onChange={(updatedValues) => handleCheckboxChange('Diabetes', updatedValues)}
+                        />
+                        <CheckboxGroup
+                            label=""
+                            name="Hyperactivity"
+                            options={[
+                                { label: 'Hyperactivity', value: 'Hyperactivity' },
+                            ]}
+                            selectedValues={localFormData.Hyperactivity}
+                            onChange={(updatedValues) => handleCheckboxChange('Hyperactivity', updatedValues)}
+                        />
+                        <CheckboxGroup
+                            label=""
+                            name="Epilepsy"
+                            options={[
+                                { label: 'Epilepsy', value: 'Epilepsy' },
+                            ]}
+                            selectedValues={localFormData.Epilepsy}
+                            onChange={(updatedValues) => handleCheckboxChange('Epilepsy', updatedValues)}
+                        />
+                        <CheckboxGroup
+                            label=""
+                            name="No Illnesses"
+                            options={[
+                                { label: 'No Illnesses', value: 'NoIllnesses' },
+                            ]}
+                            selectedValues={localFormData.NoIllnesses}
+                            onChange={(updatedValues) => handleCheckboxChange('NoIllnesses', updatedValues)}
+                        />
                     </div>
                 </div>
-            )}
-        </>
+
+                <div className="flex justify-center pt-4">
+                    <Button 
+                        onClick={handleSave}
+                        className="bg-[#0F2D52] hover:bg-[#0F2D52]/90 text-white px-8 py-3"
+                    >
+                        <Save className="h-4 w-4 mr-2" />
+                        Save
+                    </Button>
+                </div>
+            </AccordionContent>
+        </AccordionItem>
     );
 };
 

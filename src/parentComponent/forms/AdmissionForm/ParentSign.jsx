@@ -1,6 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import FormInput from '../../../components/FormInput';
-import FormLabel from '../../../components/FormLabel';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
+import { User, Send, CheckCircle } from 'lucide-react';
+import { toast, Toaster } from 'sonner';
 import { api_base_url, school_id } from '@/utils/const';
 import { useAuth0 } from '@auth0/auth0-react';
 import { getAuthHeaders } from '@/utils/auth';
@@ -59,14 +64,14 @@ const ParentSign = ({ initialFormData = null, formData, childId, editID, onAlert
     // Handle submit functionality
     if (type === 'parent') {
       if (!childId) {
-      alert('Error: Child ID is missing');
+      toast.error('Error: Child ID is missing');
       return;
     }
 
     try {
       if(formState.parent_sign_admission == null || formState.parent_sign_admission == '')
       {
-        alert('Error: Parent Sign is missing');
+        toast.error('Error: Parent signature is missing');
         return;
       }
       // Prepare the complete form data for API call including child_id
@@ -81,10 +86,10 @@ const ParentSign = ({ initialFormData = null, formData, childId, editID, onAlert
       await updateAdmissionData(saveData);
       
       // Show success alert
-      alert('Admission form data saved successfully!');
+      toast.success('Parent signature submitted successfully!');
     } catch (error) {
       console.error('Failed to save Admission form:', error);
-      alert('Error saving Admission form data. Please try again.');
+      toast.error('Error saving admission form data. Please try again.');
     }
     } 
   //   else if (type === 'admin') {
@@ -124,54 +129,83 @@ const ParentSign = ({ initialFormData = null, formData, childId, editID, onAlert
 
 
 
-  return (      
-      <form onSubmit={(e) => { e.preventDefault(); handleSubmit(); }}>
-        
-        {/* Signature Section */}
-        <div className="rounded">
-          <h1 className="headerstyle text-center bg-[#0F2D52] text-white p-3 text-3xl rounded-t mb-6">Parent Signature</h1>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <FormLabel htmlFor="parent_sign_admission" required>Parent Signature</FormLabel>
-              <FormInput
+  // Validation function
+  const isParentSignatureComplete = () => {
+    return formState.parent_sign_admission && 
+           formState.parent_sign_admission.toString().trim() !== '';
+  };
+
+  return (
+    <div className="space-y-6">
+      <Toaster richColors position="top-center" />
+      
+      {/* Parent Signature Form */}
+      <Card>
+        <CardHeader className="bg-[#0F2D52] text-white">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <User className="h-6 w-6" />
+              <div>
+                <CardTitle className="text-2xl">Parent Signature</CardTitle>
+                <CardDescription className="text-blue-100">
+                  Parent authorization and agreement
+                </CardDescription>
+              </div>
+            </div>
+            {isParentSignatureComplete() && (
+              <Badge className="bg-green-100 text-green-800">
+                <CheckCircle className="h-4 w-4 mr-1" />
+                Complete
+              </Badge>
+            )}
+          </div>
+        </CardHeader>
+        <CardContent className="space-y-6 p-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-2">
+              <Label htmlFor="parent_sign_admission">Parent Signature *</Label>
+              <Input
                 id="parent_sign_admission"
                 name="parent_sign_admission"
+                type="text"
+                placeholder="Type your full name as signature"
                 value={formState.parent_sign_admission}
                 onChange={(e) => handleInputChange('parent_sign_admission', e.target.value)}
+                className="w-full"
                 required
               />
+              <p className="text-sm text-gray-500">
+                By typing your name above, you agree to the terms and authorize the admission process.
+              </p>
             </div>
             
-            <div className="w-full md:w-1/2 px-3 mb-4">
-            <div className="form-group">
-              <label htmlFor="parent_sign_date_admission" className="block font-bold mb-2">Date</label>
-              <input 
-                type="date" 
-                className="form-control border border-gray-300 rounded px-3 py-2 w-full" 
+            <div className="space-y-2">
+              <Label htmlFor="parent_sign_date_admission">Signature Date</Label>
+              <Input
                 id="parent_sign_date_admission"
                 name="parent_sign_date_admission"
+                type="date"
                 value={formState.parent_sign_date_admission}
                 onChange={(e) => handleInputChange('parent_sign_date_admission', e.target.value)}
+                className="w-full"
                 readOnly
               />
             </div>
           </div>
-            
+
+          <div className="flex gap-3 pt-4">
+            <Button 
+              onClick={() => handleSubmit('parent')} 
+              className="bg-[#0F2D52] hover:bg-[#0F2D52]/90"
+              disabled={!formState.parent_sign_admission}
+            >
+              <Send className="h-4 w-4 mr-2" />
+              Submit Signature
+            </Button>
           </div>
-        </div>
-
-        <div className="text-center mb-4">
-          <button 
-            className="bg-[#0F2D52] text-white py-2 px-6 rounded hover:bg-opacity-90 transition-colors" 
-            onClick={() => handleSubmit('parent')}
-          >
-            Submit
-          </button>
-        </div>
-
-        
-      </form>
+        </CardContent>
+      </Card>
+    </div>
   );
 };
 

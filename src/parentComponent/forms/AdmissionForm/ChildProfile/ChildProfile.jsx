@@ -1,5 +1,9 @@
 import { useState, useEffect } from 'react';
 import { ChevronUp, ChevronDown, Check, Clock } from 'lucide-react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Progress } from '@/components/ui/progress';
+import { toast, Toaster } from 'sonner';
 import ChildProfileDetails from './ChildProfileDetails';
 import Nutrition from './Nutrition';
 import ToiletLearning from './ToiletLearning';
@@ -105,66 +109,91 @@ export default function ChildProfileForm({ initialFormData = null, childId }) {
         }
     }, [initialFormData]);
 
+    // Calculate progress
+    const completedSections = [
+        Object.keys(expandedSections).some(key => expandedSections[key])
+    ].filter(Boolean).length;
+    
+    const totalSections = 5;
+    const progress = (completedSections / totalSections) * 100;
+
     return (
-        <>
-        <h1 className='text-center my-5 py-3 text-3xl text-white headerstyle' style={{ backgroundColor: '#0F2D52' }}>Child Profile</h1>
-        <div className="mx-auto bg-white">
+        <div className="space-y-6">
+            <Toaster richColors position="top-center" />
+            {/* Header Section */}
+            <Card>
+                <CardHeader className="bg-[#0F2D52] text-white">
+                    <CardTitle className="text-2xl flex items-center gap-3">
+                        <Check className="h-6 w-6" />
+                        Child Profile
+                    </CardTitle>
+                    <CardDescription className="text-blue-100">
+                        Complete your child's profile information for enrollment
+                    </CardDescription>
+                </CardHeader>
+                <CardContent className="p-6">
+                    <div className="flex items-center justify-between mb-4">
+                        <div className="flex items-center gap-4">
+                            <div className="text-sm text-gray-600">Progress</div>
+                            <div className="text-sm font-medium text-[#0F2D52]">
+                                {completedSections} of {totalSections} sections started
+                            </div>
+                        </div>
+                        <Badge variant={progress === 100 ? "default" : "secondary"}>
+                            {progress.toFixed(0)}% Started
+                        </Badge>
+                    </div>
+                    <Progress value={progress} className="mb-4" />
+                </CardContent>
+            </Card>
 
+            {/* Form Sections */}
+            <div className="space-y-1">
+                {/* Child Profile Details Section */}
+                <ChildProfileDetails 
+                    initialFormData={initialFormData}
+                    handleInputChange={handleInputChange}
+                    expandedSections={expandedSections}
+                    toggleSection={toggleSection}
+                    childId={childId}
+                />
 
-            {/* Child Profile Details Section */}
-            <ChildProfileDetails 
-                initialFormData={initialFormData}
-                handleInputChange={handleInputChange}
-                expandedSections={expandedSections}
-                toggleSection={toggleSection}
-                childId={childId}
-            />
+                {/* Nutrition Section */}
+                <Nutrition 
+                    initialFormData={initialFormData}
+                    handleInputChange={handleInputChange}
+                    expandedSections={expandedSections}
+                    toggleSection={toggleSection}
+                    childId={childId}
+                />
 
-            {/* Nutrition Section */}
-            <Nutrition className='border mt-px'
-                initialFormData={initialFormData}
-                handleInputChange={handleInputChange}
-                expandedSections={expandedSections}
-                toggleSection={toggleSection}
-                childId={childId}
-            />
+                {/* Rest and Diapering/Toilet Learning Section */}
+                <ToiletLearning 
+                    initialFormData={initialFormData}
+                    handleInputChange={handleInputChange}
+                    expandedSections={expandedSections}
+                    toggleSection={toggleSection}
+                    childId={childId}
+                />
 
-            {/* Rest and Diapering/Toilet Learning Section */}
-            <ToiletLearning className='border mt-px'
-                initialFormData={initialFormData}
-                handleInputChange={handleInputChange}
-                expandedSections={expandedSections}
-                toggleSection={toggleSection}
-                childId={childId}
-            />
+                {/* Medical/General Section */}
+                <MedicalGeneral 
+                    initialFormData={initialFormData}
+                    handleInputChange={handleInputChange}
+                    expandedSections={expandedSections}
+                    toggleSection={toggleSection}
+                    childId={childId}
+                />
 
-
-
-
-            {/* Medical/General Section */}
-
-
-            <MedicalGeneral className='border mt-px'
-                initialFormData={initialFormData}
-                handleInputChange={handleInputChange}
-                expandedSections={expandedSections}
-                toggleSection={toggleSection}
-                childId={childId}
-            />
-
-
-            {/* {/* Medical/General Section */}
-
-            <Parent_Argeement className='border mt-px'
-                initialFormData={initialFormData}
-                handleInputChange={handleInputChange}
-                expandedSections={expandedSections}
-                toggleSection={toggleSection}
-                childId={childId}
-            />
-
-
+                {/* Parent Agreement Section */}
+                <Parent_Argeement 
+                    initialFormData={initialFormData}
+                    handleInputChange={handleInputChange}
+                    expandedSections={expandedSections}
+                    toggleSection={toggleSection}
+                    childId={childId}
+                />
+            </div>
         </div>
-        </>
     );
 }

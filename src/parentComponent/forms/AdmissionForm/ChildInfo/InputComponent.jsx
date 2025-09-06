@@ -1,4 +1,7 @@
 import React from 'react';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Checkbox } from '@/components/ui/checkbox';
 
 const FormInput = ({ label, type = "text", value, onChange, placeholder, name }) => {
     const getInputBorderClass = (value) => {
@@ -10,15 +13,16 @@ const FormInput = ({ label, type = "text", value, onChange, placeholder, name })
     };
 
     return (
-        <div>
-            <label className="block  font-medium text-gray-700 mb-2 form-label">{label}</label>
-            <input
+        <div className="space-y-2">
+            <Label htmlFor={name} className="font-medium text-gray-700">{label}</Label>
+            <Input
+                id={name}
                 type={type}
                 name={name}
-                value={value}
+                value={value || ''}
                 onChange={onChange}
                 placeholder={placeholder}
-                className={`w-full px-3 py-2 border-2 rounded-md focus:outline-none transition-colors ${getInputBorderClass(value)}`}
+                className={`transition-colors ${getInputBorderClass(value)}`}
             />
         </div>
     );
@@ -26,20 +30,20 @@ const FormInput = ({ label, type = "text", value, onChange, placeholder, name })
 
 const RadioGroup = ({ label, name, options, selectedValue, onChange }) => {
     return (
-        <div className="mb-4">
-            <label className="block  font-medium text-gray-700 mb-2">{label}</label>
-            <div className="flex space-x-4">
+        <div className="space-y-3">
+            <Label className="font-medium text-gray-700">{label}</Label>
+            <div className="flex space-x-6">
                 {options.map((option) => (
-                    <label key={option.value} className="flex items-center space-x-2">
+                    <label key={option.value} className="flex items-center space-x-2 cursor-pointer">
                         <input
                             type="radio"
                             name={name}
                             value={option.value}
                             checked={selectedValue === option.value}
                             onChange={onChange}
-                            className="text-blue-600 focus:ring-blue-500"
+                            className="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300"
                         />
-                        <span>{option.label}</span>
+                        <span className="text-sm font-medium">{option.label}</span>
                     </label>
                 ))}
             </div>
@@ -59,21 +63,20 @@ const CheckboxGroup = ({ label, name, options, selectedValues = [], onChange }) 
     };
 
     return (
-        <div className="mb-4">
-            <label className="block  font-medium text-gray-700 mb-2">{label}</label>
-            <div className="flex space-x-4">
+        <div className="space-y-3">
+            <Label className="font-medium text-gray-700">{label}</Label>
+            <div className="flex space-x-6">
                 {options.map((option) => (
-                    <label key={option.value} className="flex items-center space-x-2">
-                        <input
-                            type="checkbox"
-                            name={name}
-                            value={option.value}
+                    <div key={option.value} className="flex items-center space-x-2">
+                        <Checkbox
+                            id={`${name}-${option.value}`}
                             checked={selectedValues.includes(option.value)}
-                            onChange={() => handleCheckboxChange(option.value)}
-                            className="w-4 h-5 text-blue-600 border-gray-300 rounded  focus:ring-blue-500"
+                            onCheckedChange={() => handleCheckboxChange(option.value)}
                         />
-                        <span className='text-x font-bold'>{option.label}</span>
-                    </label>
+                        <Label htmlFor={`${name}-${option.value}`} className="text-sm font-bold cursor-pointer">
+                            {option.label}
+                        </Label>
+                    </div>
                 ))}
             </div>
         </div>

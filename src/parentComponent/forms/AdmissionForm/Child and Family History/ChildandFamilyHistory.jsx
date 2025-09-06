@@ -1,4 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Progress } from '@/components/ui/progress';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import { CheckCircle, AlertCircle, Save, User, FileText } from 'lucide-react';
+import { toast, Toaster } from 'sonner';
 
 import Child_history from './Child_history';
 import ParentAgreement from './Parent_argeement_history';
@@ -10,6 +17,7 @@ import Parent_Agreement from './Parent_Agreement'
 import { api_base_url, school_id } from '@/utils/const';
 import { useAuth0 } from '@auth0/auth0-react';
 import { getAuthHeaders } from '@/utils/auth';
+import { submitAndCompleteForm } from '@/utils/formSubmission';
 
 
 const ChildandFamilyHistory = ({ initialFormData = null, childId = null }) => {
@@ -111,7 +119,7 @@ const ChildandFamilyHistory = ({ initialFormData = null, childId = null }) => {
 
     const handleSave = async () => {
         if (!childId) {
-            alert('Error: Child ID is missing');
+            toast.error('Error: Child ID is missing');
             return;
         }
 
@@ -176,10 +184,10 @@ const ChildandFamilyHistory = ({ initialFormData = null, childId = null }) => {
             };
 
             await updateAdmissionData(saveData);
-            alert('Child and Family History saved successfully!');
+            toast.success('Child and Family History saved successfully!');
         } catch (error) {
             console.error('Failed to save child and family history:', error);
-            alert('Error saving child and family history. Please try again.');
+            toast.error('Error saving child and family history. Please try again.');
         }
     };
 
@@ -255,17 +263,60 @@ const ChildandFamilyHistory = ({ initialFormData = null, childId = null }) => {
 
 
 
+    // Calculate completion status
+    const sections = [
+        'childHistory',
+        'parentArgeement', 
+        'PregnancyAndInfantHistory',
+        'FamilyHistory',
+        'SocialBehavior',
+        'EnvironmentalFactors',
+        'ParentAgreement'
+    ];
+    
+    const completedSections = sections.filter(section => {
+        // Simple completion check - you can make this more sophisticated
+        return openSection === section;
+    }).length;
+    
+    const progress = (completedSections / sections.length) * 100;
+
     return (
-        <>
-        <h1 className='text-center my-5 py-3 text-3xl text-white headerstyle' style={{ backgroundColor: '#0F2D52' }}>Child and Family History</h1>
+        <div className="space-y-6">
+            <Toaster richColors position="top-center" />
+            
+            {/* Header Section */}
+            <Card>
+                <CardHeader className="bg-[#0F2D52] text-white">
+                    <CardTitle className="text-2xl flex items-center gap-3">
+                        <User className="h-6 w-6" />
+                        Child and Family History
+                    </CardTitle>
+                    <CardDescription className="text-blue-100">
+                        Complete comprehensive child and family history information
+                    </CardDescription>
+                </CardHeader>
+                <CardContent className="p-6">
+                    <div className="flex items-center justify-between mb-4">
+                        <div className="flex items-center gap-4">
+                            <div className="text-sm text-gray-600">Progress</div>
+                            <div className="text-sm font-medium text-[#0F2D52]">
+                                {completedSections} of {sections.length} sections viewed
+                            </div>
+                        </div>
+                        <Badge variant={progress === 100 ? "default" : "secondary"}>
+                            {progress.toFixed(0)}% Viewed
+                        </Badge>
+                    </div>
+                    <Progress value={progress} className="mb-4" />
+                </CardContent>
+            </Card>
 
-            <div className="mx-auto p-4 bg-white ">
+            {/* Form Sections */}
+            <Card>
+                <CardContent className="p-0">
+                    <Accordion type="single" collapsible value={openSection} onValueChange={setOpenSection}>
 
-
-                <div className="bg-white shadow-sm border overflow-hidden">
-
-                    {/* Child Details Section */}
-                    <div className='border'>
                         <Child_history
                             openSection={openSection}
                             setOpenSection={setOpenSection}
@@ -274,9 +325,7 @@ const ChildandFamilyHistory = ({ initialFormData = null, childId = null }) => {
                             initialFormData={initialFormData}
                             childId={childId}
                         />
-                    </div>
 
-                    <div className='border mt-px'>
                         <ParentAgreement
                             openSection={openSection}
                             setOpenSection={setOpenSection}
@@ -285,70 +334,71 @@ const ChildandFamilyHistory = ({ initialFormData = null, childId = null }) => {
                             initialFormData={initialFormData}
                             childId={childId}
                         />
-                    </div>
 
-                    <div className='border mt-px'>
                         <PregnancyAndInfantHistory
                             openSection={openSection}
                             setOpenSection={setOpenSection}
                             formData={formData}
                             handleInputChange={handleInputChange}
                             initialFormData={initialFormData}
-                            childId={childId} />
-                    </div>
+                            childId={childId}
+                        />
 
-                    <div className='border mt-px'>
                         <FamilyHistory
                             openSection={openSection}
                             setOpenSection={setOpenSection}
                             formData={formData}
                             handleInputChange={handleInputChange}
                             initialFormData={initialFormData}
-                            childId={childId} />
-                    </div>
+                            childId={childId}
+                        />
 
-                    <div className='border mt-px'>
                         <SocialBehavior
                             openSection={openSection}
                             setOpenSection={setOpenSection}
                             formData={formData}
                             handleInputChange={handleInputChange}
                             initialFormData={initialFormData}
-                            childId={childId} />
-                    </div>
+                            childId={childId}
+                        />
 
-                    <div className='border mt-px'>
                         <EnvironmentalFactors
                             openSection={openSection}
                             setOpenSection={setOpenSection}
                             formData={formData}
                             handleInputChange={handleInputChange}
                             initialFormData={initialFormData}
-                            childId={childId} />
-                    </div>
+                            childId={childId}
+                        />
 
-                    <div className='border mt-px'>
                         <Parent_Agreement
                             openSection={openSection}
                             setOpenSection={setOpenSection}
                             formData={formData}
                             handleInputChange={handleInputChange}
                             initialFormData={initialFormData}
-                            childId={childId} />
-                    </div>
-                </div>
+                            childId={childId}
+                        />
+                    </Accordion>
+                </CardContent>
+            </Card>
 
-                {/* Save Button */}
-                <div className="text-center mt-6 mb-4">
-                    <button 
-                        className="bg-[#0F2D52] hover:bg-[#093567] text-white font-semibold px-8 py-2 rounded"
-                        onClick={handleSave}
-                    >
-                        Save Child and Family History
-                    </button>
-                </div>
-            </div>
-        </>
+            {/* Save Button */}
+            <Card>
+                <CardContent className="p-6">
+                    <div className="flex justify-center">
+                        <Button 
+                            onClick={handleSave}
+                            className="bg-[#0F2D52] hover:bg-[#0F2D52]/90 text-white px-8 py-3"
+                            size="lg"
+                        >
+                            <Save className="h-5 w-5 mr-2" />
+                            Save Child and Family History
+                        </Button>
+                    </div>
+                </CardContent>
+            </Card>
+        </div>
     );
 };
 

@@ -1,4 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Label } from '@/components/ui/label';
+import { Camera, Save } from 'lucide-react';
+import { toast, Toaster } from 'sonner';
 import CheckboxWithLabel from './CheckboxWithLabel';
 import { api_base_url, school_id } from '@/utils/const';
 import { useAuth0 } from '@auth0/auth0-react';
@@ -57,7 +63,7 @@ export default function VideoPermission({ initialFormData = null, childId = null
 
   const handleSave = async () => {
     if (!childId) {
-      alert('Error: Child ID is missing');
+      toast.error('Error: Child ID is missing');
       return;
     }
 
@@ -71,24 +77,30 @@ export default function VideoPermission({ initialFormData = null, childId = null
       };
 
       await updateAdmissionData(saveData);
-      alert('Video permission data saved successfully!');
+      toast.success('Video permission data saved successfully!');
     } catch (error) {
       console.error('Failed to save video permission:', error);
-      alert('Error saving video permission data. Please try again.');
+      toast.error('Error saving video permission data. Please try again.');
     }
   };
 
   return (
-    <>
-      <h1 className='text-center my-5 py-3 text-3xl text-white headerstyle' style={{ backgroundColor: '#0F2D52' }}>Consent to Photograph</h1>
-      <div className="flex justify-center ">
-        <div className="w-full overflow-hidden">
-
+    <div className="space-y-6">
+      <Toaster richColors position="top-center" />
+      
+      <Card className="w-full max-w-4xl mx-auto">
+        <CardHeader className="bg-[#0F2D52] text-white">
+          <CardTitle className="text-2xl flex items-center gap-3 justify-center">
+            <Camera className="h-6 w-6" />
+            Consent to Photograph
+          </CardTitle>
+        </CardHeader>
+        
+        <CardContent className="p-6 space-y-6">
           {/* Content Section */}
-          <div className="px-4 sm:px-6 md:px-10 py-6 sm:py-8 space-y-6 text-base leading-relaxed font-medium text-gray-900">
+          <div className="space-y-6 text-base leading-relaxed font-medium text-gray-900">
             {/* Consent Section */}
             <div>
-              <h4 className="text-center text-lg font-bold mb-4"></h4>
               <p className="text-justify font-semibold mb-6">
                 I consent to The Goddard School® taking photographs and videos of my child, who are identified below.
                 For value received and without additional consideration, I agree that all photographs and video footage
@@ -99,22 +111,17 @@ export default function VideoPermission({ initialFormData = null, childId = null
 
               {/* Dropdown */}
               <div className="mb-6 flex justify-center">
-                <div className="w-full max-w-[280px]">
-                  <label className="font-semibold block mb-2">Select One</label>
-                  <div className="relative">
-                    <select 
-                      className="w-full border border-red-500 rounded px-4 py-2 appearance-none pr-10"
-                      value={photoUsageType}
-                      onChange={(e) => setPhotoUsageType(e.target.value)}
-                    >
-                      <option value="" disabled hidden></option>
-                      <option value="Full Use">Full Use</option>
-                      <option value="In-House Only">In-House Only*</option>
-                    </select>
-                    <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none">
-                      <i className="fas fa-chevron-down text-gray-500"></i>
-                    </div>
-                  </div>
+                <div className="w-full max-w-[280px] space-y-2">
+                  <Label className="font-semibold">Select One</Label>
+                  <Select value={photoUsageType} onValueChange={setPhotoUsageType}>
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Choose usage type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Full Use">Full Use</SelectItem>
+                      <SelectItem value="In-House Only">In-House Only*</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
               </div>
 
@@ -126,7 +133,7 @@ export default function VideoPermission({ initialFormData = null, childId = null
 
             {/* Group Photos Section */}
             <div>
-              <h4 className="text-center text-lg font-bold mb-4">Group Photos in Electronic Daily Activity Reports</h4>
+              <h4 className="text-center text-lg font-bold mb-4 text-[#0F2D52]">Group Photos in Electronic Daily Activity Reports</h4>
               <p className="text-justify font-semibold mb-6">
                 The Goddard School takes photos of individual children and groups of children for electronic daily
                 activity reports. These photos will not be used for any other purpose by The Goddard School or Goddard
@@ -146,7 +153,7 @@ export default function VideoPermission({ initialFormData = null, childId = null
 
             {/* Agreement Not to Post */}
             <div>
-              <h4 className="text-center text-lg font-bold mb-4 mt-8">Agreement Not to Post Photos of Other Children</h4>
+              <h4 className="text-center text-lg font-bold mb-4 mt-8 text-[#0F2D52]">Agreement Not to Post Photos of Other Children</h4>
               <CheckboxWithLabel
                 id="agreeGroup"
                 checked={agreeGroup}
@@ -156,17 +163,18 @@ export default function VideoPermission({ initialFormData = null, childId = null
             </div>
 
             {/* Save Button */}
-            <div className="text-center pt-6">
-              <button 
-                className="bg-[#0F2D52] hover:bg-[#093567] text-white font-semibold px-8 py-2"
+            <div className="flex justify-center pt-6">
+              <Button 
+                className="bg-[#0F2D52] hover:bg-[#0F2D52]/90 px-8"
                 onClick={handleSave}
               >
+                <Save className="h-4 w-4 mr-2" />
                 Save
-              </button>
+              </Button>
             </div>
           </div>
-        </div>
-      </div>
-    </>
+        </CardContent>
+      </Card>
+    </div>
   );
 }
