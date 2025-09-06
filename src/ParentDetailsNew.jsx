@@ -131,7 +131,7 @@ const ParentDetailsNew = () => {
     setSendingEmail(true);
     try {
       const headers = await getAuthHeaders(getAccessTokenSilently);
-      const response = await fetch(`${api_base_url}/parent_invite_mail/resend/${school_id}/${email}/${updated_by}`, {
+      const response = await fetch(`${api_base_url}/parent_invite_mail/resend/${school_id}/${email}`, {
         method: 'GET',
         headers
       });
