@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { useAuth0 } from '@auth0/auth0-react';
 
-import LoginNew from '../../src/components/LoginNew';
+import Login from '../../src/components/Login';
 import PrivateRoute from '../../src/components/PrivateRoute';
 
 // Mock Auth0
@@ -36,7 +36,7 @@ vi.mock('sonner', () => ({
 }));
 
 describe('Authentication Flow Integration Tests', () => {
-  const mockLoginWithPopup = vi.fn();
+  const mockLoginWithRedirect = vi.fn();
   const mockLogout = vi.fn();
   const mockGetAccessTokenSilently = vi.fn();
 
@@ -44,7 +44,7 @@ describe('Authentication Flow Integration Tests', () => {
     isAuthenticated: false,
     isLoading: false,
     user: null,
-    loginWithPopup: mockLoginWithPopup,
+    loginWithRedirect: mockLoginWithRedirect,
     logout: mockLogout,
     getAccessTokenSilently: mockGetAccessTokenSilently,
   };
@@ -63,7 +63,7 @@ describe('Authentication Flow Integration Tests', () => {
       isAuthenticated: false,
       isLoading: false,
       user: null,
-      loginWithPopup: mockLoginWithPopup,
+      loginWithRedirect: mockLoginWithRedirect,
       logout: mockLogout,
       getAccessTokenSilently: mockGetAccessTokenSilently,
     };
@@ -73,7 +73,7 @@ describe('Authentication Flow Integration Tests', () => {
     return render(
       <BrowserRouter>
         <Routes>
-          <Route path="/login" element={<LoginNew />} />
+          <Route path="/login" element={<Login />} />
           <Route path="/admin-dashboard" element={
             <PrivateRoute>
               <MockAdminDashboard />
@@ -84,7 +84,7 @@ describe('Authentication Flow Integration Tests', () => {
               <MockParentDashboard />
             </PrivateRoute>
           } />
-          <Route path="/" element={<LoginNew />} />
+          <Route path="/" element={<Login />} />
         </Routes>
       </BrowserRouter>
     );
@@ -94,10 +94,10 @@ describe('Authentication Flow Integration Tests', () => {
     it('should complete full login flow for admin user', async () => {
       // Start unauthenticated
       renderAuthFlow();
-      expect(screen.getByText('Welcome Back')).toBeInTheDocument();
+      expect(screen.getByText('Welcome to Goddard School')).toBeInTheDocument();
 
       // Mock successful login
-      mockLoginWithPopup.mockResolvedValue();
+      mockLoginWithRedirect.mockResolvedValue();
       
       // Mock API response for admin user
       fetch.mockResolvedValueOnce({
@@ -110,7 +110,7 @@ describe('Authentication Flow Integration Tests', () => {
 
       // User clicks login button
       const user = userEvent.setup();
-      await user.click(screen.getByRole('button', { name: /sign in with auth0/i }));
+      await user.click(screen.getByRole('button', { name: /log in/i }));
 
       // Simulate Auth0 login success
       mockAuth0State.isAuthenticated = true;
@@ -123,13 +123,10 @@ describe('Authentication Flow Integration Tests', () => {
       // Verify API call was made
       await waitFor(() => {
         expect(fetch).toHaveBeenCalledWith(
-          'https://api.test.com/sign_in/check/test-school-123',
+          'https://api.test.com/sign_in',
           expect.objectContaining({
-            method: 'POST',
-            body: JSON.stringify({
-              email: 'admin@example.com',
-              auth0_user: true
-            })
+            method: 'GET',
+            headers: expect.any(Object),
           })
         );
       });
@@ -138,7 +135,7 @@ describe('Authentication Flow Integration Tests', () => {
     it('should complete full login flow for parent user', async () => {
       renderAuthFlow();
       
-      mockLoginWithPopup.mockResolvedValue();
+      mockLoginWithRedirect.mockResolvedValue();
       fetch.mockResolvedValueOnce({
         ok: true,
         json: async () => ({
@@ -148,7 +145,7 @@ describe('Authentication Flow Integration Tests', () => {
       });
 
       const user = userEvent.setup();
-      await user.click(screen.getByRole('button', { name: /sign in with auth0/i }));
+      await user.click(screen.getByRole('button', { name: /log in/i }));
 
       // Simulate successful authentication
       mockAuth0State.isAuthenticated = true;
@@ -159,13 +156,10 @@ describe('Authentication Flow Integration Tests', () => {
 
       await waitFor(() => {
         expect(fetch).toHaveBeenCalledWith(
-          'https://api.test.com/sign_in/check/test-school-123',
+          'https://api.test.com/sign_in',
           expect.objectContaining({
-            method: 'POST',
-            body: JSON.stringify({
-              email: 'parent@example.com',
-              auth0_user: true
-            })
+            method: 'GET',
+            headers: expect.any(Object),
           })
         );
       });
@@ -175,7 +169,7 @@ describe('Authentication Flow Integration Tests', () => {
       const { toast } = await import('sonner');
       renderAuthFlow();
       
-      mockLoginWithPopup.mockResolvedValue();
+      mockLoginWithRedirect.mockResolvedValue();
       fetch.mockResolvedValueOnce({
         ok: true,
         json: async () => ({
@@ -185,7 +179,7 @@ describe('Authentication Flow Integration Tests', () => {
       });
 
       const user = userEvent.setup();
-      await user.click(screen.getByRole('button', { name: /sign in with auth0/i }));
+      await user.click(screen.getByRole('button', { name: /log in/i }));
 
       mockAuth0State.isAuthenticated = true;
       mockAuth0State.user = { email: 'unauthorized@example.com' };
@@ -266,7 +260,7 @@ describe('Authentication Flow Integration Tests', () => {
       renderAuthFlow();
 
       // Should show login screen again
-      expect(screen.getByText('Welcome Back')).toBeInTheDocument();
+      expect(screen.getByText('Welcome to Goddard School')).toBeInTheDocument();
     });
   });
 
@@ -275,11 +269,11 @@ describe('Authentication Flow Integration Tests', () => {
       const { toast } = await import('sonner');
       renderAuthFlow();
 
-      mockLoginWithPopup.mockResolvedValue();
+      mockLoginWithRedirect.mockResolvedValue();
       fetch.mockRejectedValueOnce(new Error('Network error'));
 
       const user = userEvent.setup();
-      await user.click(screen.getByRole('button', { name: /sign in with auth0/i }));
+      await user.click(screen.getByRole('button', { name: /log in/i }));
 
       mockAuth0State.isAuthenticated = true;
       mockAuth0State.user = { email: 'test@example.com' };
@@ -301,25 +295,25 @@ describe('Authentication Flow Integration Tests', () => {
       
       // Rapidly click login multiple times
       const promises = [
-        user.click(screen.getByRole('button', { name: /sign in with auth0/i })),
-        user.click(screen.getByRole('button', { name: /sign in with auth0/i })),
-        user.click(screen.getByRole('button', { name: /sign in with auth0/i })),
+        user.click(screen.getByRole('button', { name: /log in/i })),
+        user.click(screen.getByRole('button', { name: /log in/i })),
+        user.click(screen.getByRole('button', { name: /log in/i })),
       ];
 
       await Promise.all(promises);
 
       // Auth0 should handle concurrent calls gracefully
-      expect(mockLoginWithPopup).toHaveBeenCalled();
+      expect(mockLoginWithRedirect).toHaveBeenCalled();
     });
 
     it('should handle Auth0 service unavailability', async () => {
       const { toast } = await import('sonner');
       renderAuthFlow();
 
-      mockLoginWithPopup.mockRejectedValue(new Error('Auth0 service unavailable'));
+      mockLoginWithRedirect.mockRejectedValue(new Error('Auth0 service unavailable'));
 
       const user = userEvent.setup();
-      await user.click(screen.getByRole('button', { name: /sign in with auth0/i }));
+      await user.click(screen.getByRole('button', { name: /log in/i }));
 
       await waitFor(() => {
         expect(toast.error).toHaveBeenCalledWith('Login failed', {
@@ -332,14 +326,14 @@ describe('Authentication Flow Integration Tests', () => {
       const { toast } = await import('sonner');
       renderAuthFlow();
 
-      mockLoginWithPopup.mockResolvedValue();
+      mockLoginWithRedirect.mockResolvedValue();
       fetch.mockResolvedValueOnce({
         ok: true,
         json: async () => ({ invalid: 'response' }) // Missing required fields
       });
 
       const user = userEvent.setup();
-      await user.click(screen.getByRole('button', { name: /sign in with auth0/i }));
+      await user.click(screen.getByRole('button', { name: /log in/i }));
 
       mockAuth0State.isAuthenticated = true;
       mockAuth0State.user = { email: 'test@example.com' };
@@ -394,7 +388,7 @@ describe('Authentication Flow Integration Tests', () => {
       renderAuthFlow();
 
       // Should redirect to login
-      expect(screen.getByText('Welcome Back')).toBeInTheDocument();
+      expect(screen.getByText('Welcome to Goddard School')).toBeInTheDocument();
     });
   });
 
@@ -411,18 +405,18 @@ describe('Authentication Flow Integration Tests', () => {
       useAuth0.mockImplementation(() => mockAuth0State);
       
       renderAuthFlow();
-      expect(screen.getByText('Welcome Back')).toBeInTheDocument();
+      expect(screen.getByText('Welcome to Goddard School')).toBeInTheDocument();
     });
 
-    it('should handle popup blocking scenarios', async () => {
+    it('should handle login blocking scenarios', async () => {
       const { toast } = await import('sonner');
       renderAuthFlow();
 
-      // Simulate popup blocked
-      mockLoginWithPopup.mockRejectedValue(new Error('Popup blocked'));
+      // Simulate redirect failure
+      mockLoginWithRedirect.mockRejectedValue(new Error('Redirect failed'));
 
       const user = userEvent.setup();
-      await user.click(screen.getByRole('button', { name: /sign in with auth0/i }));
+      await user.click(screen.getByRole('button', { name: /log in/i }));
 
       await waitFor(() => {
         expect(toast.error).toHaveBeenCalledWith('Login failed', {

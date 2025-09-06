@@ -1,0 +1,3556 @@
+{
+  "statistics": {
+    "total_files": 243,
+    "files_with_imports": 217,
+    "files_with_exports": 235,
+    "empty_files": 2,
+    "route_files": 7,
+    "potentially_unused": 116
+  },
+  "unused_files": [
+    {
+      "file": "src/setupTests.js",
+      "reasons": [
+        "Never imported by any file",
+        "Has no exports",
+        "File is empty or has minimal content",
+        "Test file not in main application flow"
+      ],
+      "data": {
+        "imports": [],
+        "exports": [],
+        "empty": true,
+        "lines": 5,
+        "has_jsx": false,
+        "content_preview": "// jest-dom adds custom jest matchers for asserting on DOM nodes.\n// allows you to do things like:\n// expect(element).toHaveTextContent(/react/i)\n// learn more: https://github.com/testing-library/jest"
+      },
+      "size": 5
+    },
+    {
+      "file": "src/parentComponent/js/parentdashboard.js",
+      "reasons": [
+        "Never imported by any file",
+        "Has no exports",
+        "File is empty or has minimal content"
+      ],
+      "data": {
+        "imports": [],
+        "exports": [],
+        "empty": true,
+        "lines": 0,
+        "has_jsx": false,
+        "content_preview": ""
+      },
+      "size": 0
+    },
+    {
+      "file": "src/tests/hooks/useParentDashboard.test.js",
+      "reasons": [
+        "Never imported by any file",
+        "Has no exports",
+        "Test file not in main application flow"
+      ],
+      "data": {
+        "imports": [
+          "vitest",
+          "@testing-library/react",
+          "../../hooks/useParentDashboard.js",
+          "../../services/parentDashboard/unifiedParentService.js",
+          "sonner"
+        ],
+        "exports": [],
+        "empty": false,
+        "lines": 357,
+        "has_jsx": false,
+        "content_preview": "// Tests for useParentDashboard hook\nimport { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';\nimport { renderHook, act, waitFor } from '@testing-library/react';\nimport { useParentDash"
+      },
+      "size": 357
+    },
+    {
+      "file": "src/tests/performance/performanceTests.js",
+      "reasons": [
+        "Never imported by any file",
+        "Has no exports",
+        "Test file not in main application flow"
+      ],
+      "data": {
+        "imports": [
+          "vitest",
+          "../../services/monitoring/performanceMonitor.js",
+          "../../services/parentDashboard/unifiedParentService.js",
+          "../../services/cache/multiLayerCache.js"
+        ],
+        "exports": [],
+        "empty": false,
+        "lines": 350,
+        "has_jsx": false,
+        "content_preview": "// Performance tests for parent dashboard refactoring\nimport { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';\nimport { performanceMonitor } from '../../services/monitoring/performanc"
+      },
+      "size": 350
+    },
+    {
+      "file": "src/tests/services/unifiedParentService.test.js",
+      "reasons": [
+        "Never imported by any file",
+        "Has no exports",
+        "Test file not in main application flow"
+      ],
+      "data": {
+        "imports": [
+          "vitest",
+          "../../services/parentDashboard/unifiedParentService.js",
+          "../../services/cache/multiLayerCache.js",
+          "../../services/api/client.js"
+        ],
+        "exports": [],
+        "empty": false,
+        "lines": 304,
+        "has_jsx": false,
+        "content_preview": "// Tests for UnifiedParentService\nimport { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';\nimport { UnifiedParentService, ValidationError, DashboardDataError } from '../../services/pa"
+      },
+      "size": 304
+    },
+    {
+      "file": "src/main-fixed.jsx",
+      "reasons": [
+        "Never imported by any file",
+        "Has no exports"
+      ],
+      "data": {
+        "imports": [
+          "react",
+          "react-dom/client",
+          "react-router-dom",
+          "./AdminDashboardNew.jsx",
+          "./ApplicationStatusNew.jsx",
+          "./components/Login.jsx",
+          "@/components/ui/sonner",
+          "./components/ParentDashboardSimple.jsx",
+          "./InviteParentNew.jsx",
+          "./ParentDetailsNew.jsx",
+          "./FormsRepositoryNew.jsx",
+          "./auth/Auth0Provider.jsx",
+          "./components/PrivateRoute.jsx",
+          "./components/SignUp.jsx",
+          "./SelectSchool.jsx",
+          "./services/api",
+          "@auth0/auth0-react",
+          "./hooks/useAuth"
+        ],
+        "exports": [],
+        "empty": false,
+        "lines": 86,
+        "has_jsx": true,
+        "content_preview": "import React from 'react'\nimport ReactDOM from 'react-dom/client'\nimport { BrowserRouter as Router, Routes, Route } from 'react-router-dom'\nimport AdminDashboardNew from './AdminDashboardNew.jsx'\nimpo"
+      },
+      "size": 86
+    },
+    {
+      "file": "src/main.jsx",
+      "reasons": [
+        "Never imported by any file",
+        "Has no exports"
+      ],
+      "data": {
+        "imports": [
+          "react",
+          "react-dom/client",
+          "react-router-dom",
+          "./AdminDashboardNew.jsx",
+          "./ApplicationStatusNew.jsx",
+          "./components/Login.jsx",
+          "@/components/ui/sonner",
+          "./components/ParentDashboardSimple.jsx",
+          "./InviteParentNew.jsx",
+          "./ParentDetailsNew.jsx",
+          "./components/FormsRepositoryClean.jsx",
+          "./auth/Auth0Provider.jsx",
+          "./components/PrivateRoute.jsx",
+          "./components/SignUp.jsx",
+          "./SelectSchool.jsx",
+          "./services/api/index.jsx",
+          "./utils/auth",
+          "@auth0/auth0-react",
+          "./hooks/useAuth"
+        ],
+        "exports": [],
+        "empty": false,
+        "lines": 92,
+        "has_jsx": true,
+        "content_preview": "import React from 'react'\nimport ReactDOM from 'react-dom/client'\nimport { BrowserRouter as Router, Routes, Route } from 'react-router-dom'\nimport AdminDashboardNew from './AdminDashboardNew.jsx'\nimpo"
+      },
+      "size": 92
+    },
+    {
+      "file": "src/tests/formSubmissionTest.js",
+      "reasons": [
+        "Never imported by any file",
+        "Test file not in main application flow"
+      ],
+      "data": {
+        "imports": [
+          "../utils/formSubmission.js",
+          "../utils/apiTestHelper.js"
+        ],
+        "exports": [
+          "testFormSubmissionFix",
+          "testApiEndpoints",
+          "runAllTests"
+        ],
+        "empty": false,
+        "lines": 134,
+        "has_jsx": false,
+        "content_preview": "// Form Submission API Test\n// Tests the fixed form submission functionality\nimport { submitFormData, submitAndCompleteForm } from '../utils/formSubmission.js';\nimport { testFormEndpoints, diagnose405"
+      },
+      "size": 134
+    },
+    {
+      "file": "src/utils/apiTestHelper.js",
+      "reasons": [
+        "Never imported by any file",
+        "Test file not in main application flow"
+      ],
+      "data": {
+        "imports": [
+          "@/utils/const",
+          "@/utils/auth"
+        ],
+        "exports": [
+          "testEndpointMethods",
+          "testFormEndpoints",
+          "analyzeTestResults",
+          "diagnose405Error"
+        ],
+        "empty": false,
+        "lines": 197,
+        "has_jsx": false,
+        "content_preview": "// API Endpoint Testing Utility\n// Helps diagnose and fix 405 Method Not Allowed errors\nimport { api_base_url, school_id } from '@/utils/const';\nimport { getAuthHeaders } from '@/utils/auth';\n\n/**\n * "
+      },
+      "size": 197
+    },
+    {
+      "file": "src/components/FormsRepositoryRefactored.jsx",
+      "reasons": [
+        "Never imported by any file",
+        "Potential duplicate of another file"
+      ],
+      "data": {
+        "imports": [
+          "react",
+          "../hooks/useAuth",
+          "@auth0/auth0-react",
+          "./HeaderNew",
+          "./ui/card",
+          "./ui/button",
+          "./ui/input",
+          "./ui/label",
+          "./ui/badge",
+          "./ui/tabs",
+          "./ui/skeleton",
+          "sonner",
+          "../services/api"
+        ],
+        "exports": [
+          "FormsRepositoryRefactored"
+        ],
+        "empty": false,
+        "lines": 741,
+        "has_jsx": true,
+        "content_preview": "/**\n * Refactored Forms Repository Component\n * Clean separation of concerns with service layer integration\n */\n\nimport React, { useState, useEffect } from 'react';\nimport { useAuth } from '../hooks/u"
+      },
+      "size": 741
+    },
+    {
+      "file": "src/components/LoginNew.jsx",
+      "reasons": [
+        "Never imported by any file",
+        "Potential duplicate of another file"
+      ],
+      "data": {
+        "imports": [
+          "react",
+          "react-router-dom",
+          "react-hook-form",
+          "@hookform/resolvers/zod",
+          "zod",
+          "lucide-react",
+          "sonner",
+          "@auth0/auth0-react",
+          "@/components/ui/button",
+          "@/components/ui/input",
+          "@/components/ui/label",
+          "@/components/ui/card",
+          "@/components/ui/form",
+          "@/components/ui/dialog",
+          "../utils/login",
+          "../utils/login-auth0",
+          "./Header",
+          "./ForgotPasswordModal",
+          "../utils/const",
+          "../utils/auth"
+        ],
+        "exports": [
+          "LoginNew"
+        ],
+        "empty": false,
+        "lines": 369,
+        "has_jsx": true,
+        "content_preview": "import React, { useState, useEffect, useRef } from 'react';\nimport { useNavigate } from 'react-router-dom';\nimport { useForm } from 'react-hook-form';\nimport { zodResolver } from '@hookform/resolvers/"
+      },
+      "size": 369
+    },
+    {
+      "file": "src/components/DataTableNew.jsx",
+      "reasons": [
+        "Never imported by any file",
+        "Potential duplicate of another file"
+      ],
+      "data": {
+        "imports": [
+          "react",
+          "@/components/ui/card",
+          "@/components/ui/button",
+          "@/components/ui/input",
+          "@/components/ui/badge"
+        ],
+        "exports": [
+          "DataTableNew"
+        ],
+        "empty": false,
+        "lines": 313,
+        "has_jsx": true,
+        "content_preview": "import React, { useRef, useState, useMemo } from 'react';\nimport { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';\nimport { Button } from '@/components/ui/butt"
+      },
+      "size": 313
+    },
+    {
+      "file": "src/components/AuthTestRoute.jsx",
+      "reasons": [
+        "Never imported by any file",
+        "Test file not in main application flow"
+      ],
+      "data": {
+        "imports": [
+          "react",
+          "react-router-dom",
+          "./AuthenticationTest",
+          "./components/AuthenticationTest"
+        ],
+        "exports": [
+          "ExampleRouting"
+        ],
+        "empty": false,
+        "lines": 37,
+        "has_jsx": true,
+        "content_preview": "/**\n * Simple Route Example for Adding AuthenticationTest Component\n * \n * Add this route to your main router to make the test component accessible.\n * This can be added temporarily for testing purpos"
+      },
+      "size": 37
+    },
+    {
+      "file": "src/components/LoginFixed.jsx",
+      "reasons": [
+        "Never imported by any file",
+        "Potential duplicate of another file"
+      ],
+      "data": {
+        "imports": [
+          "react",
+          "react-router-dom",
+          "@auth0/auth0-react",
+          "./Header",
+          "../utils/const",
+          "../utils/auth-fixed",
+          "../utils/errorHandler"
+        ],
+        "exports": [
+          "LoginFixed"
+        ],
+        "empty": false,
+        "lines": 357,
+        "has_jsx": true,
+        "content_preview": "/**\n * FIXED Login Component\n * Addresses authentication flow issues and error handling\n */\nimport React, { useEffect, useState, useRef } from 'react';\nimport { useNavigate } from 'react-router-dom';\n"
+      },
+      "size": 357
+    },
+    {
+      "file": "src/components/AddChildModalNew.jsx",
+      "reasons": [
+        "Never imported by any file",
+        "Potential duplicate of another file"
+      ],
+      "data": {
+        "imports": [
+          "react",
+          "./Alert",
+          "../utils/const",
+          "@auth0/auth0-react",
+          "../utils/auth",
+          "@/components/ui/dialog",
+          "@/components/ui/button",
+          "@/components/ui/input",
+          "@/components/ui/label",
+          "@/components/ui/select",
+          "@/components/ui/card",
+          "@/components/ui/badge",
+          "lucide-react",
+          "sonner"
+        ],
+        "exports": [
+          "AddChildModalNew"
+        ],
+        "empty": false,
+        "lines": 347,
+        "has_jsx": true,
+        "content_preview": "import React, { useState, useEffect } from 'react';\nimport Alert from './Alert';\nimport { api_base_url, school_id } from '../utils/const';\nimport { useAuth0 } from '@auth0/auth0-react';\nimport { getAu"
+      },
+      "size": 347
+    },
+    {
+      "file": "src/services/api/core/ApiClientFixed.js",
+      "reasons": [
+        "Never imported by any file",
+        "Potential duplicate of another file"
+      ],
+      "data": {
+        "imports": [
+          "../../utils/auth",
+          "../../utils/errorHandler",
+          "../../utils/const"
+        ],
+        "exports": [
+          "ApiClientFixed"
+        ],
+        "empty": false,
+        "lines": 303,
+        "has_jsx": false,
+        "content_preview": "/**\n * Auth-Compatible API Client \n * Fixed to work better with existing Auth0 patterns\n */\n\nimport { getAuthHeaders } from '../../utils/auth';\nimport { withRetry, handleApiError } from '../../utils/e"
+      },
+      "size": 303
+    },
+    {
+      "file": "src/tests/api/ApiClient.test.js",
+      "reasons": [
+        "Never imported by any file",
+        "Test file not in main application flow"
+      ],
+      "data": {
+        "imports": [
+          "vitest",
+          "../../services/api/core/ApiClient",
+          "../../services/api/core/TokenManager",
+          "../../services/api/core/CacheManager"
+        ],
+        "exports": [
+          ""
+        ],
+        "empty": false,
+        "lines": 522,
+        "has_jsx": false,
+        "content_preview": "/**\n * API Client Tests\n * Comprehensive test suite for the API service layer\n */\n\nimport { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';\nimport { ApiClient } from '../../services/a"
+      },
+      "size": 522
+    },
+    {
+      "file": "src/FormsRepositoryNew.jsx",
+      "reasons": [
+        "Potential duplicate of another file"
+      ],
+      "data": {
+        "imports": [
+          "react",
+          "./hooks/useAuth",
+          "@auth0/auth0-react",
+          "./utils/auth",
+          "./components/HeaderNew",
+          "./components/ui/card",
+          "./components/ui/button",
+          "./components/ui/input",
+          "./components/ui/label",
+          "./components/ui/badge",
+          "./components/ui/tabs",
+          "./components/ui/skeleton",
+          "sonner",
+          "./utils/const"
+        ],
+        "exports": [
+          "FormsRepositoryNew"
+        ],
+        "empty": false,
+        "lines": 1300,
+        "has_jsx": true,
+        "content_preview": "import React, { useState, useEffect } from 'react';\nimport { useAuth } from './hooks/useAuth';\nimport { useAuth0 } from '@auth0/auth0-react';\nimport { getAuthHeaders } from './utils/auth';\nimport Head"
+      },
+      "size": 1300
+    },
+    {
+      "file": "src/InviteParentNew.jsx",
+      "reasons": [
+        "Potential duplicate of another file"
+      ],
+      "data": {
+        "imports": [
+          "react",
+          "./utils/const",
+          "./hooks/useAuth",
+          "@auth0/auth0-react",
+          "./utils/auth",
+          "./components/HeaderNew",
+          "./components/ui/card",
+          "./components/ui/button",
+          "./components/ui/input",
+          "./components/ui/label",
+          "./components/ui/skeleton",
+          "sonner",
+          "react-hook-form",
+          "@hookform/resolvers/zod",
+          "zod",
+          "react-router-dom"
+        ],
+        "exports": [
+          "InviteParentNew"
+        ],
+        "empty": false,
+        "lines": 444,
+        "has_jsx": true,
+        "content_preview": "import React, { useState, useEffect } from 'react';\nimport { api_base_url, school_id } from './utils/const';\nimport { useAuth } from './hooks/useAuth';\nimport { useAuth0 } from '@auth0/auth0-react';\ni"
+      },
+      "size": 444
+    },
+    {
+      "file": "src/AdminDashboardNew.jsx",
+      "reasons": [
+        "Potential duplicate of another file"
+      ],
+      "data": {
+        "imports": [
+          "react",
+          "./hooks/useAuth",
+          "react-router-dom",
+          "lucide-react",
+          "@/components/ui/card",
+          "@/components/ui/button",
+          "@/components/ui/badge",
+          "./components/HeaderNew"
+        ],
+        "exports": [
+          "AdminDashboardNew"
+        ],
+        "empty": false,
+        "lines": 226,
+        "has_jsx": true,
+        "content_preview": "import React from 'react';\nimport { useAuth } from './hooks/useAuth';\nimport { useNavigate } from 'react-router-dom';\nimport { FileText, Users, Settings, ChevronRight, Activity } from 'lucide-react';\n"
+      },
+      "size": 226
+    },
+    {
+      "file": "src/App.jsx",
+      "reasons": [
+        "Never imported by any file"
+      ],
+      "data": {
+        "imports": [
+          "react",
+          "react-router-dom",
+          "./auth/Auth0Provider",
+          "./components/ProtectedRoute",
+          "./components/Login",
+          "./AdminDashboard",
+          "./ApplicationStatus",
+          "./components/InviteParent",
+          "./components/ParentDetails",
+          "./components/FormsRepository",
+          "./components/ClassroomRepo",
+          "./parentComponent/ParentDashboardRefactored",
+          "./components/SelectSchool"
+        ],
+        "exports": [
+          "App"
+        ],
+        "empty": false,
+        "lines": 89,
+        "has_jsx": true,
+        "content_preview": "import React from 'react';\nimport { BrowserRouter as Router, Routes, Route } from 'react-router-dom';\nimport Auth0ProviderWithHistory from './auth/Auth0Provider';\nimport ProtectedRoute from './compone"
+      },
+      "size": 89
+    },
+    {
+      "file": "src/App-secure.jsx",
+      "reasons": [
+        "Never imported by any file"
+      ],
+      "data": {
+        "imports": [
+          "react",
+          "react-router-dom",
+          "./contexts/AuthContext",
+          "./components/Login",
+          "./AdminDashboard",
+          "./ApplicationStatus",
+          "./components/InviteParent",
+          "./components/ParentDetails",
+          "./components/FormsRepository",
+          "./components/ClassroomRepo",
+          "./parentComponent/ParentDashboardRefactored",
+          "./components/SelectSchool"
+        ],
+        "exports": [
+          "App"
+        ],
+        "empty": false,
+        "lines": 186,
+        "has_jsx": true,
+        "content_preview": "import React from 'react';\nimport { BrowserRouter as Router, Routes, Route } from 'react-router-dom';\nimport { AuthProvider } from './contexts/AuthContext';\nimport { \n  ProtectedRoute, \n  AdminRoute, "
+      },
+      "size": 186
+    },
+    {
+      "file": "src/utils/apiDiagnostics.js",
+      "reasons": [
+        "Never imported by any file"
+      ],
+      "data": {
+        "imports": [],
+        "exports": [
+          "API_ENDPOINTS",
+          "HTTP_STATUS",
+          "API_ERROR_MESSAGES",
+          "validateTokenFormat",
+          "generateDiagnosticReport"
+        ],
+        "empty": false,
+        "lines": 422,
+        "has_jsx": false,
+        "content_preview": "/**\n * API Diagnostics Utility\n * \n * This utility provides comprehensive testing and debugging tools for API endpoints,\n * specifically designed for the Goddard authentication system.\n * \n * Key Feat"
+      },
+      "size": 422
+    },
+    {
+      "file": "src/utils/formSubmission.js",
+      "reasons": [
+        "Never imported by any file"
+      ],
+      "data": {
+        "imports": [
+          "@/utils/const",
+          "@/utils/auth",
+          "sonner"
+        ],
+        "exports": [
+          "submitFormData",
+          "submitAndCompleteForm",
+          "formatFormName"
+        ],
+        "empty": false,
+        "lines": 177,
+        "has_jsx": false,
+        "content_preview": "// SIMPLIFIED Form Submission Utilities - No more complex DOM manipulation!\n// Standardized form submission with dashboard refresh integration\nimport { api_base_url, school_id } from '@/utils/const';\n"
+      },
+      "size": 177
+    },
+    {
+      "file": "src/utils/auth-fixed.js",
+      "reasons": [
+        "Never imported by any file"
+      ],
+      "data": {
+        "imports": [],
+        "exports": [
+          "getAuthHeaders",
+          "getAuthHeadersWithContentType",
+          "getAuthHeadersForUpload",
+          "getAccessToken",
+          "getUserPermissions",
+          "handleAuthError",
+          "authenticatedFetch",
+          "authenticatedPost",
+          "authenticatedPut",
+          "authenticatedDelete",
+          "checkAdminPrivileges",
+          "checkParentPrivileges"
+        ],
+        "empty": false,
+        "lines": 317,
+        "has_jsx": false,
+        "content_preview": "/**\n * FIXED Authentication utility functions for Auth0 integration\n * Addresses critical security and reliability issues\n */\n\n/**\n * Generates authenticated headers for API requests\n * @param {Functi"
+      },
+      "size": 317
+    },
+    {
+      "file": "src/utils/errorHandler.js",
+      "reasons": [
+        "Never imported by any file"
+      ],
+      "data": {
+        "imports": [
+          "./auth"
+        ],
+        "exports": [
+          "ERROR_TYPES",
+          "categorizeError",
+          "shouldLogout",
+          "getErrorMessage",
+          "withRetry",
+          "handleApiError",
+          "createResilientApiCall"
+        ],
+        "empty": false,
+        "lines": 266,
+        "has_jsx": false,
+        "content_preview": "/**\n * Error handling utility for robust authentication and API error management\n * Categorizes errors and provides appropriate responses without unnecessary logouts\n */\n\n// Error categories for diffe"
+      },
+      "size": 266
+    },
+    {
+      "file": "src/utils/login-auth0.js",
+      "reasons": [
+        "Never imported by any file"
+      ],
+      "data": {
+        "imports": [],
+        "exports": [
+          "auth0LoginFunction"
+        ],
+        "empty": false,
+        "lines": 31,
+        "has_jsx": false,
+        "content_preview": "/**\n * Auth0 Login Utilities\n * \n * Secure authentication functions using Auth0 service\n */\n\nexport const auth0LoginFunction = async (loginWithPopup, options = {}) => {\n  try {\n    console.log('Initia"
+      },
+      "size": 31
+    },
+    {
+      "file": "src/utils/login.js",
+      "reasons": [
+        "Never imported by any file"
+      ],
+      "data": {
+        "imports": [],
+        "exports": [
+          "loginFunction",
+          "handleGoogleLogin"
+        ],
+        "empty": false,
+        "lines": 70,
+        "has_jsx": false,
+        "content_preview": "/**\n * DEPRECATED: Legacy login system with SHA256 password hashing\n * \n * \u26a0\ufe0f  SECURITY WARNING: This file has been deprecated due to security vulnerabilities:\n * \n * 1. SHA256 client-side password ha"
+      },
+      "size": 70
+    },
+    {
+      "file": "src/utils/featureFlags.js",
+      "reasons": [
+        "Never imported by any file"
+      ],
+      "data": {
+        "imports": [
+          "react"
+        ],
+        "exports": [
+          "FeatureFlags",
+          "FeatureFlagManager",
+          "featureFlagManager",
+          "isEnabled",
+          "enable",
+          "disable",
+          "toggle",
+          "useFeatureFlag"
+        ],
+        "empty": false,
+        "lines": 271,
+        "has_jsx": true,
+        "content_preview": "// Feature flags for gradual rollout\nimport { useState, useEffect } from 'react';\nexport const FeatureFlags = {\n  // Parent Dashboard Refactoring\n  USE_UNIFIED_API: 'use_unified_api',\n  USE_REFACTORED"
+      },
+      "size": 271
+    },
+    {
+      "file": "src/utils/parentDetails.js",
+      "reasons": [
+        "Never imported by any file"
+      ],
+      "data": {
+        "imports": [
+          "./const",
+          "./auth"
+        ],
+        "exports": [
+          "resendParentInvite",
+          "updateParentStatus",
+          "loadParentDetails",
+          "loadParentInfo"
+        ],
+        "empty": false,
+        "lines": 76,
+        "has_jsx": false,
+        "content_preview": "import { api_base_url, school_id } from './const';\nimport { getAuthHeaders } from './auth';\n\nexport const resendParentInvite = async (parentEmail, getAccessTokenSilently) => {\n  try {\n    const header"
+      },
+      "size": 76
+    },
+    {
+      "file": "src/components/HeaderNew.jsx",
+      "reasons": [
+        "Potential duplicate of another file"
+      ],
+      "data": {
+        "imports": [
+          "react",
+          "@/components/ui/button",
+          "@/components/ui/dialog",
+          "lucide-react",
+          "./SidebarNew",
+          "sonner"
+        ],
+        "exports": [
+          "HeaderNew"
+        ],
+        "empty": false,
+        "lines": 148,
+        "has_jsx": true,
+        "content_preview": "import React, { useState } from 'react';\nimport { Button } from '@/components/ui/button';\nimport { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/component"
+      },
+      "size": 148
+    },
+    {
+      "file": "src/components/ChildTabs.jsx",
+      "reasons": [
+        "Never imported by any file"
+      ],
+      "data": {
+        "imports": [
+          "@/components/ui/button",
+          "@/components/ui/select",
+          "lucide-react",
+          "@/components/ui/badge"
+        ],
+        "exports": [
+          "ChildTabs"
+        ],
+        "empty": false,
+        "lines": 97,
+        "has_jsx": true,
+        "content_preview": "// Child selection tabs\nimport { Button } from '@/components/ui/button';\nimport { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';\nimport { Users } from '"
+      },
+      "size": 97
+    },
+    {
+      "file": "src/components/ProtectedRoute.tsx",
+      "reasons": [
+        "Never imported by any file"
+      ],
+      "data": {
+        "imports": [
+          "react",
+          "react-router-dom",
+          "../hooks/useAuth",
+          "../hooks/usePermissions",
+          "../types/auth"
+        ],
+        "exports": [
+          "ProtectedRoute",
+          "withProtectedRoute",
+          "AdminRoute",
+          "SuperAdminRoute",
+          "TeacherRoute",
+          "ParentRoute",
+          "ResourceProtectedRoute"
+        ],
+        "empty": false,
+        "lines": 206,
+        "has_jsx": true,
+        "content_preview": "import React, { ReactNode } from 'react';\nimport { Navigate, useLocation } from 'react-router-dom';\nimport { useAuth } from '../hooks/useAuth';\nimport { usePermissionCheck } from '../hooks/usePermissi"
+      },
+      "size": 206
+    },
+    {
+      "file": "src/components/WelcomeSection.jsx",
+      "reasons": [
+        "Never imported by any file"
+      ],
+      "data": {
+        "imports": [
+          "@/components/ui/card",
+          "lucide-react"
+        ],
+        "exports": [
+          "WelcomeSection"
+        ],
+        "empty": false,
+        "lines": 77,
+        "has_jsx": true,
+        "content_preview": "// Welcome section with statistics\nimport { Card, CardContent } from '@/components/ui/card';\nimport { FileText, CheckCircle, Clock } from 'lucide-react';\n\nconst WelcomeSection = ({ parentName, stats }"
+      },
+      "size": 77
+    },
+    {
+      "file": "src/components/CompletedFormsTable.jsx",
+      "reasons": [
+        "Never imported by any file"
+      ],
+      "data": {
+        "imports": [
+          "@/components/ui/card",
+          "@/components/ui/button",
+          "@/components/ui/badge",
+          "./DataTable"
+        ],
+        "exports": [
+          "CompletedFormsTable"
+        ],
+        "empty": false,
+        "lines": 179,
+        "has_jsx": true,
+        "content_preview": "// Completed forms table component\nimport { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';\nimport { Button } from '@/components/ui/button';\nimport { Badge } f"
+      },
+      "size": 179
+    },
+    {
+      "file": "src/components/SecureRoute.jsx",
+      "reasons": [
+        "Never imported by any file"
+      ],
+      "data": {
+        "imports": [
+          "react",
+          "react-router-dom",
+          "../auth/AuthProvider",
+          "./ui/LoadingSpinner"
+        ],
+        "exports": [
+          "SecureRoute",
+          "SecureRoute"
+        ],
+        "empty": false,
+        "lines": 169,
+        "has_jsx": true,
+        "content_preview": "import React from 'react';\nimport { Navigate } from 'react-router-dom';\nimport { useAuth } from '../auth/AuthProvider';\nimport { LoadingSpinner } from './ui/LoadingSpinner';\n\n/**\n * Secure route prote"
+      },
+      "size": 169
+    },
+    {
+      "file": "src/components/FormInput.jsx",
+      "reasons": [
+        "Never imported by any file"
+      ],
+      "data": {
+        "imports": [
+          "react"
+        ],
+        "exports": [
+          "FormInput"
+        ],
+        "empty": false,
+        "lines": 56,
+        "has_jsx": true,
+        "content_preview": "import React from 'react';\n\n\nconst FormInput = ({ \n  id, \n  name, \n  type = \"text\", \n  value, \n  onChange, \n  placeholder,\n  required = false,\n  showPasswordToggle = false,\n  onTogglePassword,\n  showP"
+      },
+      "size": 56
+    },
+    {
+      "file": "src/components/SidebarNew.jsx",
+      "reasons": [
+        "Potential duplicate of another file"
+      ],
+      "data": {
+        "imports": [
+          "react",
+          "@/components/ui/sheet",
+          "@/components/ui/button",
+          "@/components/ui/separator",
+          "sonner"
+        ],
+        "exports": [
+          "SidebarNew"
+        ],
+        "empty": false,
+        "lines": 118,
+        "has_jsx": true,
+        "content_preview": "import React, { useState } from 'react';\nimport { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';\nimport { Button } from '@/components/ui/b"
+      },
+      "size": 118
+    },
+    {
+      "file": "src/components/StatusUpdateModal.jsx",
+      "reasons": [
+        "Never imported by any file"
+      ],
+      "data": {
+        "imports": [
+          "react"
+        ],
+        "exports": [
+          "StatusUpdateModal"
+        ],
+        "empty": false,
+        "lines": 88,
+        "has_jsx": true,
+        "content_preview": "import React, { useEffect } from 'react';\n\nconst StatusUpdateModal = ({ isOpen, onClose, parentData, onUpdateStatus }) => {\n  useEffect(() => {\n    if (isOpen) {\n      document.body.style.overflow = '"
+      },
+      "size": 88
+    },
+    {
+      "file": "src/components/FormsRepositoryClean.jsx",
+      "reasons": [
+        "Potential duplicate of another file"
+      ],
+      "data": {
+        "imports": [
+          "react",
+          "../hooks/useAuth",
+          "./HeaderNew",
+          "./ui/card",
+          "./ui/button",
+          "./ui/input",
+          "./ui/badge",
+          "./ui/tabs",
+          "./ui/skeleton",
+          "../hooks/useApiData"
+        ],
+        "exports": [
+          "FormsRepositoryClean"
+        ],
+        "empty": false,
+        "lines": 384,
+        "has_jsx": true,
+        "content_preview": "/**\n * FIXED Forms Repository Component\n * Uses shared API services context instead of creating new instances\n */\n\nimport React, { useState } from 'react';\nimport { useAuth } from '../hooks/useAuth';\n"
+      },
+      "size": 384
+    },
+    {
+      "file": "src/components/ErrorDisplay.jsx",
+      "reasons": [
+        "Never imported by any file"
+      ],
+      "data": {
+        "imports": [
+          "@/components/ui/card",
+          "@/components/ui/button",
+          "lucide-react"
+        ],
+        "exports": [
+          "ErrorDisplay"
+        ],
+        "empty": false,
+        "lines": 93,
+        "has_jsx": true,
+        "content_preview": "// Error display component\nimport { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';\nimport { Button } from '@/components/ui/button';\nimport { AlertCircle, RefreshCw } from 'luc"
+      },
+      "size": 93
+    },
+    {
+      "file": "src/components/PDFFormInput.jsx",
+      "reasons": [
+        "Never imported by any file"
+      ],
+      "data": {
+        "imports": [
+          "react"
+        ],
+        "exports": [
+          "PDFFormInput"
+        ],
+        "empty": false,
+        "lines": 31,
+        "has_jsx": true,
+        "content_preview": "import React from 'react';\n\nconst PDFFormInput = ({\n    id,\n    name,\n    label,\n    type = \"text\",\n    defaultValue = \"\",\n    maxLength,\n    ...props\n}) => {\n    return (\n        <div>\n            <l"
+      },
+      "size": 31
+    },
+    {
+      "file": "src/components/FormLabel.jsx",
+      "reasons": [
+        "Never imported by any file"
+      ],
+      "data": {
+        "imports": [
+          "react"
+        ],
+        "exports": [
+          "FormLabel"
+        ],
+        "empty": false,
+        "lines": 12,
+        "has_jsx": true,
+        "content_preview": "import React from 'react';\n\nconst FormLabel = ({ htmlFor, children, required = false }) => {\n  return (\n    <label htmlFor={htmlFor} className=\"block text-lg font-bold text-gray-700 mb-2\">\n      {chil"
+      },
+      "size": 12
+    },
+    {
+      "file": "src/hooks/useParentData.js",
+      "reasons": [
+        "Never imported by any file"
+      ],
+      "data": {
+        "imports": [
+          "react",
+          "@auth0/auth0-react",
+          "@/utils/const",
+          "@/utils/auth",
+          "sonner"
+        ],
+        "exports": [
+          "useParentData"
+        ],
+        "empty": false,
+        "lines": 265,
+        "has_jsx": false,
+        "content_preview": "// Single hook for all parent dashboard data management\n// Makes ONE API call and handles all child switching via state updates\nimport { useState, useEffect, useCallback } from 'react';\nimport { useAu"
+      },
+      "size": 265
+    },
+    {
+      "file": "src/hooks/useFileOperations.js",
+      "reasons": [
+        "Never imported by any file"
+      ],
+      "data": {
+        "imports": [
+          "react",
+          "../services/parentDashboard/fileService.js",
+          "@auth0/auth0-react",
+          "sonner"
+        ],
+        "exports": [
+          "useFileOperations"
+        ],
+        "empty": false,
+        "lines": 240,
+        "has_jsx": false,
+        "content_preview": "// Hook for file download and print operations\nimport { useState, useCallback } from 'react';\nimport { FileService } from '../services/parentDashboard/fileService.js';\nimport { useAuth0 } from '@auth0"
+      },
+      "size": 240
+    },
+    {
+      "file": "src/hooks/useAuth.ts",
+      "reasons": [
+        "Never imported by any file"
+      ],
+      "data": {
+        "imports": [
+          "react",
+          "../contexts/AuthContext",
+          "../types/auth"
+        ],
+        "exports": [
+          "useAuth"
+        ],
+        "empty": false,
+        "lines": 182,
+        "has_jsx": false,
+        "content_preview": "import { useCallback, useMemo } from 'react';\nimport { useAuthContext } from '../contexts/AuthContext';\nimport { AuthErrorTypes } from '../types/auth';\n\nexport const useAuth = () => {\n  const authCont"
+      },
+      "size": 182
+    },
+    {
+      "file": "src/hooks/useParentDashboard.js",
+      "reasons": [
+        "Never imported by any file"
+      ],
+      "data": {
+        "imports": [
+          "react",
+          "../services/parentDashboard/unifiedParentService.js",
+          "@auth0/auth0-react",
+          "sonner"
+        ],
+        "exports": [
+          "useParentDashboard"
+        ],
+        "empty": false,
+        "lines": 250,
+        "has_jsx": false,
+        "content_preview": "// Main hook for parent dashboard data management\nimport { useState, useEffect, useCallback } from 'react';\nimport { UnifiedParentService } from '../services/parentDashboard/unifiedParentService.js';\n"
+      },
+      "size": 250
+    },
+    {
+      "file": "src/hooks/useOptimizedFormsRepository.js",
+      "reasons": [
+        "Never imported by any file"
+      ],
+      "data": {
+        "imports": [
+          "react",
+          "@auth0/auth0-react",
+          "../services/optimized/FormsRepositoryService.js",
+          "../services/monitoring/performanceMonitor.js",
+          "sonner"
+        ],
+        "exports": [
+          "useOptimizedFormsRepository"
+        ],
+        "empty": false,
+        "lines": 231,
+        "has_jsx": false,
+        "content_preview": "// Optimized hook for Forms Repository with performance monitoring\nimport { useState, useEffect, useCallback, useRef } from 'react';\nimport { useAuth0 } from '@auth0/auth0-react';\nimport { formsReposi"
+      },
+      "size": 231
+    },
+    {
+      "file": "src/hooks/useApiData.js",
+      "reasons": [
+        "Never imported by any file"
+      ],
+      "data": {
+        "imports": [
+          "react",
+          "../services/api"
+        ],
+        "exports": [
+          "useApiRequest",
+          "useClassrooms",
+          "useForms",
+          "useStudents",
+          "useStudentForms",
+          "useApiMetrics",
+          "useLoadingState"
+        ],
+        "empty": false,
+        "lines": 349,
+        "has_jsx": true,
+        "content_preview": "/**\n * Custom React hooks for API data management\n * Provides loading states, error handling, and data management\n */\n\nimport { useState, useEffect, useCallback } from 'react';\nimport { useApiServices"
+      },
+      "size": 349
+    },
+    {
+      "file": "src/hooks/useAuthState.js",
+      "reasons": [
+        "Never imported by any file"
+      ],
+      "data": {
+        "imports": [
+          "react",
+          "@auth0/auth0-react",
+          "../utils/const",
+          "../utils/auth"
+        ],
+        "exports": [
+          "useAuthState"
+        ],
+        "empty": false,
+        "lines": 506,
+        "has_jsx": false,
+        "content_preview": "import { useState, useEffect, useCallback, useRef } from 'react';\nimport { useAuth0 } from '@auth0/auth0-react';\nimport { api_base_url, school_id } from '../utils/const';\nimport { getAuthHeaders } fro"
+      },
+      "size": 506
+    },
+    {
+      "file": "src/hooks/usePermissions.ts",
+      "reasons": [
+        "Never imported by any file"
+      ],
+      "data": {
+        "imports": [
+          "react",
+          "./useAuth",
+          "../services/authService"
+        ],
+        "exports": [
+          "usePermissions",
+          "usePermissionCheck",
+          "useResourcePermissions"
+        ],
+        "empty": false,
+        "lines": 246,
+        "has_jsx": false,
+        "content_preview": "import { useState, useEffect, useCallback, useMemo } from 'react';\nimport { useAuth } from './useAuth';\nimport { authService } from '../services/authService';\n\ninterface PermissionHookState {\n  permis"
+      },
+      "size": 246
+    },
+    {
+      "file": "src/examples/PermissionExamples.js",
+      "reasons": [
+        "Never imported by any file"
+      ],
+      "data": {
+        "imports": [
+          "react",
+          "../services/permissions/index.js"
+        ],
+        "exports": [
+          "PermissionExamples",
+          "UsagePatterns"
+        ],
+        "empty": false,
+        "lines": 352,
+        "has_jsx": true,
+        "content_preview": "/**\n * Permission System Usage Examples\n * Demonstrates various patterns and use cases for the caching permission system\n */\n\nimport React, { useState, useEffect } from 'react';\nimport {\n  PermissionP"
+      },
+      "size": 352
+    },
+    {
+      "file": "src/lib/utils.js",
+      "reasons": [
+        "Never imported by any file"
+      ],
+      "data": {
+        "imports": [
+          "clsx",
+          "tailwind-merge"
+        ],
+        "exports": [
+          "cn"
+        ],
+        "empty": false,
+        "lines": 6,
+        "has_jsx": false,
+        "content_preview": "import { clsx } from \"clsx\"\nimport { twMerge } from \"tailwind-merge\"\n\nexport function cn(...inputs) {\n  return twMerge(clsx(inputs))\n}"
+      },
+      "size": 6
+    },
+    {
+      "file": "src/parentComponent/FormContent.jsx",
+      "reasons": [
+        "Never imported by any file"
+      ],
+      "data": {
+        "imports": [
+          "react",
+          "./forms/AdmissionForm",
+          "./forms/AuthorizationForm",
+          "./forms/EnrollmentFormNew",
+          "./forms/ParentHanbook/policies/AllNew"
+        ],
+        "exports": [
+          "FormContent"
+        ],
+        "empty": false,
+        "lines": 69,
+        "has_jsx": true,
+        "content_preview": "import React, { useState } from 'react';\nimport AdmissionForm from './forms/AdmissionForm';\nimport AuthorizationForm from './forms/AuthorizationForm';\nimport EnrollmentFormNew from './forms/Enrollment"
+      },
+      "size": 69
+    },
+    {
+      "file": "src/parentComponent/ParentDashboardWrapper.jsx",
+      "reasons": [
+        "Never imported by any file"
+      ],
+      "data": {
+        "imports": [
+          "react",
+          "../utils/featureFlags.js",
+          "../services/migration/migrationManager.js",
+          "../services/monitoring/performanceMonitor.js",
+          "./ParentDashboardRefactored",
+          "./ParentDashboardNew"
+        ],
+        "exports": [
+          "ParentDashboardWrapper"
+        ],
+        "empty": false,
+        "lines": 123,
+        "has_jsx": true,
+        "content_preview": "// Wrapper component to handle feature flag routing\nimport React from 'react';\nimport { FeatureFlags, isEnabled } from '../utils/featureFlags.js';\nimport { migrationManager } from '../services/migrati"
+      },
+      "size": 123
+    },
+    {
+      "file": "src/api/SecureAPIClient.js",
+      "reasons": [
+        "Never imported by any file"
+      ],
+      "data": {
+        "imports": [
+          "../utils/const"
+        ],
+        "exports": [
+          "SecureAPIClient"
+        ],
+        "empty": false,
+        "lines": 201,
+        "has_jsx": false,
+        "content_preview": "import { api_base_url, school_id } from '../utils/const';\n\n/**\n * Secure API client that handles Auth0 JWT tokens properly\n * No token exposure, proper error handling\n */\nexport class SecureAPIClient "
+      },
+      "size": 201
+    },
+    {
+      "file": "src/services/authService.ts",
+      "reasons": [
+        "Never imported by any file"
+      ],
+      "data": {
+        "imports": [
+          "@auth0/auth0-spa-js",
+          "@auth0/auth0-spa-js",
+          "../types/auth"
+        ],
+        "exports": [
+          "authService"
+        ],
+        "empty": false,
+        "lines": 333,
+        "has_jsx": false,
+        "content_preview": "/**\n * Enhanced Authentication Service for Auth0 Integration\n * \n * This service provides comprehensive authentication functionality with\n * proper localStorage persistence and token management.\n */\n\n"
+      },
+      "size": 333
+    },
+    {
+      "file": "src/services/formService.js",
+      "reasons": [
+        "Never imported by any file"
+      ],
+      "data": {
+        "imports": [
+          "@/utils/const",
+          "@/utils/auth"
+        ],
+        "exports": [
+          "formService",
+          "formValidation"
+        ],
+        "empty": false,
+        "lines": 223,
+        "has_jsx": false,
+        "content_preview": "// API service for form-related operations\nimport { api_base_url, school_id } from \"@/utils/const\";\nimport { getAuthHeaders } from \"@/utils/auth\";\n\nexport const formService = {\n  // Get parent and chi"
+      },
+      "size": 223
+    },
+    {
+      "file": "src/services/authService.js",
+      "reasons": [
+        "Never imported by any file"
+      ],
+      "data": {
+        "imports": [
+          "../utils/const",
+          "../utils/auth"
+        ],
+        "exports": [
+          "authService"
+        ],
+        "empty": false,
+        "lines": 104,
+        "has_jsx": false,
+        "content_preview": "/**\n * Authentication service for managing user permissions and auth state\n * \n * This service provides standardized methods for checking user permissions,\n * managing authentication state, and intera"
+      },
+      "size": 104
+    },
+    {
+      "file": "src/services/cache/multiLayerCache.js",
+      "reasons": [
+        "Never imported by any file"
+      ],
+      "data": {
+        "imports": [],
+        "exports": [
+          "MultiLayerCacheManager",
+          "cacheManager"
+        ],
+        "empty": false,
+        "lines": 363,
+        "has_jsx": false,
+        "content_preview": "// Multi-layer caching system with memory, session, and persistent storage\n\nclass CacheEntry {\n  constructor(value, ttl = 300000) { // 5 minutes default\n    this.value = value;\n    this.expires = Date"
+      },
+      "size": 363
+    },
+    {
+      "file": "src/services/parentDashboard/unifiedParentService.js",
+      "reasons": [
+        "Never imported by any file"
+      ],
+      "data": {
+        "imports": [
+          "../api/client.js",
+          "../api/endpoints.js",
+          "../cache/multiLayerCache.js"
+        ],
+        "exports": [
+          "UnifiedParentService",
+          "ValidationError",
+          "DashboardDataError"
+        ],
+        "empty": false,
+        "lines": 350,
+        "has_jsx": false,
+        "content_preview": "// Unified parent service using the consolidated API endpoint\nimport { apiClient } from '../api/client.js';\nimport { ENDPOINTS, FORM_TYPES } from '../api/endpoints.js';\nimport { cacheManager } from '."
+      },
+      "size": 350
+    },
+    {
+      "file": "src/services/parentDashboard/fileService.js",
+      "reasons": [
+        "Never imported by any file"
+      ],
+      "data": {
+        "imports": [
+          "../api/client.js",
+          "../api/endpoints.js"
+        ],
+        "exports": [
+          "FileService",
+          "FileOperationError"
+        ],
+        "empty": false,
+        "lines": 314,
+        "has_jsx": false,
+        "content_preview": "// Enhanced file service for S3 operations\nimport { apiClient } from '../api/client.js';\nimport { ENDPOINTS, FILE_TYPES, DEFAULT_SCHOOL_NAME } from '../api/endpoints.js';\n\nclass FileOperationError ext"
+      },
+      "size": 314
+    },
+    {
+      "file": "src/services/network/RetryService.js",
+      "reasons": [
+        "Never imported by any file"
+      ],
+      "data": {
+        "imports": [],
+        "exports": [
+          "RetryService",
+          "retryService"
+        ],
+        "empty": false,
+        "lines": 285,
+        "has_jsx": false,
+        "content_preview": "// Advanced retry service with circuit breaker pattern\nclass CircuitBreaker {\n  constructor(threshold = 5, timeout = 60000, resetTimeout = 30000) {\n    this.failureThreshold = threshold;\n    this.time"
+      },
+      "size": 285
+    },
+    {
+      "file": "src/services/permissions/types.d.ts",
+      "reasons": [
+        "Never imported by any file"
+      ],
+      "data": {
+        "imports": [],
+        "exports": [
+          "PermissionManager"
+        ],
+        "empty": false,
+        "lines": 269,
+        "has_jsx": true,
+        "content_preview": "/**\n * TypeScript definitions for Permission Caching System\n */\n\nexport interface CacheStats {\n  hits: number;\n  misses: number;\n  sets: number;\n  deletes: number;\n  cleanups: number;\n  evictions: num"
+      },
+      "size": 269
+    },
+    {
+      "file": "src/services/permissions/PermissionContext.js",
+      "reasons": [
+        "Never imported by any file"
+      ],
+      "data": {
+        "imports": [
+          "react",
+          "./PermissionManager.js"
+        ],
+        "exports": [
+          "PermissionContext",
+          "PermissionProvider",
+          "usePermissions",
+          "usePermission",
+          "usePermissions",
+          "withPermission",
+          "PermissionGate"
+        ],
+        "empty": false,
+        "lines": 627,
+        "has_jsx": true,
+        "content_preview": "/**\n * PermissionContext - React context for app-wide permission state\n * \n * Provides React context and hooks for managing permissions throughout the application.\n * Features:\n * - React Context for "
+      },
+      "size": 627
+    },
+    {
+      "file": "src/services/permissions/index.js",
+      "reasons": [
+        "Never imported by any file"
+      ],
+      "data": {
+        "imports": [],
+        "exports": [
+          "TTLCache",
+          "RequestDeduplicator",
+          "PermissionManager",
+          "PermissionProvider",
+          "usePermissions",
+          "usePermission",
+          "withPermission",
+          "PermissionGate",
+          "PermissionManager as default"
+        ],
+        "empty": false,
+        "lines": 32,
+        "has_jsx": true,
+        "content_preview": "/**\n * Permission Caching System - Main Export\n * \n * A comprehensive permission management system with intelligent caching,\n * request deduplication, and React integration.\n * \n * Features:\n * - TTL-"
+      },
+      "size": 32
+    },
+    {
+      "file": "src/services/optimized/FormsRepositoryService.js",
+      "reasons": [
+        "Never imported by any file"
+      ],
+      "data": {
+        "imports": [
+          "../cache/multiLayerCache.js",
+          "../monitoring/performanceMonitor.js",
+          "../../utils/const.js",
+          "../../utils/auth.js"
+        ],
+        "exports": [
+          "formsRepositoryService"
+        ],
+        "empty": false,
+        "lines": 325,
+        "has_jsx": false,
+        "content_preview": "// Optimized Forms Repository Service with caching and parallel loading\nimport { cacheManager } from '../cache/multiLayerCache.js';\nimport { performanceMonitor } from '../monitoring/performanceMonitor"
+      },
+      "size": 325
+    },
+    {
+      "file": "src/services/api/client.js",
+      "reasons": [
+        "Never imported by any file"
+      ],
+      "data": {
+        "imports": [
+          "@/utils/const",
+          "@/utils/auth"
+        ],
+        "exports": [
+          "ApiClient",
+          "apiClient",
+          "ApiError",
+          "NetworkError",
+          "ServiceError",
+          "ServiceUnavailableError"
+        ],
+        "empty": false,
+        "lines": 194,
+        "has_jsx": false,
+        "content_preview": "// Base API client with authentication and error handling\nimport { api_base_url } from '@/utils/const';\nimport { getAuthHeaders } from '@/utils/auth';\n\nclass ApiError extends Error {\n  constructor(mes"
+      },
+      "size": 194
+    },
+    {
+      "file": "src/services/api/ApiService.ts",
+      "reasons": [
+        "Never imported by any file"
+      ],
+      "data": {
+        "imports": [
+          "./core/ApiClient",
+          "./types"
+        ],
+        "exports": [
+          "apiService",
+          "apiService",
+          "ApiClient"
+        ],
+        "empty": false,
+        "lines": 106,
+        "has_jsx": true,
+        "content_preview": "/**\n * Main API Service Instance\n * Pre-configured API client for the Goddard React application\n */\n\nimport ApiClient from './core/ApiClient';\nimport { ApiClientConfig } from './types';\n\n// Get enviro"
+      },
+      "size": 106
+    },
+    {
+      "file": "src/services/api/endpoints.js",
+      "reasons": [
+        "Never imported by any file"
+      ],
+      "data": {
+        "imports": [
+          "@/utils/const"
+        ],
+        "exports": [
+          "ENDPOINTS",
+          "FORM_TYPES",
+          "FILE_TYPES",
+          "DEFAULT_SCHOOL_NAME"
+        ],
+        "empty": false,
+        "lines": 66,
+        "has_jsx": false,
+        "content_preview": "// Centralized API endpoint definitions\nimport { school_id } from '@/utils/const';\n\nexport const ENDPOINTS = {\n  // Parent & Child Data - Primary endpoint for dashboard\n  PARENT_DASHBOARD_DATA: (email"
+      },
+      "size": 66
+    },
+    {
+      "file": "src/services/monitoring/performanceMonitor.js",
+      "reasons": [
+        "Never imported by any file"
+      ],
+      "data": {
+        "imports": [],
+        "exports": [
+          "performanceMonitor",
+          "usePerformanceMonitor"
+        ],
+        "empty": false,
+        "lines": 346,
+        "has_jsx": true,
+        "content_preview": "// Performance monitoring and metrics collection\nclass PerformanceMonitor {\n  constructor() {\n    this.metrics = {\n      apiCalls: [],\n      cacheHits: [],\n      renderTimes: [],\n      userInteraction"
+      },
+      "size": 346
+    },
+    {
+      "file": "src/services/migration/migrationManager.js",
+      "reasons": [
+        "Never imported by any file"
+      ],
+      "data": {
+        "imports": [],
+        "exports": [
+          "MigrationManager",
+          "migrationManager"
+        ],
+        "empty": false,
+        "lines": 332,
+        "has_jsx": false,
+        "content_preview": "// Migration manager for smooth transition to new architecture\nclass MigrationError extends Error {\n  constructor(message, originalError) {\n    super(message);\n    this.name = 'MigrationError';\n    th"
+      },
+      "size": 332
+    },
+    {
+      "file": "src/services/api/types/index.ts",
+      "reasons": [
+        "Has no exports"
+      ],
+      "data": {
+        "imports": [],
+        "exports": [],
+        "empty": false,
+        "lines": 319,
+        "has_jsx": false,
+        "content_preview": "/**\n * API Service Types and Interfaces\n * Comprehensive type definitions for API service layer\n */\n\n// Base API Response Types\nexport interface ApiResponse<T = any> {\n  data: T;\n  status: number;\n  s"
+      },
+      "size": 319
+    },
+    {
+      "file": "src/services/api/core/ApiClient.ts",
+      "reasons": [
+        "Never imported by any file"
+      ],
+      "data": {
+        "imports": [
+          "./TokenManager",
+          "./CacheManager",
+          "./RetryManager",
+          "./CircuitBreakerManager",
+          "./RateLimiter",
+          "./RequestDeduplicator",
+          "./MetricsCollector",
+          "./LoadingStateManager",
+          "./EventEmitter"
+        ],
+        "exports": [
+          "ApiClient",
+          "ApiClient"
+        ],
+        "empty": false,
+        "lines": 574,
+        "has_jsx": false,
+        "content_preview": "/**\n * Enhanced API Client with comprehensive features\n * - Authentication with token refresh\n * - Request/Response interceptors\n * - Caching with TTL\n * - Retry logic with exponential backoff\n * - Ci"
+      },
+      "size": 574
+    },
+    {
+      "file": "src/services/api/endpoints/formService.ts",
+      "reasons": [
+        "Never imported by any file"
+      ],
+      "data": {
+        "imports": [
+          "../ApiService"
+        ],
+        "exports": [
+          "FormService",
+          "formService"
+        ],
+        "empty": false,
+        "lines": 132,
+        "has_jsx": false,
+        "content_preview": "/**\n * Form Service API endpoints\n * Handles form submission and management API operations\n */\n\nimport { apiService } from '../ApiService';\nimport { \n  FormSubmission, \n  CreateFormSubmissionRequest, "
+      },
+      "size": 132
+    },
+    {
+      "file": "src/services/api/endpoints/userService.ts",
+      "reasons": [
+        "Never imported by any file"
+      ],
+      "data": {
+        "imports": [
+          "../ApiService"
+        ],
+        "exports": [
+          "UserService",
+          "userService"
+        ],
+        "empty": false,
+        "lines": 97,
+        "has_jsx": false,
+        "content_preview": "/**\n * User Service API endpoints\n * Handles user-related API operations\n */\n\nimport { apiService } from '../ApiService';\nimport { \n  User, \n  CreateUserRequest, \n  UpdateUserRequest,\n  PaginatedRespo"
+      },
+      "size": 97
+    },
+    {
+      "file": "src/services/api/hooks/useApiRequest.ts",
+      "reasons": [
+        "Never imported by any file"
+      ],
+      "data": {
+        "imports": [
+          "react",
+          "../ApiService",
+          "../types"
+        ],
+        "exports": [
+          "useApiRequest",
+          "useGet",
+          "usePost",
+          "usePut",
+          "useDelete",
+          "usePaginatedApi"
+        ],
+        "empty": false,
+        "lines": 296,
+        "has_jsx": true,
+        "content_preview": "/**\n * React Hook for API requests\n * Provides loading states, error handling, and automatic retries\n */\n\nimport { useState, useEffect, useRef, useCallback } from 'react';\nimport { apiService } from '"
+      },
+      "size": 296
+    },
+    {
+      "file": "src/services/api/hooks/useApiCache.ts",
+      "reasons": [
+        "Never imported by any file"
+      ],
+      "data": {
+        "imports": [
+          "react",
+          "../ApiService"
+        ],
+        "exports": [
+          "useApiCache"
+        ],
+        "empty": false,
+        "lines": 88,
+        "has_jsx": true,
+        "content_preview": "/**\n * React Hook for API cache management\n * Provides cache control and invalidation\n */\n\nimport { useCallback, useEffect, useState } from 'react';\nimport { apiService } from '../ApiService';\n\nexport"
+      },
+      "size": 88
+    },
+    {
+      "file": "src/services/api/hooks/useFormSubmissions.ts",
+      "reasons": [
+        "Never imported by any file"
+      ],
+      "data": {
+        "imports": [
+          "react",
+          "../endpoints/formService"
+        ],
+        "exports": [
+          "useFormSubmissions",
+          "useFormSubmission",
+          "useCreateFormSubmission",
+          "useUpdateFormSubmission",
+          "useSubmitForm",
+          "useFormManagement"
+        ],
+        "empty": false,
+        "lines": 198,
+        "has_jsx": true,
+        "content_preview": "/**\n * Form submission-specific React hooks\n * Provides convenient hooks for form management operations\n */\n\nimport { useCallback } from 'react';\nimport { formService } from '../endpoints/formService'"
+      },
+      "size": 198
+    },
+    {
+      "file": "src/services/api/hooks/useApiMetrics.ts",
+      "reasons": [
+        "Never imported by any file"
+      ],
+      "data": {
+        "imports": [
+          "react",
+          "../ApiService",
+          "../types"
+        ],
+        "exports": [
+          "useApiMetrics"
+        ],
+        "empty": false,
+        "lines": 106,
+        "has_jsx": true,
+        "content_preview": "/**\n * React Hook for API metrics monitoring\n * Provides real-time metrics and performance data\n */\n\nimport { useState, useEffect, useCallback } from 'react';\nimport { apiService } from '../ApiService"
+      },
+      "size": 106
+    },
+    {
+      "file": "src/services/api/hooks/useUsers.ts",
+      "reasons": [
+        "Never imported by any file"
+      ],
+      "data": {
+        "imports": [
+          "react",
+          "../endpoints/userService"
+        ],
+        "exports": [
+          "useUsers",
+          "useUser",
+          "useCreateUser",
+          "useUpdateUser",
+          "useDeleteUser",
+          "useUserManagement"
+        ],
+        "empty": false,
+        "lines": 143,
+        "has_jsx": true,
+        "content_preview": "/**\n * User-specific React hooks\n * Provides convenient hooks for user management operations\n */\n\nimport { useCallback } from 'react';\nimport { userService } from '../endpoints/userService';\nimport { "
+      },
+      "size": 143
+    },
+    {
+      "file": "src/services/api/hooks/index.ts",
+      "reasons": [
+        "Never imported by any file"
+      ],
+      "data": {
+        "imports": [],
+        "exports": [
+          "useApiRequest",
+          "useGet",
+          "usePost",
+          "usePut",
+          "useDelete",
+          "usePaginatedApi",
+          "type UseApiRequestOptions",
+          "type UseApiRequestResult",
+          "type UsePaginatedApiOptions",
+          "type UsePaginatedApiResult",
+          "useApiCache",
+          "type UseApiCacheResult",
+          "useApiMetrics",
+          "type UseApiMetricsResult",
+          "useUsers",
+          "useUser",
+          "useCreateUser",
+          "useUpdateUser",
+          "useDeleteUser",
+          "type UseUsersResult",
+          "type UseUserResult",
+          "useFormSubmissions",
+          "useFormSubmission",
+          "useCreateFormSubmission",
+          "useUpdateFormSubmission",
+          "useSubmitForm",
+          "type UseFormSubmissionsResult",
+          "type UseFormSubmissionResult"
+        ],
+        "empty": false,
+        "lines": 49,
+        "has_jsx": true,
+        "content_preview": "/**\n * API Hooks Index\n * Exports all React hooks for API integration\n */\n\n// Core API hooks\nexport {\n  useApiRequest,\n  useGet,\n  usePost,\n  usePut,\n  useDelete,\n  usePaginatedApi,\n  type UseApiReque"
+      },
+      "size": 49
+    },
+    {
+      "file": "src/services/permissions/examples/auth0-integration.js",
+      "reasons": [
+        "Never imported by any file"
+      ],
+      "data": {
+        "imports": [
+          "@auth0/auth0-react",
+          "../index.js"
+        ],
+        "exports": [
+          "Auth0PermissionProvider",
+          "Auth0PermissionProvider",
+          "AppWithAuth0Permissions",
+          "createMockAuth0Context",
+          "renderWithAuth0Permissions"
+        ],
+        "empty": false,
+        "lines": 479,
+        "has_jsx": false,
+        "content_preview": "/**\n * Auth0 Integration Example\n * \n * This example shows how to integrate the permission caching system\n * with your existing Auth0 authentication setup.\n */\n\nimport { useAuth0 } from '@auth0/auth0-"
+      },
+      "size": 479
+    },
+    {
+      "file": "src/services/permissions/examples/usage-examples.js",
+      "reasons": [
+        "Never imported by any file"
+      ],
+      "data": {
+        "imports": [
+          "../PermissionManager.js",
+          "../RequestDeduplicator.js",
+          "../../../utils/cache/TTLCache.js",
+          "../PermissionContext.js"
+        ],
+        "exports": [
+          "createMockPermissionManager",
+          "renderWithPermissions",
+          "createPermissionManager",
+          "basicPermissionExample",
+          "roleBasedExample",
+          "cacheManagementExample",
+          "deduplicationExample",
+          "setupPermissionMonitoring",
+          "createPermissionComponent",
+          "ProtectedRoute"
+        ],
+        "empty": false,
+        "lines": 468,
+        "has_jsx": true,
+        "content_preview": "/**\n * Permission Caching System Usage Examples\n * \n * This file demonstrates how to use the secure permission caching system\n * in various scenarios with practical examples.\n */\n\nimport { PermissionM"
+      },
+      "size": 468
+    },
+    {
+      "file": "src/parentComponent/forms/EnrollmentForm.jsx",
+      "reasons": [
+        "Never imported by any file"
+      ],
+      "data": {
+        "imports": [
+          "react",
+          "../../../components/FormInput",
+          "../../../components/FormLabel",
+          "@/utils/const",
+          "@auth0/auth0-react",
+          "../../../utils/auth",
+          "@/utils/formSubmission"
+        ],
+        "exports": [
+          "EnrollmentForm"
+        ],
+        "empty": false,
+        "lines": 1135,
+        "has_jsx": true,
+        "content_preview": "import React from 'react';\nimport{ useState, useEffect } from 'react';\nimport FormInput from '../../../components/FormInput';\nimport FormLabel from '../../../components/FormLabel';\nimport { api_base_u"
+      },
+      "size": 1135
+    },
+    {
+      "file": "src/parentComponent/forms/EnrollmentFormNew.jsx",
+      "reasons": [
+        "Potential duplicate of another file"
+      ],
+      "data": {
+        "imports": [
+          "react",
+          "@/components/ui/card",
+          "@/components/ui/badge",
+          "@/components/ui/button",
+          "@/components/ui/progress",
+          "@/components/ui/tabs",
+          "@/components/ui/label",
+          "@/components/ui/input",
+          "@/components/ui/checkbox",
+          "@/components/ui/select",
+          "@/components/ui/table",
+          "@/components/ui/alert",
+          "sonner",
+          "@auth0/auth0-react",
+          "@/utils/formSubmission"
+        ],
+        "exports": [
+          "EnrollmentFormNew"
+        ],
+        "empty": false,
+        "lines": 1067,
+        "has_jsx": true,
+        "content_preview": "import React, { useState, useEffect } from 'react';\nimport { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';\nimport { Badge } from '@/components/ui/badge';\nimp"
+      },
+      "size": 1067
+    },
+    {
+      "file": "src/parentComponent/forms/AuthorizationFormNew.jsx",
+      "reasons": [
+        "Potential duplicate of another file"
+      ],
+      "data": {
+        "imports": [
+          "react",
+          "@/components/ui/card",
+          "@/components/ui/badge",
+          "@/components/ui/button",
+          "@/components/ui/progress",
+          "@/components/ui/tabs",
+          "@/components/ui/label",
+          "@/components/ui/input",
+          "@/components/ui/select",
+          "sonner",
+          "@auth0/auth0-react",
+          "@/utils/formSubmission"
+        ],
+        "exports": [
+          "AuthorizationFormNew"
+        ],
+        "empty": false,
+        "lines": 556,
+        "has_jsx": true,
+        "content_preview": "import React, { useState, useEffect } from 'react';\nimport { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';\nimport { Badge } from '@/components/ui/badge';\nimp"
+      },
+      "size": 556
+    },
+    {
+      "file": "src/parentComponent/forms/AdmissionForm/AdmissionFormNew.jsx",
+      "reasons": [
+        "Potential duplicate of another file"
+      ],
+      "data": {
+        "imports": [
+          "react",
+          "@/components/ui/card",
+          "@/components/ui/badge",
+          "@/components/ui/button",
+          "@/components/ui/progress",
+          "@/components/ui/tabs",
+          "sonner",
+          "./ImmunizationInstructions",
+          "./ChildInfo/ChildInfo",
+          "./Child and Family History/ChildandFamilyHistory",
+          "./Pick-up Password",
+          "./VideoPermission",
+          "./SecurityPolicy",
+          "./SocialMedia",
+          "./OutsideEngagements",
+          "./HealthPolicies",
+          "./MedicalTransportationWaiver",
+          "./ChildProfile/ChildProfile",
+          "./AdminSign",
+          "./ParentSign"
+        ],
+        "exports": [
+          "AdmissionFormNew"
+        ],
+        "empty": false,
+        "lines": 354,
+        "has_jsx": true,
+        "content_preview": "import React, { useState } from 'react';\nimport { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';\nimport { Badge } from '@/components/ui/badge';\nimport { Butto"
+      },
+      "size": 354
+    },
+    {
+      "file": "src/parentComponent/forms/AdmissionForm/AdmissionForm.jsx",
+      "reasons": [
+        "Never imported by any file"
+      ],
+      "data": {
+        "imports": [
+          "react",
+          "./ImmunizationInstructions",
+          "./ChildInfo/ChildInfo",
+          "./Child and Family History/ChildandFamilyHistory",
+          "./Pick-up Password",
+          "./VideoPermission",
+          "./SecurityPolicy",
+          "./SocialMedia",
+          "./OutsideEngagements",
+          "./HealthPolicies",
+          "./MedicalTransportationWaiver",
+          "./ChildProfile/ChildProfile",
+          "./AdminSign",
+          "./ParentSign"
+        ],
+        "exports": [
+          "AdmissionForm"
+        ],
+        "empty": false,
+        "lines": 57,
+        "has_jsx": true,
+        "content_preview": "import React from 'react'\nimport ImmunizationInstructions from './ImmunizationInstructions';\nimport ChildInfo from './ChildInfo/ChildInfo'\nimport ChildandFamilyHistory from './Child and Family History"
+      },
+      "size": 57
+    },
+    {
+      "file": "src/parentComponent/forms/ParentHanbook/policies/AllNew.jsx",
+      "reasons": [
+        "Potential duplicate of another file"
+      ],
+      "data": {
+        "imports": [
+          "react",
+          "@/components/ui/card",
+          "@/components/ui/badge",
+          "@/components/ui/button",
+          "@/components/ui/progress",
+          "@/components/ui/tabs",
+          "@/components/ui/label",
+          "@/components/ui/input",
+          "@/components/ui/alert",
+          "sonner",
+          "@auth0/auth0-react",
+          "@/utils/formSubmission",
+          "./MissionStatement",
+          "./TheGoddardSchool",
+          "./GeneralEnrollmentProcedure",
+          "./StatementOfConfidentiality",
+          "./ParentAccess",
+          "./ReleaseOfChildren",
+          "./RegisterationTutionFees",
+          "./OutsideEngagement",
+          "./HealthPolicies",
+          "./MedicationProcedures",
+          "./ToysFromHome",
+          "./RestTimeMealsSnacks",
+          "./TransitionToiletTraining",
+          "./EmergencyClosings",
+          "./WebsiteAndBlogs",
+          "./ExpulsionPolicy",
+          "./AddressingIndividualChildConcern",
+          "./FinalWord"
+        ],
+        "exports": [
+          "ParentHandbookNew"
+        ],
+        "empty": false,
+        "lines": 665,
+        "has_jsx": true,
+        "content_preview": "import React, { useState, useEffect } from 'react';\nimport { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';\nimport { Badge } from '@/components/ui/badge';\nimp"
+      },
+      "size": 665
+    },
+    {
+      "file": "src/parentComponent/forms/ParentHanbook/policies/All.jsx",
+      "reasons": [
+        "Never imported by any file"
+      ],
+      "data": {
+        "imports": [
+          "react",
+          "@/utils/const",
+          "@auth0/auth0-react",
+          "../../../../utils/auth",
+          "./MissionStatement",
+          "./TheGoddardSchool",
+          "./GeneralEnrollmentProcedure",
+          "./StatementOfConfidentiality",
+          "./ParentAccess",
+          "./ReleaseOfChildren",
+          "./RegisterationTutionFees",
+          "./OutsideEngagement",
+          "./HealthPolicies",
+          "./MedicationProcedures",
+          "./ToysFromHome",
+          "./RestTimeMealsSnacks",
+          "./TransitionToiletTraining",
+          "./EmergencyClosings",
+          "./WebsiteAndBlogs",
+          "./ExpulsionPolicy",
+          "./AddressingIndividualChildConcern",
+          "./FinalWord"
+        ],
+        "exports": [
+          "ParentHandbook"
+        ],
+        "empty": false,
+        "lines": 478,
+        "has_jsx": true,
+        "content_preview": "import React, { useState, useEffect } from 'react';\nimport { api_base_url, school_id } from '@/utils/const';\nimport { useAuth0 } from '@auth0/auth0-react';\nimport { getAuthHeaders } from '../../../../"
+      },
+      "size": 478
+    },
+    {
+      "file": "src/parentComponent/forms/AdmissionForm/Child and Family History/Arrows.jsx",
+      "reasons": [
+        "Never imported by any file"
+      ],
+      "data": {
+        "imports": [],
+        "exports": [
+          "UpIcon",
+          "DownIcon"
+        ],
+        "empty": false,
+        "lines": 25,
+        "has_jsx": true,
+        "content_preview": "export const UpIcon = ({ className }) => (\n    <svg\n      xmlns=\"http://www.w3.org/2000/svg\"\n      fill=\"none\"\n      viewBox=\"0 0 24 24\"\n      strokeWidth={1.5}\n      stroke=\"currentColor\"\n      class"
+      },
+      "size": 25
+    },
+    {
+      "file": "src/parent/utilComponents/FormSidebar/FormSidebar.jsx",
+      "reasons": [
+        "Never imported by any file"
+      ],
+      "data": {
+        "imports": [
+          "react",
+          "./FormStatusLogic",
+          "./FormSection",
+          "./formSections"
+        ],
+        "exports": [
+          "FormSidebar"
+        ],
+        "empty": false,
+        "lines": 151,
+        "has_jsx": true,
+        "content_preview": "import React, { useState } from 'react';\nimport useFormStatus from './FormStatusLogic';\nimport FormSection from './FormSection';\nimport { formSections, formNameMapping } from './formSections';\n\nconst "
+      },
+      "size": 151
+    },
+    {
+      "file": "src/examples/api/BasicApiUsage.jsx",
+      "reasons": [
+        "Never imported by any file"
+      ],
+      "data": {
+        "imports": [
+          "react"
+        ],
+        "exports": [
+          "UserProfile",
+          "CreateUserForm",
+          "UsersTable",
+          "FormSubmissionsManager",
+          "CacheManager",
+          "ApiMetricsMonitor",
+          "DirectApiExample"
+        ],
+        "empty": false,
+        "lines": 480,
+        "has_jsx": true,
+        "content_preview": "/**\n * Basic API Usage Examples\n * Demonstrates how to use the API service layer in React components\n */\n\nimport React, { useState, useEffect } from 'react';\nimport { \n  useGet, \n  usePost, \n  useUser"
+      },
+      "size": 480
+    },
+    {
+      "file": "src/components/ui/dialog.jsx",
+      "reasons": [
+        "Never imported by any file"
+      ],
+      "data": {
+        "imports": [
+          "react",
+          "@radix-ui/react-dialog",
+          "lucide-react",
+          "@/lib/utils"
+        ],
+        "exports": [
+          "Dialog",
+          "DialogClose",
+          "DialogContent",
+          "DialogDescription",
+          "DialogFooter",
+          "DialogHeader",
+          "DialogOverlay",
+          "DialogPortal",
+          "DialogTitle",
+          "DialogTrigger",
+          ""
+        ],
+        "empty": false,
+        "lines": 135,
+        "has_jsx": true,
+        "content_preview": "import * as React from \"react\"\nimport * as DialogPrimitive from \"@radix-ui/react-dialog\"\nimport { XIcon } from \"lucide-react\"\n\nimport { cn } from \"@/lib/utils\"\n\nfunction Dialog({\n  ...props\n}) {\n  ret"
+      },
+      "size": 135
+    },
+    {
+      "file": "src/components/ui/radio-group.jsx",
+      "reasons": [
+        "Never imported by any file"
+      ],
+      "data": {
+        "imports": [
+          "react",
+          "@radix-ui/react-radio-group",
+          "lucide-react",
+          "@/lib/utils"
+        ],
+        "exports": [
+          "RadioGroup",
+          "RadioGroupItem"
+        ],
+        "empty": false,
+        "lines": 38,
+        "has_jsx": true,
+        "content_preview": "\"use client\"\n\nimport * as React from \"react\"\nimport * as RadioGroupPrimitive from \"@radix-ui/react-radio-group\"\nimport { CircleIcon } from \"lucide-react\"\n\nimport { cn } from \"@/lib/utils\"\n\nconst Radio"
+      },
+      "size": 38
+    },
+    {
+      "file": "src/components/ui/form.jsx",
+      "reasons": [
+        "Never imported by any file"
+      ],
+      "data": {
+        "imports": [
+          "react",
+          "@radix-ui/react-slot",
+          "react-hook-form",
+          "@/lib/utils",
+          "@/components/ui/label"
+        ],
+        "exports": [
+          "useFormField",
+          "Form",
+          "FormItem",
+          "FormLabel",
+          "FormControl",
+          "FormDescription",
+          "FormMessage",
+          "FormField",
+          ""
+        ],
+        "empty": false,
+        "lines": 143,
+        "has_jsx": true,
+        "content_preview": "import * as React from \"react\"\nimport { Slot } from \"@radix-ui/react-slot\"\nimport { Controller, FormProvider, useFormContext, useFormState } from \"react-hook-form\";\n\nimport { cn } from \"@/lib/utils\"\ni"
+      },
+      "size": 143
+    },
+    {
+      "file": "src/components/ui/ErrorBoundary.jsx",
+      "reasons": [
+        "Never imported by any file"
+      ],
+      "data": {
+        "imports": [
+          "react"
+        ],
+        "exports": [
+          "ErrorBoundary",
+          "ErrorBoundary"
+        ],
+        "empty": false,
+        "lines": 82,
+        "has_jsx": true,
+        "content_preview": "import React from 'react';\n\n/**\n * Error boundary component to catch authentication-related errors\n */\nexport class ErrorBoundary extends React.Component {\n  constructor(props) {\n    super(props);\n   "
+      },
+      "size": 82
+    },
+    {
+      "file": "src/components/ui/select.jsx",
+      "reasons": [
+        "Never imported by any file"
+      ],
+      "data": {
+        "imports": [
+          "react",
+          "@radix-ui/react-select",
+          "lucide-react",
+          "@/lib/utils"
+        ],
+        "exports": [
+          "Select",
+          "SelectContent",
+          "SelectGroup",
+          "SelectItem",
+          "SelectLabel",
+          "SelectScrollDownButton",
+          "SelectScrollUpButton",
+          "SelectSeparator",
+          "SelectTrigger",
+          "SelectValue",
+          ""
+        ],
+        "empty": false,
+        "lines": 166,
+        "has_jsx": true,
+        "content_preview": "\"use client\"\n\nimport * as React from \"react\"\nimport * as SelectPrimitive from \"@radix-ui/react-select\"\nimport { CheckIcon, ChevronDownIcon, ChevronUpIcon } from \"lucide-react\"\n\nimport { cn } from \"@/l"
+      },
+      "size": 166
+    },
+    {
+      "file": "src/components/ui/dropdown-menu.jsx",
+      "reasons": [
+        "Never imported by any file"
+      ],
+      "data": {
+        "imports": [
+          "react",
+          "@radix-ui/react-dropdown-menu",
+          "lucide-react",
+          "@/lib/utils"
+        ],
+        "exports": [
+          "DropdownMenu",
+          "DropdownMenuPortal",
+          "DropdownMenuTrigger",
+          "DropdownMenuContent",
+          "DropdownMenuGroup",
+          "DropdownMenuLabel",
+          "DropdownMenuItem",
+          "DropdownMenuCheckboxItem",
+          "DropdownMenuRadioGroup",
+          "DropdownMenuRadioItem",
+          "DropdownMenuSeparator",
+          "DropdownMenuShortcut",
+          "DropdownMenuSub",
+          "DropdownMenuSubTrigger",
+          "DropdownMenuSubContent",
+          ""
+        ],
+        "empty": false,
+        "lines": 248,
+        "has_jsx": true,
+        "content_preview": "import * as React from \"react\"\nimport * as DropdownMenuPrimitive from \"@radix-ui/react-dropdown-menu\"\nimport { CheckIcon, ChevronRightIcon, CircleIcon } from \"lucide-react\"\n\nimport { cn } from \"@/lib/"
+      },
+      "size": 248
+    },
+    {
+      "file": "src/components/ui/checkbox.jsx",
+      "reasons": [
+        "Never imported by any file"
+      ],
+      "data": {
+        "imports": [
+          "react",
+          "@radix-ui/react-checkbox",
+          "lucide-react",
+          "@/lib/utils"
+        ],
+        "exports": [
+          "Checkbox"
+        ],
+        "empty": false,
+        "lines": 30,
+        "has_jsx": true,
+        "content_preview": "import * as React from \"react\"\nimport * as CheckboxPrimitive from \"@radix-ui/react-checkbox\"\nimport { CheckIcon } from \"lucide-react\"\n\nimport { cn } from \"@/lib/utils\"\n\nfunction Checkbox({\n  className"
+      },
+      "size": 30
+    },
+    {
+      "file": "src/components/ui/separator.jsx",
+      "reasons": [
+        "Never imported by any file"
+      ],
+      "data": {
+        "imports": [
+          "react",
+          "@radix-ui/react-separator",
+          "@/lib/utils"
+        ],
+        "exports": [
+          "Separator"
+        ],
+        "empty": false,
+        "lines": 26,
+        "has_jsx": true,
+        "content_preview": "import * as React from \"react\"\nimport * as SeparatorPrimitive from \"@radix-ui/react-separator\"\n\nimport { cn } from \"@/lib/utils\"\n\nfunction Separator({\n  className,\n  orientation = \"horizontal\",\n  deco"
+      },
+      "size": 26
+    },
+    {
+      "file": "src/components/ui/table.jsx",
+      "reasons": [
+        "Never imported by any file"
+      ],
+      "data": {
+        "imports": [
+          "react",
+          "@/lib/utils"
+        ],
+        "exports": [
+          "Table",
+          "TableHeader",
+          "TableBody",
+          "TableFooter",
+          "TableHead",
+          "TableRow",
+          "TableCell",
+          "TableCaption",
+          ""
+        ],
+        "empty": false,
+        "lines": 121,
+        "has_jsx": true,
+        "content_preview": "import * as React from \"react\"\n\nimport { cn } from \"@/lib/utils\"\n\nfunction Table({\n  className,\n  ...props\n}) {\n  return (\n    <div data-slot=\"table-container\" className=\"relative w-full overflow-x-au"
+      },
+      "size": 121
+    },
+    {
+      "file": "src/components/ui/progress.jsx",
+      "reasons": [
+        "Never imported by any file"
+      ],
+      "data": {
+        "imports": [
+          "react",
+          "@radix-ui/react-progress",
+          "@/lib/utils"
+        ],
+        "exports": [
+          "Progress"
+        ],
+        "empty": false,
+        "lines": 29,
+        "has_jsx": true,
+        "content_preview": "import * as React from \"react\"\nimport * as ProgressPrimitive from \"@radix-ui/react-progress\"\n\nimport { cn } from \"@/lib/utils\"\n\nfunction Progress({\n  className,\n  value,\n  ...props\n}) {\n  return (\n   "
+      },
+      "size": 29
+    },
+    {
+      "file": "src/components/ui/alert.jsx",
+      "reasons": [
+        "Never imported by any file"
+      ],
+      "data": {
+        "imports": [
+          "react",
+          "class-variance-authority",
+          "@/lib/utils"
+        ],
+        "exports": [
+          "Alert",
+          "AlertTitle",
+          "AlertDescription"
+        ],
+        "empty": false,
+        "lines": 63,
+        "has_jsx": true,
+        "content_preview": "import * as React from \"react\"\nimport { cva } from \"class-variance-authority\";\n\nimport { cn } from \"@/lib/utils\"\n\nconst alertVariants = cva(\n  \"relative w-full rounded-lg border px-4 py-3 text-sm grid"
+      },
+      "size": 63
+    },
+    {
+      "file": "src/components/ui/accordion.jsx",
+      "reasons": [
+        "Never imported by any file"
+      ],
+      "data": {
+        "imports": [
+          "react",
+          "@radix-ui/react-accordion",
+          "lucide-react",
+          "@/lib/utils"
+        ],
+        "exports": [
+          "Accordion",
+          "AccordionItem",
+          "AccordionTrigger",
+          "AccordionContent"
+        ],
+        "empty": false,
+        "lines": 64,
+        "has_jsx": true,
+        "content_preview": "import * as React from \"react\"\nimport * as AccordionPrimitive from \"@radix-ui/react-accordion\"\nimport { ChevronDownIcon } from \"lucide-react\"\n\nimport { cn } from \"@/lib/utils\"\n\nfunction Accordion({\n  "
+      },
+      "size": 64
+    },
+    {
+      "file": "src/components/ui/sonner.jsx",
+      "reasons": [
+        "Never imported by any file"
+      ],
+      "data": {
+        "imports": [
+          "next-themes",
+          "sonner"
+        ],
+        "exports": [
+          "Toaster"
+        ],
+        "empty": false,
+        "lines": 26,
+        "has_jsx": true,
+        "content_preview": "\"use client\"\n\nimport { useTheme } from \"next-themes\"\nimport { Toaster as Sonner } from \"sonner\";\n\nconst Toaster = ({\n  ...props\n}) => {\n  const { theme = \"system\" } = useTheme()\n\n  return (\n    <Sonne"
+      },
+      "size": 26
+    },
+    {
+      "file": "src/components/ui/sheet.jsx",
+      "reasons": [
+        "Never imported by any file"
+      ],
+      "data": {
+        "imports": [
+          "react",
+          "@radix-ui/react-dialog",
+          "lucide-react",
+          "@/lib/utils"
+        ],
+        "exports": [
+          "Sheet",
+          "SheetTrigger",
+          "SheetClose",
+          "SheetContent",
+          "SheetHeader",
+          "SheetFooter",
+          "SheetTitle",
+          "SheetDescription",
+          ""
+        ],
+        "empty": false,
+        "lines": 135,
+        "has_jsx": true,
+        "content_preview": "import * as React from \"react\"\nimport * as SheetPrimitive from \"@radix-ui/react-dialog\"\nimport { XIcon } from \"lucide-react\"\n\nimport { cn } from \"@/lib/utils\"\n\nfunction Sheet({ ...props }) {\n  return "
+      },
+      "size": 135
+    },
+    {
+      "file": "src/components/dashboard/ChildTabsSimple.jsx",
+      "reasons": [
+        "Potential duplicate of another file"
+      ],
+      "data": {
+        "imports": [
+          "react",
+          "@/components/ui/button",
+          "lucide-react"
+        ],
+        "exports": [
+          "ChildTabsSimple"
+        ],
+        "empty": false,
+        "lines": 71,
+        "has_jsx": true,
+        "content_preview": "// Simple child tabs component - NO page reload!\n// Pure React state update for instant child switching\nimport React from 'react';\nimport { Button } from '@/components/ui/button';\nimport { Users } fro"
+      },
+      "size": 71
+    },
+    {
+      "file": "src/components/common/index.js",
+      "reasons": [
+        "Never imported by any file"
+      ],
+      "data": {
+        "imports": [],
+        "exports": [
+          "useAlertManager",
+          "default as TabNavigation",
+          "default as StatusSelect",
+          "exportToExcel",
+          "exportToCSV",
+          "exportToCSVFromData"
+        ],
+        "empty": false,
+        "lines": 5,
+        "has_jsx": false,
+        "content_preview": "// Common components and utilities export\nexport { useAlertManager } from './AlertManager';\nexport { default as TabNavigation } from './TabNavigation';\nexport { default as StatusSelect } from './Statu"
+      },
+      "size": 5
+    },
+    {
+      "file": "src/components/common/StatusSelect.jsx",
+      "reasons": [
+        "Never imported by any file"
+      ],
+      "data": {
+        "imports": [
+          "react"
+        ],
+        "exports": [
+          "StatusSelect"
+        ],
+        "empty": false,
+        "lines": 37,
+        "has_jsx": true,
+        "content_preview": "import React from 'react';\n\nconst StatusSelect = ({ \n  value, \n  onChange, \n  options, \n  label, \n  className = \"\",\n  placeholder = \"Select status\"\n}) => {\n  return (\n    <div className={`flex items-c"
+      },
+      "size": 37
+    },
+    {
+      "file": "src/components/common/Arrows.jsx",
+      "reasons": [
+        "Never imported by any file"
+      ],
+      "data": {
+        "imports": [],
+        "exports": [
+          "UpIcon",
+          "DownIcon"
+        ],
+        "empty": false,
+        "lines": 25,
+        "has_jsx": true,
+        "content_preview": "export const UpIcon = ({ className }) => (\n    <svg\n      xmlns=\"http://www.w3.org/2000/svg\"\n      fill=\"none\"\n      viewBox=\"0 0 24 24\"\n      strokeWidth={1.5}\n      stroke=\"currentColor\"\n      class"
+      },
+      "size": 25
+    },
+    {
+      "file": "src/components/optimized/ProgressiveFormsRepository.jsx",
+      "reasons": [
+        "Never imported by any file"
+      ],
+      "data": {
+        "imports": [
+          "react",
+          "../../hooks/useAuth",
+          "../../hooks/useOptimizedFormsRepository",
+          "../../services/monitoring/performanceMonitor",
+          "../HeaderNew",
+          "../ui/card",
+          "../ui/button",
+          "../ui/input",
+          "../ui/badge",
+          "../ui/skeleton",
+          "../ui/tabs",
+          "sonner"
+        ],
+        "exports": [
+          "ProgressiveFormsRepository"
+        ],
+        "empty": false,
+        "lines": 462,
+        "has_jsx": true,
+        "content_preview": "// Progressive loading Forms Repository with optimized UX\nimport React, { useState, useEffect, useMemo } from 'react';\nimport { useAuth } from '../../hooks/useAuth';\nimport { useOptimizedFormsReposito"
+      },
+      "size": 462
+    },
+    {
+      "file": "src/utils/cache/TTLCache.js",
+      "reasons": [
+        "Never imported by any file"
+      ],
+      "data": {
+        "imports": [],
+        "exports": [
+          "TTLCache",
+          "TTLCache"
+        ],
+        "empty": false,
+        "lines": 320,
+        "has_jsx": false,
+        "content_preview": "/**\n * TTLCache - Time-To-Live Cache Implementation\n * \n * A memory-efficient cache with automatic cleanup and TTL support.\n * Features:\n * - Automatic expiration of cached items\n * - Memory cleanup t"
+      },
+      "size": 320
+    },
+    {
+      "file": "src/utils/cache/CacheOptimizer.js",
+      "reasons": [
+        "Never imported by any file"
+      ],
+      "data": {
+        "imports": [],
+        "exports": [
+          "CacheOptimizer"
+        ],
+        "empty": false,
+        "lines": 388,
+        "has_jsx": false,
+        "content_preview": "/**\n * Cache optimization utilities for memory efficiency and performance\n */\nclass CacheOptimizer {\n  constructor(options = {}) {\n    this.compressionEnabled = options.compression !== false;\n    this"
+      },
+      "size": 388
+    },
+    {
+      "file": "src/utils/cache/RequestDeduplicator.js",
+      "reasons": [
+        "Never imported by any file"
+      ],
+      "data": {
+        "imports": [],
+        "exports": [
+          "RequestDeduplicator"
+        ],
+        "empty": false,
+        "lines": 224,
+        "has_jsx": false,
+        "content_preview": "/**\n * Request deduplication utility for concurrent identical requests\n */\nclass RequestDeduplicator {\n  constructor(options = {}) {\n    this.pendingRequests = new Map();\n    this.requestTimeout = opt"
+      },
+      "size": 224
+    }
+  ],
+  "duplicate_groups": [
+    {
+      "group": "FormsRepository",
+      "files": [
+        "src/FormsRepositoryNew.jsx",
+        "src/components/FormsRepositoryRefactored.jsx",
+        "src/components/FormsRepositoryClean.jsx"
+      ],
+      "details": {
+        "src/FormsRepositoryNew.jsx": {
+          "imports": [
+            "react",
+            "./hooks/useAuth",
+            "@auth0/auth0-react",
+            "./utils/auth",
+            "./components/HeaderNew",
+            "./components/ui/card",
+            "./components/ui/button",
+            "./components/ui/input",
+            "./components/ui/label",
+            "./components/ui/badge",
+            "./components/ui/tabs",
+            "./components/ui/skeleton",
+            "sonner",
+            "./utils/const"
+          ],
+          "exports": [
+            "FormsRepositoryNew"
+          ],
+          "empty": false,
+          "lines": 1300,
+          "has_jsx": true,
+          "content_preview": "import React, { useState, useEffect } from 'react';\nimport { useAuth } from './hooks/useAuth';\nimport { useAuth0 } from '@auth0/auth0-react';\nimport { getAuthHeaders } from './utils/auth';\nimport Head"
+        },
+        "src/components/FormsRepositoryRefactored.jsx": {
+          "imports": [
+            "react",
+            "../hooks/useAuth",
+            "@auth0/auth0-react",
+            "./HeaderNew",
+            "./ui/card",
+            "./ui/button",
+            "./ui/input",
+            "./ui/label",
+            "./ui/badge",
+            "./ui/tabs",
+            "./ui/skeleton",
+            "sonner",
+            "../services/api"
+          ],
+          "exports": [
+            "FormsRepositoryRefactored"
+          ],
+          "empty": false,
+          "lines": 741,
+          "has_jsx": true,
+          "content_preview": "/**\n * Refactored Forms Repository Component\n * Clean separation of concerns with service layer integration\n */\n\nimport React, { useState, useEffect } from 'react';\nimport { useAuth } from '../hooks/u"
+        },
+        "src/components/FormsRepositoryClean.jsx": {
+          "imports": [
+            "react",
+            "../hooks/useAuth",
+            "./HeaderNew",
+            "./ui/card",
+            "./ui/button",
+            "./ui/input",
+            "./ui/badge",
+            "./ui/tabs",
+            "./ui/skeleton",
+            "../hooks/useApiData"
+          ],
+          "exports": [
+            "FormsRepositoryClean"
+          ],
+          "empty": false,
+          "lines": 384,
+          "has_jsx": true,
+          "content_preview": "/**\n * FIXED Forms Repository Component\n * Uses shared API services context instead of creating new instances\n */\n\nimport React, { useState } from 'react';\nimport { useAuth } from '../hooks/useAuth';\n"
+        }
+      }
+    },
+    {
+      "group": "ParentDashboard",
+      "files": [
+        "src/components/ParentDashboardSimple.jsx",
+        "src/parentComponent/ParentDashboardNew.jsx",
+        "src/parentComponent/ParentDashboardWrapper.jsx",
+        "src/parentComponent/ParentDashboardRefactored.jsx"
+      ],
+      "details": {
+        "src/components/ParentDashboardSimple.jsx": {
+          "imports": [
+            "react",
+            "../hooks/useAuth",
+            "../hooks/useParentData",
+            "sonner",
+            "@/components/ui/card",
+            "../components/HeaderNew",
+            "./dashboard/ChildTabsSimple",
+            "./dashboard/WelcomeSection",
+            "./dashboard/CompletedFormsTable",
+            "../parent/utilComponents/FormSidebar/FormSidebar",
+            "../parentComponent/forms/AuthorizationFormNew",
+            "../parentComponent/forms/ParentHanbook/policies/AllNew",
+            "../parentComponent/forms/EnrollmentFormNew",
+            "../parentComponent/forms/AdmissionForm/AdmissionFormNew"
+          ],
+          "exports": [
+            "ParentDashboardSimple"
+          ],
+          "empty": false,
+          "lines": 290,
+          "has_jsx": true,
+          "content_preview": "// Simplified Parent Dashboard - Single API call architecture\n// NO complex state management, NO page reloads, NO caching layers\nimport React, { useState } from 'react';\nimport { useAuth } from '../ho"
+        },
+        "src/parentComponent/ParentDashboardNew.jsx": {
+          "imports": [
+            "react",
+            "@/utils/const",
+            "@auth0/auth0-react",
+            "../utils/auth",
+            "@/components/ui/card",
+            "@/components/ui/badge",
+            "@/components/ui/button",
+            "@/components/ui/tabs",
+            "sonner",
+            "../components/HeaderNew",
+            "../components/DataTable",
+            "../hooks/useAuth",
+            "../parent/utilComponents/FormSidebar/FormSidebar",
+            "../parent/utilComponents/FormSidebar/formSections",
+            "./forms/AuthorizationFormNew",
+            "./forms/ParentHanbook/policies/AllNew",
+            "./forms/EnrollmentFormNew",
+            "./forms/AdmissionForm/AdmissionFormNew",
+            "./pdf_forms/ParentHandbook",
+            "./pdf_forms/AdmissionForm",
+            "./pdf_forms/AuthorizationForm",
+            "./pdf_forms/EnrollmentAgreement"
+          ],
+          "exports": [
+            "ParentDashboard"
+          ],
+          "empty": false,
+          "lines": 1042,
+          "has_jsx": true,
+          "content_preview": "import React, { useState, useEffect, useRef } from 'react';\nimport { api_base_url, school_id } from '@/utils/const';\nimport { useAuth0 } from '@auth0/auth0-react';\nimport { getAuthHeaders } from '../u"
+        },
+        "src/parentComponent/ParentDashboardWrapper.jsx": {
+          "imports": [
+            "react",
+            "../utils/featureFlags.js",
+            "../services/migration/migrationManager.js",
+            "../services/monitoring/performanceMonitor.js",
+            "./ParentDashboardRefactored",
+            "./ParentDashboardNew"
+          ],
+          "exports": [
+            "ParentDashboardWrapper"
+          ],
+          "empty": false,
+          "lines": 123,
+          "has_jsx": true,
+          "content_preview": "// Wrapper component to handle feature flag routing\nimport React from 'react';\nimport { FeatureFlags, isEnabled } from '../utils/featureFlags.js';\nimport { migrationManager } from '../services/migrati"
+        },
+        "src/parentComponent/ParentDashboardRefactored.jsx": {
+          "imports": [
+            "react",
+            "../hooks/useAuth",
+            "../hooks/usePermissions",
+            "../hooks/useParentDashboard.js",
+            "../hooks/useFileOperations.js",
+            "sonner",
+            "../components/HeaderNew",
+            "../components/LoadingSpinner",
+            "../components/ErrorDisplay",
+            "../components/WelcomeSection",
+            "./ChildTabs",
+            "../components/CompletedFormsTable",
+            "../parent/utilComponents/FormSidebar/FormSidebar",
+            "./forms/AuthorizationFormNew",
+            "./forms/ParentHanbook/policies/AllNew",
+            "./forms/EnrollmentFormNew",
+            "./forms/AdmissionForm/AdmissionFormNew",
+            "./pdf_forms/ParentHandbook",
+            "./pdf_forms/AdmissionForm",
+            "./pdf_forms/AuthorizationForm",
+            "./pdf_forms/EnrollmentAgreement"
+          ],
+          "exports": [
+            "ParentDashboardRefactored"
+          ],
+          "empty": false,
+          "lines": 350,
+          "has_jsx": true,
+          "content_preview": "// Refactored Parent Dashboard - Using unified API architecture\nimport React, { useState } from 'react';\nimport { useAuth } from '../hooks/useAuth';\nimport { usePermissions } from '../hooks/usePermiss"
+        }
+      }
+    },
+    {
+      "group": "Login",
+      "files": [
+        "src/components/LoginNew.jsx",
+        "src/components/LoginFixed.jsx"
+      ],
+      "details": {
+        "src/components/LoginNew.jsx": {
+          "imports": [
+            "react",
+            "react-router-dom",
+            "react-hook-form",
+            "@hookform/resolvers/zod",
+            "zod",
+            "lucide-react",
+            "sonner",
+            "@auth0/auth0-react",
+            "@/components/ui/button",
+            "@/components/ui/input",
+            "@/components/ui/label",
+            "@/components/ui/card",
+            "@/components/ui/form",
+            "@/components/ui/dialog",
+            "../utils/login",
+            "../utils/login-auth0",
+            "./Header",
+            "./ForgotPasswordModal",
+            "../utils/const",
+            "../utils/auth"
+          ],
+          "exports": [
+            "LoginNew"
+          ],
+          "empty": false,
+          "lines": 369,
+          "has_jsx": true,
+          "content_preview": "import React, { useState, useEffect, useRef } from 'react';\nimport { useNavigate } from 'react-router-dom';\nimport { useForm } from 'react-hook-form';\nimport { zodResolver } from '@hookform/resolvers/"
+        },
+        "src/components/LoginFixed.jsx": {
+          "imports": [
+            "react",
+            "react-router-dom",
+            "@auth0/auth0-react",
+            "./Header",
+            "../utils/const",
+            "../utils/auth-fixed",
+            "../utils/errorHandler"
+          ],
+          "exports": [
+            "LoginFixed"
+          ],
+          "empty": false,
+          "lines": 357,
+          "has_jsx": true,
+          "content_preview": "/**\n * FIXED Login Component\n * Addresses authentication flow issues and error handling\n */\nimport React, { useEffect, useState, useRef } from 'react';\nimport { useNavigate } from 'react-router-dom';\n"
+        }
+      }
+    }
+  ],
+  "route_files": [
+    "src/App.jsx",
+    "src/components/SecureRoute.jsx",
+    "src/components/ProtectedRoute.tsx",
+    "src/components/PrivateRoute.jsx",
+    "src/components/AuthTestRoute.jsx",
+    "src/main.jsx",
+    "src/components/ProtectedRoute.jsx"
+  ],
+  "import_graph": {
+    "src/ParentDetailsNew.jsx": [
+      "src/components/ui/card.jsx",
+      "src/components/AddChildModal.jsx",
+      "src/components/HeaderNew.jsx",
+      "src/hooks/useAuth.js",
+      "src/components/ui/badge.jsx",
+      "src/utils/auth.js",
+      "src/components/ui/skeleton.jsx",
+      "src/components/ui/button.jsx",
+      "src/utils/const.js"
+    ],
+    "src/FormsRepositoryNew.jsx": [
+      "src/components/ui/card.jsx",
+      "src/components/ui/input.jsx",
+      "src/components/HeaderNew.jsx",
+      "src/hooks/useAuth.js",
+      "src/components/ui/badge.jsx",
+      "src/utils/auth.js",
+      "src/components/ui/skeleton.jsx",
+      "src/components/ui/button.jsx",
+      "src/components/ui/tabs.jsx",
+      "src/utils/const.js",
+      "src/components/ui/label.jsx"
+    ],
+    "src/InviteParentNew.jsx": [
+      "src/components/ui/card.jsx",
+      "src/components/ui/input.jsx",
+      "src/components/HeaderNew.jsx",
+      "src/hooks/useAuth.js",
+      "src/components/ui/skeleton.jsx",
+      "src/utils/auth.js",
+      "src/components/ui/button.jsx",
+      "src/utils/const.js",
+      "src/components/ui/label.jsx"
+    ],
+    "src/AdminDashboard.jsx": [
+      "src/hooks/usePermissions.jsx",
+      "src/components/DashboardCard.jsx",
+      "src/hooks/useAuth.js",
+      "src/parentComponent/LoadingSpinner.jsx",
+      "src/components/Header.jsx"
+    ],
+    "src/main-fixed.jsx": [
+      "src/ApplicationStatusNew.jsx",
+      "src/components/SignUp.jsx",
+      "src/SelectSchool.jsx",
+      "src/ParentDetailsNew.jsx",
+      "src/FormsRepositoryNew.jsx",
+      "src/components/ParentDashboardSimple.jsx",
+      "src/components/PrivateRoute.jsx",
+      "src/auth/Auth0Provider.jsx",
+      "src/services/api/index.jsx",
+      "src/hooks/useAuth.js",
+      "src/components/Login.jsx",
+      "src/InviteParentNew.jsx",
+      "src/AdminDashboardNew.jsx"
+    ],
+    "src/AdminDashboardNew.jsx": [
+      "src/components/HeaderNew.jsx",
+      "src/hooks/useAuth.js"
+    ],
+    "src/main.jsx": [
+      "src/ApplicationStatusNew.jsx",
+      "src/components/SignUp.jsx",
+      "src/SelectSchool.jsx",
+      "src/ParentDetailsNew.jsx",
+      "src/components/FormsRepositoryClean.jsx",
+      "src/components/ParentDashboardSimple.jsx",
+      "src/components/PrivateRoute.jsx",
+      "src/auth/Auth0Provider.jsx",
+      "src/services/api/index.jsx",
+      "src/utils/auth.js",
+      "src/hooks/useAuth.js",
+      "src/components/Login.jsx",
+      "src/InviteParentNew.jsx",
+      "src/AdminDashboardNew.jsx"
+    ],
+    "src/App.jsx": [
+      "src/parentComponent/ParentDashboardRefactored.jsx",
+      "src/components/FormsRepository.jsx",
+      "src/components/ClassroomRepo.jsx",
+      "src/components/InviteParent.jsx",
+      "src/auth/Auth0Provider.jsx",
+      "src/components/Login.jsx",
+      "src/AdminDashboard.jsx",
+      "src/components/ProtectedRoute.jsx"
+    ],
+    "src/App-secure.jsx": [
+      "src/parentComponent/ParentDashboardRefactored.jsx",
+      "src/components/FormsRepository.jsx",
+      "src/components/ClassroomRepo.jsx",
+      "src/contexts/AuthContext.tsx",
+      "src/components/InviteParent.jsx",
+      "src/components/Login.jsx",
+      "src/AdminDashboard.jsx"
+    ],
+    "src/ApplicationStatusNew.jsx": [
+      "src/utils/const.js",
+      "src/components/HeaderNew.jsx",
+      "src/hooks/useAuth.js",
+      "src/utils/auth.js",
+      "src/components/common/ExcelExport.js"
+    ],
+    "src/SelectSchool.jsx": [
+      "src/components/Header.jsx",
+      "src/components/ui/button.jsx"
+    ],
+    "src/utils/errorHandler.js": [
+      "src/utils/auth.js"
+    ],
+    "src/utils/const.js": [
+      "src/utils/env.js"
+    ],
+    "src/utils/parentDetails.js": [
+      "src/utils/auth.js",
+      "src/utils/const.js"
+    ],
+    "src/components/HeaderNew.jsx": [
+      "src/components/SidebarNew.jsx"
+    ],
+    "src/components/Header.jsx": [
+      "src/components/SignOutModal.jsx",
+      "src/components/Sidebar.jsx"
+    ],
+    "src/components/FormsRepositoryRefactored.jsx": [
+      "src/components/ui/card.jsx",
+      "src/components/ui/input.jsx",
+      "src/components/HeaderNew.jsx",
+      "src/components/ui/badge.jsx",
+      "src/components/ui/skeleton.jsx",
+      "src/components/ui/button.jsx",
+      "src/components/ui/tabs.jsx",
+      "src/components/ui/label.jsx"
+    ],
+    "src/components/ForgotPasswordModal.jsx": [
+      "src/components/Alert.jsx"
+    ],
+    "src/components/ParentDashboardSimple.jsx": [
+      "src/components/dashboard/WelcomeSection.jsx",
+      "src/components/dashboard/CompletedFormsTable.jsx",
+      "src/components/dashboard/ChildTabsSimple.jsx"
+    ],
+    "src/components/FormsRepository.jsx": [
+      "src/components/common/TabNavigation.jsx",
+      "src/components/common/AlertManager.js",
+      "src/components/ClassroomRepo.jsx",
+      "src/components/FormRepo.jsx",
+      "src/components/Header.jsx",
+      "src/components/Alert.jsx"
+    ],
+    "src/components/CompletedFormsTable.jsx": [
+      "src/components/DataTable.jsx"
+    ],
+    "src/components/SignUp.jsx": [
+      "src/components/Header.jsx"
+    ],
+    "src/components/LoginNew.jsx": [
+      "src/components/Header.jsx",
+      "src/components/ForgotPasswordModal.jsx"
+    ],
+    "src/components/SecureRoute.jsx": [
+      "src/components/ui/LoadingSpinner.jsx"
+    ],
+    "src/components/AddChildModal.jsx": [
+      "src/components/Alert.jsx"
+    ],
+    "src/components/AuthTestRoute.jsx": [
+      "src/components/AuthenticationTest.jsx"
+    ],
+    "src/components/Login.jsx": [
+      "src/components/Header.jsx"
+    ],
+    "src/components/ProtectedRoute.jsx": [
+      "src/components/LoadingSpinner.jsx"
+    ],
+    "src/components/InviteParent.jsx": [
+      "src/components/Header.jsx"
+    ],
+    "src/components/ClassroomRepo.jsx": [
+      "src/components/common/ExcelExport.js",
+      "src/components/DataTable.jsx"
+    ],
+    "src/components/FormsRepositoryClean.jsx": [
+      "src/components/ui/card.jsx",
+      "src/components/ui/input.jsx",
+      "src/components/HeaderNew.jsx",
+      "src/components/ui/badge.jsx",
+      "src/components/ui/skeleton.jsx",
+      "src/components/ui/button.jsx",
+      "src/components/ui/tabs.jsx"
+    ],
+    "src/components/FormRepo.jsx": [
+      "src/components/SearchableSelect.jsx"
+    ],
+    "src/components/LoginFixed.jsx": [
+      "src/components/Header.jsx"
+    ],
+    "src/components/AddChildModalNew.jsx": [
+      "src/components/Alert.jsx"
+    ],
+    "src/hooks/usePermissions.ts": [
+      "src/hooks/useAuth.js"
+    ],
+    "src/parentComponent/FormContent.jsx": [
+      "src/parentComponent/forms/ParentHanbook/policies/AllNew.jsx",
+      "src/parentComponent/forms/EnrollmentFormNew.jsx",
+      "src/parentComponent/forms/AuthorizationForm.jsx"
+    ],
+    "src/parentComponent/ParentDashboardNew.jsx": [
+      "src/parentComponent/pdf_forms/EnrollmentAgreement.jsx",
+      "src/parentComponent/pdf_forms/ParentHandbook.jsx",
+      "src/parentComponent/pdf_forms/AdmissionForm.jsx",
+      "src/parentComponent/forms/ParentHanbook/policies/AllNew.jsx",
+      "src/parentComponent/forms/AuthorizationFormNew.jsx",
+      "src/parentComponent/forms/AdmissionForm/AdmissionFormNew.jsx",
+      "src/parentComponent/pdf_forms/AuthorizationForm.jsx",
+      "src/parentComponent/forms/EnrollmentFormNew.jsx"
+    ],
+    "src/parentComponent/ParentDashboardWrapper.jsx": [
+      "src/parentComponent/ParentDashboardNew.jsx",
+      "src/parentComponent/ParentDashboardRefactored.jsx"
+    ],
+    "src/parentComponent/ParentDashboardRefactored.jsx": [
+      "src/parentComponent/pdf_forms/EnrollmentAgreement.jsx",
+      "src/parentComponent/pdf_forms/ParentHandbook.jsx",
+      "src/parentComponent/pdf_forms/AdmissionForm.jsx",
+      "src/parentComponent/forms/ParentHanbook/policies/AllNew.jsx",
+      "src/parentComponent/forms/AuthorizationFormNew.jsx",
+      "src/parentComponent/forms/AdmissionForm/AdmissionFormNew.jsx",
+      "src/parentComponent/pdf_forms/AuthorizationForm.jsx",
+      "src/parentComponent/ChildTabs.jsx",
+      "src/parentComponent/forms/EnrollmentFormNew.jsx"
+    ],
+    "src/services/permissions/PermissionManager.js": [
+      "src/services/permissions/RequestDeduplicator.js"
+    ],
+    "src/services/permissions/PermissionContext.js": [
+      "src/services/permissions/PermissionManager.js"
+    ],
+    "src/services/api/ApiService.ts": [
+      "src/services/api/types/index.ts",
+      "src/services/api/core/ApiClient.js"
+    ],
+    "src/services/api/index.jsx": [
+      "src/services/api/ClassroomService.js",
+      "src/services/api/FormService.js",
+      "src/services/api/StudentService.js",
+      "src/services/api/core/ApiClient.js"
+    ],
+    "src/services/api/core/CircuitBreakerManager.ts": [
+      "src/services/api/core/EventEmitter.ts"
+    ],
+    "src/services/api/core/TokenManager.ts": [
+      "src/services/api/core/EventEmitter.ts"
+    ],
+    "src/services/api/core/ApiClient.ts": [
+      "src/services/api/core/CircuitBreakerManager.ts",
+      "src/services/api/core/RequestDeduplicator.ts",
+      "src/services/api/core/LoadingStateManager.ts",
+      "src/services/api/core/MetricsCollector.ts",
+      "src/services/api/core/EventEmitter.ts",
+      "src/services/api/core/RateLimiter.ts",
+      "src/services/api/core/CacheManager.ts",
+      "src/services/api/core/RetryManager.ts",
+      "src/services/api/core/TokenManager.ts"
+    ],
+    "src/parentComponent/pdf_forms/AuthorizationForm.jsx": [
+      "src/parentComponent/pdf_forms/PDFHeader.jsx"
+    ],
+    "src/parentComponent/pdf_forms/EnrollmentAgreement.jsx": [
+      "src/parentComponent/pdf_forms/PDFHeader.jsx"
+    ],
+    "src/parentComponent/pdf_forms/ParentHandbook.jsx": [
+      "src/parentComponent/pdf_forms/PDFHeader.jsx"
+    ],
+    "src/parentComponent/pdf_forms/AdmissionForm.jsx": [
+      "src/parentComponent/pdf_forms/PDFHeader.jsx"
+    ],
+    "src/parentComponent/forms/AdmissionForm/Pick-up Password.jsx": [
+      "src/parentComponent/forms/AdmissionForm/CheckboxWithLabel.jsx"
+    ],
+    "src/parentComponent/forms/AdmissionForm/SocialMedia.jsx": [
+      "src/parentComponent/forms/AdmissionForm/CheckboxWithLabel.jsx"
+    ],
+    "src/parentComponent/forms/AdmissionForm/AdmissionFormNew.jsx": [
+      "src/parentComponent/forms/AdmissionForm/OutsideEngagements.jsx",
+      "src/parentComponent/forms/AdmissionForm/ImmunizationInstructions.jsx",
+      "src/parentComponent/forms/AdmissionForm/HealthPolicies.jsx",
+      "src/parentComponent/forms/AdmissionForm/Child and Family History/ChildandFamilyHistory.jsx",
+      "src/parentComponent/forms/AdmissionForm/SocialMedia.jsx",
+      "src/parentComponent/forms/AdmissionForm/ParentSign.jsx",
+      "src/parentComponent/forms/AdmissionForm/Pick-up Password.jsx",
+      "src/parentComponent/forms/AdmissionForm/ChildInfo/ChildInfo.jsx",
+      "src/parentComponent/forms/AdmissionForm/MedicalTransportationWaiver.jsx",
+      "src/parentComponent/forms/AdmissionForm/ChildProfile/ChildProfile.jsx",
+      "src/parentComponent/forms/AdmissionForm/SecurityPolicy.jsx",
+      "src/parentComponent/forms/AdmissionForm/AdminSign.jsx",
+      "src/parentComponent/forms/AdmissionForm/VideoPermission.jsx"
+    ],
+    "src/parentComponent/forms/AdmissionForm/SecurityPolicy.jsx": [
+      "src/parentComponent/forms/AdmissionForm/CheckboxWithLabel.jsx"
+    ],
+    "src/parentComponent/forms/AdmissionForm/VideoPermission.jsx": [
+      "src/parentComponent/forms/AdmissionForm/CheckboxWithLabel.jsx"
+    ],
+    "src/parentComponent/forms/AdmissionForm/AdmissionForm.jsx": [
+      "src/parentComponent/forms/AdmissionForm/OutsideEngagements.jsx",
+      "src/parentComponent/forms/AdmissionForm/ImmunizationInstructions.jsx",
+      "src/parentComponent/forms/AdmissionForm/HealthPolicies.jsx",
+      "src/parentComponent/forms/AdmissionForm/Child and Family History/ChildandFamilyHistory.jsx",
+      "src/parentComponent/forms/AdmissionForm/SocialMedia.jsx",
+      "src/parentComponent/forms/AdmissionForm/ParentSign.jsx",
+      "src/parentComponent/forms/AdmissionForm/Pick-up Password.jsx",
+      "src/parentComponent/forms/AdmissionForm/ChildInfo/ChildInfo.jsx",
+      "src/parentComponent/forms/AdmissionForm/MedicalTransportationWaiver.jsx",
+      "src/parentComponent/forms/AdmissionForm/ChildProfile/ChildProfile.jsx",
+      "src/parentComponent/forms/AdmissionForm/SecurityPolicy.jsx",
+      "src/parentComponent/forms/AdmissionForm/AdminSign.jsx",
+      "src/parentComponent/forms/AdmissionForm/VideoPermission.jsx"
+    ],
+    "src/parentComponent/forms/ParentHanbook/policies/AllNew.jsx": [
+      "src/parentComponent/forms/ParentHanbook/policies/EmergencyClosings.jsx",
+      "src/parentComponent/forms/ParentHanbook/policies/TheGoddardSchool.jsx",
+      "src/parentComponent/forms/ParentHanbook/policies/ParentAccess.jsx",
+      "src/parentComponent/forms/ParentHanbook/policies/RegisterationTutionFees.jsx",
+      "src/parentComponent/forms/ParentHanbook/policies/FinalWord.jsx",
+      "src/parentComponent/forms/ParentHanbook/policies/RestTimeMealsSnacks.jsx",
+      "src/parentComponent/forms/ParentHanbook/policies/WebsiteAndBlogs.jsx",
+      "src/parentComponent/forms/ParentHanbook/policies/ExpulsionPolicy.jsx",
+      "src/parentComponent/forms/ParentHanbook/policies/MissionStatement.jsx",
+      "src/parentComponent/forms/ParentHanbook/policies/MedicationProcedures.jsx",
+      "src/parentComponent/forms/ParentHanbook/policies/ToysFromHome.jsx",
+      "src/parentComponent/forms/ParentHanbook/policies/GeneralEnrollmentProcedure.jsx",
+      "src/parentComponent/forms/ParentHanbook/policies/AddressingIndividualChildConcern.jsx",
+      "src/parentComponent/forms/ParentHanbook/policies/ReleaseOfChildren.jsx",
+      "src/parentComponent/forms/ParentHanbook/policies/OutsideEngagement.jsx",
+      "src/parentComponent/forms/ParentHanbook/policies/TransitionToiletTraining.jsx",
+      "src/parentComponent/forms/ParentHanbook/policies/HealthPolicies.jsx",
+      "src/parentComponent/forms/ParentHanbook/policies/StatementOfConfidentiality.jsx"
+    ],
+    "src/parentComponent/forms/ParentHanbook/policies/All.jsx": [
+      "src/parentComponent/forms/ParentHanbook/policies/EmergencyClosings.jsx",
+      "src/parentComponent/forms/ParentHanbook/policies/TheGoddardSchool.jsx",
+      "src/parentComponent/forms/ParentHanbook/policies/ParentAccess.jsx",
+      "src/parentComponent/forms/ParentHanbook/policies/RegisterationTutionFees.jsx",
+      "src/parentComponent/forms/ParentHanbook/policies/FinalWord.jsx",
+      "src/parentComponent/forms/ParentHanbook/policies/RestTimeMealsSnacks.jsx",
+      "src/parentComponent/forms/ParentHanbook/policies/WebsiteAndBlogs.jsx",
+      "src/parentComponent/forms/ParentHanbook/policies/ExpulsionPolicy.jsx",
+      "src/parentComponent/forms/ParentHanbook/policies/MissionStatement.jsx",
+      "src/parentComponent/forms/ParentHanbook/policies/MedicationProcedures.jsx",
+      "src/parentComponent/forms/ParentHanbook/policies/ToysFromHome.jsx",
+      "src/parentComponent/forms/ParentHanbook/policies/GeneralEnrollmentProcedure.jsx",
+      "src/parentComponent/forms/ParentHanbook/policies/AddressingIndividualChildConcern.jsx",
+      "src/parentComponent/forms/ParentHanbook/policies/ReleaseOfChildren.jsx",
+      "src/parentComponent/forms/ParentHanbook/policies/OutsideEngagement.jsx",
+      "src/parentComponent/forms/ParentHanbook/policies/TransitionToiletTraining.jsx",
+      "src/parentComponent/forms/ParentHanbook/policies/HealthPolicies.jsx",
+      "src/parentComponent/forms/ParentHanbook/policies/StatementOfConfidentiality.jsx"
+    ],
+    "src/parentComponent/forms/AdmissionForm/Child and Family History/Parent_Agreement.jsx": [
+      "src/parentComponent/forms/AdmissionForm/Child and Family History/InputComponent.jsx"
+    ],
+    "src/parentComponent/forms/AdmissionForm/Child and Family History/EnvironmentalFactors.jsx": [
+      "src/parentComponent/forms/AdmissionForm/Child and Family History/InputComponent.jsx"
+    ],
+    "src/parentComponent/forms/AdmissionForm/Child and Family History/FamilyHistory.jsx": [
+      "src/parentComponent/forms/AdmissionForm/Child and Family History/InputComponent.jsx"
+    ],
+    "src/parentComponent/forms/AdmissionForm/Child and Family History/Child_history.jsx": [
+      "src/parentComponent/forms/AdmissionForm/Child and Family History/InputComponent.jsx"
+    ],
+    "src/parentComponent/forms/AdmissionForm/Child and Family History/ChildandFamilyHistory.jsx": [
+      "src/parentComponent/forms/AdmissionForm/Child and Family History/FamilyHistory.jsx",
+      "src/parentComponent/forms/AdmissionForm/Child and Family History/Child_history.jsx",
+      "src/parentComponent/forms/AdmissionForm/Child and Family History/Parent_argeement_history.jsx",
+      "src/parentComponent/forms/AdmissionForm/Child and Family History/EnvironmentalFactors.jsx",
+      "src/parentComponent/forms/AdmissionForm/Child and Family History/PregnancyAndInfantHistory.jsx",
+      "src/parentComponent/forms/AdmissionForm/Child and Family History/SocialBehavior.jsx",
+      "src/parentComponent/forms/AdmissionForm/Child and Family History/Parent_Agreement.jsx"
+    ],
+    "src/parentComponent/forms/AdmissionForm/Child and Family History/SocialBehavior.jsx": [
+      "src/parentComponent/forms/AdmissionForm/Child and Family History/InputComponent.jsx"
+    ],
+    "src/parentComponent/forms/AdmissionForm/Child and Family History/PregnancyAndInfantHistory.jsx": [
+      "src/parentComponent/forms/AdmissionForm/Child and Family History/InputComponent.jsx"
+    ],
+    "src/parentComponent/forms/AdmissionForm/Child and Family History/Parent_argeement_history.jsx": [
+      "src/parentComponent/forms/AdmissionForm/Child and Family History/InputComponent.jsx"
+    ],
+    "src/parentComponent/forms/AdmissionForm/ChildInfo/ChildInfo.jsx": [
+      "src/parentComponent/forms/AdmissionForm/ChildInfo/EmergencyContact.jsx",
+      "src/parentComponent/forms/AdmissionForm/ChildInfo/Child_details.jsx",
+      "src/parentComponent/forms/AdmissionForm/ChildInfo/ParentAgreement.jsx",
+      "src/parentComponent/forms/AdmissionForm/ChildInfo/AdditionalParentDetails.jsx",
+      "src/parentComponent/forms/AdmissionForm/ChildInfo/MedicalCareProvider.jsx",
+      "src/parentComponent/forms/AdmissionForm/ChildInfo/Parent_details.jsx"
+    ],
+    "src/parentComponent/forms/AdmissionForm/ChildInfo/Child_details.jsx": [
+      "src/parentComponent/forms/AdmissionForm/ChildInfo/InputComponent.jsx"
+    ],
+    "src/parentComponent/forms/AdmissionForm/ChildInfo/AdditionalParentDetails.jsx": [
+      "src/parentComponent/forms/AdmissionForm/ChildInfo/InputComponent.jsx"
+    ],
+    "src/parentComponent/forms/AdmissionForm/ChildInfo/MedicalCareProvider.jsx": [
+      "src/parentComponent/forms/AdmissionForm/ChildInfo/InputComponent.jsx"
+    ],
+    "src/parentComponent/forms/AdmissionForm/ChildInfo/ParentAgreement.jsx": [
+      "src/parentComponent/forms/AdmissionForm/ChildInfo/InputComponent.jsx"
+    ],
+    "src/parentComponent/forms/AdmissionForm/ChildInfo/EmergencyContact.jsx": [
+      "src/parentComponent/forms/AdmissionForm/ChildInfo/InputComponent.jsx"
+    ],
+    "src/parentComponent/forms/AdmissionForm/ChildInfo/Parent_details.jsx": [
+      "src/parentComponent/forms/AdmissionForm/ChildInfo/InputComponent.jsx"
+    ],
+    "src/parentComponent/forms/AdmissionForm/ChildProfile/Nutrition.jsx": [
+      "src/parentComponent/forms/AdmissionForm/ChildProfile/InputComponent.jsx"
+    ],
+    "src/parentComponent/forms/AdmissionForm/ChildProfile/ToiletLearning.jsx": [
+      "src/parentComponent/forms/AdmissionForm/ChildProfile/InputComponent.jsx"
+    ],
+    "src/parentComponent/forms/AdmissionForm/ChildProfile/MedicalGeneral.jsx": [
+      "src/parentComponent/forms/AdmissionForm/ChildProfile/InputComponent.jsx"
+    ],
+    "src/parentComponent/forms/AdmissionForm/ChildProfile/ChildProfileDetails.jsx": [
+      "src/parentComponent/forms/AdmissionForm/ChildProfile/InputComponent.jsx"
+    ],
+    "src/parentComponent/forms/AdmissionForm/ChildProfile/ChildProfile.jsx": [
+      "src/parentComponent/forms/AdmissionForm/ChildProfile/ToiletLearning.jsx",
+      "src/parentComponent/forms/AdmissionForm/ChildProfile/ChildProfileDetails.jsx",
+      "src/parentComponent/forms/AdmissionForm/ChildProfile/Nutrition.jsx",
+      "src/parentComponent/forms/AdmissionForm/ChildProfile/Parent_Argeement.jsx",
+      "src/parentComponent/forms/AdmissionForm/ChildProfile/MedicalGeneral.jsx"
+    ],
+    "src/parent/utilComponents/FormSidebar/FormSection.jsx": [
+      "src/parent/utilComponents/FormSidebar/FormItem.jsx"
+    ],
+    "src/parent/utilComponents/FormSidebar/FormSidebar.jsx": [
+      "src/parent/utilComponents/FormSidebar/formSections.js",
+      "src/parent/utilComponents/FormSidebar/FormSection.jsx",
+      "src/parent/utilComponents/FormSidebar/FormStatusLogic.jsx"
+    ]
+  },
+  "recommendations": [
+    "SAFE TO DELETE: 17 files with multiple issues or empty content",
+    "CONSOLIDATE: 3 groups of duplicate components found",
+    "REVIEW: 8 test files may be orphaned"
+  ]
+}
