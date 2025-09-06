@@ -219,7 +219,6 @@ const AddChildModal = ({ isOpen, onClose, parentEmail, onAddChild ,  Parent_id})
                     required
                     className="w-full border border-gray-400 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-700"
                   >
-                    <option value="">Select Classroom</option>
                     {classrooms.map((classroom) => (
                       <option key={classroom.id} value={classroom.id}>
                         {classroom.name}
