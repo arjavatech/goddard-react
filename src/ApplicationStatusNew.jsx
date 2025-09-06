@@ -79,16 +79,16 @@ const ApplicationStatusNew = () => {
   const loadForms = async () => {
     try {
       const headers = await getAuthHeaders(getAccessTokenSilently);
-      const response = await fetch(`${api_base_url}/class_form_repository/${school_id}`, {
+      const response = await fetch(`${api_base_url}/form/${school_id}`, {
         headers
       });
       const data = await response.json();
       const formOptions = [
         { value: 'all', label: 'All Forms' },
-        ...data.filter(item => item.main_topic && item.main_topic !== undefined)
+        ...data.filter(item => item.form_name && item.form_name !== undefined)
           .map(item => ({
             value: item.form_id,
-            label: item.main_topic
+            label: item.form_name
           }))
       ];
       setForms(formOptions);
