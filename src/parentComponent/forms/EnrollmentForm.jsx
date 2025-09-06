@@ -5,8 +5,9 @@ import FormLabel from '../../../components/FormLabel';
 import { api_base_url, school_id } from '@/utils/const';
 import { useAuth0 } from '@auth0/auth0-react';
 import { getAuthHeaders } from '../../../utils/auth';
+import { submitAndCompleteForm } from '@/utils/formSubmission';
 
-const EnrollmentForm = ({ selectedSubForm = null, initialFormData = null, childId = null }) => {
+const EnrollmentForm = ({ selectedSubForm = null, initialFormData = null, childId = null, onSubmitSuccess = null }) => {
   const { getAccessTokenSilently } = useAuth0();
   
   // API function to update enrollment form data
@@ -109,21 +110,23 @@ const EnrollmentForm = ({ selectedSubForm = null, initialFormData = null, childI
           preferred_schedule: formData.preferred_schedule,
           full_day: formData.full_day.toString(),
           half_day: formData.half_day.toString()
-
-          // parent_sign_enroll: formData.parent_sign_enroll,
-          // parent_sign_date_enroll: formData.parent_sign_date_enroll,
-          // admin_sign_enroll: formData.admin_sign_enroll,
-          // admin_sign_date_enroll: formData.admin_sign_date_enroll
         };
 
-        // Call the API to save all form data
-        await updateEnrollmentData(saveData);
-        
-        // Show success alert
-        alert('Enrollment form data saved successfully!');
+        // Use unified form submission system with proper completion marking
+        const success = await submitAndCompleteForm(
+          childId, 
+          saveData, 
+          'enrollment', 
+          getAccessTokenSilently,
+          onSubmitSuccess // This triggers dashboard refresh
+        );
+
+        if (!success) {
+          throw new Error('Form submission failed');
+        }
       } catch (error) {
         console.error('Failed to save enrollment form:', error);
-        alert('Error saving enrollment form data. Please try again.');
+        // Error handling is now managed by submitAndCompleteForm
       }
     };
   
@@ -131,48 +134,56 @@ const handleSubmit = async (type) => {
     // Handle submit functionality
     if (type === 'parent') {
       if (!childId) {
-      alert('Error: Child ID is missing');
-      return;
-    }
-
-    try {
-      if(formData.parent_sign_enroll == null || formData.parent_sign_enroll == '')
-      {
-        alert('Error: Parent Sign is missing');
+        alert('Error: Child ID is missing');
         return;
       }
-      // Prepare the complete form data for API call including child_id
-      const saveData = {
-        child_id: childId,
-        parent_sign_enroll: formData.parent_sign_enroll,
-        parent_sign_date_enroll: new Date().toLocaleDateString('en-CA')
-      };
 
-      // Call the API to save all form data
-      await updateEnrollmentData(saveData);
-      
-      // Show success alert
-      alert('Enrollment form data saved successfully!');
-    } catch (error) {
-      console.error('Failed to save enrollment form:', error);
-      alert('Error saving enrollment form data. Please try again.');
-    }
+      try {
+        if(formData.parent_sign_enroll == null || formData.parent_sign_enroll == '') {
+          alert('Error: Parent Sign is missing');
+          return;
+        }
+        
+        // Prepare the complete form data for API call including child_id
+        const saveData = {
+          child_id: childId,
+          parent_sign_enroll: formData.parent_sign_enroll,
+          parent_sign_date_enroll: new Date().toLocaleDateString('en-CA')
+        };
+
+        // Use unified form submission system for parent signature
+        const success = await submitAndCompleteForm(
+          childId, 
+          saveData, 
+          'enrollment', 
+          getAccessTokenSilently,
+          onSubmitSuccess // This triggers dashboard refresh
+        );
+
+        if (!success) {
+          throw new Error('Parent signature submission failed');
+        }
+      } catch (error) {
+        console.error('Failed to save parent signature:', error);
+        // Error handling is now managed by submitAndCompleteForm
+      }
     } else if (type === 'admin') {
       if (!childId) {
-      alert('Error: Child ID is missing');
-      return;
-    }
-
-    try {
-      if(formData.admin_sign_enroll == null || formData.admin_sign_enroll == '')
-      {
-        alert('Error: Parent Sign is missing');
+        alert('Error: Child ID is missing');
         return;
       }
-      const epochValue = new Date(formData.admin_sign_date_enroll).getTime();
-      // Prepare the complete form data for API call including child_id
-      const saveData = {
-         child_id: childId,
+
+      try {
+        if(formData.admin_sign_enroll == null || formData.admin_sign_enroll == '') {
+          alert('Error: Admin Sign is missing');
+          return;
+        }
+        
+        const epochValue = new Date(formData.admin_sign_date_enroll).getTime();
+        
+        // Prepare the complete form data for API call including child_id
+        const saveData = {
+          child_id: childId,
           point_one_field_one: formData.point_one_field_one,
           point_one_field_three: formData.point_one_field_three,
           point_two_initial_here: formData.point_two_initial_here,
@@ -198,22 +209,28 @@ const handleSubmit = async (type) => {
           full_day: formData.full_day.toString(),
           half_day: formData.half_day.toString(),
           parent_sign_enroll: formData.parent_sign_enroll,
-        parent_sign_date_enroll: formData.parent_sign_date_enroll,
-        admin_sign_enroll: formData.admin_sign_enroll,
-        admin_sign_date_enroll: epochValue
-      };
-      
+          parent_sign_date_enroll: formData.parent_sign_date_enroll,
+          admin_sign_enroll: formData.admin_sign_enroll,
+          admin_sign_date_enroll: epochValue
+        };
 
-      // Call the API to save all form data
-      await updateEnrollmentData(saveData);
-      
-      // Show success alert
-      alert('Enrollment form data saved successfully!');
-    } catch (error) {
-      console.error('Failed to save Enrollment form:', error);
-      alert('Error saving Enrollment form data. Please try again.');
+        // Use unified form submission system for admin signature (final submission)
+        const success = await submitAndCompleteForm(
+          childId, 
+          saveData, 
+          'enrollment', 
+          getAccessTokenSilently,
+          onSubmitSuccess // This triggers dashboard refresh
+        );
+
+        if (!success) {
+          throw new Error('Admin signature submission failed');
+        }
+      } catch (error) {
+        console.error('Failed to save admin signature:', error);
+        // Error handling is now managed by submitAndCompleteForm
+      }
     }
-  }
    
   };
 

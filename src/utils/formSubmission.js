@@ -19,16 +19,28 @@ export const submitFormData = async (childId, formData, formType, getAccessToken
 
   console.log('📝 Submitting form data:', { childId, formType, dataKeys: Object.keys(formData) });
 
-  // API endpoint mapping - standardized across all forms
+  // API endpoint mapping with correct HTTP methods based on Bruno API docs
   const endpoints = {
-    admission: `/admission_segment/${school_id}/${childId}`,
-    authorization: `/authorization_form/${school_id}/${childId}`,
-    parentHandbook: `/parent_handbook/${school_id}/${childId}`,
-    enrollment: `/enrollment_form/${school_id}/${childId}`
+    admission: {
+      url: `/admission_segment/${school_id}/${childId}`,
+      method: 'PUT' // Bruno shows PUT method for updates
+    },
+    authorization: {
+      url: `/authorization_form/${school_id}/${childId}`,
+      method: 'PUT' // Bruno shows PUT method for updates
+    },
+    parentHandbook: {
+      url: `/parent_handbook/${school_id}/${childId}`,
+      method: 'PUT' // Bruno shows PUT method for updates
+    },
+    enrollment: {
+      url: `/enrollment_form/${school_id}/${childId}`,
+      method: 'PUT' // Bruno shows PUT method for updates
+    }
   };
 
-  const endpoint = endpoints[formType];
-  if (!endpoint) {
+  const endpointConfig = endpoints[formType];
+  if (!endpointConfig) {
     throw new Error(`Unknown form type: ${formType}`);
   }
 
@@ -36,8 +48,10 @@ export const submitFormData = async (childId, formData, formType, getAccessToken
     const headers = await getAuthHeaders(getAccessTokenSilently);
     const startTime = performance.now();
     
-    const response = await fetch(`${api_base_url}${endpoint}`, {
-      method: 'PUT',
+    console.log(`🌐 Making ${endpointConfig.method} request to: ${api_base_url}${endpointConfig.url}`);
+    
+    const response = await fetch(`${api_base_url}${endpointConfig.url}`, {
+      method: endpointConfig.method,
       headers,
       body: JSON.stringify(formData)
     });
@@ -47,7 +61,37 @@ export const submitFormData = async (childId, formData, formType, getAccessToken
 
     if (!response.ok) {
       const errorText = await response.text();
-      throw new Error(`Form submission failed: ${response.status} - ${errorText}`);
+      const errorMessage = `Form submission failed: ${response.status} - ${response.statusText}`;
+      
+      // Enhanced error handling for specific status codes
+      if (response.status === 405) {
+        console.error('❌ Method Not Allowed - trying alternative method');
+        // Try with PUT method as fallback
+        const fallbackResponse = await fetch(`${api_base_url}${endpointConfig.url}`, {
+          method: 'PUT',
+          headers,
+          body: JSON.stringify(formData)
+        });
+        
+        if (fallbackResponse.ok) {
+          console.log('✅ Fallback PUT method succeeded');
+          const result = await fallbackResponse.json();
+          return result;
+        } else {
+          const fallbackErrorText = await fallbackResponse.text();
+          throw new Error(`Both ${endpointConfig.method} and PUT methods failed. Status: ${response.status}, ${fallbackResponse.status}. Error: ${errorText || fallbackErrorText}`);
+        }
+      } else if (response.status === 400) {
+        throw new Error(`Bad Request - Please check your form data: ${errorText}`);
+      } else if (response.status === 401) {
+        throw new Error('Authentication required - please login again');
+      } else if (response.status === 403) {
+        throw new Error('Access denied - insufficient permissions');
+      } else if (response.status >= 500) {
+        throw new Error(`Server error - please try again later: ${errorText}`);
+      } else {
+        throw new Error(`${errorMessage}: ${errorText}`);
+      }
     }
 
     const result = await response.json();
@@ -61,53 +105,8 @@ export const submitFormData = async (childId, formData, formType, getAccessToken
 };
 
 /**
- * Mark form as completed in the system
- * @param {number} childId - Child ID
- * @param {string} formType - Form type identifier
- * @param {Function} getAccessTokenSilently - Auth0 token function
- * @returns {Promise} API response
- */
-export const markFormCompleted = async (childId, formType, getAccessTokenSilently) => {
-  if (!childId || !formType) {
-    throw new Error('Missing required parameters for form completion');
-  }
-
-  console.log('✅ Marking form as completed:', { childId, formType });
-
-  try {
-    const headers = await getAuthHeaders(getAccessTokenSilently);
-    
-    const response = await fetch(
-      `${api_base_url}/admission_child_personal/completed_form_status/${school_id}/${childId}`,
-      {
-        method: 'PUT',
-        headers,
-        body: JSON.stringify({
-          child_id: childId,
-          formname: formType,
-          completedTimestamp: new Date().toISOString()
-        })
-      }
-    );
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`Failed to mark form as completed: ${response.status} - ${errorText}`);
-    }
-
-    const result = await response.json();
-    console.log('✅ Form marked as completed:', result);
-    
-    return result;
-  } catch (error) {
-    console.error('❌ Failed to mark form as completed:', error);
-    throw error;
-  }
-};
-
-/**
  * Complete form submission process
- * Submits form data, marks as completed, and triggers dashboard refresh
+ * Submits form data and triggers dashboard refresh
  * @param {number} childId - Child ID
  * @param {object} formData - Form data
  * @param {string} formType - Form type
@@ -125,22 +124,19 @@ export const submitAndCompleteForm = async (
   const startTime = performance.now();
   
   try {
-    console.log('🚀 Starting complete form submission process...');
+    console.log('🚀 Starting form submission (completion auto-updated by API)...');
 
-    // Step 1: Submit form data
+    // Submit form data (server updates completion status)
     await submitFormData(childId, formData, formType, getAccessTokenSilently);
     
-    // Step 2: Mark as completed
-    await markFormCompleted(childId, formType, getAccessTokenSilently);
-    
     const totalTime = performance.now() - startTime;
-    console.log(`⚡ Complete form submission finished in ${totalTime.toFixed(2)}ms`);
+    console.log(`⚡ Form submission finished in ${totalTime.toFixed(2)}ms`);
     
     // Step 3: Show success message
     const formDisplayName = formatFormName(formType);
     toast.success(`${formDisplayName} submitted successfully!`, {
       duration: 4000,
-      description: 'Your form has been saved and marked as completed.'
+      description: 'Your form has been saved.'
     });
     
     // Step 4: Trigger dashboard refresh (this will refresh all data with single API call)
