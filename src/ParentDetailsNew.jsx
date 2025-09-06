@@ -546,7 +546,7 @@ const ParentDetailsNew = () => {
               Cancel
             </Button>
             <Button
-              onClick={() => handleStatusUpdate(selectedParentForStatus?.id, selectedParentForStatus?.newStatus === '1' ? 'Active' : 'Archive')}
+              onClick={() => handleStatusUpdate(selectedParentForStatus?.parent_id, selectedParentForStatus?.newStatus === '1' ? 1 : 0)}
               disabled={updatingStatus}
               className="bg-[#002e4d] hover:bg-[#002e4d]/90"
             >
