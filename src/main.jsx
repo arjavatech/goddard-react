@@ -17,14 +17,19 @@ import SelectSchool from './SelectSchool.jsx'
 
 // CRITICAL FIX: Import API services provider
 import { ApiServicesProvider } from './services/api/index.jsx'
+import { registerIdTokenGetter } from './utils/auth'
 import { useAuth0 } from '@auth0/auth0-react'
 import { useAuth } from './hooks/useAuth'
 
 
 // FIXED: Single API Services wrapper that uses Auth0 context
 const AppWithApiServices = () => {
-  const { getAccessTokenSilently } = useAuth0();
+  const { getAccessTokenSilently, getIdTokenClaims } = useAuth0();
   const { signOut } = useAuth();
+
+  React.useEffect(() => {
+    registerIdTokenGetter(() => getIdTokenClaims());
+  }, [getIdTokenClaims]);
 
   return (
     <ApiServicesProvider 

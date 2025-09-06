@@ -5,58 +5,33 @@
  * including token management and HTTP header generation.
  */
 
+// ID token registration and global usage
+let idTokenGetter = null;
+
+export const registerIdTokenGetter = (getterFn) => {
+  idTokenGetter = getterFn;
+};
+
+const getIdToken = async () => {
+  if (!idTokenGetter) {
+    throw new Error('ID token getter not registered');
+  }
+  const claims = await idTokenGetter();
+  const token = claims?.__raw;
+  if (!token) throw new Error('ID token not available');
+  return token;
+};
+
 /**
- * Generates authenticated headers for API requests
- * @param {Function} getAccessTokenSilently - Auth0 function to get access token
+ * Generates authenticated headers for API requests using the ID token
  * @returns {Promise<Object>} Headers object with Authorization and Content-Type
  */
-export const getAuthHeaders = async (getAccessTokenSilently) => {
-  const startTime = performance.now();
-  
-  try {
-    console.log('🎫 [Auth] Requesting access token for API calls...');
-    
-    // For backend API calls, request token with specific audience
-    const apiAudience = import.meta.env.VITE_AUTH0_AUDIENCE;
-    const tokenOptions = apiAudience ? { 
-      audience: apiAudience,
-      scope: 'openid profile email'
-    } : {};
-    
-    console.log('🔧 [Auth] Token request options:', tokenOptions);
-    const token = await getAccessTokenSilently(tokenOptions);
-    const endTime = performance.now();
-    
-    console.log('✅ [Auth] API token acquired successfully in', (endTime - startTime).toFixed(2), 'ms');
-    console.log('🔍 [Auth] Token validation:', {
-      hasToken: !!token,
-      tokenLength: token?.length || 0,
-      tokenPrefix: token ? token.substring(0, 20) + '...' : 'null',
-      timestamp: new Date().toISOString(),
-      audience: apiAudience || 'none'
-    });
-    
-    return {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`,
-    };
-  } catch (error) {
-    const endTime = performance.now();
-    
-    console.error('❌ [Auth] Failed to get API access token after', (endTime - startTime).toFixed(2), 'ms');
-    console.error('🔍 [Auth] Token acquisition error details:', {
-      message: error.message,
-      name: error.name,
-      stack: error.stack,
-      timestamp: new Date().toISOString(),
-      userAgent: navigator.userAgent
-    });
-    
-    console.warn('⚠️ [Auth] Returning headers without authorization due to token failure');
-    return {
-      'Content-Type': 'application/json',
-    };
-  }
+export const getAuthHeaders = async () => {
+  const token = await getIdToken();
+  return {
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${token}`,
+  };
 };
 
 /**
@@ -65,30 +40,12 @@ export const getAuthHeaders = async (getAccessTokenSilently) => {
  * @param {string} contentType - Custom content type (default: 'application/json')
  * @returns {Promise<Object>} Headers object with Authorization and custom Content-Type
  */
-export const getAuthHeadersWithContentType = async (getAccessTokenSilently, contentType = 'application/json') => {
-  const startTime = performance.now();
-  
-  try {
-    console.log('🎫 [Auth] Requesting access token for custom content type:', contentType);
-    const token = await getAccessTokenSilently();
-    const endTime = performance.now();
-    
-    console.log('✅ [Auth] Token acquired for custom content type in', (endTime - startTime).toFixed(2), 'ms');
-    
-    return {
-      'Content-Type': contentType,
-      'Authorization': `Bearer ${token}`,
-    };
-  } catch (error) {
-    const endTime = performance.now();
-    
-    console.error('❌ [Auth] Failed to get access token for custom content type after', (endTime - startTime).toFixed(2), 'ms');
-    console.error('🔍 [Auth] Error details:', error);
-    
-    return {
-      'Content-Type': contentType,
-    };
-  }
+export const getAuthHeadersWithContentType = async (contentType = 'application/json') => {
+  const token = await getIdToken();
+  return {
+    'Content-Type': contentType,
+    'Authorization': `Bearer ${token}`,
+  };
 };
 
 /**
@@ -96,28 +53,11 @@ export const getAuthHeadersWithContentType = async (getAccessTokenSilently, cont
  * @param {Function} getAccessTokenSilently - Auth0 function to get access token
  * @returns {Promise<Object>} Headers object with Authorization (no Content-Type for FormData)
  */
-export const getAuthHeadersForUpload = async (getAccessTokenSilently) => {
-  const startTime = performance.now();
-  
-  try {
-    console.log('📤 [Auth] Requesting access token for file upload...');
-    const token = await getAccessTokenSilently();
-    const endTime = performance.now();
-    
-    console.log('✅ [Auth] Upload token acquired in', (endTime - startTime).toFixed(2), 'ms');
-    
-    return {
-      'Authorization': `Bearer ${token}`,
-      // Note: Don't set Content-Type for FormData - browser will set it automatically with boundary
-    };
-  } catch (error) {
-    const endTime = performance.now();
-    
-    console.error('❌ [Auth] Failed to get upload access token after', (endTime - startTime).toFixed(2), 'ms');
-    console.error('🔍 [Auth] Upload token error details:', error);
-    
-    return {};
-  }
+export const getAuthHeadersForUpload = async () => {
+  const token = await getIdToken();
+  return {
+    'Authorization': `Bearer ${token}`,
+  };
 };
 
 /**
