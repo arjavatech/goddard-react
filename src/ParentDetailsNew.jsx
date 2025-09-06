@@ -257,9 +257,9 @@ const ParentDetailsNew = () => {
 
   const getInviteStatusBadge = (inviteStatus) => {
     if (inviteStatus === 'Active') {
-      return <Badge variant="outline" className="text-green-600 border-green-600">Invited</Badge>;
+      return <Badge variant="outline" className="text-green-600 border-green-600">Signed</Badge>;
     } else {
-      return <Badge variant="outline" className="text-gray-600 border-gray-600">Not Invited</Badge>;
+      return <Badge variant="outline" className="text-gray-600 border-gray-600">Not Signed</Badge>;
     }
   };
 
@@ -330,7 +330,7 @@ const ParentDetailsNew = () => {
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Invitations Sent</p>
+                  <p className="text-sm font-medium text-gray-600">Signed Parents</p>
                   <p className="text-2xl font-bold text-blue-600">{stats.invited}</p>
                 </div>
                 <Mail className="w-8 h-8 text-blue-600" />
