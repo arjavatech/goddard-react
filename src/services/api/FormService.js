@@ -34,7 +34,7 @@ class FormService {
    */
   async getAvailableForms() {
     try {
-      const data = await this.api.get('/form/school/{school_id}', {
+      const data = await this.api.get('/form/{school_id}', {
         context: 'Loading available forms',
         cache: true,
         cacheTTL: 5 * 60 * 1000 // 5 minutes cache
@@ -63,7 +63,7 @@ class FormService {
       });
 
       // Clear form caches
-      this.api.clearCache('form/school');
+      this.api.clearCache('form');
       this.api.clearCache('get_all_form_details');
       toast.success('Form created successfully');
       
@@ -87,7 +87,7 @@ class FormService {
       });
 
       // Clear form caches
-      this.api.clearCache('form/school');
+      this.api.clearCache('form');
       this.api.clearCache('get_all_form_details');
       toast.success('Form updated successfully');
       
@@ -108,7 +108,7 @@ class FormService {
       });
 
       // Clear form caches
-      this.api.clearCache('form/school');
+      this.api.clearCache('form');
       this.api.clearCache('get_all_form_details');
       toast.success('Form deleted successfully');
       

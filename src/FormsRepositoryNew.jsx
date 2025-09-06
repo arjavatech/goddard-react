@@ -224,7 +224,7 @@ const FormsRepositoryNew = () => {
   const loadAvailableForms = async () => {
     try {
       const headers = await getAuthHeaders(getAccessTokenSilently);
-      const response = await fetch(`${api_base_url}/form/school/${school_id}`, {
+      const response = await fetch(`${api_base_url}/form/${school_id}`, {
         headers
       });
       const data = await response.json();

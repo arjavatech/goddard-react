@@ -187,7 +187,7 @@ class FormsRepositoryService {
    * Optimized available forms data fetch
    */
   async fetchAvailableFormsData(headers) {
-    const url = `${api_base_url}/form/school/${school_id}`;
+    const url = `${api_base_url}/form/${school_id}`;
     const response = await this.makeRequest(url, { headers }, 'available_forms');
     
     if (!response.ok) {
