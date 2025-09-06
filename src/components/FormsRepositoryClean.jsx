@@ -3,7 +3,8 @@
  * Uses shared API services context instead of creating new instances
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/tooltip';
 import { useAuth } from '../hooks/useAuth';
 import HeaderNew from './HeaderNew';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
@@ -53,10 +54,12 @@ import { getAuthHeaders } from '../utils/auth';
 
 // FIXED: Import hooks from shared services (no provider needed)
 import { useClassrooms, useForms, useStudents, useLoadingState } from '../hooks/useApiData';
+import { useApiServices } from '../services/api';
 
 const FormsRepositoryClean = () => {
   const { isAuthenticated, signOut } = useAuth();
   const { getAccessTokenSilently } = useAuth0();
+  const { apiClient } = useApiServices();
 
   // FIXED: Use shared API services (single instance across app)
   const {
@@ -77,7 +80,8 @@ const FormsRepositoryClean = () => {
     formDropdownOptions,
     loading: formsLoading,
     createForm,
-    filterForms
+    filterForms,
+    refetch: refetchForms
   } = useForms();
 
   const {
@@ -93,16 +97,105 @@ const FormsRepositoryClean = () => {
   const [newFormName, setFormName] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [typeFilter, setTypeFilter] = useState('All');
+  const [formStatusFilter, setFormStatusFilter] = useState('all'); // Filter for form status
   
   // Edit/Delete dialog states
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [selectedClassroom, setSelectedClassroom] = useState(null);
   const [editClassroomName, setEditClassroomName] = useState('');
+  
+  // Form edit dialog states
+  const [formEditDialogOpen, setFormEditDialogOpen] = useState(false);
+  const [selectedForm, setSelectedForm] = useState(null);
+  const [editFormStatus, setEditFormStatus] = useState('');
+
+  // Status mapping
+  const statusToInt = {
+    'default': 0,
+    'available': 1,
+    'active': 2, 
+    'archive': 3
+  };
+
+  const intToStatus = {
+    0: 'default',
+    1: 'available',
+    2: 'active',
+    3: 'archive'
+  };
 
   // Filter and process data
-  const filteredForms = filterForms(searchTerm, typeFilter);
+  const filteredForms = React.useMemo(() => {
+    if (!availableForms) return [];
+    
+    if (formStatusFilter === 'all') {
+      // When 'all' is selected, show forms from all statuses with their actual status
+      const allFormsList = [];
+      Object.keys(availableForms).forEach(status => {
+        if (status !== 'all' && availableForms[status] && Object.keys(availableForms[status]).length > 0) {
+          Object.entries(availableForms[status]).forEach(([formName, formId], index) => {
+            allFormsList.push({
+              id: `${status}-${index}`,
+              form_id: formId,
+              form_name: formName.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
+              original_name: formName,
+              status: status.charAt(0).toUpperCase() + status.slice(1),
+              statusKey: status
+            });
+          });
+        }
+      });
+      return allFormsList;
+    } else {
+      // For specific status, show only forms from that status
+      if (!availableForms[formStatusFilter]) return [];
+      const formsData = availableForms[formStatusFilter];
+      return Object.entries(formsData).map(([formName, formId], index) => ({
+        id: index,
+        form_id: formId,
+        form_name: formName.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
+        original_name: formName,
+        status: formStatusFilter.charAt(0).toUpperCase() + formStatusFilter.slice(1),
+        statusKey: formStatusFilter
+      }));
+    }
+  }, [availableForms, formStatusFilter]);
+  
   const filteredStudents = filterStudents(searchTerm, { classroom: typeFilter });
+
+  // Direct refresh function with cache clearing
+  const handleRefresh = useCallback(async () => {
+    try {
+      // Clear the cache for classroom-related endpoints
+      apiClient.clearCache('child_count_with_class_name');
+      apiClient.clearCache('class_details');
+      
+      // Add a small delay to let the backend update
+      await new Promise(resolve => setTimeout(resolve, 300));
+      
+      // Now refetch the data
+      await refetchClassrooms();
+    } catch (error) {
+      console.error('Error refreshing classrooms:', error);
+    }
+  }, [refetchClassrooms, apiClient]);
+
+  // Forms refresh function
+  const handleFormsRefresh = useCallback(async () => {
+    try {
+      // Clear the cache for form-related endpoints
+      apiClient.clearCache('get_all_form_details');
+      
+      // Add a small delay to let the backend update
+      await new Promise(resolve => setTimeout(resolve, 300));
+      
+      // Refetch forms data
+      await refetchForms();
+    } catch (error) {
+      console.error('Error refreshing forms:', error);
+    }
+  }, [apiClient, refetchForms]);
 
   // Classroom operations
   const handleCreateClassroom = async () => {
@@ -120,8 +213,8 @@ const FormsRepositoryClean = () => {
       
       if (response.ok) {
         setNewClassroomName('');
-        // Refresh the classrooms list after successful creation
-        await refetchClassrooms();
+        // Refresh the table data
+        await handleRefresh();
       }
     } catch (error) {
       console.error('Failed to create classroom:', error);
@@ -163,8 +256,8 @@ const FormsRepositoryClean = () => {
         setEditDialogOpen(false);
         setSelectedClassroom(null);
         setEditClassroomName('');
-        // Refresh the classrooms list after successful update
-        await refetchClassrooms();
+        // Refresh the table data
+        await handleRefresh();
       }
     } catch (error) {
       console.error('Failed to update classroom:', error);
@@ -194,8 +287,10 @@ const FormsRepositoryClean = () => {
       if (response.ok) {
         setDeleteDialogOpen(false);
         setSelectedClassroom(null);
-        // Refresh the classrooms list after successful deletion
-        await refetchClassrooms();
+        // Add small delay before refresh for delete operation
+        setTimeout(async () => {
+          await handleRefresh();
+        }, 300);
       }
     } catch (error) {
       console.error('Failed to delete classroom:', error);
@@ -220,6 +315,49 @@ const FormsRepositoryClean = () => {
       console.error('Failed to create form:', error);
     } finally {
       setLoading('createForm', false);
+    }
+  };
+
+  // Handle edit form
+  const handleFormEditClick = (form) => {
+    setSelectedForm(form);
+    setEditFormStatus(form.statusKey); // Use the original status key (lowercase)
+    setFormEditDialogOpen(true);
+  };
+
+  const handleUpdateForm = async () => {
+    if (!editFormStatus || !selectedForm) return;
+
+    setLoading('updateForm', true);
+    try {
+      const headers = await getAuthHeaders(getAccessTokenSilently);
+      const statusInt = statusToInt[editFormStatus];
+      
+      const response = await fetch(`${api_base_url}/update_form_repo_state/${school_id}`, {
+        method: 'PUT',
+        headers,
+        body: JSON.stringify({
+          form_ids: [selectedForm.form_id],
+          state: statusInt
+        })
+      });
+
+      if (response.ok) {
+        setFormEditDialogOpen(false);
+        setSelectedForm(null);
+        setEditFormStatus('');
+        
+        // Refresh forms data
+        await handleFormsRefresh();
+      } else {
+        console.error('Update failed with status:', response.status);
+        const errorText = await response.text();
+        console.error('Error response:', errorText);
+      }
+    } catch (error) {
+      console.error('Failed to update form:', error);
+    } finally {
+      setLoading('updateForm', false);
     }
   };
 
@@ -392,24 +530,40 @@ const FormsRepositoryClean = () => {
                 <CardDescription>Manage available forms and assignments</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="flex gap-4">
-                  <Input
-                    placeholder="Enter form name"
-                    value={newFormName}
-                    onChange={(e) => setFormName(e.target.value)}
-                    onKeyPress={(e) => e.key === 'Enter' && handleCreateForm()}
-                  />
-                  <Button
-                    onClick={handleCreateForm}
-                    disabled={isLoading('createForm') || !newFormName.trim()}
-                  >
-                    {isLoading('createForm') ? (
-                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />
-                    ) : (
-                      <Plus className="h-4 w-4 mr-2" />
-                    )}
-                    Add Form
-                  </Button>
+                <div className="flex gap-4 items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <label className="text-sm font-medium">Status:</label>
+                    <select 
+                      value={formStatusFilter} 
+                      onChange={(e) => setFormStatusFilter(e.target.value)}
+                      className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    >
+                      <option value="all">All</option>
+                      <option value="active">Active</option>
+                      <option value="archive">Archive</option>
+                      <option value="default">Default</option>
+                      <option value="available">Available</option>
+                    </select>
+                  </div>
+                  
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <div>
+                          <Button
+                            disabled
+                            className="opacity-50 cursor-not-allowed"
+                          >
+                            <Plus className="h-4 w-4 mr-2" />
+                            Add Form
+                          </Button>
+                        </div>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>This feature is available in next phase</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
                 </div>
 
                 <div className="rounded-md border">
@@ -417,8 +571,8 @@ const FormsRepositoryClean = () => {
                     <TableHeader>
                       <TableRow>
                         <TableHead>Form Name</TableHead>
-                        <TableHead>Type</TableHead>
                         <TableHead>Status</TableHead>
+                        <TableHead className="text-center">Actions</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -431,22 +585,51 @@ const FormsRepositoryClean = () => {
                       ) : filteredForms.length === 0 ? (
                         <TableRow>
                           <TableCell colSpan={3} className="text-center text-gray-500 py-8">
-                            No forms available.
+                            No forms available for "{formStatusFilter}" status.
                           </TableCell>
                         </TableRow>
                       ) : (
-                        filteredForms.slice(0, 10).map((form) => (
+                        filteredForms.map((form) => (
                           <TableRow key={form.id}>
                             <TableCell className="font-medium">
-                              {form.formName || form.name}
+                              {form.form_name}
                             </TableCell>
                             <TableCell>
                               <Badge variant="outline">
-                                {form.changeType || form.type || 'Default'}
+                                {form.status}
                               </Badge>
                             </TableCell>
                             <TableCell>
-                              <Badge variant="secondary">Active</Badge>
+                              <div className="flex justify-center gap-2">
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  onClick={() => handleFormEditClick(form)}
+                                  className="hover:bg-gray-100"
+                                >
+                                  <Edit className="h-4 w-4" />
+                                </Button>
+                                
+                                <TooltipProvider>
+                                  <Tooltip>
+                                    <TooltipTrigger asChild>
+                                      <div>
+                                        <Button
+                                          variant="ghost"
+                                          size="icon"
+                                          disabled
+                                          className="text-red-600 opacity-50 cursor-not-allowed"
+                                        >
+                                          <Trash2 className="h-4 w-4" />
+                                        </Button>
+                                      </div>
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                      <p>This feature is available in next phase</p>
+                                    </TooltipContent>
+                                  </Tooltip>
+                                </TooltipProvider>
+                              </div>
                             </TableCell>
                           </TableRow>
                         ))
@@ -582,6 +765,51 @@ const FormsRepositoryClean = () => {
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
+
+        {/* Form Edit Dialog */}
+        <Dialog open={formEditDialogOpen} onOpenChange={setFormEditDialogOpen}>
+          <DialogContent className="sm:max-w-[425px]">
+            <DialogHeader>
+              <DialogTitle>Edit Form Status</DialogTitle>
+              <DialogDescription>
+                Change the status of "{selectedForm?.form_name}". Click save when you're done.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="grid gap-4 py-4">
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="edit-status" className="text-right">
+                  Status
+                </Label>
+                <select
+                  id="edit-status"
+                  value={editFormStatus}
+                  onChange={(e) => setEditFormStatus(e.target.value)}
+                  className="col-span-3 px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="active">Active</option>
+                  <option value="default">Default</option>
+                  <option value="available">Available</option>
+                  <option value="archive">Archive</option>
+                </select>
+              </div>
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setFormEditDialogOpen(false)}>
+                Cancel
+              </Button>
+              <Button 
+                onClick={handleUpdateForm}
+                disabled={isLoading('updateForm') || !editFormStatus}
+              >
+                {isLoading('updateForm') ? (
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />
+                ) : (
+                  'Save changes'
+                )}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </main>
     </div>
   );

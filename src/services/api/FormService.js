@@ -34,16 +34,16 @@ class FormService {
    */
   async getAvailableForms() {
     try {
-      const data = await this.api.get('/form/{school_id}', {
+      const data = await this.api.get('/get_all_form_details/{school_id}', {
         context: 'Loading available forms',
         cache: true,
         cacheTTL: 5 * 60 * 1000 // 5 minutes cache
       });
 
-      return this.processAvailableFormsData(data);
+      return data; // Return the data directly since it has the correct structure
     } catch (error) {
       console.log('Failed to load available forms:', error);
-      return [];
+      return {};
     }
   }
 

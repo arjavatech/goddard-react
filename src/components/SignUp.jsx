@@ -38,7 +38,7 @@ const SignUp = () => {
         try {
             const obj = {
                 email: email,
-                invite_id: inviteId ? `http://localhost:5173/signUp?invite_id=${inviteId}` : null
+                invite_id: inviteId ? window.location.href : null
             };
 
             const headers = await getAuthHeaders(getAccessTokenSilently);
