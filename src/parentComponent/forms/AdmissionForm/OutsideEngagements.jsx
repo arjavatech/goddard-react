@@ -1,8 +1,11 @@
 import React, { useState } from "react";
 import CheckboxWithLabel from "./CheckboxWithLabel";
 import { api_base_url, school_id } from "@/utils/const";
+import { useAuth0 } from '@auth0/auth0-react';
+import { getAuthHeaders } from '@/utils/auth';
 
 export default function OutsideEngagements({initialFormData = null, childId }) {
+    const { getAccessTokenSilently } = useAuth0();
     const [agreePhotos, setAgreePhotos] = useState(initialFormData.parent_sign_outside_waiver == 'on');
     const [submitted, setSubmitted] = useState(false);
 
@@ -15,11 +18,10 @@ export default function OutsideEngagements({initialFormData = null, childId }) {
     }
 
     try {
+      const headers = await getAuthHeaders(getAccessTokenSilently);
       const response = await fetch(`${api_base_url}/admission_segment/${school_id}/${childId}`, {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers,
         body: JSON.stringify(fieldData)
       });
 

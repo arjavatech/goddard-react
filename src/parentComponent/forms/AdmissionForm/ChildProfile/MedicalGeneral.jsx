@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { ChevronUp, ChevronDown } from 'lucide-react';
 import { RadioGroup, FormInput } from './InputComponent';
 import { api_base_url, school_id } from '@/utils/const';
+import { useAuth0 } from '@auth0/auth0-react';
+import { getAuthHeaders } from '@/utils/auth';
 
 const yesNoFields = [
   {
@@ -47,6 +49,7 @@ const yesNoFields = [
 ];
 
 const MedicalGeneral = ({ initialFormData = null, expandedSections, toggleSection, childId }) => {
+  const { getAccessTokenSilently } = useAuth0();
   const [localFormData, setLocalFormData] = useState({
     hasExistingCondition: '',
     existingConditionExplanation: '',
@@ -121,11 +124,10 @@ const MedicalGeneral = ({ initialFormData = null, expandedSections, toggleSectio
     }
 
     try {
+      const headers = await getAuthHeaders(getAccessTokenSilently);
       const response = await fetch(`${api_base_url}/admission_segment/${school_id}/${childId}`, {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers,
         body: JSON.stringify(fieldData)
       });
 

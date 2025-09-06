@@ -8,6 +8,8 @@ import SocialBehavior from './SocialBehavior';
 import EnvironmentalFactors from './EnvironmentalFactors';
 import Parent_Agreement from './Parent_Agreement'
 import { api_base_url, school_id } from '@/utils/const';
+import { useAuth0 } from '@auth0/auth0-react';
+import { getAuthHeaders } from '@/utils/auth';
 
 
 const ChildandFamilyHistory = ({ initialFormData = null, childId = null }) => {

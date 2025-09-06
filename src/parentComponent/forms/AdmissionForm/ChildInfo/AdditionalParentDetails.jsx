@@ -2,9 +2,12 @@ import React, {useState, useEffect} from 'react';
 import { FormInput } from './InputComponent';
 import { DownIcon,UpIcon } from '../../../../components/common/Arrows';
 import { api_base_url, school_id } from '@/utils/const';
+import { useAuth0 } from '@auth0/auth0-react';
+import { getAuthHeaders } from '@/utils/auth';
 import { toast } from 'sonner';
 
 const Additional_Parent_details = ({ openSection, setOpenSection, initialFormData, handleInputChange, childId }) => {
+    const { getAccessTokenSilently } = useAuth0();
 
 
 
@@ -69,11 +72,10 @@ const Additional_Parent_details = ({ openSection, setOpenSection, initialFormDat
               }
       
               try {
+                  const headers = await getAuthHeaders(getAccessTokenSilently);
                   const response = await fetch(`${api_base_url}/admission_segment/${school_id}/${childId}`, {
                       method: 'PUT',
-                      headers: {
-                          'Content-Type': 'application/json',
-                      },
+                      headers,
                       body: JSON.stringify(fieldData)
                   });
       

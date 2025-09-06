@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import CheckboxWithLabel from "./CheckboxWithLabel";
 import { api_base_url, school_id } from '@/utils/const';
+import { useAuth0 } from '@auth0/auth0-react';
+import { getAuthHeaders } from '@/utils/auth';
 
 export default function SocialMediaReleaseForm({initialFormData = null, childId}) {
+  const { getAccessTokenSilently } = useAuth0();
   const [approval, setApproval] = useState(initialFormData.approve_social_media_post);
   const [printedName, setPrintedName] = useState(initialFormData.printed_name_social_media_post);
   const [agreed, setAgreed] = useState(initialFormData.do_you_agree_this_social_media_post == 'on');
@@ -23,11 +26,10 @@ export default function SocialMediaReleaseForm({initialFormData = null, childId}
     }
 
     try {
+      const headers = await getAuthHeaders(getAccessTokenSilently);
       const response = await fetch(`${api_base_url}/admission_segment/${school_id}/${childId}`, {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers,
         body: JSON.stringify(fieldData)
       });
 

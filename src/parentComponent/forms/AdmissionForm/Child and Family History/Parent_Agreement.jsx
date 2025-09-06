@@ -2,10 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { CheckboxGroup } from './InputComponent';
 import { UpIcon, DownIcon } from './Arrows';
 import { api_base_url, school_id } from '@/utils/const';
+import { useAuth0 } from '@auth0/auth0-react';
+import { getAuthHeaders } from '@/utils/auth';
 
 
 
 const Parent_Agreement = ({ openSection, setOpenSection, formData, handleInputChange, initialFormData, childId }) => {
+    const { getAccessTokenSilently } = useAuth0();
     const [localFormData, setLocalFormData] = useState({
         agree_all_above_info_is_correct: []
     });
@@ -39,11 +42,10 @@ const Parent_Agreement = ({ openSection, setOpenSection, formData, handleInputCh
         }
 
         try {
+            const headers = await getAuthHeaders(getAccessTokenSilently);
             const response = await fetch(`${api_base_url}/admission_segment/${school_id}/${childId}`, {
                 method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                headers,
                 body: JSON.stringify(fieldData)
             });
 

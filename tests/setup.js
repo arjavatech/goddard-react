@@ -1,11 +1,20 @@
 import '@testing-library/jest-dom';
-import { beforeAll, afterEach, beforeEach, vi } from 'vitest';
+import { beforeAll, afterEach, afterAll, beforeEach, vi } from 'vitest';
 import { cleanup } from '@testing-library/react';
+import { server } from './mocks/server.js';
 
 // Setup testing environment
 beforeAll(() => {
   // Mock environment variables if needed
   process.env.NODE_ENV = 'test';
+  
+  // Start MSW server
+  server.listen({ onUnhandledRequest: 'error' });
+});
+
+// Clean up MSW after all tests
+afterAll(() => {
+  server.close();
 });
 
 // Cleanup after each test
@@ -17,6 +26,9 @@ afterEach(() => {
   if (typeof sessionStorage !== 'undefined') {
     sessionStorage.clear();
   }
+  
+  // Reset MSW handlers to default
+  server.resetHandlers();
 });
 
 // Mock fetch globally

@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { api_base_url } from '@/utils/const';
+import { ENDPOINTS, DEFAULT_SCHOOL_NAME } from '@/services/api/endpoints';
 import { getAuthHeaders } from '@/utils/auth';
 import { useAuth0 } from '@auth0/auth0-react';
 
@@ -55,10 +56,8 @@ const CompletedFormsTable = ({ forms, childName, childId }) => {
     setIsProcessing(true);
     try {
       const headers = await getAuthHeaders(getAccessTokenSilently);
-      const response = await fetch(
-        `${api_base_url}/get-s3-file/lynnwood/${childId}/${formName}/false`,
-        { headers }
-      );
+      const url = `${api_base_url}${ENDPOINTS.S3_FILE(DEFAULT_SCHOOL_NAME, childId, formName, false)}`;
+      const response = await fetch(url, { headers });
 
       if (!response.ok) {
         throw new Error(`Download failed: ${response.status}`);
@@ -96,10 +95,8 @@ const CompletedFormsTable = ({ forms, childName, childId }) => {
     setIsProcessing(true);
     try {
       const headers = await getAuthHeaders(getAccessTokenSilently);
-      const response = await fetch(
-        `${api_base_url}/get-s3-file/lynnwood/${childId}/${formName}/true`,
-        { headers }
-      );
+      const url = `${api_base_url}${ENDPOINTS.S3_FILE(DEFAULT_SCHOOL_NAME, childId, formName, true)}`;
+      const response = await fetch(url, { headers });
 
       if (!response.ok) {
         throw new Error(`Print failed: ${response.status}`);

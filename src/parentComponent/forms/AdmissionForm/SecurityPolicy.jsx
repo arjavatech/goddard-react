@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import CheckboxWithLabel from "./CheckboxWithLabel";
 import { api_base_url, school_id } from '@/utils/const';
+import { useAuth0 } from '@auth0/auth0-react';
+import { getAuthHeaders } from '@/utils/auth';
 
 const SecurityPolicy = ({ initialFormData = null, childId = null }) => {
+  const { getAccessTokenSilently } = useAuth0();
   const [agreed, setAgreed] = useState(false);
 
   // API function to update admission form data
@@ -13,11 +16,10 @@ const SecurityPolicy = ({ initialFormData = null, childId = null }) => {
     }
 
     try {
+      const headers = await getAuthHeaders(getAccessTokenSilently);
       const response = await fetch(`${api_base_url}/admission_segment/${school_id}/${childId}`, {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers,
         body: JSON.stringify(fieldData)
       });
 
