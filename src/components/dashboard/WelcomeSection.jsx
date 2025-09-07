@@ -12,7 +12,7 @@ const WelcomeSection = ({ parentName, stats }) => {
             Parent Dashboard
           </h1>
           <p className="text-lg text-gray-600 mb-6">
-            {parentName ? `Welcome ${parentName}` : 'Loading...'}
+            {parentName ? `${parentName}` : 'Loading...'}
           </p>
 
           {/* Statistics Cards */}

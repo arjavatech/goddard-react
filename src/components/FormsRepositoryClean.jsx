@@ -376,7 +376,7 @@ const FormsRepositoryClean = () => {
       
       <main className="max-w-7xl mx-auto px-4 py-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Forms Repository</h1>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">Form Management</h1>
           <p className="text-gray-600">Manage classrooms, forms, and student assignments</p>
         </div>
 
@@ -461,7 +461,7 @@ const FormsRepositoryClean = () => {
                       <TableRow>
                         <TableHead>Classroom Name</TableHead>
                         <TableHead>Students</TableHead>
-                        <TableHead>Forms</TableHead>
+                        <TableHead>Additional Forms</TableHead>
                         <TableHead className="text-center">Actions</TableHead>
                       </TableRow>
                     </TableHeader>
@@ -490,7 +490,9 @@ const FormsRepositoryClean = () => {
                               </Badge>
                             </TableCell>
                             <TableCell>
-                              {formsByClassroom[classroom.class_id]?.length || 0} forms
+                              {formsByClassroom[classroom.class_id] 
+  ? Object.values(formsByClassroom[classroom.class_id]).join(", ")
+  : ""}
                             </TableCell>
                             <TableCell>
                               <div className="flex justify-center gap-2">
@@ -542,28 +544,11 @@ const FormsRepositoryClean = () => {
                       <option value="active">Active</option>
                       <option value="archive">Archive</option>
                       <option value="default">Default</option>
-                      <option value="available">Available</option>
+                      <option value="available">InActive</option>
                     </select>
                   </div>
                   
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <div>
-                          <Button
-                            disabled
-                            className="opacity-50 cursor-not-allowed"
-                          >
-                            <Plus className="h-4 w-4 mr-2" />
-                            Add Form
-                          </Button>
-                        </div>
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <p>This feature is available in next phase</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
+                 
                 </div>
 
                 <div className="rounded-md border">
@@ -610,25 +595,6 @@ const FormsRepositoryClean = () => {
                                   <Edit className="h-4 w-4" />
                                 </Button>
                                 
-                                <TooltipProvider>
-                                  <Tooltip>
-                                    <TooltipTrigger asChild>
-                                      <div>
-                                        <Button
-                                          variant="ghost"
-                                          size="icon"
-                                          disabled
-                                          className="text-red-600 opacity-50 cursor-not-allowed"
-                                        >
-                                          <Trash2 className="h-4 w-4" />
-                                        </Button>
-                                      </div>
-                                    </TooltipTrigger>
-                                    <TooltipContent>
-                                      <p>This feature is available in next phase</p>
-                                    </TooltipContent>
-                                  </Tooltip>
-                                </TooltipProvider>
                               </div>
                             </TableCell>
                           </TableRow>
@@ -788,7 +754,7 @@ const FormsRepositoryClean = () => {
                 >
                   <option value="active">Active</option>
                   <option value="default">Default</option>
-                  <option value="available">Available</option>
+                  <option value="available">InActive</option>
                   <option value="archive">Archive</option>
                 </select>
               </div>

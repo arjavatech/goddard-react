@@ -43,7 +43,7 @@ function SidebarNew({ activeItem }) {
     {
       id: 'Forms Repository',
       href: '/forms-repository',
-      label: 'Forms Repository',
+      label: 'Form Management',
       icon: <FolderOpen className="h-5 w-5" />
     }
   ];

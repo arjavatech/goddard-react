@@ -521,7 +521,6 @@ const ApplicationStatusNew = () => {
                     <TableHead>Parent Email</TableHead>
                     <TableHead>Additional Email</TableHead>
                     <TableHead>Status</TableHead>
-                    <TableHead>Action</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -534,7 +533,6 @@ const ApplicationStatusNew = () => {
                         <TableCell><Skeleton className="h-4 w-40" /></TableCell>
                         <TableCell><Skeleton className="h-4 w-40" /></TableCell>
                         <TableCell><Skeleton className="h-4 w-20" /></TableCell>
-                        <TableCell><Skeleton className="h-4 w-24" /></TableCell>
                       </TableRow>
                     ))
                   ) : currentData.length === 0 ? (
@@ -572,16 +570,7 @@ const ApplicationStatusNew = () => {
                         <TableCell>
                           {getStatusBadge(row.form_status)}
                         </TableCell>
-                        <TableCell>
-                          <Button 
-                            variant="outline" 
-                            size="sm"
-                            disabled={true}
-                            className="opacity-50"
-                          >
-                            Send Email
-                          </Button>
-                        </TableCell>
+                        
                       </TableRow>
                     ))
                   )}
