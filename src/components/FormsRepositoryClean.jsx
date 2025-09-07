@@ -461,7 +461,7 @@ const FormsRepositoryClean = () => {
                       <TableRow>
                         <TableHead>Classroom Name</TableHead>
                         <TableHead>Students</TableHead>
-                        <TableHead>Additional Forms</TableHead>
+                        <TableHead>Forms</TableHead>
                         <TableHead className="text-center">Actions</TableHead>
                       </TableRow>
                     </TableHeader>
@@ -490,9 +490,34 @@ const FormsRepositoryClean = () => {
                               </Badge>
                             </TableCell>
                             <TableCell>
-                              {formsByClassroom[classroom.class_id] 
-  ? Object.values(formsByClassroom[classroom.class_id]).join(", ")
-  : ""}
+                              <div className="space-y-2">
+                                {/* Assigned Forms */}
+                                <div>
+                                  <span className="text-xs font-semibold text-gray-600">Assigned Forms:</span>
+                                  <div className="text-sm">
+                                    {formsByClassroom[classroom.class_id] && Object.keys(formsByClassroom[classroom.class_id]).length > 0
+                                      ? Object.values(formsByClassroom[classroom.class_id]).join(", ")
+                                      : "None"}
+                                  </div>
+                                </div>
+                                
+                                {/* Default Forms */}
+                                {classroom.default_forms && (
+                                  <div>
+                                    <span className="text-xs font-semibold text-gray-600">Default Forms:</span>
+                                    <div className="text-sm text-gray-500">
+                                      {(() => {
+                                        try {
+                                          const defaultForms = JSON.parse(classroom.default_forms);
+                                          return Array.isArray(defaultForms) ? defaultForms.join(", ") : "None";
+                                        } catch {
+                                          return "None";
+                                        }
+                                      })()}
+                                    </div>
+                                  </div>
+                                )}
+                              </div>
                             </TableCell>
                             <TableCell>
                               <div className="flex justify-center gap-2">
