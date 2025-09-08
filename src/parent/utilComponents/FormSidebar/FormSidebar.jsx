@@ -14,11 +14,20 @@ const FormSidebar = ({
   // NEW: Accept external form status to avoid API call
   externalFormStatus = null,
   externalLoading = false,
+  // NEW: Accept real-time form progress for unsaved changes
+  currentFormProgress = {},
 }) => {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   // Use external form status if provided, otherwise fall back to useFormStatus hook
   const hookData = useFormStatus(activeChildId, !externalFormStatus); // Skip API call if external data provided
-  const formStatus = externalFormStatus || hookData.formStatus;
+  const baseFormStatus = externalFormStatus || hookData.formStatus;
+  
+  // Merge base form status with real-time form progress
+  const formStatus = {
+    ...baseFormStatus,
+    ...currentFormProgress
+  };
+  
   const handleToggle = hookData.handleToggle;
   const openSection = hookData.openSection;
   const toggleCompleted = hookData.toggleCompleted;

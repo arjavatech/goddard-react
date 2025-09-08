@@ -11,7 +11,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 // Note: Using regular textarea as Textarea component may not be available
 
 
-const ParentAgreement = ({ openSection, setOpenSection, formData, handleInputChange, childId }) => {
+const ParentAgreement = ({ openSection, setOpenSection, formData, handleInputChange, childId, onSubmitSuccess, isCompleted = false }) => {
     const [obtainText, setobtainText] = useState(formData.obtaining_emergency_medical_care ?? '');
       const [procedure, setprocedure] = useState(formData.administration_first_aid_procedures ?? '');
       const [submitted, setSubmitted] = useState(formData.agree_all_above_information_is_correct == 'on');
@@ -54,7 +54,7 @@ const ParentAgreement = ({ openSection, setOpenSection, formData, handleInputCha
         }
       }, [formData]);
     
-      // Function to check if agreement is complete
+      // Function to check if agreement is complete (for validation only)
       const isFormComplete = () => {
           return submitted && obtainText.trim() !== '' && procedure.trim() !== '';
       };
@@ -76,6 +76,11 @@ const ParentAgreement = ({ openSection, setOpenSection, formData, handleInputCha
     
           await updateAdmissionData(saveData);
           alert('Medical transportation waiver saved successfully!');
+          
+          // Call parent success handler to mark section as completed
+          if (onSubmitSuccess) {
+              onSubmitSuccess();
+          }
         } catch (error) {
           console.error('Failed to save medical transportation waiver:', error);
           alert('Error saving medical transportation waiver. Please try again.');
@@ -117,13 +122,13 @@ const ParentAgreement = ({ openSection, setOpenSection, formData, handleInputCha
                 <div className="flex items-center space-x-3">
                     <div className="flex items-center space-x-3">
                         <h2 className="text-lg font-semibold">Parent Agreement</h2>
-                        {isFormComplete() ? (
+                        {isCompleted ? (
                             <CheckCircle className="w-5 h-5 text-green-500" />
                         ) : (
                             <Circle className="w-5 h-5 text-gray-400" />
                         )}
-                        <Badge variant={isFormComplete() ? "default" : "secondary"}>
-                            {isFormComplete() ? "Complete" : "Incomplete"}
+                        <Badge variant={isCompleted ? "default" : "secondary"}>
+                            {isCompleted ? "Complete" : "Incomplete"}
                         </Badge>
                     </div>
                 </div>

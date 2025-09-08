@@ -10,7 +10,7 @@ import ParentAgreement from './ParentAgreement';
 
 
 
-const ChildInfo = ({ initialFormData = null, childId = null }) => {
+const ChildInfo = ({ initialFormData = null, childId = null, onSubmitSuccess, sectionCompletionStatus = {}, onSubSectionSuccess }) => {
 
     
 
@@ -35,6 +35,8 @@ const ChildInfo = ({ initialFormData = null, childId = null }) => {
                             setOpenSection={setOpenSection}
                             initialFormData={initialFormData}
                             childId={childId}
+                            onSubmitSuccess={() => onSubSectionSuccess && onSubSectionSuccess('Child Details')}
+                            isCompleted={sectionCompletionStatus['Child Details'] || false}
                         />
                     </div>
 
@@ -45,6 +47,8 @@ const ChildInfo = ({ initialFormData = null, childId = null }) => {
                             setOpenSection={setOpenSection}
                             initialFormData={initialFormData.primary_parent_info}
                             childId={childId}
+                            onSubmitSuccess={() => onSubSectionSuccess && onSubSectionSuccess('Parent Details')}
+                            isCompleted={sectionCompletionStatus['Parent Details'] || false}
                         />
                     </div>
 
@@ -54,6 +58,8 @@ const ChildInfo = ({ initialFormData = null, childId = null }) => {
                             setOpenSection={setOpenSection}
                             initialFormData={initialFormData.additional_parent_info}
                             childId={childId}
+                            onSubmitSuccess={() => onSubSectionSuccess && onSubSectionSuccess('Additional Parent Details')}
+                            isCompleted={sectionCompletionStatus['Additional Parent Details'] || false}
                         />
                     </div>
 
@@ -63,6 +69,8 @@ const ChildInfo = ({ initialFormData = null, childId = null }) => {
                             setOpenSection={setOpenSection}
                             initialFormData={initialFormData.emergency_contact_info}
                             childId={childId}
+                            onSubmitSuccess={() => onSubSectionSuccess && onSubSectionSuccess('Emergency Contact')}
+                            isCompleted={sectionCompletionStatus['Emergency Contact'] || false}
                         />
                     </div>
                     
@@ -73,6 +81,8 @@ const ChildInfo = ({ initialFormData = null, childId = null }) => {
                             initialFormData={initialFormData}
                             charProviderData={initialFormData.child_care_provider_info}
                             childId={childId}
+                            onSubmitSuccess={() => onSubSectionSuccess && onSubSectionSuccess('Medical Care Provider')}
+                            isCompleted={sectionCompletionStatus['Medical Care Provider'] || false}
                         />
                     </div>
 
@@ -81,7 +91,9 @@ const ChildInfo = ({ initialFormData = null, childId = null }) => {
                             openSection={openSection}
                             setOpenSection={setOpenSection}
                             formData={initialFormData}
-                           childId={childId}
+                            childId={childId}
+                            onSubmitSuccess={() => onSubSectionSuccess && onSubSectionSuccess('Parent Agreement')}
+                            isCompleted={sectionCompletionStatus['Parent Agreement'] || false}
                         />
                     </div>
                 </CardContent>

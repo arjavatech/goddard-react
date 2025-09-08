@@ -28,12 +28,10 @@ const useFormStatus = (activeChildId, shouldFetch = true) => {
 
   useEffect(() => {
     if (!activeChildId || !shouldFetch) {
-      console.log('⏭️ Skipping FormStatusLogic API call - data provided externally');
       return;
     }
 
     const fetchFormStatus = async () => {
-      console.log('🔄 FormStatusLogic making API call (fallback mode)');
       setLoading(true);
 
       try {
@@ -47,7 +45,6 @@ const useFormStatus = (activeChildId, shouldFetch = true) => {
           throw new Error('No parent email available');
         }
         
-        console.log('FormStatusLogic: Using email for API call:', parentEmail);
         
         const headers = await getAuthHeaders(getAccessTokenSilently);
         const response = await fetch(`${api_base_url}/admission_child_personal/parent_email/${school_id}/${parentEmail}`, {
@@ -59,7 +56,6 @@ const useFormStatus = (activeChildId, shouldFetch = true) => {
         }
 
         const result = await response.json();
-        console.log("form", result);
         
         // Find the specific child data
         const childData = result.find(child => child.child_id === activeChildId);
@@ -216,7 +212,6 @@ const useFormStatus = (activeChildId, shouldFetch = true) => {
           'pick_up_time'
         ].every(field => {
           const isValid = isValidValue(formDetails.admission_form?.[field]);
-          console.log(field, ": ", isValid);
           return isValid;
         })
 
@@ -260,7 +255,6 @@ const useFormStatus = (activeChildId, shouldFetch = true) => {
           restDetailsComplete &&
           medicalDetailsComplete &&
           parentAgreementThreeComplete;
-        console.log(isChildprofileComplete, nutritionDetailsComplete, restDetailsComplete, medicalDetailsComplete, parentAgreementThreeComplete)
 
         const isChildPickupPasswordComplete =
           isValidValue(formDetails.admission_form?.child_password_pick_up_password_form) &&

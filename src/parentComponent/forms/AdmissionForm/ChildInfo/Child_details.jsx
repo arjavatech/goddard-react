@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { CheckCircle, Circle } from 'lucide-react';
 
-const Child_details = ({ openSection, setOpenSection, initialFormData, childId }) => {
+const Child_details = ({ openSection, setOpenSection, initialFormData, childId, onSubmitSuccess, isCompleted = false }) => {
     const { getAccessTokenSilently } = useAuth0();
 
     
@@ -53,7 +53,7 @@ const Child_details = ({ openSection, setOpenSection, initialFormData, childId }
       }
     }, [initialFormData]);
 
-    // Function to check if all required fields are filled
+    // Function to check if all required fields are filled (for validation)
     const isFormComplete = () => {
         const requiredFields = [
             'child_first_name',
@@ -122,6 +122,11 @@ const handleSave = async () => {
             console.log(saveData) // Log the data being sent to the API for debugging pur)
             await updateAdmissionData(saveData);
             toast.success('Child details data saved successfully!');
+            
+            // Call parent success handler to mark section as completed
+            if (onSubmitSuccess) {
+                onSubmitSuccess();
+            }
         } catch (error) {
             console.error('Failed to save Child details:', error);
             toast.error('Error saving Child details data. Please try again.');
@@ -154,13 +159,13 @@ const handleSave = async () => {
             >
                 <div className="flex items-center space-x-3">
                     <h2 className="text-lg font-semibold">Child Details</h2>
-                    {isFormComplete() ? (
+                    {isCompleted ? (
                         <CheckCircle className="w-5 h-5 text-green-500" />
                     ) : (
                         <Circle className="w-5 h-5 text-gray-400" />
                     )}
-                    <Badge variant={isFormComplete() ? "default" : "secondary"}>
-                        {isFormComplete() ? "Complete" : "Incomplete"}
+                    <Badge variant={isCompleted ? "default" : "secondary"}>
+                        {isCompleted ? "Complete" : "Incomplete"}
                     </Badge>
                 </div>
                 <div className="text-xl transform transition-transform duration-200">

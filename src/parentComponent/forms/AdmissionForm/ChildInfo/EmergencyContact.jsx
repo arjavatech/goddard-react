@@ -10,7 +10,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { CheckCircle, Circle } from 'lucide-react';
 
-const EmergencyContact = ({ openSection, setOpenSection, initialFormData, handleInputChange, childId }) => {
+const EmergencyContact = ({ openSection, setOpenSection, initialFormData, handleInputChange, childId, onSubmitSuccess, isCompleted = false }) => {
     const { getAccessTokenSilently } = useAuth0();
     const [formData, setFormData] = useState({
     });
@@ -101,7 +101,7 @@ const EmergencyContact = ({ openSection, setOpenSection, initialFormData, handle
         }
     };
 
-    // Function to check if at least one emergency contact is complete
+    // Function to check if at least one emergency contact is complete (for validation)
     const isFormComplete = () => {
         const hasFirstContact = formData.emergencyContact1Name &&
             formData.emergencyContact1Relationship &&
@@ -153,6 +153,11 @@ const EmergencyContact = ({ openSection, setOpenSection, initialFormData, handle
             console.log(saveData); // Log the data being sent to the API for debugging purposes
             await updateAdmissionData(saveData);
             toast.success('Child details data saved successfully!');
+            
+            // Call parent success handler to mark section as completed
+            if (onSubmitSuccess) {
+                onSubmitSuccess();
+            }
         } catch (error) {
             console.error('Failed to save Child details:', error);
             toast.error('Error saving Child details data. Please try again.');
@@ -185,13 +190,13 @@ const EmergencyContact = ({ openSection, setOpenSection, initialFormData, handle
                 <div className="flex items-center space-x-3">
                     <div className="flex items-center space-x-3">
                         <h2 className="text-lg font-semibold">Emergency Contact</h2>
-                        {isFormComplete() ? (
+                        {isCompleted ? (
                             <CheckCircle className="w-5 h-5 text-green-500" />
                         ) : (
                             <Circle className="w-5 h-5 text-gray-400" />
                         )}
-                        <Badge variant={isFormComplete() ? "default" : "secondary"}>
-                            {isFormComplete() ? "Complete" : "Incomplete"}
+                        <Badge variant={isCompleted ? "default" : "secondary"}>
+                            {isCompleted ? "Complete" : "Incomplete"}
                         </Badge>
                     </div>
                 </div>

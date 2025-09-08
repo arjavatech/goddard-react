@@ -28,7 +28,9 @@ const ParentDashboardSimple = () => {
   const urlParams = new URLSearchParams(window.location.search);
   const email = urlParams.get('id') || localStorage.getItem('logged_in_email');
   
-  console.log('🚀 ParentDashboardSimple loading with email:', email);
+  // Real-time form progress state for sidebar updates
+  const [currentFormProgress, setCurrentFormProgress] = useState({});
+  
 
   // Single hook manages ALL dashboard data with ONE API call
   const {
@@ -168,12 +170,23 @@ const ParentDashboardSimple = () => {
       );
     }
 
+    
+
+    // Handler for real-time form progress updates
+    const handleFormProgressUpdate = (formType, itemKey, isCompleted) => {
+      setCurrentFormProgress(prev => ({
+        ...prev,
+        [`${formType}_${itemKey}`]: { completed: isCompleted }
+      }));
+    };
+
     // Common props for all forms
     const commonProps = {
       selectedSubForm,
       childId: activeChild?.id,
       initialFormData: formData,
-      onSubmitSuccess: handleFormSubmissionSuccess // This will refresh the dashboard
+      onSubmitSuccess: handleFormSubmissionSuccess, // This will refresh the dashboard
+      onProgressUpdate: handleFormProgressUpdate // NEW: Real-time progress tracking
     };
 
     console.log('🎨 Rendering form section:', currentSection, 'for child:', activeChild?.id);
@@ -226,8 +239,8 @@ const ParentDashboardSimple = () => {
     }
   };
 
-  console.log('🎯 Rendering dashboard for:', parentName, 'with', children.length, 'children');
-
+  console.log(formData);
+  
   return (
     <div className="min-h-screen bg-gray-50">
       <Toaster richColors position="top-center" />
@@ -266,6 +279,8 @@ const ParentDashboardSimple = () => {
               // NEW: Pass form status to avoid duplicate API call
               externalFormStatus={formStatus}
               externalLoading={loading}
+              // NEW: Pass real-time form progress for unsaved changes
+              currentFormProgress={currentFormProgress}
             />
           </div>
 

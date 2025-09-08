@@ -37,8 +37,53 @@ import ChildProfileForm from './ChildProfile/ChildProfile';
 import AdminSign from './AdminSign';
 import ParentSign from './ParentSign';
 
-const AdmissionFormNew = ({ selectedSubForm, initialFormData = null, childId = null, onSubmitSuccess }) => {
+const AdmissionFormNew = ({ selectedSubForm, initialFormData = null, childId = null, onSubmitSuccess, onProgressUpdate }) => {
   const [activeTab, setActiveTab] = useState(selectedSubForm || 'Child Information');
+  
+  // Track form completion status for each section
+  const [sectionCompletionStatus, setSectionCompletionStatus] = useState({});
+  
+  // Handle when a section is SAVED (not just filled)
+  const handleSectionSaveSuccess = (sectionId) => {
+    console.log(`✅ Section ${sectionId} saved successfully`);
+    
+    setSectionCompletionStatus(prev => ({
+      ...prev,
+      [sectionId]: true  // Only set to true when actually saved
+    }));
+    
+    // Map section IDs to admission item keys and notify parent
+    if (onProgressUpdate) {
+      const sectionKeyMapping = {
+        'Child Information': 'childinformation',
+        'Child and Family History': 'childandfamilyhistory', 
+        'Immunization': 'immunization',
+        'Child Profile': 'child_profile',
+        'Pick-up Password': 'childpickup_password',
+        'Photo/Video Permission': 'photo_permission',
+        'Security & Policy': 'security',
+        'Medical Transportation': 'medical_transportation',
+        'Health Policies': 'health_policies',
+        'Outside Engagements': 'outside_engagements',
+        'Social Media Approval': 'social_media',
+        'Parent Signature': 'parentsignature',
+        'Admin Signature': 'adminsignature'
+      };
+      
+      const itemKey = sectionKeyMapping[sectionId];
+      if (itemKey) {
+        onProgressUpdate('admission', itemKey, true);  // true only when saved
+      }
+    }
+  };
+  
+  // Handle when an individual sub-section within Child Information is saved
+  const handleSubSectionSaveSuccess = (subSectionId) => {
+    setSectionCompletionStatus(prev => ({
+      ...prev,
+      [subSectionId]: true
+    }));
+  };
   
   const formSections = [
     {
@@ -157,33 +202,62 @@ const AdmissionFormNew = ({ selectedSubForm, initialFormData = null, childId = n
   };
 
   const renderFormContent = () => {
+    // Enhanced submit success handler that also tracks section completion
+    const enhancedOnSubmitSuccess = (...args) => {
+      // Call the original onSubmitSuccess first
+      if (onSubmitSuccess) {
+        onSubmitSuccess(...args);
+      }
+      
+      // Then mark this section as completed (saved)
+      handleSectionSaveSuccess(activeTab);
+    };
+
+    // Common props for all form components
+    const commonFormProps = {
+      initialFormData,
+      childId,
+      onSubmitSuccess: enhancedOnSubmitSuccess,  // Use enhanced handler that tracks saves
+      onSubSectionSuccess: handleSubSectionSaveSuccess  // For individual sub-sections within forms
+    };
+
     switch (activeTab) {
       case 'Child Information':
-        return <ChildInfo initialFormData={initialFormData} childId={childId} onSubmitSuccess={onSubmitSuccess} />;
+        return <ChildInfo 
+          {...commonFormProps} 
+          sectionCompletionStatus={{
+            'Child Details': sectionCompletionStatus['Child Details'] || false,
+            'Parent Details': sectionCompletionStatus['Parent Details'] || false,
+            'Additional Parent Details': sectionCompletionStatus['Additional Parent Details'] || false,
+            'Emergency Contact': sectionCompletionStatus['Emergency Contact'] || false,
+            'Medical Care Provider': sectionCompletionStatus['Medical Care Provider'] || false,
+            'Parent Agreement': sectionCompletionStatus['Parent Agreement'] || false
+          }}
+        />;
       case 'Child and Family History':
-        return <ChildandFamilyHistory initialFormData={initialFormData} childId={childId} onSubmitSuccess={onSubmitSuccess} />;
+        return <ChildandFamilyHistory {...commonFormProps} />;
       case 'Immunization':
-        return <ImmunizationInstructions initialFormData={initialFormData} childId={childId} onSubmitSuccess={onSubmitSuccess} />;
+        return <ImmunizationInstructions {...commonFormProps} />;
       case 'Child Profile':
-        return <ChildProfileForm initialFormData={initialFormData} childId={childId} onSubmitSuccess={onSubmitSuccess} />;
+        return <ChildProfileForm {...commonFormProps} />;
       case 'Photo/Video Permission':
-        return <VideoPermission initialFormData={initialFormData} childId={childId} onSubmitSuccess={onSubmitSuccess} />;
+        return <VideoPermission {...commonFormProps} />;
       case 'Pick-up Password':
-        return <PickUpPassword initialFormData={initialFormData} childId={childId} onSubmitSuccess={onSubmitSuccess} />;
+        return <PickUpPassword {...commonFormProps} />;
       case 'Security & Policy':
-        return <SecurityPolicy initialFormData={initialFormData} childId={childId} onSubmitSuccess={onSubmitSuccess} />;
+        return <SecurityPolicy {...commonFormProps} />;
       case 'Medical Transportation':
-        return <MedicalTransportationWaiver initialFormData={initialFormData} childId={childId} onSubmitSuccess={onSubmitSuccess} />;
+        return <MedicalTransportationWaiver {...commonFormProps} />;
       case 'Health Policies':
-        return <HealthPolicies initialFormData={initialFormData} childId={childId} onSubmitSuccess={onSubmitSuccess} />;
+        return <HealthPolicies {...commonFormProps} />;
       case 'Outside Engagements':
-        return <OutsideEngagements initialFormData={initialFormData} childId={childId} onSubmitSuccess={onSubmitSuccess} />;
+        return <OutsideEngagements {...commonFormProps} />;
       case 'Social Media Approval':
-        return <SocialMediaReleaseForm initialFormData={initialFormData} childId={childId} onSubmitSuccess={onSubmitSuccess} />;
-      case 'Admin Signature':
-        return <AdminSign initialFormData={initialFormData} childId={childId} onSubmitSuccess={onSubmitSuccess} />;
+        return <SocialMediaReleaseForm {...commonFormProps} />;
       case 'Parent Signature':
-        return <ParentSign initialFormData={initialFormData} childId={childId} onSubmitSuccess={onSubmitSuccess} />;
+        return <ParentSign {...commonFormProps} />;
+      case 'Admin Signature':
+        return <AdminSign {...commonFormProps} />;
       default:
         return (
           <Card>
@@ -248,8 +322,8 @@ const AdmissionFormNew = ({ selectedSubForm, initialFormData = null, childId = n
     return acc;
   }, {});
 
-  // Calculate progress (placeholder logic - would need real completion tracking)
-  const completedSections = 0; // This would be calculated based on actual form completion
+  // Calculate progress based on actual section completion
+  const completedSections = Object.values(sectionCompletionStatus).filter(Boolean).length;
   const totalSections = formSections.length;
   const progress = (completedSections / totalSections) * 100;
 
@@ -306,6 +380,9 @@ const AdmissionFormNew = ({ selectedSubForm, initialFormData = null, childId = n
                     {section.icon}
                     <span className="hidden sm:inline">{section.title}</span>
                     <span className="sm:hidden">{section.title.split(' ')[0]}</span>
+                    {sectionCompletionStatus[section.id] && (
+                      <CheckCircle className="h-4 w-4 text-green-500" />
+                    )}
                   </TabsTrigger>
                 ))}
               </React.Fragment>
