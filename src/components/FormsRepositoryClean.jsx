@@ -1308,12 +1308,35 @@ const FormsRepositoryClean = () => {
                   className="col-span-3 px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
                   <option value="">Select a form</option>
-                  {/* Show all forms from all categories - same as Forms tab */}
-                  {allFormsForStudent && allFormsForStudent.map((form) => (
-                    <option key={form.id} value={form.form_id}>
-                      {form.form_name} ({form.status})
-                    </option>
-                  ))}
+                  {/* Show all forms from all categories, but filter out already assigned forms */}
+                  {allFormsForStudent && allFormsForStudent.map((form) => {
+                    // Check if this form is already assigned to the student
+                    const isAlreadyAssigned = selectedStudentForForm && selectedStudentForForm.forms && 
+                      Object.values(selectedStudentForForm.forms).some(studentForm => {
+                        if (studentForm && typeof studentForm === 'object') {
+                          const studentFormId = studentForm.form_id || studentForm.id || studentForm.formId;
+                          const matches = studentFormId && studentFormId.toString() === form.form_id.toString();
+                          if (matches) {
+                            console.log('Form already assigned:', form.form_name, 'Form ID:', form.form_id);
+                          }
+                          return matches;
+                        }
+                        return false;
+                      });
+                    
+                    console.log(`Add form dropdown - ${form.form_name} (ID: ${form.form_id}) - Already assigned: ${isAlreadyAssigned}`);
+
+                    return (
+                      <option 
+                        key={form.id} 
+                        value={form.form_id}
+                        disabled={isAlreadyAssigned}
+                        style={isAlreadyAssigned ? { color: '#999', backgroundColor: '#f5f5f5' } : {}}
+                      >
+                        {form.form_name} ({form.status}){isAlreadyAssigned ? ' - Already Assigned' : ''}
+                      </option>
+                    );
+                  })}
                 </select>
               </div>
             </div>
