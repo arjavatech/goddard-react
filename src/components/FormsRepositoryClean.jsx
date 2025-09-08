@@ -790,8 +790,44 @@ const FormsRepositoryClean = () => {
                               </TableCell>
                               <TableCell>{student.parentEmail}</TableCell>
                               <TableCell>
-                                <Badge variant="secondary">
-                                  {student.formCount} forms
+                                <Badge variant="secondary" className="whitespace-pre-line">
+                                  {(() => {
+                                    if (!student.forms) {
+                                      return "None";
+                                    }
+                                    
+                                    try {
+                                      const values = Object.values(student.forms);
+                                      
+                                      if (values.length > 0) {
+                                        // Extract form names from nested objects
+                                        const formNames = values.map(formObj => {
+                                          // Try different possible property names for the form name
+                                          if (formObj && typeof formObj === 'object') {
+                                            return formObj.form_name || 
+                                                   formObj.name || 
+                                                   formObj.formName ||
+                                                   formObj.title ||
+                                                   JSON.stringify(formObj);
+                                          }
+                                          return String(formObj);
+                                        }).filter(name => name);
+                                        
+                                        // Group forms in sets of 2 per line
+                                        const groupedNames = [];
+                                        for (let i = 0; i < formNames.length; i += 2) {
+                                          const group = formNames.slice(i, i + 2);
+                                          groupedNames.push(group.join(", "));
+                                        }
+                                        
+                                        return groupedNames.join("\n");
+                                      }
+                                      
+                                      return "None";
+                                    } catch (error) {
+                                      return "Error";
+                                    }
+                                  })()}
                                 </Badge>
                               </TableCell>
                             </TableRow>
