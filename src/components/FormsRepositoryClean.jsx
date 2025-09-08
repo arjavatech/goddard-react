@@ -109,6 +109,11 @@ const FormsRepositoryClean = () => {
   const [formEditDialogOpen, setFormEditDialogOpen] = useState(false);
   const [selectedForm, setSelectedForm] = useState(null);
   const [editFormStatus, setEditFormStatus] = useState('');
+  
+  // Add Form to Classroom dialog states
+  const [addFormDialogOpen, setAddFormDialogOpen] = useState(false);
+  const [selectedClassroomForForm, setSelectedClassroomForForm] = useState(null);
+  const [selectedFormId, setSelectedFormId] = useState('');
 
   // Status mapping
   const statusToInt = {
@@ -361,6 +366,49 @@ const FormsRepositoryClean = () => {
     }
   };
 
+  // Handle adding form to classroom
+  const handleAddFormSubmit = async () => {
+    if (!selectedFormId || !selectedClassroomForForm) return;
+    
+    setLoading('addFormToClassroom', true);
+    
+    try {
+      const headers = await getAuthHeaders(getAccessTokenSilently);
+      
+      const response = await fetch(`http://0.0.0.0:8000/class_form_repository`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({
+          school_id: school_id,
+          class_id: selectedClassroomForForm.class_id,
+          form_id: parseInt(selectedFormId),
+          created_by: "system",
+          created_at: new Date().toISOString(),
+          updated_by: "system",
+          updated_at: new Date().toISOString(),
+          is_active: true
+        })
+      });
+      
+      if (response.ok) {
+        setAddFormDialogOpen(false);
+        setSelectedClassroomForForm(null);
+        setSelectedFormId('');
+        
+        // Refresh classrooms data to show updated forms
+        await refetchClassrooms();
+      } else {
+        console.error('Failed to add form to classroom:', response.status);
+        const errorText = await response.text();
+        console.error('Error response:', errorText);
+      }
+    } catch (error) {
+      console.error('Failed to add form to classroom:', error);
+    } finally {
+      setLoading('addFormToClassroom', false);
+    }
+  };
+
   // Loading component
   const LoadingSkeleton = ({ rows = 3 }) => (
     <div className="space-y-2">
@@ -463,18 +511,19 @@ const FormsRepositoryClean = () => {
                         <TableHead>Students</TableHead>
                         <TableHead>Forms</TableHead>
                         <TableHead className="text-center">Actions</TableHead>
+                        <TableHead className="text-center">Form Management</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
                       {classroomsLoading ? (
                         <TableRow>
-                          <TableCell colSpan={4}>
+                          <TableCell colSpan={5}>
                             <LoadingSkeleton rows={5} />
                           </TableCell>
                         </TableRow>
                       ) : classrooms.length === 0 ? (
                         <TableRow>
-                          <TableCell colSpan={4} className="text-center text-gray-500 py-8">
+                          <TableCell colSpan={5} className="text-center text-gray-500 py-8">
                             No classrooms found. Create your first classroom above.
                           </TableCell>
                         </TableRow>
@@ -536,6 +585,35 @@ const FormsRepositoryClean = () => {
                                   className="text-red-600 hover:text-red-700 hover:bg-red-50"
                                 >
                                   <Trash2 className="h-4 w-4" />
+                                </Button>
+                              </div>
+                            </TableCell>
+                            <TableCell>
+                              <div className="flex gap-2">
+                                <Button
+                                  size="sm"
+                                  variant="default"
+                                  onClick={() => {
+                                    setSelectedClassroomForForm(classroom);
+                                    setAddFormDialogOpen(true);
+                                    setSelectedFormId('');
+                                  }}
+                                  className="bg-[#002e4d] hover:bg-[#002e4d]/90"
+                                >
+                                  <Plus className="w-3 h-3 mr-1" />
+                                  Add Form
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  variant="default"
+                                  onClick={() => {
+                                    // Delete Form action - to be implemented
+                                    console.log('Delete form for classroom:', classroom.class_id);
+                                  }}
+                                  className="bg-[#002e4d] hover:bg-[#002e4d]/90"
+                                >
+                                  <Trash2 className="w-3 h-3 mr-1" />
+                                  Delete Form
                                 </Button>
                               </div>
                             </TableCell>
@@ -796,6 +874,63 @@ const FormsRepositoryClean = () => {
                   <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />
                 ) : (
                   'Save changes'
+                )}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        {/* Add Form to Classroom Modal */}
+        <Dialog open={addFormDialogOpen} onOpenChange={setAddFormDialogOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Add Form to {selectedClassroomForForm?.class_name}</DialogTitle>
+              <DialogDescription>
+                Select a form to add to this classroom
+              </DialogDescription>
+            </DialogHeader>
+            <div className="grid gap-4 py-4">
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="form-select" className="text-right">
+                  Form
+                </Label>
+                <select
+                  id="form-select"
+                  value={selectedFormId}
+                  onChange={(e) => setSelectedFormId(e.target.value)}
+                  className="col-span-3 px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="">Select a form</option>
+                  {/* Show only active forms */}
+                  {availableForms && availableForms.active && 
+                    Object.entries(availableForms.active).map(([formName, formId]) => (
+                      <option key={formId} value={formId}>
+                        {formName.split('_').map(word => 
+                          word.charAt(0).toUpperCase() + word.slice(1)
+                        ).join(' ')}
+                      </option>
+                    ))
+                  }
+                </select>
+              </div>
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => {
+                setAddFormDialogOpen(false);
+                setSelectedFormId('');
+                setSelectedClassroomForForm(null);
+              }}>
+                Cancel
+              </Button>
+              <Button 
+                onClick={handleAddFormSubmit}
+                disabled={!selectedFormId || isLoading('addFormToClassroom')}
+                className="bg-[#002e4d] hover:bg-[#002e4d]/90"
+              >
+                {isLoading('addFormToClassroom') ? (
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />
+                ) : (
+                  'Add Form'
                 )}
               </Button>
             </DialogFooter>
