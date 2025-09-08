@@ -114,6 +114,11 @@ const FormsRepositoryClean = () => {
   const [addFormDialogOpen, setAddFormDialogOpen] = useState(false);
   const [selectedClassroomForForm, setSelectedClassroomForForm] = useState(null);
   const [selectedFormId, setSelectedFormId] = useState('');
+  
+  // Delete Form from Classroom dialog states
+  const [deleteFormDialogOpen, setDeleteFormDialogOpen] = useState(false);
+  const [selectedClassroomForDeleteForm, setSelectedClassroomForDeleteForm] = useState(null);
+  const [selectedFormIdToDelete, setSelectedFormIdToDelete] = useState('');
 
   // Status mapping
   const statusToInt = {
@@ -375,7 +380,7 @@ const FormsRepositoryClean = () => {
     try {
       const headers = await getAuthHeaders(getAccessTokenSilently);
       
-      const response = await fetch(`http://0.0.0.0:8000/class_form_repository`, {
+      const response = await fetch(`${api_base_url}/class_form_repository`, {
         method: 'POST',
         headers,
         body: JSON.stringify({
@@ -406,6 +411,39 @@ const FormsRepositoryClean = () => {
       console.error('Failed to add form to classroom:', error);
     } finally {
       setLoading('addFormToClassroom', false);
+    }
+  };
+
+  // Handle deleting form from classroom
+  const handleDeleteFormSubmit = async () => {
+    if (!selectedFormIdToDelete || !selectedClassroomForDeleteForm) return;
+    
+    setLoading('deleteFormFromClassroom', true);
+    
+    try {
+      const headers = await getAuthHeaders(getAccessTokenSilently);
+      
+      const response = await fetch(`${api_base_url}/class_form_repository/${school_id}/${selectedClassroomForDeleteForm.class_id}/${selectedFormIdToDelete}/${updated_by}`, {
+        method: 'DELETE',
+        headers
+      });
+      
+      if (response.ok) {
+        setDeleteFormDialogOpen(false);
+        setSelectedClassroomForDeleteForm(null);
+        setSelectedFormIdToDelete('');
+        
+        // Refresh classrooms data to show updated forms
+        await refetchClassrooms();
+      } else {
+        console.error('Failed to delete form from classroom:', response.status);
+        const errorText = await response.text();
+        console.error('Error response:', errorText);
+      }
+    } catch (error) {
+      console.error('Failed to delete form from classroom:', error);
+    } finally {
+      setLoading('deleteFormFromClassroom', false);
     }
   };
 
@@ -607,8 +645,9 @@ const FormsRepositoryClean = () => {
                                   size="sm"
                                   variant="default"
                                   onClick={() => {
-                                    // Delete Form action - to be implemented
-                                    console.log('Delete form for classroom:', classroom.class_id);
+                                    setSelectedClassroomForDeleteForm(classroom);
+                                    setDeleteFormDialogOpen(true);
+                                    setSelectedFormIdToDelete('');
                                   }}
                                   className="bg-[#002e4d] hover:bg-[#002e4d]/90"
                                 >
@@ -931,6 +970,61 @@ const FormsRepositoryClean = () => {
                   <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />
                 ) : (
                   'Add Form'
+                )}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        {/* Delete Form from Classroom Modal */}
+        <Dialog open={deleteFormDialogOpen} onOpenChange={setDeleteFormDialogOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Delete Form from {selectedClassroomForDeleteForm?.class_name}</DialogTitle>
+              <DialogDescription>
+                Select a form to remove from this classroom
+              </DialogDescription>
+            </DialogHeader>
+            <div className="grid gap-4 py-4">
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="delete-form-select" className="text-right">
+                  Form
+                </Label>
+                <select
+                  id="delete-form-select"
+                  value={selectedFormIdToDelete}
+                  onChange={(e) => setSelectedFormIdToDelete(e.target.value)}
+                  className="col-span-3 px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="">Select a form to delete</option>
+                  {/* Show only assigned forms for this classroom */}
+                  {selectedClassroomForDeleteForm && selectedClassroomForDeleteForm.forms && 
+                    Object.entries(selectedClassroomForDeleteForm.forms).map(([formId, formName]) => (
+                      <option key={formId} value={formId}>
+                        {formName}
+                      </option>
+                    ))
+                  }
+                </select>
+              </div>
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => {
+                setDeleteFormDialogOpen(false);
+                setSelectedFormIdToDelete('');
+                setSelectedClassroomForDeleteForm(null);
+              }}>
+                Cancel
+              </Button>
+              <Button 
+                onClick={handleDeleteFormSubmit}
+                disabled={!selectedFormIdToDelete || isLoading('deleteFormFromClassroom')}
+                className="bg-red-600 hover:bg-red-700"
+              >
+                {isLoading('deleteFormFromClassroom') ? (
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />
+                ) : (
+                  'Delete Form'
                 )}
               </Button>
             </DialogFooter>
