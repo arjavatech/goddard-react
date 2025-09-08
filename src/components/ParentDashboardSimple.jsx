@@ -144,7 +144,7 @@ const ParentDashboardSimple = () => {
   const handleFormSubmissionSuccess = () => {
     console.log('✅ Form submitted successfully, refreshing dashboard data...');
     refresh(); // This triggers the single API call to refresh all data
-    toast.success('Form submitted and dashboard updated!');
+    // toast.success('Form submitted and dashboard updated!');
   };
 
   // Render current form section

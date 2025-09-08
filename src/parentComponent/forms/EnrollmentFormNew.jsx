@@ -119,8 +119,8 @@ const EnrollmentFormNew = ({ selectedSubForm = null, initialFormData = null, chi
         point_ninteen_initial_here: formData.point_ninteen_initial_here,
         preferred_start_date: formData.preferred_start_date,
         preferred_schedule: formData.preferred_schedule,
-        full_day: formData.full_day.toString(),
-        half_day: formData.half_day.toString()
+        full_day: formData.full_day == null ? '' : formData.full_day.toString(),
+        half_day: formData.half_day == null ? '' : formData.half_day.toString()
       };
 
       const success = await submitAndCompleteForm(
@@ -497,9 +497,9 @@ const EnrollmentFormNew = ({ selectedSubForm = null, initialFormData = null, chi
                 </p>
                 
                 {/* Holiday Tables */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 mb-4">
                   {/* 2025 Holidays */}
-                  <div>
+                  <div> 
                     <h5 className="font-medium text-sm mb-2 text-[#0F2D52]">2025 Schedule</h5>
                     <Table>
                       <TableHeader>
