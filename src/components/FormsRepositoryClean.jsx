@@ -88,7 +88,8 @@ const FormsRepositoryClean = () => {
   const {
     students,
     loading: studentsLoading,
-    filterStudents
+    filterStudents,
+    refetch: refetchStudents
   } = useStudents();
 
   const { setLoading, isLoading } = useLoadingState();
@@ -121,6 +122,13 @@ const FormsRepositoryClean = () => {
   const [deleteFormDialogOpen, setDeleteFormDialogOpen] = useState(false);
   const [selectedClassroomForDeleteForm, setSelectedClassroomForDeleteForm] = useState(null);
   const [selectedFormIdToDelete, setSelectedFormIdToDelete] = useState('');
+  
+  // Student Form Management dialog states
+  const [studentAddFormDialogOpen, setStudentAddFormDialogOpen] = useState(false);
+  const [studentDeleteFormDialogOpen, setStudentDeleteFormDialogOpen] = useState(false);
+  const [selectedStudentForForm, setSelectedStudentForForm] = useState(null);
+  const [selectedStudentFormId, setSelectedStudentFormId] = useState('');
+  const [selectedStudentFormIdToDelete, setSelectedStudentFormIdToDelete] = useState('');
 
   // Status mapping
   const statusToInt = {
@@ -173,6 +181,28 @@ const FormsRepositoryClean = () => {
       }));
     }
   }, [availableForms, formStatusFilter]);
+  
+  // All forms for student dialog dropdown (not filtered by status)
+  const allFormsForStudent = React.useMemo(() => {
+    if (!availableForms) return [];
+    
+    const allFormsList = [];
+    Object.keys(availableForms).forEach(status => {
+      if (status !== 'all' && availableForms[status] && Object.keys(availableForms[status]).length > 0) {
+        Object.entries(availableForms[status]).forEach(([formName, formId], index) => {
+          allFormsList.push({
+            id: `${status}-${index}`,
+            form_id: formId,
+            form_name: formName.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
+            original_name: formName,
+            status: status.charAt(0).toUpperCase() + status.slice(1),
+            statusKey: status
+          });
+        });
+      }
+    });
+    return allFormsList;
+  }, [availableForms]);
   
   // Filter students based on search term
   const filteredStudents = React.useMemo(() => {
@@ -492,6 +522,102 @@ const FormsRepositoryClean = () => {
       console.error('Failed to delete form from classroom:', error);
     } finally {
       setLoading('deleteFormFromClassroom', false);
+    }
+  };
+
+  // Handle adding form to student
+  const handleAddStudentFormSubmit = async () => {
+    if (!selectedStudentFormId || !selectedStudentForForm) return;
+    
+    setLoading('addFormToStudent', true);
+    
+    try {
+      const headers = await getAuthHeaders(getAccessTokenSilently);
+      
+      const response = await fetch(`${api_base_url}/student-form-repository`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({
+          school_id: school_id,
+          child_id: selectedStudentForForm.id,
+          form_id: selectedStudentFormId,
+          status: 0,
+          created_by: updated_by
+        })
+      });
+      
+      if (response.ok) {
+        setStudentAddFormDialogOpen(false);
+        setSelectedStudentFormId('');
+        setSelectedStudentForForm(null);
+        
+        // Clear cache and refresh students data to show updated forms
+        apiClient.clearCache('students'); // Clear any cached students data
+        
+        // Add a small delay to ensure backend has updated
+        await new Promise(resolve => setTimeout(resolve, 500));
+        
+        // Refresh students data to show updated forms
+        await refetchStudents();
+        
+        console.log('Student form added successfully and data refreshed');
+      } else {
+        console.error('Failed to add form to student:', response.status);
+        const errorText = await response.text();
+        console.error('Error response:', errorText);
+      }
+    } catch (error) {
+      console.error('Failed to add form to student:', error);
+    } finally {
+      setLoading('addFormToStudent', false);
+    }
+  };
+
+  // Handle deleting form from student
+  const handleDeleteStudentFormSubmit = async () => {
+    if (!selectedStudentFormIdToDelete || !selectedStudentForForm) return;
+    
+    setLoading('deleteFormFromStudent', true);
+    
+    try {
+      const headers = await getAuthHeaders(getAccessTokenSilently);
+      
+      console.log('Deleting form from student:', {
+        school_id,
+        child_id: selectedStudentForForm.id,
+        form_id: selectedStudentFormIdToDelete,
+        updated_by
+      });
+      
+      const response = await fetch(`${api_base_url}/student-form-repository/${school_id}/${selectedStudentForForm.id}/${selectedStudentFormIdToDelete}/${updated_by}`, {
+        method: 'DELETE',
+        headers
+      });
+      
+      if (response.ok) {
+        setStudentDeleteFormDialogOpen(false);
+        setSelectedStudentFormIdToDelete('');
+        setSelectedStudentForForm(null);
+        
+        // Clear cache and refresh students data to show updated forms
+        apiClient.clearCache('students'); // Clear any cached students data
+        
+        // Add a small delay to ensure backend has updated
+        await new Promise(resolve => setTimeout(resolve, 500));
+        
+        // Refresh students data to show updated forms
+        await refetchStudents();
+        
+        console.log('Student form deleted successfully and data refreshed');
+      } else {
+        console.error('Failed to delete form from student:', response.status);
+        const errorText = await response.text();
+        console.error('Error response:', errorText);
+      }
+    } catch (error) {
+      console.error('Failed to delete form from student:', error);
+    } finally {
+      setLoading('deleteFormFromStudent', false);
     }
   };
 
@@ -830,13 +956,14 @@ const FormsRepositoryClean = () => {
                           <TableHead>Student Name</TableHead>
                           <TableHead>Classroom</TableHead>
                           <TableHead>Parent Email</TableHead>
-                          <TableHead>Forms Completed</TableHead>
+                          <TableHead>Forms </TableHead>
+                          <TableHead>Form Management</TableHead>
                         </TableRow>
                       </TableHeader>
                       <TableBody>
                         {filteredStudents.length === 0 ? (
                           <TableRow>
-                            <TableCell colSpan={4} className="text-center text-gray-500 py-8">
+                            <TableCell colSpan={5} className="text-center text-gray-500 py-8">
                               No students found.
                             </TableCell>
                           </TableRow>
@@ -892,6 +1019,36 @@ const FormsRepositoryClean = () => {
                                     }
                                   })()}
                                 </Badge>
+                              </TableCell>
+                              <TableCell>
+                                <div className="flex gap-2">
+                                  <Button
+                                    size="sm"
+                                    variant="default"
+                                    onClick={() => {
+                                      setSelectedStudentForForm(student);
+                                      setStudentAddFormDialogOpen(true);
+                                      setSelectedStudentFormId('');
+                                    }}
+                                    className="bg-[#002e4d] hover:bg-[#002e4d]/90"
+                                  >
+                                    <Plus className="w-3 h-3 mr-1" />
+                                    Add Form
+                                  </Button>
+                                  <Button
+                                    size="sm"
+                                    variant="default"
+                                    onClick={() => {
+                                      setSelectedStudentForForm(student);
+                                      setStudentDeleteFormDialogOpen(true);
+                                      setSelectedStudentFormIdToDelete('');
+                                    }}
+                                    className="bg-[#002e4d] hover:bg-[#002e4d]/90"
+                                  >
+                                    <Trash2 className="w-3 h-3 mr-1" />
+                                    Delete Form
+                                  </Button>
+                                </div>
                               </TableCell>
                             </TableRow>
                           ))
@@ -1121,6 +1278,145 @@ const FormsRepositoryClean = () => {
                 className="bg-red-600 hover:bg-red-700"
               >
                 {isLoading('deleteFormFromClassroom') ? (
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />
+                ) : (
+                  'Delete Form'
+                )}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        {/* Add Form to Student Modal */}
+        <Dialog open={studentAddFormDialogOpen} onOpenChange={setStudentAddFormDialogOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Add Form to {selectedStudentForForm?.fullName}</DialogTitle>
+              <DialogDescription>
+                Select a form to assign to this student
+              </DialogDescription>
+            </DialogHeader>
+            <div className="grid gap-4 py-4">
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="student-form-select" className="text-right">
+                  Form
+                </Label>
+                <select
+                  id="student-form-select"
+                  value={selectedStudentFormId}
+                  onChange={(e) => setSelectedStudentFormId(e.target.value)}
+                  className="col-span-3 px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="">Select a form</option>
+                  {/* Show all forms from all categories - same as Forms tab */}
+                  {allFormsForStudent && allFormsForStudent.map((form) => (
+                    <option key={form.id} value={form.form_id}>
+                      {form.form_name} ({form.status})
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => {
+                setStudentAddFormDialogOpen(false);
+                setSelectedStudentFormId('');
+                setSelectedStudentForForm(null);
+              }}>
+                Cancel
+              </Button>
+              <Button 
+                onClick={handleAddStudentFormSubmit}
+                disabled={!selectedStudentFormId || isLoading('addFormToStudent')}
+                className="bg-[#002e4d] hover:bg-[#002e4d]/90"
+              >
+                {isLoading('addFormToStudent') ? (
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />
+                ) : (
+                  'Add Form'
+                )}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        {/* Delete Form from Student Modal */}
+        <Dialog open={studentDeleteFormDialogOpen} onOpenChange={setStudentDeleteFormDialogOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Delete Form from {selectedStudentForForm?.fullName}</DialogTitle>
+              <DialogDescription>
+                Select a form to remove from this student
+              </DialogDescription>
+            </DialogHeader>
+            <div className="grid gap-4 py-4">
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="student-delete-form-select" className="text-right">
+                  Form
+                </Label>
+                <select
+                  id="student-delete-form-select"
+                  value={selectedStudentFormIdToDelete}
+                  onChange={(e) => setSelectedStudentFormIdToDelete(e.target.value)}
+                  className="col-span-3 px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="">Select a form to delete</option>
+                  {/* Show only assigned forms for this student - same as Forms column */}
+                  {selectedStudentForForm && selectedStudentForForm.forms && 
+                    Object.values(selectedStudentForForm.forms).map((formObj, index) => {
+                      console.log('Debug delete dropdown - index:', index, 'formObj:', formObj);
+                      
+                      // Extract form name using the same logic as the Forms column display
+                      let formName = 'Unknown Form';
+                      let actualFormId = null;
+                      
+                      if (formObj && typeof formObj === 'object') {
+                        formName = formObj.form_name || 
+                                  formObj.name || 
+                                  formObj.formName ||
+                                  formObj.title ||
+                                  JSON.stringify(formObj);
+                        
+                        // Extract the actual form ID from the form object
+                        actualFormId = formObj.form_id || 
+                                      formObj.id || 
+                                      formObj.formId;
+                      } else {
+                        formName = String(formObj);
+                        actualFormId = formObj;
+                      }
+                      
+                      console.log('Debug - actualFormId:', actualFormId, 'formName:', formName);
+                      
+                      if (!actualFormId) {
+                        console.warn('No form ID found for form:', formObj);
+                        return null;
+                      }
+                      
+                      return (
+                        <option key={`form-${index}-${actualFormId}`} value={actualFormId}>
+                          {formName}
+                        </option>
+                      );
+                    }).filter(Boolean)
+                  }
+                </select>
+              </div>
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => {
+                setStudentDeleteFormDialogOpen(false);
+                setSelectedStudentFormIdToDelete('');
+                setSelectedStudentForForm(null);
+              }}>
+                Cancel
+              </Button>
+              <Button 
+                onClick={handleDeleteStudentFormSubmit}
+                disabled={!selectedStudentFormIdToDelete || isLoading('deleteFormFromStudent')}
+                className="bg-red-600 hover:bg-red-700"
+              >
+                {isLoading('deleteFormFromStudent') ? (
                   <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />
                 ) : (
                   'Delete Form'
