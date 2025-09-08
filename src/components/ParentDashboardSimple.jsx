@@ -2,6 +2,7 @@
 // NO complex state management, NO page reloads, NO caching layers
 import React, { useState } from 'react';
 import { useAuth } from '../hooks/useAuth';
+import { useAuth0 } from '@auth0/auth0-react';
 import { useParentData } from '../hooks/useParentData';
 import { toast, Toaster } from 'sonner';
 import { Card, CardContent } from '@/components/ui/card';
@@ -23,16 +24,24 @@ import AdmissionForm from '../parentComponent/forms/AdmissionForm/AdmissionFormN
 
 const ParentDashboardSimple = () => {
   const { isAuthenticated, signOut } = useAuth();
+  const { user } = useAuth0(); // Get the actual logged-in user from Auth0
   
-  // Get email from URL parameter or localStorage
+  // Get the actual logged-in user's email from Auth0
+  const loggedInUserEmail = user?.email;
+  
+  // Get parent email from URL parameter (for viewing specific parent's dashboard)
   const urlParams = new URLSearchParams(window.location.search);
-  const email = urlParams.get('id') || localStorage.getItem('logged_in_email');
+  const parentEmailToView = urlParams.get('id') || localStorage.getItem('logged_in_email');
+  
+  // The logged-in user email is used for permissions (admin signature access)
+  // The parentEmailToView is used for fetching the parent's data
   
   // Real-time form progress state for sidebar updates
   const [currentFormProgress, setCurrentFormProgress] = useState({});
   
 
   // Single hook manages ALL dashboard data with ONE API call
+  // Use parentEmailToView for fetching parent's data
   const {
     loading,
     error,
@@ -47,7 +56,7 @@ const ParentDashboardSimple = () => {
     refresh,
     getWelcomeMessage,
     hasData
-  } = useParentData(email);
+  } = useParentData(parentEmailToView);
 
   // Simple UI state (no complex state management)
   const [currentSection, setCurrentSection] = useState(null);
@@ -281,6 +290,8 @@ const ParentDashboardSimple = () => {
               externalLoading={loading}
               // NEW: Pass real-time form progress for unsaved changes
               currentFormProgress={currentFormProgress}
+              // Pass the ACTUAL logged-in user's email for admin signature access control
+              userEmail={loggedInUserEmail}
             />
           </div>
 

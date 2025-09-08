@@ -204,11 +204,13 @@ policy_number: initialFormData.policy_number,
                         <h2 className="text-lg font-semibold">Medical Care Provider Details</h2>
                         {isCompleted ? (
                             <CheckCircle className="w-5 h-5 text-green-500" />
+                        ) : isFormComplete() ? (
+                            <CheckCircle className="w-5 h-5 text-blue-500" />
                         ) : (
                             <Circle className="w-5 h-5 text-gray-400" />
                         )}
-                        <Badge variant={isCompleted ? "default" : "secondary"}>
-                            {isCompleted ? "Complete" : "Incomplete"}
+                        <Badge variant={isCompleted ? "default" : isFormComplete() ? "outline" : "secondary"}>
+                            {isCompleted ? "Saved" : isFormComplete() ? "Ready to Save" : "Incomplete"}
                         </Badge>
                     </div>
                 </div>

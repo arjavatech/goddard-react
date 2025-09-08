@@ -1,6 +1,18 @@
 import React from 'react';
 
 const FormItem = ({ item, sectionKey, formStatus, onItemClick, isSelected, userEmail }) => {
+  // List of admin emails that should have access to admin signatures
+  const ADMIN_EMAILS = [
+    'goddard01arjava@gmail.com',
+    'admin@goddard.com',
+    // Add more admin emails here as needed
+  ];
+  
+  // Helper function to check if user is admin
+  const isAdminUser = () => {
+    if (!userEmail) return false;
+    return ADMIN_EMAILS.includes(userEmail.toLowerCase());
+  };
   const getItemKey = () => {
     if (item.toLowerCase().includes("ach")) return "authorization_ach";
     if (item.toLowerCase().includes("signature")) {
@@ -99,7 +111,7 @@ const FormItem = ({ item, sectionKey, formStatus, onItemClick, isSelected, userE
     // REMOVED: localStorage dependency - using userEmail prop from Auth0
     
     // Check if user is NOT admin and trying to access Admin Signature
-    if (userEmail !== 'goddard01arjava@gmail.com' && item.toLowerCase().includes('admin signature')) {
+    if (!isAdminUser() && item.toLowerCase().includes('admin signature')) {
       return;
     }
     
@@ -114,7 +126,7 @@ const FormItem = ({ item, sectionKey, formStatus, onItemClick, isSelected, userE
   };
 
   // Check restrictions - using userEmail prop from Auth0
-  const isAdminRestricted = userEmail !== 'goddard01arjava@gmail.com' && item.toLowerCase().includes('admin signature');
+  const isAdminRestricted = !isAdminUser() && item.toLowerCase().includes('admin signature');
   const isParentSignatureRestricted = item.toLowerCase().includes('parent signature') && !areParentSignaturePrerequisitesComplete();
   
   

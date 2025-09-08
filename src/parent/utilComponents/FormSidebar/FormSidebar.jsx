@@ -16,6 +16,8 @@ const FormSidebar = ({
   externalLoading = false,
   // NEW: Accept real-time form progress for unsaved changes
   currentFormProgress = {},
+  // User email for admin access control
+  userEmail = null,
 }) => {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   // Use external form status if provided, otherwise fall back to useFormStatus hook
@@ -86,6 +88,7 @@ const FormSidebar = ({
               onToggle={() => handleSectionClick(section.key)}
               onItemClick={handleItemClick}
               selectedSubForm={selectedSubForm}
+              userEmail={userEmail}
             />
           ))
         ) : (

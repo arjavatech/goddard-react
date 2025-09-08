@@ -1,7 +1,7 @@
 import React from 'react';
 import FormItem from './FormItem';
 
-const FormSection = ({ section, formStatus, isOpen, onToggle, onItemClick, selectedSubForm}) => {
+const FormSection = ({ section, formStatus, isOpen, onToggle, onItemClick, selectedSubForm, userEmail}) => {
   
   
   return (
@@ -52,7 +52,7 @@ const FormSection = ({ section, formStatus, isOpen, onToggle, onItemClick, selec
                 formStatus={formStatus}
                 onItemClick={onItemClick}
                 isSelected={item  === selectedSubForm}
-               
+                userEmail={userEmail}
               />
               </React.Fragment>
            ))}

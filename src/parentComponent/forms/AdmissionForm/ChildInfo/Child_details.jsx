@@ -53,6 +53,9 @@ const Child_details = ({ openSection, setOpenSection, initialFormData, childId, 
       }
     }, [initialFormData]);
 
+
+    console.log(initialFormData)
+
     // Function to check if all required fields are filled (for validation)
     const isFormComplete = () => {
         const requiredFields = [
@@ -161,11 +164,13 @@ const handleSave = async () => {
                     <h2 className="text-lg font-semibold">Child Details</h2>
                     {isCompleted ? (
                         <CheckCircle className="w-5 h-5 text-green-500" />
+                    ) : isFormComplete() ? (
+                        <CheckCircle className="w-5 h-5 text-blue-500" />
                     ) : (
                         <Circle className="w-5 h-5 text-gray-400" />
                     )}
-                    <Badge variant={isCompleted ? "default" : "secondary"}>
-                        {isCompleted ? "Complete" : "Incomplete"}
+                    <Badge variant={isCompleted ? "default" : isFormComplete() ? "outline" : "secondary"}>
+                        {isCompleted ? "Saved" : isFormComplete() ? "Ready to Save" : "Incomplete"}
                     </Badge>
                 </div>
                 <div className="text-xl transform transition-transform duration-200">
