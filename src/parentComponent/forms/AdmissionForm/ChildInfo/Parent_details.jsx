@@ -6,10 +6,12 @@ import { api_base_url, school_id } from '@/utils/const';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { CheckCircle, Circle } from 'lucide-react';
+import { useAuth0 } from '@auth0/auth0-react';
+import { getAuthHeaders } from '@/utils/auth';
 
 const Parent_details = ({ openSection, setOpenSection, initialFormData, handleInputChange, childId, onSubmitSuccess, isCompleted = false }) => {
 
-
+    const { getAccessTokenSilently } = useAuth0();
 
     const [formData, setFormData] = useState({
             parent_name: '',
@@ -70,11 +72,10 @@ const Parent_details = ({ openSection, setOpenSection, initialFormData, handleIn
               }
       
               try {
+                const headers = await getAuthHeaders(getAccessTokenSilently);
                   const response = await fetch(`${api_base_url}/admission_segment/${school_id}/${childId}`, {
                       method: 'PUT',
-                      headers: {
-                          'Content-Type': 'application/json',
-                      },
+                      headers,
                       body: JSON.stringify(fieldData)
                   });
       

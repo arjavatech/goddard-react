@@ -8,6 +8,9 @@ import { Badge } from '@/components/ui/badge';
 import { CheckCircle, Circle } from 'lucide-react';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
+
+import { useAuth0 } from '@auth0/auth0-react';
+import { getAuthHeaders } from '@/utils/auth';
 // Note: Using regular textarea as Textarea component may not be available
 
 
@@ -15,6 +18,7 @@ const ParentAgreement = ({ openSection, setOpenSection, formData, handleInputCha
     const [obtainText, setobtainText] = useState(formData.obtaining_emergency_medical_care ?? '');
       const [procedure, setprocedure] = useState(formData.administration_first_aid_procedures ?? '');
       const [submitted, setSubmitted] = useState(formData.agree_all_above_information_is_correct == 'on');
+      const { getAccessTokenSilently } = useAuth0();
     
       // API function to update admission form data
       const updateAdmissionData = async (fieldData) => {
@@ -24,11 +28,10 @@ const ParentAgreement = ({ openSection, setOpenSection, formData, handleInputCha
         }
     
         try {
+            const headers = await getAuthHeaders(getAccessTokenSilently);
           const response = await fetch(`${api_base_url}/admission_segment/${school_id}/${childId}`, {
             method: 'PUT',
-            headers: {
-              'Content-Type': 'application/json',
-            },
+            headers,
             body: JSON.stringify(fieldData)
           });
     

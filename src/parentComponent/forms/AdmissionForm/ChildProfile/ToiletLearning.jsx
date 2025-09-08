@@ -6,6 +6,8 @@ import { Button } from '@/components/ui/button';
 import { RadioGroup, FormInput } from './InputComponent';
 import { api_base_url, school_id } from '@/utils/const';
 import { toast } from 'sonner';
+import { useAuth0 } from '@auth0/auth0-react';
+import { getAuthHeaders } from '@/utils/auth';
 
 const ToiletLearning = ({ expandedSections, toggleSection, formData, handleInputChange, initialFormData, childId }) => {
   const [localFormData, setLocalFormData] = useState({
@@ -15,6 +17,8 @@ const ToiletLearning = ({ expandedSections, toggleSection, formData, handleInput
     isToiletTrained: '',
     toiletTrainedExplanation: ''
   });
+
+  const { getAccessTokenSilently } = useAuth0();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -56,13 +60,12 @@ const ToiletLearning = ({ expandedSections, toggleSection, formData, handleInput
       console.error('Child ID is required for API update');
       return;
     }
+    const headers = await getAuthHeaders(getAccessTokenSilently);
 
     try {
       const response = await fetch(`${api_base_url}/admission_segment/${school_id}/${childId}`, {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers,
         body: JSON.stringify(fieldData)
       });
 

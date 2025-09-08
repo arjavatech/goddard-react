@@ -6,10 +6,13 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
 import { api_base_url, school_id } from "@/utils/const";
+import { useAuth0 } from '@auth0/auth0-react';
+import { getAuthHeaders } from '@/utils/auth';
 
 export default function MedicalTransportationWaiver({initialFormData = null, childId = null}) {
   const [studentName, setStudentName] = useState(initialFormData.med_technicians_med_transportation_waiver ?? '');
   const [agreed, setAgreed] = useState(initialFormData.medical_transportation_waiver == 'on');
+  const { getAccessTokenSilently } = useAuth0();
   const [submitted, setSubmitted] = useState(false);
 
   // API function to update admission form data
@@ -20,11 +23,10 @@ export default function MedicalTransportationWaiver({initialFormData = null, chi
     }
 
     try {
+      const headers = await getAuthHeaders(getAccessTokenSilently);
       const response = await fetch(`${api_base_url}/admission_segment/${school_id}/${childId}`, {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers,
         body: JSON.stringify(fieldData)
       });
 

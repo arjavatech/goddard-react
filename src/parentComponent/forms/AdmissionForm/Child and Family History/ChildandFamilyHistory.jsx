@@ -20,7 +20,9 @@ import { getAuthHeaders } from '@/utils/auth';
 import { submitAndCompleteForm } from '@/utils/formSubmission';
 
 
+
 const ChildandFamilyHistory = ({ initialFormData = null, childId = null }) => {
+    const { getAccessTokenSilently } = useAuth0();
 
     // API function to update admission form data
     const updateAdmissionData = async (fieldData) => {
@@ -30,11 +32,10 @@ const ChildandFamilyHistory = ({ initialFormData = null, childId = null }) => {
         }
 
         try {
+            const headers = await getAuthHeaders(getAccessTokenSilently);
             const response = await fetch(`${api_base_url}/admission_segment/${school_id}/${childId}`, {
                 method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                headers,
                 body: JSON.stringify(fieldData)
             });
 

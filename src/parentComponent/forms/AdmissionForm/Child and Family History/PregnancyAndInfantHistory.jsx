@@ -6,6 +6,8 @@ import { CheckCircle, Save, Baby } from 'lucide-react';
 import { toast } from 'sonner';
 import { FormInput, RadioGroup } from './InputComponent';
 import { api_base_url, school_id } from '@/utils/const';
+import { useAuth0 } from '@auth0/auth0-react';
+import { getAuthHeaders } from '@/utils/auth';
 
 const PregnancyAndInfantHistory = ({ openSection, setOpenSection, formData, handleInputChange, initialFormData, childId }) => {
     const [localFormData, setLocalFormData] = useState({
@@ -19,6 +21,8 @@ const PregnancyAndInfantHistory = ({ openSection, setOpenSection, formData, hand
         Name: '',
         Age: ''
     });
+
+    const { getAccessTokenSilently } = useAuth0();
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -66,11 +70,10 @@ const PregnancyAndInfantHistory = ({ openSection, setOpenSection, formData, hand
         }
 
         try {
+            const headers = await getAuthHeaders(getAccessTokenSilently);
             const response = await fetch(`${api_base_url}/admission_segment/${school_id}/${childId}`, {
                 method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                headers,
                 body: JSON.stringify(fieldData)
             });
 

@@ -6,6 +6,8 @@ import { CheckCircle, Save, Users } from 'lucide-react';
 import { toast } from 'sonner';
 import { CheckboxGroup } from './InputComponent';
 import { api_base_url, school_id } from '@/utils/const';
+import { useAuth0 } from '@auth0/auth0-react';
+import { getAuthHeaders } from '@/utils/auth';
 
 const FamilyHistory = ({ openSection, setOpenSection, formData, handleInputChange, initialFormData, childId }) => {
     const [localFormData, setLocalFormData] = useState({
@@ -20,6 +22,8 @@ const FamilyHistory = ({ openSection, setOpenSection, formData, handleInputChang
         Epilepsy: [],
         NoIllnesses: []
     });
+
+    const { getAccessTokenSilently } = useAuth0();
 
     const handleCheckboxChange = (name, updatedValues) => {
         setLocalFormData(prevState => ({
@@ -59,11 +63,10 @@ const FamilyHistory = ({ openSection, setOpenSection, formData, handleInputChang
         }
 
         try {
+            const headers = await getAuthHeaders(getAccessTokenSilently);
             const response = await fetch(`${api_base_url}/admission_segment/${school_id}/${childId}`, {
                 method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                headers,
                 body: JSON.stringify(fieldData)
             });
 

@@ -6,6 +6,8 @@ import { CheckCircle, Save, Heart } from 'lucide-react';
 import { toast } from 'sonner';
 import { FormInput } from './InputComponent';
 import { api_base_url, school_id } from '@/utils/const';
+import { useAuth0 } from '@auth0/auth0-react';
+import { getAuthHeaders } from '@/utils/auth';
 
 const Parent_argeement = ({ openSection, setOpenSection, formData, handleInputChange, initialFormData, childId }) => {
     const [localFormData, setLocalFormData] = useState({
@@ -26,6 +28,8 @@ const Parent_argeement = ({ openSection, setOpenSection, formData, handleInputCh
         VisionProblems: '',
         Other: ''
     });
+
+    const { getAccessTokenSilently } = useAuth0();
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -72,11 +76,10 @@ const Parent_argeement = ({ openSection, setOpenSection, formData, handleInputCh
         }
 
         try {
+            const headers = await getAuthHeaders(getAccessTokenSilently);
             const response = await fetch(`${api_base_url}/admission_segment/${school_id}/${childId}`, {
                 method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                headers,
                 body: JSON.stringify(fieldData)
             });
 

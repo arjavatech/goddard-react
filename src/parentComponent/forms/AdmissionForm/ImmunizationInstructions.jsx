@@ -5,8 +5,11 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
 import { api_base_url, school_id } from '@/utils/const';
+import { useAuth0 } from '@auth0/auth0-react';
+import { getAuthHeaders } from '@/utils/auth';
 
 const ImmunizationInstructions = ({ initialFormData = null , childId}) => {
+  const { getAccessTokenSilently } = useAuth0();
   const [isChecked, setIsChecked] = useState(false);
 
   // API function to update admission form data
@@ -17,11 +20,10 @@ const ImmunizationInstructions = ({ initialFormData = null , childId}) => {
     }
 
     try {
+      const headers = await getAuthHeaders(getAccessTokenSilently);
       const response = await fetch(`${api_base_url}/admission_segment/${school_id}/${childId}`, {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers,
         body: JSON.stringify(fieldData)
       });
 
