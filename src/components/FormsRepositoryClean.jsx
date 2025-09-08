@@ -46,7 +46,8 @@ import {
   Plus,
   School,
   Edit,
-  Trash2
+  Trash2,
+  Search
 } from 'lucide-react';
 import { api_base_url, school_id, updated_by } from '../utils/const';
 import { useAuth0 } from '@auth0/auth0-react';
@@ -98,6 +99,7 @@ const FormsRepositoryClean = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [typeFilter, setTypeFilter] = useState('All');
   const [formStatusFilter, setFormStatusFilter] = useState('all'); // Filter for form status
+  const [studentsSearchTerm, setStudentsSearchTerm] = useState(''); // Search for students tab
   
   // Edit/Delete dialog states
   const [editDialogOpen, setEditDialogOpen] = useState(false);
@@ -172,7 +174,53 @@ const FormsRepositoryClean = () => {
     }
   }, [availableForms, formStatusFilter]);
   
-  const filteredStudents = filterStudents(searchTerm, { classroom: typeFilter });
+  // Filter students based on search term
+  const filteredStudents = React.useMemo(() => {
+    const baseFilteredStudents = filterStudents(searchTerm, { classroom: typeFilter });
+    
+    if (!studentsSearchTerm.trim()) {
+      return baseFilteredStudents;
+    }
+    
+    const searchLower = studentsSearchTerm.toLowerCase();
+    return baseFilteredStudents.filter(student => {
+      // Search in student name
+      const nameMatch = student.fullName?.toLowerCase().includes(searchLower);
+      
+      // Search in classroom name
+      const classroomMatch = student.className?.toLowerCase().includes(searchLower);
+      
+      // Search in parent email
+      const emailMatch = student.parentEmail?.toLowerCase().includes(searchLower);
+      
+      // Search in form names
+      let formMatch = false;
+      if (student.forms) {
+        try {
+          const values = Object.values(student.forms);
+          const formNames = values.map(formObj => {
+            if (formObj && typeof formObj === 'object') {
+              return formObj.form_name || 
+                     formObj.name || 
+                     formObj.formName ||
+                     formObj.title ||
+                     '';
+            }
+            return String(formObj);
+          }).filter(name => name);
+          
+          formMatch = formNames.some(formName => 
+            formName.toLowerCase().includes(searchLower)
+          );
+        } catch (error) {
+          // If there's an error parsing forms, skip form search for this student
+          formMatch = false;
+        }
+      }
+      
+      return nameMatch || classroomMatch || emailMatch || formMatch;
+    });
+  }, [filterStudents, searchTerm, typeFilter, studentsSearchTerm]);
 
   // Direct refresh function with cache clearing
   const handleRefresh = useCallback(async () => {
@@ -756,7 +804,22 @@ const FormsRepositoryClean = () => {
                 <CardTitle>Student Overview</CardTitle>
                 <CardDescription>View student form completion status</CardDescription>
               </CardHeader>
-              <CardContent>
+              <CardContent className="space-y-4">
+                {/* Search Input */}
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-gray-700">Search</label>
+                  <div className="relative w-96">
+                    <Search className="h-4 w-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                    <Input
+                      placeholder="Search by name, email, classroom, or forms..."
+                      value={studentsSearchTerm}
+                      onChange={(e) => setStudentsSearchTerm(e.target.value)}
+                      className="pl-10 w-full"
+                    />
+                  </div>
+                </div>
+                
+                {/* Students Table */}
                 {studentsLoading ? (
                   <LoadingSkeleton rows={8} />
                 ) : (
