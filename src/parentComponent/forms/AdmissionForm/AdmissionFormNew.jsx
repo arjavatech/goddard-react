@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -38,9 +38,43 @@ import ChildProfileForm from './ChildProfile/ChildProfile';
 import AdminSign from './AdminSign';
 import ParentSign from './ParentSign';
 
-const AdmissionFormNew = ({ selectedSubForm, initialFormData = null, childId = null, onSubmitSuccess, onProgressUpdate }) => {
+const AdmissionFormNew = ({ selectedSubForm, initialFormData = null, childId = null, onSubmitSuccess, onProgressUpdate, onSubFormChange, formStatus = {} }) => {
   const [activeTab, setActiveTab] = useState(selectedSubForm || 'Child Information');
   const { user } = useAuth0();
+  
+  // Update activeTab when selectedSubForm prop changes (sidebar navigation)
+  useEffect(() => {
+    if (selectedSubForm) {
+      setActiveTab(selectedSubForm);
+    }
+  }, [selectedSubForm]);
+
+  // Handle tab change and notify parent for sidebar sync
+  const handleTabChange = (tabValue) => {
+    setActiveTab(tabValue);
+    // Notify parent component to update sidebar selection
+    if (onSubFormChange && tabValue !== selectedSubForm) {
+      onSubFormChange(tabValue);
+    }
+  };
+
+  // Check if Parent Signature prerequisites are complete (same logic as sidebar)
+  const areParentSignaturePrerequisitesComplete = () => {
+    const admissionItems = [
+      'admission_childinformation',
+      'admission_childandfamilyhistory', 
+      'admission_immunization',
+      'admission_child_profile',
+      'admission_childpickup_password',
+      'admission_photo_permission',
+      'admission_security',
+      'admission_medical_transportation',
+      'admission_health_policies',
+      'admission_outside_engagements',
+      'admission_social_media'
+    ];
+    return admissionItems.every(itemKey => formStatus[itemKey]?.completed === true);
+  };
   
   // List of admin emails that should have access to admin signatures
   const ADMIN_EMAILS = [
@@ -272,6 +306,24 @@ const AdmissionFormNew = ({ selectedSubForm, initialFormData = null, childId = n
       case 'Social Media Approval':
         return <SocialMediaReleaseForm {...commonFormProps} />;
       case 'Parent Signature':
+        if (!areParentSignaturePrerequisitesComplete()) {
+          return (
+            <Card>
+              <CardContent className="p-6">
+                <div className="flex flex-col items-center justify-center py-8 text-center">
+                  <Lock className="h-12 w-12 text-red-400 mb-4" />
+                  <h3 className="text-lg font-semibold text-gray-700 mb-2">Complete Required Sections First</h3>
+                  <p className="text-gray-500 mb-4">Please complete all admission form sections before accessing the Parent Signature section.</p>
+                  <div className="text-sm text-gray-400">
+                    Required sections: Child Information, Child & Family History, Immunization, Child Profile, 
+                    Pick-up Password, Photo/Video Permission, Security & Policy, Medical Transportation, 
+                    Health Policies, Outside Engagements, and Social Media Approval.
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          );
+        }
         return <ParentSign {...commonFormProps} />;
       case 'Admin Signature':
         if (!isAdmin) {
@@ -282,6 +334,24 @@ const AdmissionFormNew = ({ selectedSubForm, initialFormData = null, childId = n
                   <Lock className="h-12 w-12 text-gray-400 mb-4" />
                   <h3 className="text-lg font-semibold text-gray-700 mb-2">Admin Access Required</h3>
                   <p className="text-gray-500">This section is only accessible to administrators.</p>
+                </div>
+              </CardContent>
+            </Card>
+          );
+        }
+        if (!areParentSignaturePrerequisitesComplete()) {
+          return (
+            <Card>
+              <CardContent className="p-6">
+                <div className="flex flex-col items-center justify-center py-8 text-center">
+                  <Lock className="h-12 w-12 text-red-400 mb-4" />
+                  <h3 className="text-lg font-semibold text-gray-700 mb-2">Complete Required Sections First</h3>
+                  <p className="text-gray-500 mb-4">Please complete all admission form sections before accessing the Admin Signature section.</p>
+                  <div className="text-sm text-gray-400">
+                    Required sections: Child Information, Child & Family History, Immunization, Child Profile, 
+                    Pick-up Password, Photo/Video Permission, Security & Policy, Medical Transportation, 
+                    Health Policies, Outside Engagements, and Social Media Approval.
+                  </div>
                 </div>
               </CardContent>
             </Card>
@@ -388,29 +458,48 @@ const AdmissionFormNew = ({ selectedSubForm, initialFormData = null, childId = n
       </Card>
 
       {/* Navigation Tabs */}
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+      <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
         <div className="overflow-x-auto">
           <TabsList className="inline-flex h-auto min-w-full w-max p-1 bg-gray-100">
-            {formSections.map((section) => (
-              <TabsTrigger 
-                key={section.id} 
-                value={section.id}
-                className={`flex items-center gap-2 whitespace-nowrap px-3 py-2 data-[state=active]:bg-white data-[state=active]:text-[#0F2D52] ${
-                  section.adminOnly && !isAdmin ? 'opacity-50 cursor-not-allowed' : ''
-                }`}
-                disabled={section.adminOnly && !isAdmin}
-              >
-                {section.icon}
-                <span className="hidden sm:inline">{section.title}</span>
-                <span className="sm:hidden">{section.title.split(' ')[0]}</span>
-                {section.adminOnly && !isAdmin && (
-                  <Lock className="h-3 w-3 text-gray-500" />
-                )}
-                {sectionCompletionStatus[section.id] === true && (
-                  <CheckCircle className="h-4 w-4 text-green-500" />
-                )}
-              </TabsTrigger>
-            ))}
+            {formSections.map((section) => {
+              // Check if this is Parent Signature and if prerequisites are met
+              const isParentSignatureRestricted = section.id === 'Parent Signature' && !areParentSignaturePrerequisitesComplete();
+              // Check if this is Admin Signature and if prerequisites are met (both admin role and completion)
+              const isAdminSignatureRestricted = section.id === 'Admin Signature' && (!isAdmin || !areParentSignaturePrerequisitesComplete());
+              const isAdminRoleRestricted = section.adminOnly && !isAdmin;
+              
+              return (
+                <TabsTrigger 
+                  key={section.id} 
+                  value={section.id}
+                  className={`flex items-center gap-2 whitespace-nowrap px-3 py-2 data-[state=active]:bg-white data-[state=active]:text-[#0F2D52] ${
+                    (isAdminRoleRestricted || isParentSignatureRestricted || isAdminSignatureRestricted) ? 'opacity-50 cursor-not-allowed' : ''
+                  }`}
+                  disabled={isAdminRoleRestricted || isParentSignatureRestricted || isAdminSignatureRestricted}
+                  title={
+                    isParentSignatureRestricted ? "Complete all admission sections before accessing Parent Signature" : 
+                    isAdminSignatureRestricted && !isAdmin ? "Only admin users can access Admin Signature" :
+                    isAdminSignatureRestricted ? "Complete all admission sections before accessing Admin Signature" : ""
+                  }
+                >
+                  {section.icon}
+                  <span className="hidden sm:inline">{section.title}</span>
+                  <span className="sm:hidden">{section.title.split(' ')[0]}</span>
+                  {isAdminRoleRestricted && (
+                    <Lock className="h-3 w-3 text-gray-500" />
+                  )}
+                  {isParentSignatureRestricted && (
+                    <Lock className="h-3 w-3 text-red-500" />
+                  )}
+                  {isAdminSignatureRestricted && (
+                    <Lock className="h-3 w-3 text-red-500" />
+                  )}
+                  {sectionCompletionStatus[section.id] === true && (
+                    <CheckCircle className="h-4 w-4 text-green-500" />
+                  )}
+                </TabsTrigger>
+              );
+            })}
           </TabsList>
         </div>
 
