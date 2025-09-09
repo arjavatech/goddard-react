@@ -546,6 +546,8 @@ const ParentDashboard = () => {
             <AuthorizationForm
               selectedSubForm={selectedSubForm}
               childId={activeChildId}
+              onSubFormChange={setSelectedSubForm}
+              formStatus={formStatus}
               initialFormData={childFormData ? {
                 bank_routing: childFormData.bank_routing || '',
                 bank_account: childFormData.bank_account || '',

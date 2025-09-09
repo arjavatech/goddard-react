@@ -15,14 +15,32 @@ import {
   CheckCircle,
   AlertCircle,
   Save,
-  Send
+  Send,
+  Lock
 } from 'lucide-react';
 import { toast, Toaster } from 'sonner';
 import { useAuth0 } from '@auth0/auth0-react';
 import { submitAndCompleteForm } from '@/utils/formSubmission';
 
-const AuthorizationFormNew = ({ selectedSubForm = null, initialFormData = null, childId = null, onSubmitSuccess }) => {
+const AuthorizationFormNew = ({ selectedSubForm = null, initialFormData = null, childId = null, onSubmitSuccess, onSubFormChange, formStatus = {} }) => {
+  const { getAccessTokenSilently, user } = useAuth0();
   const [activeTab, setActiveTab] = useState(selectedSubForm ? getTabFromSubForm(selectedSubForm) : 'ach');
+  
+  // Check if Authorization ACH prerequisites are complete (authorization form must be completed)
+  const areAuthorizationPrerequisitesComplete = () => {
+    // For authorization form, the ACH section must be completed before signatures
+    return formStatus['authorization_authorization']?.completed === true;
+  };
+  
+  // List of admin emails that should have access to admin signatures
+  const ADMIN_EMAILS = [
+    'goddard01arjava@gmail.com',
+    'admin@goddard.com',
+    // Add more admin emails here as needed
+  ];
+  
+  // Check if user is admin - using email-based check like the sidebar
+  const isAdmin = user?.email && ADMIN_EMAILS.includes(user.email.toLowerCase());
   const [formData, setFormData] = useState({
     child_id: '',
     bank_routing: '',
@@ -51,6 +69,38 @@ const AuthorizationFormNew = ({ selectedSubForm = null, initialFormData = null, 
         return 'ach';
     }
   }
+
+  // Convert tab ID back to subForm name for sidebar sync
+  function getSubFormFromTab(tabId) {
+    switch (tabId) {
+      case 'ach':
+        return 'Authorization ACH';
+      case 'parent':
+        return 'Parent Signature';
+      case 'admin':
+        return 'Admin Signature';
+      default:
+        return 'Authorization ACH';
+    }
+  }
+
+  // Update activeTab when selectedSubForm prop changes (sidebar navigation)
+  useEffect(() => {
+    if (selectedSubForm) {
+      const newTab = getTabFromSubForm(selectedSubForm);
+      setActiveTab(newTab);
+    }
+  }, [selectedSubForm]);
+
+  // Handle tab change and notify parent for sidebar sync
+  const handleTabChange = (tabValue) => {
+    setActiveTab(tabValue);
+    // Notify parent component to update sidebar selection
+    if (onSubFormChange) {
+      const subFormName = getSubFormFromTab(tabValue);
+      onSubFormChange(subFormName);
+    }
+  };
 
   // US States array
   const states = [
@@ -107,7 +157,7 @@ const AuthorizationFormNew = ({ selectedSubForm = null, initialFormData = null, 
   ];
 
   // Use standardized form submission
-  const { getAccessTokenSilently } = useAuth0();
+  // useAuth0 already called above
 
   const handleChange = (name, value) => {
     if (name === 'admin_sign_date_ach') {
@@ -321,23 +371,48 @@ const AuthorizationFormNew = ({ selectedSubForm = null, initialFormData = null, 
       </Card>
 
       {/* Navigation Tabs */}
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+      <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
         <div className="overflow-x-auto">
           <TabsList className="inline-flex h-auto min-w-full w-max p-1 bg-gray-100">
-            {formSections.map((section) => (
-              <TabsTrigger 
-                key={section.id} 
-                value={section.id}
-                className="flex items-center gap-2 whitespace-nowrap px-4 py-3 data-[state=active]:bg-white data-[state=active]:text-[#0F2D52]"
-              >
-                {section.icon}
-                <span className="hidden sm:inline">{section.title}</span>
-                <span className="sm:hidden">{section.title.split(' ')[0]}</span>
-                {section.isComplete && (
-                  <CheckCircle className="h-4 w-4 text-green-600" />
-                )}
-              </TabsTrigger>
-            ))}
+            {formSections.map((section) => {
+              // Check if this is Parent Signature and if prerequisites are met
+              const isParentSignatureRestricted = section.id === 'parent' && !areAuthorizationPrerequisitesComplete();
+              // Check if this is Admin Signature and if prerequisites are met (both admin role and completion)
+              const isAdminSignatureRestricted = section.id === 'admin' && (!isAdmin || !areAuthorizationPrerequisitesComplete());
+              const isAdminRoleRestricted = section.id === 'admin' && !isAdmin;
+              
+              return (
+                <TabsTrigger 
+                  key={section.id} 
+                  value={section.id}
+                  className={`flex items-center gap-2 whitespace-nowrap px-4 py-3 data-[state=active]:bg-white data-[state=active]:text-[#0F2D52] ${
+                    (isAdminRoleRestricted || isParentSignatureRestricted || isAdminSignatureRestricted) ? 'opacity-50 cursor-not-allowed' : ''
+                  }`}
+                  disabled={isAdminRoleRestricted || isParentSignatureRestricted || isAdminSignatureRestricted}
+                  title={
+                    isParentSignatureRestricted ? "Complete Authorization ACH before accessing Parent Signature" : 
+                    isAdminSignatureRestricted && !isAdmin ? "Only admin users can access Admin Signature" :
+                    isAdminSignatureRestricted ? "Complete Authorization ACH before accessing Admin Signature" : ""
+                  }
+                >
+                  {section.icon}
+                  <span className="hidden sm:inline">{section.title}</span>
+                  <span className="sm:hidden">{section.title.split(' ')[0]}</span>
+                  {isAdminRoleRestricted && (
+                    <Lock className="h-3 w-3 text-gray-500" />
+                  )}
+                  {isParentSignatureRestricted && (
+                    <Lock className="h-3 w-3 text-red-500" />
+                  )}
+                  {isAdminSignatureRestricted && (
+                    <Lock className="h-3 w-3 text-red-500" />
+                  )}
+                  {section.isComplete && (
+                    <CheckCircle className="h-4 w-4 text-green-600" />
+                  )}
+                </TabsTrigger>
+              );
+            })}
           </TabsList>
         </div>
 
@@ -488,6 +563,7 @@ const AuthorizationFormNew = ({ selectedSubForm = null, initialFormData = null, 
               </div>
             </CardContent>
           </Card>
+          )}
         </TabsContent>
 
         {/* Admin Signature */}
@@ -547,6 +623,7 @@ const AuthorizationFormNew = ({ selectedSubForm = null, initialFormData = null, 
               </div>
             </CardContent>
           </Card>
+          )}
         </TabsContent>
       </Tabs>
     </div>

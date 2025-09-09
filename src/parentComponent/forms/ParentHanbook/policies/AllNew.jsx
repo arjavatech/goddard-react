@@ -15,7 +15,8 @@ import {
   AlertCircle,
   Save,
   Send,
-  Info
+  Info,
+  Lock
 } from 'lucide-react';
 import { toast, Toaster } from 'sonner';
 import { useAuth0 } from '@auth0/auth0-react';
@@ -41,8 +42,25 @@ import ExpulsionPolicy from './ExpulsionPolicy';
 import AddressingIndividualChildConcern from './AddressingIndividualChildConcern';
 import FinalWord from './FinalWord';
 
-const ParentHandbookNew = ({ selectedSubForm = null, initialFormData = null, childId = null, onSubmitSuccess }) => {
+const ParentHandbookNew = ({ selectedSubForm = null, initialFormData = null, childId = null, onSubmitSuccess, onSubFormChange, formStatus = {} }) => {
+  const { getAccessTokenSilently, user } = useAuth0();
   const [activeTab, setActiveTab] = useState(selectedSubForm ? getTabFromSubForm(selectedSubForm) : 'policies');
+  
+  // Check if Policy prerequisites are complete (policy section must be completed)
+  const arePolicyPrerequisitesComplete = () => {
+    // For parent handbook, the policies section must be completed before signatures
+    return formStatus['parenthandbook_policies']?.completed === true;
+  };
+  
+  // List of admin emails that should have access to admin signatures
+  const ADMIN_EMAILS = [
+    'goddard01arjava@gmail.com',
+    'admin@goddard.com',
+    // Add more admin emails here as needed
+  ];
+  
+  // Check if user is admin - using email-based check like the sidebar
+  const isAdmin = user?.email && ADMIN_EMAILS.includes(user.email.toLowerCase());
   const [openSection, setOpenSection] = useState('');
   const [formData, setFormData] = useState({
     welcome_goddard_agreement: '',
@@ -86,8 +104,40 @@ const ParentHandbookNew = ({ selectedSubForm = null, initialFormData = null, chi
     }
   }
 
+  // Convert tab ID back to subForm name for sidebar sync
+  function getSubFormFromTab(tabId) {
+    switch (tabId) {
+      case 'policies':
+        return 'Policy';
+      case 'parent':
+        return 'Parent Signature';
+      case 'admin':
+        return 'Admin Signature';
+      default:
+        return 'Policy';
+    }
+  }
+
+  // Update activeTab when selectedSubForm prop changes (sidebar navigation)
+  useEffect(() => {
+    if (selectedSubForm) {
+      const newTab = getTabFromSubForm(selectedSubForm);
+      setActiveTab(newTab);
+    }
+  }, [selectedSubForm]);
+
+  // Handle tab change and notify parent for sidebar sync
+  const handleTabChange = (tabValue) => {
+    setActiveTab(tabValue);
+    // Notify parent component to update sidebar selection
+    if (onSubFormChange) {
+      const subFormName = getSubFormFromTab(tabValue);
+      onSubFormChange(subFormName);
+    }
+  };
+
   // Use standardized form submission
-  const { getAccessTokenSilently } = useAuth0();
+  // useAuth0 already called above
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -451,8 +501,22 @@ const ParentHandbookNew = ({ selectedSubForm = null, initialFormData = null, chi
     </Card>
   );
 
-  const renderParentSignatureTab = () => (
-    <Card>
+  const renderParentSignatureTab = () => {
+    if (!arePolicyPrerequisitesComplete()) {
+      return (
+        <Card>
+          <CardContent className="p-6">
+            <div className="flex flex-col items-center justify-center py-8 text-center">
+              <Lock className="h-12 w-12 text-red-400 mb-4" />
+              <h3 className="text-lg font-semibold text-gray-700 mb-2">Complete Policy Section First</h3>
+              <p className="text-gray-500 mb-4">Please complete the Policy section before accessing the Parent Signature section.</p>
+            </div>
+          </CardContent>
+        </Card>
+      );
+    }
+    return (
+      <Card>
       <CardHeader>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -503,10 +567,38 @@ const ParentHandbookNew = ({ selectedSubForm = null, initialFormData = null, chi
         </div>
       </CardContent>
     </Card>
-  );
+    );
+  };
 
-  const renderAdminSignatureTab = () => (
-    <Card>
+  const renderAdminSignatureTab = () => {
+    if (!isAdmin) {
+      return (
+        <Card>
+          <CardContent className="p-6">
+            <div className="flex flex-col items-center justify-center py-8 text-center">
+              <Lock className="h-12 w-12 text-gray-400 mb-4" />
+              <h3 className="text-lg font-semibold text-gray-700 mb-2">Admin Access Required</h3>
+              <p className="text-gray-500">This section is only accessible to administrators.</p>
+            </div>
+          </CardContent>
+        </Card>
+      );
+    }
+    if (!arePolicyPrerequisitesComplete()) {
+      return (
+        <Card>
+          <CardContent className="p-6">
+            <div className="flex flex-col items-center justify-center py-8 text-center">
+              <Lock className="h-12 w-12 text-red-400 mb-4" />
+              <h3 className="text-lg font-semibold text-gray-700 mb-2">Complete Policy Section First</h3>
+              <p className="text-gray-500 mb-4">Please complete the Policy section before accessing the Admin Signature section.</p>
+            </div>
+          </CardContent>
+        </Card>
+      );
+    }
+    return (
+      <Card>
       <CardHeader>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -568,7 +660,8 @@ const ParentHandbookNew = ({ selectedSubForm = null, initialFormData = null, chi
         </div>
       </CardContent>
     </Card>
-  );
+    );
+  };
 
   return (
     <div className="space-y-6">
@@ -618,7 +711,7 @@ const ParentHandbookNew = ({ selectedSubForm = null, initialFormData = null, chi
       </Card>
 
       {/* Tab Navigation */}
-      <Tabs value={activeTab} onValueChange={setActiveTab}>
+      <Tabs value={activeTab} onValueChange={handleTabChange}>
         <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="policies" className="flex items-center gap-2">
             <BookOpen className="h-4 w-4" />
@@ -628,18 +721,44 @@ const ParentHandbookNew = ({ selectedSubForm = null, initialFormData = null, chi
               <CheckCircle className="h-4 w-4 text-green-600" />
             )}
           </TabsTrigger>
-          <TabsTrigger value="parent" className="flex items-center gap-2">
+          <TabsTrigger 
+            value="parent" 
+            className={`flex items-center gap-2 ${
+              !arePolicyPrerequisitesComplete() ? 'opacity-50 cursor-not-allowed' : ''
+            }`}
+            disabled={!arePolicyPrerequisitesComplete()}
+            title={!arePolicyPrerequisitesComplete() ? "Complete Policy section before accessing Parent Signature" : ""}
+          >
             <User className="h-4 w-4" />
             <span className="hidden sm:inline">Parent Signature</span>
             <span className="sm:hidden">Parent</span>
+            {!arePolicyPrerequisitesComplete() && (
+              <Lock className="h-3 w-3 text-red-500" />
+            )}
             {isParentSignatureComplete() && (
               <CheckCircle className="h-4 w-4 text-green-600" />
             )}
           </TabsTrigger>
-          <TabsTrigger value="admin" className="flex items-center gap-2">
+          <TabsTrigger 
+            value="admin" 
+            className={`flex items-center gap-2 ${
+              (!isAdmin || !arePolicyPrerequisitesComplete()) ? 'opacity-50 cursor-not-allowed' : ''
+            }`}
+            disabled={!isAdmin || !arePolicyPrerequisitesComplete()}
+            title={
+              !isAdmin ? "Only admin users can access Admin Signature" :
+              !arePolicyPrerequisitesComplete() ? "Complete Policy section before accessing Admin Signature" : ""
+            }
+          >
             <Shield className="h-4 w-4" />
             <span className="hidden sm:inline">Admin Signature</span>
             <span className="sm:hidden">Admin</span>
+            {!isAdmin && (
+              <Lock className="h-3 w-3 text-gray-500" />
+            )}
+            {isAdmin && !arePolicyPrerequisitesComplete() && (
+              <Lock className="h-3 w-3 text-red-500" />
+            )}
             {isAdminSignatureComplete() && (
               <CheckCircle className="h-4 w-4 text-green-600" />
             )}

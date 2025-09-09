@@ -22,14 +22,31 @@ import {
   Clock,
   Calendar,
   Edit3,
-  Info
+  Info,
+  Lock
 } from 'lucide-react';
 import { toast, Toaster } from 'sonner';
 import { useAuth0 } from '@auth0/auth0-react';
 import { submitAndCompleteForm } from '@/utils/formSubmission';
 
-const EnrollmentFormNew = ({ selectedSubForm = null, initialFormData = null, childId = null, onSubmitSuccess }) => {
-  const { getAccessTokenSilently } = useAuth0();
+const EnrollmentFormNew = ({ selectedSubForm = null, initialFormData = null, childId = null, onSubmitSuccess, onSubFormChange, formStatus = {} }) => {
+  const { getAccessTokenSilently, user } = useAuth0();
+  
+  // Check if Enrollment Agreement prerequisites are complete (enrollment form must be completed)
+  const areEnrollmentPrerequisitesComplete = () => {
+    // For enrollment form, the agreement section must be completed before signatures
+    return formStatus['enrollment_agreement']?.completed === true;
+  };
+  
+  // List of admin emails that should have access to admin signatures
+  const ADMIN_EMAILS = [
+    'goddard01arjava@gmail.com',
+    'admin@goddard.com',
+    // Add more admin emails here as needed
+  ];
+  
+  // Check if user is admin - using email-based check like the sidebar
+  const isAdmin = user?.email && ADMIN_EMAILS.includes(user.email.toLowerCase());
   const [activeTab, setActiveTab] = useState(selectedSubForm ? getTabFromSubForm(selectedSubForm) : 'enrollment');
   const [formData, setFormData] = useState({
     point_one_field_one: new Date().toISOString().split('T')[0],
@@ -67,7 +84,7 @@ const EnrollmentFormNew = ({ selectedSubForm = null, initialFormData = null, chi
     if (!subForm) return 'enrollment';
     
     switch (subForm.toLowerCase()) {
-      case 'enrollment agreement':
+      case 'agreement':
         return 'enrollment';
       case 'parent signature':
         return 'parent';
@@ -77,6 +94,38 @@ const EnrollmentFormNew = ({ selectedSubForm = null, initialFormData = null, chi
         return 'enrollment';
     }
   }
+
+  // Convert tab ID back to subForm name for sidebar sync
+  function getSubFormFromTab(tabId) {
+    switch (tabId) {
+      case 'enrollment':
+        return 'Agreement';
+      case 'parent':
+        return 'Parent Signature';
+      case 'admin':
+        return 'Admin Signature';
+      default:
+        return 'Agreement';
+    }
+  }
+
+  // Update activeTab when selectedSubForm prop changes (sidebar navigation)
+  useEffect(() => {
+    if (selectedSubForm) {
+      const newTab = getTabFromSubForm(selectedSubForm);
+      setActiveTab(newTab);
+    }
+  }, [selectedSubForm]);
+
+  // Handle tab change and notify parent for sidebar sync
+  const handleTabChange = (tabValue) => {
+    setActiveTab(tabValue);
+    // Notify parent component to update sidebar selection
+    if (onSubFormChange) {
+      const subFormName = getSubFormFromTab(tabValue);
+      onSubFormChange(subFormName);
+    }
+  };
 
   // Use standardized form submission
 
@@ -907,15 +956,29 @@ const EnrollmentFormNew = ({ selectedSubForm = null, initialFormData = null, chi
     </Card>
   );
 
-  const renderParentSignatureForm = () => (
-    <Card>
-      <CardHeader className="bg-[#0F2D52] text-white">
-        <CardTitle className="text-xl">Parent Signature</CardTitle>
-        <CardDescription className="text-blue-100">
-          Parent agreement and authorization
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="p-6">
+  const renderParentSignatureForm = () => {
+    if (!areEnrollmentPrerequisitesComplete()) {
+      return (
+        <Card>
+          <CardContent className="p-6">
+            <div className="flex flex-col items-center justify-center py-8 text-center">
+              <Lock className="h-12 w-12 text-red-400 mb-4" />
+              <h3 className="text-lg font-semibold text-gray-700 mb-2">Complete Enrollment Agreement First</h3>
+              <p className="text-gray-500 mb-4">Please complete the Enrollment Agreement before accessing the Parent Signature section.</p>
+            </div>
+          </CardContent>
+        </Card>
+      );
+    }
+    return (
+      <Card>
+        <CardHeader className="bg-[#0F2D52] text-white">
+          <CardTitle className="text-xl">Parent Signature</CardTitle>
+          <CardDescription className="text-blue-100">
+            Parent agreement and authorization
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="p-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-2">
             <Label htmlFor="parent_sign_enroll">Parent Signature</Label>
@@ -964,17 +1027,45 @@ const EnrollmentFormNew = ({ selectedSubForm = null, initialFormData = null, chi
         </div>
       </CardContent>
     </Card>
-  );
+    );
+  };
 
-  const renderAdminSignatureForm = () => (
-    <Card>
-      <CardHeader className="bg-[#0F2D52] text-white">
-        <CardTitle className="text-xl">Admin Signature</CardTitle>
-        <CardDescription className="text-blue-100">
-          Administrative approval and verification
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="p-6">
+  const renderAdminSignatureForm = () => {
+    if (!isAdmin) {
+      return (
+        <Card>
+          <CardContent className="p-6">
+            <div className="flex flex-col items-center justify-center py-8 text-center">
+              <Lock className="h-12 w-12 text-gray-400 mb-4" />
+              <h3 className="text-lg font-semibold text-gray-700 mb-2">Admin Access Required</h3>
+              <p className="text-gray-500">This section is only accessible to administrators.</p>
+            </div>
+          </CardContent>
+        </Card>
+      );
+    }
+    if (!areEnrollmentPrerequisitesComplete()) {
+      return (
+        <Card>
+          <CardContent className="p-6">
+            <div className="flex flex-col items-center justify-center py-8 text-center">
+              <Lock className="h-12 w-12 text-red-400 mb-4" />
+              <h3 className="text-lg font-semibold text-gray-700 mb-2">Complete Enrollment Agreement First</h3>
+              <p className="text-gray-500 mb-4">Please complete the Enrollment Agreement before accessing the Admin Signature section.</p>
+            </div>
+          </CardContent>
+        </Card>
+      );
+    }
+    return (
+      <Card>
+        <CardHeader className="bg-[#0F2D52] text-white">
+          <CardTitle className="text-xl">Admin Signature</CardTitle>
+          <CardDescription className="text-blue-100">
+            Administrative approval and verification
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="p-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-2">
             <Label htmlFor="admin_sign_enroll">Admin Signature</Label>
@@ -1022,29 +1113,56 @@ const EnrollmentFormNew = ({ selectedSubForm = null, initialFormData = null, chi
         </div>
       </CardContent>
     </Card>
-  );
+    );
+  };
 
   return (
     <div className="max-w-6xl mx-auto space-y-6">
       <Toaster richColors position="top-center" />
       
       {/* Tab Navigation */}
-      <Tabs value={activeTab} onValueChange={setActiveTab}>
+      <Tabs value={activeTab} onValueChange={handleTabChange}>
         <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="enrollment" className="flex items-center gap-2">
             <ScrollText className="h-4 w-4" />
             <span className="hidden sm:inline">Enrollment Agreement</span>
             <span className="sm:hidden">Agreement</span>
           </TabsTrigger>
-          <TabsTrigger value="parent" className="flex items-center gap-2">
+          <TabsTrigger 
+            value="parent" 
+            className={`flex items-center gap-2 ${
+              !areEnrollmentPrerequisitesComplete() ? 'opacity-50 cursor-not-allowed' : ''
+            }`}
+            disabled={!areEnrollmentPrerequisitesComplete()}
+            title={!areEnrollmentPrerequisitesComplete() ? "Complete Enrollment Agreement before accessing Parent Signature" : ""}
+          >
             <User className="h-4 w-4" />
             <span className="hidden sm:inline">Parent Signature</span>
             <span className="sm:hidden">Parent</span>
+            {!areEnrollmentPrerequisitesComplete() && (
+              <Lock className="h-3 w-3 text-red-500" />
+            )}
           </TabsTrigger>
-          <TabsTrigger value="admin" className="flex items-center gap-2">
+          <TabsTrigger 
+            value="admin" 
+            className={`flex items-center gap-2 ${
+              (!isAdmin || !areEnrollmentPrerequisitesComplete()) ? 'opacity-50 cursor-not-allowed' : ''
+            }`}
+            disabled={!isAdmin || !areEnrollmentPrerequisitesComplete()}
+            title={
+              !isAdmin ? "Only admin users can access Admin Signature" :
+              !areEnrollmentPrerequisitesComplete() ? "Complete Enrollment Agreement before accessing Admin Signature" : ""
+            }
+          >
             <Shield className="h-4 w-4" />
             <span className="hidden sm:inline">Admin Signature</span>
             <span className="sm:hidden">Admin</span>
+            {!isAdmin && (
+              <Lock className="h-3 w-3 text-gray-500" />
+            )}
+            {isAdmin && !areEnrollmentPrerequisitesComplete() && (
+              <Lock className="h-3 w-3 text-red-500" />
+            )}
           </TabsTrigger>
         </TabsList>
 
