@@ -639,6 +639,8 @@ const ParentDashboard = () => {
               selectedSubForm={selectedSubForm}
               initialFormData={childFormData}
               childId={activeChildId}
+              onSubFormChange={setSelectedSubForm}
+              formStatus={formStatus}
             />
           </div>
         );

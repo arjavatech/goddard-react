@@ -187,7 +187,9 @@ const ParentDashboardRefactored = () => {
     const commonProps = {
       selectedSubForm,
       childId: activeChildId,
-      initialFormData: activeChild?.formData
+      initialFormData: activeChild?.formData,
+      onSubFormChange: setSelectedSubForm,
+      formStatus: formStatus
     };
 
     switch (currentSection) {

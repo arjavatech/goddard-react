@@ -53,7 +53,7 @@ const AdmissionFormNew = ({ selectedSubForm, initialFormData = null, childId = n
   const handleTabChange = (tabValue) => {
     setActiveTab(tabValue);
     // Notify parent component to update sidebar selection
-    if (onSubFormChange && tabValue !== selectedSubForm) {
+    if (onSubFormChange) {
       onSubFormChange(tabValue);
     }
   };

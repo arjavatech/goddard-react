@@ -195,7 +195,9 @@ const ParentDashboardSimple = () => {
       childId: activeChild?.id,
       initialFormData: formData,
       onSubmitSuccess: handleFormSubmissionSuccess, // This will refresh the dashboard
-      onProgressUpdate: handleFormProgressUpdate // NEW: Real-time progress tracking
+      onProgressUpdate: handleFormProgressUpdate, // NEW: Real-time progress tracking
+      onSubFormChange: setSelectedSubForm, // For sidebar sync
+      formStatus: formStatus // For prerequisite checks
     };
 
     console.log('🎨 Rendering form section:', currentSection, 'for child:', activeChild?.id);
