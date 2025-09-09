@@ -21,6 +21,7 @@ import {
   Baby
 } from 'lucide-react';
 import { toast, Toaster } from 'sonner';
+import { useAuth0 } from '@auth0/auth0-react';
 
 // Import existing form components
 import ImmunizationInstructions from './ImmunizationInstructions';
@@ -39,6 +40,17 @@ import ParentSign from './ParentSign';
 
 const AdmissionFormNew = ({ selectedSubForm, initialFormData = null, childId = null, onSubmitSuccess, onProgressUpdate }) => {
   const [activeTab, setActiveTab] = useState(selectedSubForm || 'Child Information');
+  const { user } = useAuth0();
+  
+  // List of admin emails that should have access to admin signatures
+  const ADMIN_EMAILS = [
+    'goddard01arjava@gmail.com',
+    'admin@goddard.com',
+    // Add more admin emails here as needed
+  ];
+  
+  // Check if user is admin - using email-based check like the sidebar
+  const isAdmin = user?.email && ADMIN_EMAILS.includes(user.email.toLowerCase());
   
   // Track form completion status for each section
   const [sectionCompletionStatus, setSectionCompletionStatus] = useState({});
@@ -85,7 +97,8 @@ const AdmissionFormNew = ({ selectedSubForm, initialFormData = null, childId = n
     }));
   };
   
-  const formSections = [
+  // Define form sections in the correct order
+  const allFormSections = [
     {
       id: 'Child Information',
       title: 'Child Information',
@@ -102,7 +115,7 @@ const AdmissionFormNew = ({ selectedSubForm, initialFormData = null, childId = n
     },
     {
       id: 'Immunization',
-      title: 'Immunization Records',
+      title: 'Immunization',
       icon: <Heart className="h-5 w-5" />,
       description: 'Vaccination and health records',
       category: 'health'
@@ -115,18 +128,18 @@ const AdmissionFormNew = ({ selectedSubForm, initialFormData = null, childId = n
       category: 'personal'
     },
     {
-      id: 'Photo/Video Permission',
-      title: 'Photo/Video Permission',
-      icon: <Camera className="h-5 w-5" />,
-      description: 'Media permissions and releases',
-      category: 'permissions'
-    },
-    {
       id: 'Pick-up Password',
       title: 'Pick-up Password',
       icon: <Lock className="h-5 w-5" />,
       description: 'Security password for child pickup',
       category: 'security'
+    },
+    {
+      id: 'Photo/Video Permission',
+      title: 'Photo/Video Permission',
+      icon: <Camera className="h-5 w-5" />,
+      description: 'Media permissions and releases',
+      category: 'permissions'
     },
     {
       id: 'Security & Policy',
@@ -164,20 +177,24 @@ const AdmissionFormNew = ({ selectedSubForm, initialFormData = null, childId = n
       category: 'permissions'
     },
     {
-      id: 'Admin Signature',
-      title: 'Admin Signature',
-      icon: <FileText className="h-5 w-5" />,
-      description: 'Administrative signature section',
-      category: 'signature'
-    },
-    {
       id: 'Parent Signature',
       title: 'Parent Signature',
       icon: <User className="h-5 w-5" />,
       description: 'Parent signature and agreement',
       category: 'signature'
+    },
+    {
+      id: 'Admin Signature',
+      title: 'Admin Signature',
+      icon: <FileText className="h-5 w-5" />,
+      description: 'Administrative signature section',
+      category: 'signature',
+      adminOnly: true
     }
   ];
+  
+  // Use all sections without filtering
+  const formSections = allFormSections;
 
   const getCategoryColor = (category) => {
     const colors = {
@@ -257,6 +274,19 @@ const AdmissionFormNew = ({ selectedSubForm, initialFormData = null, childId = n
       case 'Parent Signature':
         return <ParentSign {...commonFormProps} />;
       case 'Admin Signature':
+        if (!isAdmin) {
+          return (
+            <Card>
+              <CardContent className="p-6">
+                <div className="flex flex-col items-center justify-center py-8 text-center">
+                  <Lock className="h-12 w-12 text-gray-400 mb-4" />
+                  <h3 className="text-lg font-semibold text-gray-700 mb-2">Admin Access Required</h3>
+                  <p className="text-gray-500">This section is only accessible to administrators.</p>
+                </div>
+              </CardContent>
+            </Card>
+          );
+        }
         return <AdminSign {...commonFormProps} />;
       default:
         return (
@@ -314,14 +344,6 @@ const AdmissionFormNew = ({ selectedSubForm, initialFormData = null, childId = n
     }
   };
 
-  const groupedSections = formSections.reduce((acc, section) => {
-    if (!acc[section.category]) {
-      acc[section.category] = [];
-    }
-    acc[section.category].push(section);
-    return acc;
-  }, {});
-
   // Calculate progress based on actual section completion
   const completedSections = Object.values(sectionCompletionStatus).filter(Boolean).length;
   const totalSections = formSections.length;
@@ -369,23 +391,25 @@ const AdmissionFormNew = ({ selectedSubForm, initialFormData = null, childId = n
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         <div className="overflow-x-auto">
           <TabsList className="inline-flex h-auto min-w-full w-max p-1 bg-gray-100">
-            {Object.entries(groupedSections).map(([category, sections]) => (
-              <React.Fragment key={category}>
-                {sections.map((section) => (
-                  <TabsTrigger 
-                    key={section.id} 
-                    value={section.id}
-                    className="flex items-center gap-2 whitespace-nowrap px-3 py-2 data-[state=active]:bg-white data-[state=active]:text-[#0F2D52]"
-                  >
-                    {section.icon}
-                    <span className="hidden sm:inline">{section.title}</span>
-                    <span className="sm:hidden">{section.title.split(' ')[0]}</span>
-                    {sectionCompletionStatus[section.id] && (
-                      <CheckCircle className="h-4 w-4 text-green-500" />
-                    )}
-                  </TabsTrigger>
-                ))}
-              </React.Fragment>
+            {formSections.map((section) => (
+              <TabsTrigger 
+                key={section.id} 
+                value={section.id}
+                className={`flex items-center gap-2 whitespace-nowrap px-3 py-2 data-[state=active]:bg-white data-[state=active]:text-[#0F2D52] ${
+                  section.adminOnly && !isAdmin ? 'opacity-50 cursor-not-allowed' : ''
+                }`}
+                disabled={section.adminOnly && !isAdmin}
+              >
+                {section.icon}
+                <span className="hidden sm:inline">{section.title}</span>
+                <span className="sm:hidden">{section.title.split(' ')[0]}</span>
+                {section.adminOnly && !isAdmin && (
+                  <Lock className="h-3 w-3 text-gray-500" />
+                )}
+                {sectionCompletionStatus[section.id] && (
+                  <CheckCircle className="h-4 w-4 text-green-500" />
+                )}
+              </TabsTrigger>
             ))}
           </TabsList>
         </div>
