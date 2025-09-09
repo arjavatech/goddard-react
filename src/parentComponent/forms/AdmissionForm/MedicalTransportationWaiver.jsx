@@ -10,8 +10,8 @@ import { useAuth0 } from '@auth0/auth0-react';
 import { getAuthHeaders } from '@/utils/auth';
 
 export default function MedicalTransportationWaiver({initialFormData = null, childId = null}) {
-  const [studentName, setStudentName] = useState(initialFormData.med_technicians_med_transportation_waiver ?? '');
-  const [agreed, setAgreed] = useState(initialFormData.medical_transportation_waiver == 'on');
+  const [studentName, setStudentName] = useState(initialFormData?.med_technicians_med_transportation_waiver ?? '');
+  const [agreed, setAgreed] = useState(initialFormData?.medical_transportation_waiver === 'on' || false);
   const { getAccessTokenSilently } = useAuth0();
   const [submitted, setSubmitted] = useState(false);
 
@@ -47,7 +47,7 @@ export default function MedicalTransportationWaiver({initialFormData = null, chi
   React.useEffect(() => {
     if (initialFormData) {
       setStudentName(initialFormData.med_technicians_med_transportation_waiver ?? '');
-      setAgreed(initialFormData.medical_transportation_waiver == 'on');
+      setAgreed(initialFormData.medical_transportation_waiver === 'on' || false);
     }
   }, [initialFormData]);
 

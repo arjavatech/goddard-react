@@ -13,7 +13,7 @@ import { getAuthHeaders } from '@/utils/auth';
 
 export default function SocialMediaReleaseForm({initialFormData = null, childId}) {
   const { getAccessTokenSilently } = useAuth0();
-  const [approval, setApproval] = useState(initialFormData.approve_social_media_post);
+  const [approval, setApproval] = useState(initialFormData.approve_social_media_post == 1 ? 'approve' : 'deny');
   const [printedName, setPrintedName] = useState(initialFormData.printed_name_social_media_post);
   const [agreed, setAgreed] = useState(initialFormData.do_you_agree_this_social_media_post == 'on');
 
@@ -65,7 +65,7 @@ export default function SocialMediaReleaseForm({initialFormData = null, childId}
       const saveData = {
         child_id: childId,
         school_id: school_id,
-        approve_social_media_post: approval,
+        approve_social_media_post: approval == 'deny' ? 0 : 1,
         printed_name_social_media_post: printedName,
         do_you_agree_this_social_media_post: agreed ? 'on' : 'off'
       };
