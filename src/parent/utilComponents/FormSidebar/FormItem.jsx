@@ -137,13 +137,14 @@ const FormItem = ({ item, sectionKey, formStatus, onItemClick, isSelected, userE
       className={`flex justify-between items-center px-3 py-1 border-b-2 border-[#0F2D52] last:border-none ${
         isSelected ? "bg-[#0F2D52] text-white" : "bg-[#E2F1FF]"
       } ${
-        isAdminRestricted 
+        (isAdminRestricted || isParentSignatureRestricted)
           ? "opacity-50 cursor-not-allowed bg-gray-200" 
           : "hover:bg-[#0F2D52] hover:text-white cursor-pointer"
       }`}
       onClick={handleItemClick}
       title={
-        isAdminRestricted ? "Only admin users can access Admin Signature sections" : ""
+        isAdminRestricted ? "Only admin users can access Admin Signature sections" : 
+        isParentSignatureRestricted ? "Complete the required fields first" : ""
       }
     >
         <span>{item}</span>
