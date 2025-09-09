@@ -163,6 +163,7 @@ const Parent_Argeement = ({ expandedSections, toggleSection, formData, handleInp
 
           <div className="flex justify-center pt-4">
             <Button 
+              type="button"
               onClick={handleSave}
               disabled={!localFormData.agreementConfirmed}
               className="bg-[#0F2D52] hover:bg-[#0F2D52]/90 px-8 disabled:opacity-50 disabled:cursor-not-allowed"

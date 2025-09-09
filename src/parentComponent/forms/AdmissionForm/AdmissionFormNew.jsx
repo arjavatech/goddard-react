@@ -406,7 +406,7 @@ const AdmissionFormNew = ({ selectedSubForm, initialFormData = null, childId = n
                 {section.adminOnly && !isAdmin && (
                   <Lock className="h-3 w-3 text-gray-500" />
                 )}
-                {sectionCompletionStatus[section.id] && (
+                {sectionCompletionStatus[section.id] === true && (
                   <CheckCircle className="h-4 w-4 text-green-500" />
                 )}
               </TabsTrigger>

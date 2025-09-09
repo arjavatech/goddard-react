@@ -1,52 +1,52 @@
 import { useState, useEffect } from 'react';
-import { ChevronUp, ChevronDown, Check, Clock } from 'lucide-react';
+import { Check } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { toast, Toaster } from 'sonner';
+import { Toaster } from 'sonner';
 import ChildProfileDetails from './ChildProfileDetails';
 import Nutrition from './Nutrition';
 import ToiletLearning from './ToiletLearning';
 import MedicalGeneral from './MedicalGeneral';
 import Parent_Argeement from './Parent_Argeement';
 
-export default function ChildProfileForm({ initialFormData = null, childId }) {
+export default function ChildProfileForm({ initialFormData = {}, childId, onSubmitSuccess }) {
     const [formData, setFormData] = useState({
-        important_fam_members: '',
-        about_family_celebrations: '',
-        childcare_before: '',
-        reason_for_childcare_before: '',
-        what_child_interests: '',
-        drop_off_time: '',
-        pick_up_time: '',
-        restricted_diet: '',
-        restricted_diet_reason: '',
-        eat_own: '',
-        eat_own_reason: '',
-        favorite_foods: '',
-        rest_in_the_middle_day: '',
-        reason_for_rest_in_the_middle_day: '',
-        rest_routine: '',
-        toilet_trained: '',
-        reason_for_toilet_trained: '',
-        explain_for_existing_illness_allergy: '',
-        existing_illness_allergy: '',
-        functioning_at_age: '',
-        explain_for_functioning_at_age: '',
-        explain_for_able_to_walk: '',
-        able_to_walk: '',
-        explain_for_communicate_their_needs: '',
-        communicate_their_needs: '',
-        any_medication: '',
-        explain_for_any_medication: '',
-        utilize_special_equipment: '',
-        explain_for_utilize_special_equipment: '',
-        significant_periods: '',
-        explain_for_significant_periods: '',
-        desire_any_accommodations: '',
-        explain_for_desire_any_accommodations: '',
-        additional_information: '',
-        do_you_agree_this: '',
+        important_fam_members: initialFormData?.important_fam_members || '',
+        about_family_celebrations: initialFormData?.about_family_celebrations || '',
+        childcare_before: initialFormData?.childcare_before || '',
+        reason_for_childcare_before: initialFormData?.reason_for_childcare_before || '',
+        what_child_interests: initialFormData?.what_child_interests || '',
+        drop_off_time: initialFormData?.drop_off_time || '',
+        pick_up_time: initialFormData?.pick_up_time || '',
+        restricted_diet: initialFormData?.restricted_diet || '',
+        restricted_diet_reason: initialFormData?.restricted_diet_reason || '',
+        eat_own: initialFormData?.eat_own || '',
+        eat_own_reason: initialFormData?.eat_own_reason || '',
+        favorite_foods: initialFormData?.favorite_foods || '',
+        rest_in_the_middle_day: initialFormData?.rest_in_the_middle_day || '',
+        reason_for_rest_in_the_middle_day: initialFormData?.reason_for_rest_in_the_middle_day || '',
+        rest_routine: initialFormData?.rest_routine || '',
+        toilet_trained: initialFormData?.toilet_trained || '',
+        reason_for_toilet_trained: initialFormData?.reason_for_toilet_trained || '',
+        explain_for_existing_illness_allergy: initialFormData?.explain_for_existing_illness_allergy || '',
+        existing_illness_allergy: initialFormData?.existing_illness_allergy || '',
+        functioning_at_age: initialFormData?.functioning_at_age || '',
+        explain_for_functioning_at_age: initialFormData?.explain_for_functioning_at_age || '',
+        explain_for_able_to_walk: initialFormData?.explain_for_able_to_walk || '',
+        able_to_walk: initialFormData?.able_to_walk || '',
+        explain_for_communicate_their_needs: initialFormData?.explain_for_communicate_their_needs || '',
+        communicate_their_needs: initialFormData?.communicate_their_needs || '',
+        any_medication: initialFormData?.any_medication || '',
+        explain_for_any_medication: initialFormData?.explain_for_any_medication || '',
+        utilize_special_equipment: initialFormData?.utilize_special_equipment || '',
+        explain_for_utilize_special_equipment: initialFormData?.explain_for_utilize_special_equipment || '',
+        significant_periods: initialFormData?.significant_periods || '',
+        explain_for_significant_periods: initialFormData?.explain_for_significant_periods || '',
+        desire_any_accommodations: initialFormData?.desire_any_accommodations || '',
+        explain_for_desire_any_accommodations: initialFormData?.explain_for_desire_any_accommodations || '',
+        additional_information: initialFormData?.additional_information || '',
+        do_you_agree_this: initialFormData?.do_you_agree_this || '',
     });
 
     const [expandedSections, setExpandedSections] = useState({
@@ -151,47 +151,52 @@ export default function ChildProfileForm({ initialFormData = null, childId }) {
             <div className="space-y-1">
                 {/* Child Profile Details Section */}
                 <ChildProfileDetails 
-                    initialFormData={initialFormData}
+                    initialFormData={initialFormData || {}}
                     handleInputChange={handleInputChange}
                     expandedSections={expandedSections}
                     toggleSection={toggleSection}
                     childId={childId}
+                    onSubmitSuccess={onSubmitSuccess}
                 />
 
                 {/* Nutrition Section */}
                 <Nutrition 
-                    initialFormData={initialFormData}
+                    initialFormData={initialFormData || {}}
                     handleInputChange={handleInputChange}
                     expandedSections={expandedSections}
                     toggleSection={toggleSection}
                     childId={childId}
+                    onSubmitSuccess={onSubmitSuccess}
                 />
 
                 {/* Rest and Diapering/Toilet Learning Section */}
                 <ToiletLearning 
-                    initialFormData={initialFormData}
+                    initialFormData={initialFormData || {}}
                     handleInputChange={handleInputChange}
                     expandedSections={expandedSections}
                     toggleSection={toggleSection}
                     childId={childId}
+                    onSubmitSuccess={onSubmitSuccess}
                 />
 
                 {/* Medical/General Section */}
                 <MedicalGeneral 
-                    initialFormData={initialFormData}
+                    initialFormData={initialFormData || {}}
                     handleInputChange={handleInputChange}
                     expandedSections={expandedSections}
                     toggleSection={toggleSection}
                     childId={childId}
+                    onSubmitSuccess={onSubmitSuccess}
                 />
 
                 {/* Parent Agreement Section */}
                 <Parent_Argeement 
-                    initialFormData={initialFormData}
+                    initialFormData={initialFormData || {}}
                     handleInputChange={handleInputChange}
                     expandedSections={expandedSections}
                     toggleSection={toggleSection}
                     childId={childId}
+                    onSubmitSuccess={onSubmitSuccess}
                 />
             </div>
         </div>

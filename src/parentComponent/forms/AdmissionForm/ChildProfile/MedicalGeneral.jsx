@@ -1,5 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { ChevronUp, ChevronDown } from 'lucide-react';
+import { ChevronUp, ChevronDown, Heart, Check } from 'lucide-react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { toast } from 'sonner';
 import { RadioGroup, FormInput } from './InputComponent';
 import { api_base_url, school_id } from '@/utils/const';
 import { useAuth0 } from '@auth0/auth0-react';
@@ -48,7 +52,7 @@ const yesNoFields = [
   },
 ];
 
-const MedicalGeneral = ({ initialFormData = null, expandedSections, toggleSection, childId }) => {
+const MedicalGeneral = ({ initialFormData = {}, expandedSections, toggleSection, childId, onSubmitSuccess }) => {
   const { getAccessTokenSilently } = useAuth0();
   const [localFormData, setLocalFormData] = useState({
     hasExistingCondition: '',
@@ -93,26 +97,26 @@ const MedicalGeneral = ({ initialFormData = null, expandedSections, toggleSectio
   }, []);
 
   useEffect(() => {
-    if (initialFormData) {
+    if (initialFormData && Object.keys(initialFormData).length > 0) {
       setLocalFormData(prevState => ({
         child_id: childId,
-        hasExistingCondition: initialFormData.existing_illness_allergy === 1 ? 'Yes' : (initialFormData.existing_illness_allergy === 2 ? 'No' : ''),
-        existingConditionExplanation: initialFormData.explain_for_existing_illness_allergy || '',
-        functioningAtAge: initialFormData.functioning_at_age === 1 ? 'Yes' : (initialFormData.functioning_at_age === 2 ? 'No' : ''),
-        functioningAtAgeExplanation: initialFormData.explain_for_functioning_at_age || '',
-        canWalk: initialFormData.able_to_walk === 1 ? 'Yes' : (initialFormData.able_to_walk === 2 ? 'No' : ''),
-        canWalkExplanation: initialFormData.explain_for_able_to_walk || '',
-        canCommunicate: initialFormData.communicate_their_needs === 1 ? 'Yes' : (initialFormData.communicate_their_needs === 2 ? 'No' : ''),
-        canCommunicateExplanation: initialFormData.explain_for_communicate_their_needs || '',
-        needsTreatment: initialFormData.any_medication === 1 ? 'Yes' : (initialFormData.any_medication === 2 ? 'No' : ''),
-        treatmentExplanation: initialFormData.explain_for_any_medication || '',
-        usesEquipment: initialFormData.utilize_special_equipment === 1 ? 'Yes' : (initialFormData.utilize_special_equipment === 2 ? 'No' : ''),
-        equipmentExplanation: initialFormData.explain_for_utilize_special_equipment || '',
-        needsSupervision: initialFormData.significant_periods === 1 ? 'Yes' : (initialFormData.significant_periods === 2 ? 'No' : ''),
-        supervisionExplanation: initialFormData.explain_for_significant_periods || '',
-        needsAccommodation: initialFormData.desire_any_accommodations === 1 ? 'Yes' : (initialFormData.desire_any_accommodations === 2 ? 'No' : ''),
-        accommodationExplanation: initialFormData.explain_for_desire_any_accommodations || '',
-        comments: initialFormData.additional_information || ''
+        hasExistingCondition: initialFormData?.existing_illness_allergy === 1 ? 'Yes' : (initialFormData?.existing_illness_allergy === 2 ? 'No' : ''),
+        existingConditionExplanation: initialFormData?.explain_for_existing_illness_allergy || '',
+        functioningAtAge: initialFormData?.functioning_at_age === 1 ? 'Yes' : (initialFormData?.functioning_at_age === 2 ? 'No' : ''),
+        functioningAtAgeExplanation: initialFormData?.explain_for_functioning_at_age || '',
+        canWalk: initialFormData?.able_to_walk === 1 ? 'Yes' : (initialFormData?.able_to_walk === 2 ? 'No' : ''),
+        canWalkExplanation: initialFormData?.explain_for_able_to_walk || '',
+        canCommunicate: initialFormData?.communicate_their_needs === 1 ? 'Yes' : (initialFormData?.communicate_their_needs === 2 ? 'No' : ''),
+        canCommunicateExplanation: initialFormData?.explain_for_communicate_their_needs || '',
+        needsTreatment: initialFormData?.any_medication === 1 ? 'Yes' : (initialFormData?.any_medication === 2 ? 'No' : ''),
+        treatmentExplanation: initialFormData?.explain_for_any_medication || '',
+        usesEquipment: initialFormData?.utilize_special_equipment === 1 ? 'Yes' : (initialFormData?.utilize_special_equipment === 2 ? 'No' : ''),
+        equipmentExplanation: initialFormData?.explain_for_utilize_special_equipment || '',
+        needsSupervision: initialFormData?.significant_periods === 1 ? 'Yes' : (initialFormData?.significant_periods === 2 ? 'No' : ''),
+        supervisionExplanation: initialFormData?.explain_for_significant_periods || '',
+        needsAccommodation: initialFormData?.desire_any_accommodations === 1 ? 'Yes' : (initialFormData?.desire_any_accommodations === 2 ? 'No' : ''),
+        accommodationExplanation: initialFormData?.explain_for_desire_any_accommodations || '',
+        comments: initialFormData?.additional_information || ''
       }));
     }
   }, [initialFormData, childId]);
@@ -162,9 +166,15 @@ const MedicalGeneral = ({ initialFormData = null, expandedSections, toggleSectio
     );
   };
 
-  const handleSave = async () => {
+  const handleSave = async (e) => {
+    // Prevent any form submission or default behavior
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    
     if (!childId) {
-      alert('Error: Child ID is missing');
+      toast.error('Error: Child ID is missing');
       return;
     }
 
@@ -193,6 +203,11 @@ const MedicalGeneral = ({ initialFormData = null, expandedSections, toggleSectio
       console.log(saveData);
       await updateAdmissionData(saveData);
       toast.success('Medical General data saved successfully!');
+      
+      // Call the parent's onSubmitSuccess to mark Child Profile as complete
+      if (onSubmitSuccess) {
+        // onSubmitSuccess();
+      }
     } catch (error) {
       console.error('Failed to save Medical General data:', error);
       toast.error('Error saving Medical General data. Please try again.');
@@ -266,6 +281,7 @@ const MedicalGeneral = ({ initialFormData = null, expandedSections, toggleSectio
 
           <div className="flex justify-center pt-4">
             <Button 
+              type="button"
               onClick={handleSave}
               className="bg-[#0F2D52] hover:bg-[#0F2D52]/90 px-8"
             >

@@ -12,7 +12,7 @@ import { RadioGroup } from './InputComponent';
 import { useAuth0 } from '@auth0/auth0-react';
 import { getAuthHeaders } from '@/utils/auth';
 
-const ChildProfileDetails = ({ expandedSections, toggleSection, initialFormData, childId }) => {
+const ChildProfileDetails = ({ expandedSections, toggleSection, initialFormData, childId, onSubmitSuccess }) => {
   const { getAccessTokenSilently } = useAuth0();
     const [localFormData, setLocalFormData] = useState({
         important_fam_members: '',
@@ -112,6 +112,11 @@ const ChildProfileDetails = ({ expandedSections, toggleSection, initialFormData,
             console.log(saveData);
             await updateAdmissionData(saveData);
             toast.success('Child profile details saved successfully!');
+            
+            // Call the parent's onSubmitSuccess to mark Child Profile as complete
+            if (onSubmitSuccess) {
+                onSubmitSuccess();
+            }
         } catch (error) {
             console.error('Failed to save Child profile details:', error);
             toast.error('Error saving Child profile details. Please try again.');
@@ -248,6 +253,7 @@ const ChildProfileDetails = ({ expandedSections, toggleSection, initialFormData,
             {/* Save Button */}
             <div className="flex justify-center pt-4">
               <Button 
+                type="button"
                 onClick={handleSave}
                 className="bg-[#0F2D52] hover:bg-[#0F2D52]/90 px-8"
               >

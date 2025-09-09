@@ -194,6 +194,7 @@ const ToiletLearning = ({ expandedSections, toggleSection, formData, handleInput
 
           <div className="flex justify-center pt-4">
             <Button 
+              type="button"
               onClick={handleSave}
               className="bg-[#0F2D52] hover:bg-[#0F2D52]/90 px-8"
             >
