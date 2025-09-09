@@ -203,7 +203,6 @@ const EnrollmentFormNew = ({ selectedSubForm = null, initialFormData = null, chi
         }
 
         const saveData = {
-          child_id: childId,
           parent_sign_enroll: formData.parent_sign_enroll,
           parent_sign_date_enroll: new Date().toLocaleDateString('en-CA')
         };
@@ -227,7 +226,6 @@ const EnrollmentFormNew = ({ selectedSubForm = null, initialFormData = null, chi
 
         const epochValue = new Date(formData.admin_sign_date_enroll).getTime();
         const saveData = {
-          child_id: childId,
           point_one_field_one: formData.point_one_field_one,
           point_one_field_three: formData.point_one_field_three,
           point_two_initial_here: formData.point_two_initial_here,
