@@ -15,6 +15,7 @@ const Additional_Parent_details = ({ openSection, setOpenSection, initialFormDat
 
 
     const [formData, setFormData] = useState({
+            parent_id: null,
             parent_name: '',
             parent_email: '',
             parent_zip_address: '',
@@ -115,12 +116,14 @@ const Additional_Parent_details = ({ openSection, setOpenSection, initialFormDat
             }
     
             try {
+
+                console.log(formData)
                 
                 const saveData ={ 
                     child_id: childId,
                     school_id: school_id,
                     additional_parent_info : {
-                    parent_id: initialFormData.parent_id,
+                    parent_id: formData.parent_id ?? null,
                     parent_name: formData.parent_name,
                     parent_email: formData.parent_email,
                     parent_zip_address: formData.parent_zip_address,

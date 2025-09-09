@@ -374,7 +374,7 @@ const ParentDetailsNew = () => {
                     <TableHead>Email</TableHead>
                     <TableHead>Date</TableHead>
                     <TableHead>Status</TableHead>
-                    <TableHead>Invite Status</TableHead>
+                    <TableHead>Signed Status</TableHead>
                     <TableHead>Actions</TableHead>
                   </TableRow>
                 </TableHeader>
