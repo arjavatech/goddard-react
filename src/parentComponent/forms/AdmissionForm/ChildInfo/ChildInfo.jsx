@@ -67,7 +67,7 @@ const ChildInfo = ({ initialFormData = null, childId = null, onSubmitSuccess, se
                         <EmergencyContact
                             openSection={openSection}
                             setOpenSection={setOpenSection}
-                            initialFormData={initialFormData.emergency_contact_info}
+                            initialFormData={JSON.parse(initialFormData.emergency_contacts)}
                             childId={childId}
                             onSubmitSuccess={() => onSubSectionSuccess && onSubSectionSuccess('Emergency Contact')}
                             isCompleted={sectionCompletionStatus['Emergency Contact'] || false}

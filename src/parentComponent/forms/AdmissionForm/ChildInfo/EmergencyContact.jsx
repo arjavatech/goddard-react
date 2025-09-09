@@ -15,7 +15,6 @@ const EmergencyContact = ({ openSection, setOpenSection, initialFormData, handle
     const [formData, setFormData] = useState({
     });
 
-
     const handleChange = (e) => {
         const { name, value } = e.target;
 
@@ -148,7 +147,7 @@ const EmergencyContact = ({ openSection, setOpenSection, initialFormData, handle
             const saveData = {
                 child_id: childId,
                 school_id: school_id,
-                emergency_contact_info: emergency_contact_info
+                emergency_contacts: emergency_contact_info
             };
             console.log(saveData); // Log the data being sent to the API for debugging purposes
             await updateAdmissionData(saveData);
