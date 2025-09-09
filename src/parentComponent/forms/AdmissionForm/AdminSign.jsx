@@ -123,8 +123,10 @@ const adminSign = ({ initialFormData = null, formData, childId, editID, onAlert 
         primary_parent_info: initialFormData.primary_parent_info,
         additional_parent_info: initialFormData.additional_parent_info,
         emergency_contact_info: initialFormData.emergency_contact_info,
-        child_care_provider_info: initialFormData.child_care_provider_info
-        
+        child_care_provider_info: initialFormData.child_care_provider_info,
+        dentist_info: initialFormData.dentist_info ? JSON.parse(initialFormData.dentist_info) : {},
+  emergency_contacts: initialFormData.emergency_contacts ? JSON.parse(initialFormData.emergency_contacts) : [],
+  care_provider_info: initialFormData.care_provider_info ? JSON.parse(initialFormData.care_provider_info) : {},
       };
 
 

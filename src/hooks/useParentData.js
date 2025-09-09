@@ -14,7 +14,7 @@ const calculateFormStatus = (formData, completedForms) => {
 
   // Enhanced form completion checks (matching FormStatusLogic validation)
   const enrollment = {
-    completed: completedForms.some(f => f.formname === 'enrollment_form')
+    completed: completedForms.some(f => f.formname === 'enrollment_agreement')
   };
   
   const authorization = {

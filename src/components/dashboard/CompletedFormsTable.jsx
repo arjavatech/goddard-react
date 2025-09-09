@@ -46,6 +46,14 @@ const CompletedFormsTable = ({ forms, childName, childId }) => {
     return formName.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
   };
 
+  // Map form names for S3 file paths
+  const mapFormNameForS3 = (formName) => {
+    const formMapping = {
+      'enrollment_form': 'enrollment_agreement'
+    };
+    return formMapping[formName] || formName;
+  };
+
   // Simple file operations
   const handleDownload = async (formName) => {
     if (!childId) {
@@ -56,7 +64,8 @@ const CompletedFormsTable = ({ forms, childName, childId }) => {
     setIsProcessing(true);
     try {
       const headers = await getAuthHeaders(getAccessTokenSilently);
-      const url = `${api_base_url}${ENDPOINTS.S3_FILE(DEFAULT_SCHOOL_NAME, childId, formName, false)}`;
+      const mappedFormName = mapFormNameForS3(formName);
+      const url = `${api_base_url}${ENDPOINTS.S3_FILE(DEFAULT_SCHOOL_NAME, childId, mappedFormName, false)}`;
       const response = await fetch(url, { headers });
 
       if (!response.ok) {
@@ -95,7 +104,8 @@ const CompletedFormsTable = ({ forms, childName, childId }) => {
     setIsProcessing(true);
     try {
       const headers = await getAuthHeaders(getAccessTokenSilently);
-      const url = `${api_base_url}${ENDPOINTS.S3_FILE(DEFAULT_SCHOOL_NAME, childId, formName, true)}`;
+      const mappedFormName = mapFormNameForS3(formName);
+      const url = `${api_base_url}${ENDPOINTS.S3_FILE(DEFAULT_SCHOOL_NAME, childId, mappedFormName, true)}`;
       const response = await fetch(url, { headers });
 
       if (!response.ok) {

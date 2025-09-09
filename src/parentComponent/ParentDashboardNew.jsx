@@ -876,7 +876,6 @@ const ParentDashboard = () => {
                                         case 'parent_handbook':
                                           handleParentHandbookAPI();
                                           break;
-                                        case 'enrollment_form':
                                         case 'enrollment_agreement':
                                           handleEnrollmentAgreementAPI();
                                           break;

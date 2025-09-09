@@ -49,7 +49,7 @@ const ParentHandbookNew = ({ selectedSubForm = null, initialFormData = null, chi
   // Check if Policy prerequisites are complete (policy section must be completed)
   const arePolicyPrerequisitesComplete = () => {
     // For parent handbook, the policies section must be completed before signatures
-    return formStatus['parenthandbook_policies']?.completed === true;
+    return formStatus['parenthandbook_policy']?.completed === true;
   };
   
   // List of admin emails that should have access to admin signatures
@@ -177,7 +177,7 @@ const ParentHandbookNew = ({ selectedSubForm = null, initialFormData = null, chi
 
   const isAdminSignatureComplete = () => {
     return formData.admin_sign_handbook && formData.admin_sign_handbook.trim() !== '' &&
-           formData.admin_sign_date_handbook && formData.admin_sign_date_handbook.trim() !== '';
+           formData.admin_sign_date_handbook && String(formData.admin_sign_date_handbook).trim() !== '';
   };
 
   const handleSave = async () => {
