@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { CheckCircle, Circle } from 'lucide-react';
 
-const MedicalCareProvider = ({ openSection, setOpenSection, initialFormData, charProviderData, handleInputChange, childId, onSubmitSuccess, isCompleted = false }) => {
+const MedicalCareProvider = ({ openSection, setOpenSection, initialFormData, charProviderData, dentistData, handleInputChange, childId, onSubmitSuccess, isCompleted = false }) => {
     const { getAccessTokenSilently } = useAuth0();
     
     const [formData, setFormData] = useState({
@@ -68,12 +68,12 @@ child_care_provider_city_address: charProviderData ? charProviderData.child_care
 child_care_provider_state_address: charProviderData ? charProviderData.child_care_provider_state_address : null,
 child_care_provider_street_address: charProviderData ? charProviderData.child_care_provider_street_address : null,
 child_care_provider_telephone_number: charProviderData ? charProviderData.child_care_provider_telephone_number : null,
-child_dentist_name: initialFormData.child_dentist_name,
-dentist_telephone_number: initialFormData.dentist_telephone_number,
-dentist_street_address: initialFormData.dentist_street_address,
-dentist_city_address: initialFormData.dentist_city_address,
-dentist_state_address: initialFormData.dentist_state_address,
-dentist_zip_address: initialFormData.dentist_zip_address,
+child_dentist_name: dentistData ? dentistData.child_dentist_name : null,
+dentist_telephone_number: dentistData ? dentistData.dentist_telephone_number : null,
+dentist_street_address: dentistData ? dentistData.dentist_street_address : null,
+dentist_city_address: dentistData ? dentistData.dentist_city_address : null,
+dentist_state_address: dentistData ? dentistData.dentist_state_address : null,
+dentist_zip_address: dentistData ? dentistData.dentist_zip_address : null,
 special_diabilities: initialFormData.special_diabilities,
 allergies_medication_reaction: initialFormData.allergies_medication_reaction,
 additional_info: initialFormData.additional_info,
@@ -138,22 +138,24 @@ policy_number: initialFormData.policy_number,
                 const saveData = {
                     child_id: childId,
                      school_id: school_id,
-                    child_care_provider_info : {
-                    child_care_provider_id: formData.child_care_provider_id,
-                    child_care_provider_name: formData.child_care_provider_name,
-                    child_hospital_affiliation: formData.child_hospital_affiliation,
-                    child_care_provider_zip_address: formData.child_care_provider_zip_address,
-                    child_care_provider_city_address: formData.child_care_provider_city_address,
-                    child_care_provider_state_address: formData.child_care_provider_state_address,
-                    child_care_provider_street_address: formData.child_care_provider_street_address,
-                    child_care_provider_telephone_number: formData.child_care_provider_telephone_number,
+                    care_provider_info : {
+                        child_care_provider_id: formData.child_care_provider_id,
+                        child_care_provider_name: formData.child_care_provider_name,
+                        child_hospital_affiliation: formData.child_hospital_affiliation,
+                        child_care_provider_zip_address: formData.child_care_provider_zip_address,
+                        child_care_provider_city_address: formData.child_care_provider_city_address,
+                        child_care_provider_state_address: formData.child_care_provider_state_address,
+                        child_care_provider_street_address: formData.child_care_provider_street_address,
+                        child_care_provider_telephone_number: formData.child_care_provider_telephone_number,
+                        },
+                    dentist_info :{
+                        child_dentist_name: formData.child_dentist_name,
+                        dentist_telephone_number: formData.dentist_telephone_number,
+                        dentist_street_address: formData.dentist_street_address,
+                        dentist_city_address: formData.dentist_city_address,
+                        dentist_state_address: formData.dentist_state_address,
+                        dentist_zip_address: formData.dentist_zip_address,
                     },
-                    child_dentist_name: formData.child_dentist_name,
-                    dentist_telephone_number: formData.dentist_telephone_number,
-                    dentist_street_address: formData.dentist_street_address,
-                    dentist_city_address: formData.dentist_city_address,
-                    dentist_state_address: formData.dentist_state_address,
-                    dentist_zip_address: formData.dentist_zip_address,
                     special_diabilities: formData.special_diabilities,
                     allergies_medication_reaction: formData.allergies_medication_reaction,
                     additional_info: formData.additional_info,
@@ -161,7 +163,6 @@ policy_number: initialFormData.policy_number,
                     health_insurance: formData.health_insurance,
                     policy_number: formData.policy_number
                 };
-                console.log(saveData) // Log the data being sent to the API for debugging pur)
                 await updateAdmissionData(saveData);
                 toast.success('Child details data saved successfully!');
                 

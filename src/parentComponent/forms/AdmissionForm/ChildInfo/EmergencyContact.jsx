@@ -148,8 +148,7 @@ const EmergencyContact = ({ openSection, setOpenSection, initialFormData, handle
                 child_id: childId,
                 school_id: school_id,
                 emergency_contacts: emergency_contact_info
-            };
-            console.log(saveData); // Log the data being sent to the API for debugging purposes
+            }; // Log the data being sent to the API for debugging purposes
             await updateAdmissionData(saveData);
             toast.success('Child details data saved successfully!');
             

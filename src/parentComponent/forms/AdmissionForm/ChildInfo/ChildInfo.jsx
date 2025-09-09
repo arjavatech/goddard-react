@@ -67,7 +67,7 @@ const ChildInfo = ({ initialFormData = null, childId = null, onSubmitSuccess, se
                         <EmergencyContact
                             openSection={openSection}
                             setOpenSection={setOpenSection}
-                            initialFormData={JSON.parse(initialFormData.emergency_contacts)}
+                            initialFormData={initialFormData.emergency_contacts ? JSON.parse(initialFormData.emergency_contacts) : null}
                             childId={childId}
                             onSubmitSuccess={() => onSubSectionSuccess && onSubSectionSuccess('Emergency Contact')}
                             isCompleted={sectionCompletionStatus['Emergency Contact'] || false}
@@ -79,7 +79,16 @@ const ChildInfo = ({ initialFormData = null, childId = null, onSubmitSuccess, se
                             openSection={openSection}
                             setOpenSection={setOpenSection}
                             initialFormData={initialFormData}
-                            charProviderData={initialFormData.child_care_provider_info}
+                            charProviderData={
+                                initialFormData.care_provider_info 
+                                    ? JSON.parse(initialFormData.care_provider_info) 
+                                    : null
+                                }
+                                dentistData={
+                                initialFormData.dentist_info 
+                                    ? JSON.parse(initialFormData.dentist_info) 
+                                    : null
+                                }
                             childId={childId}
                             onSubmitSuccess={() => onSubSectionSuccess && onSubSectionSuccess('Medical Care Provider')}
                             isCompleted={sectionCompletionStatus['Medical Care Provider'] || false}
